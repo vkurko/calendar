@@ -1,0 +1,63 @@
+body {
+	padding: 40px;
+}
+.flex {
+	display: flex;
+}
+.calendar {
+	display: flex;
+	flex-direction: column;
+	height: 600px;
+}
+.header {
+	display: flex;
+}
+.header:after {
+	content: '';
+	overflow-y: scroll;
+}
+.body {
+	position: relative;
+	overflow: hidden scroll;
+}
+.sidebar {
+	width: 4em;
+}
+.content {
+	flex-grow: 1;
+	display: flex;
+}
+.day {
+	flex-basis: 0;
+	flex-grow: 1;
+	border-left: 1px solid #ccc;
+}
+.header .day {
+	min-height: 50px;
+	text-align: center;
+}
+.events {
+	position: relative;
+	margin-right: 12px;
+}
+.event {
+	position: absolute;
+	border: 1px solid white;
+	border-radius: 8px;
+	background-color: #87adf1;
+	color: white;
+	width: 100%;
+}
+.time, .line {
+	height: 40px;
+}
+.time {
+	position: relative;
+	top: -0.5em;
+}
+.line:after {
+	content: '';
+	position: absolute;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+}
