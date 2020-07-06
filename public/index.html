@@ -10,9 +10,39 @@
 	<link rel='stylesheet' href='./global.css'>
 	<link rel='stylesheet' href='./build/bundle.css'>
 
-	<script defer src='./build/bundle.js'></script>
+	<script src='./build/bundle.js'></script>
 </head>
 
 <body>
+
+<script type="text/javascript">
+	let calendar = new Calendar(document.body, {
+		views: {
+			timeGridDay: {
+				timeFormat: {
+					hour: '2-digit',
+					minute: '2-digit',
+					hour12: true
+				}
+			}
+		},
+		events: [
+			{start: '2020-07-08 10:00', end: '2020-07-08 18:00', title: 'Event title 1'},
+			{start: '2020-07-08 11:00', end: '2020-07-08 19:00'},
+			{start: '2020-07-08 12:00', end: '2020-07-08 20:00'},
+			{start: '2020-07-08 13:00', end: '2020-07-08 19:00'},
+			{start: '2020-07-08 14:00', end: '2020-07-08 15:00'},
+			{start: '2020-07-08 15:00', end: '2020-07-08 17:00'},
+			{start: '2020-07-08 16:00', end: '2020-07-08 17:00'},
+			{start: '2020-07-08 15:00', end: '2020-07-09 16:00'},
+			{start: '2020-07-07 08:00', end: '2020-07-07 14:00'},
+			{start: '2020-07-08 00:00', end: '2020-07-08 23:00', display: 'background'},
+			{start: '2020-07-08 03:00', end: '2020-07-08 08:00', display: 'background'}
+		],
+		eventClick: function ({event, el}) {
+			alert(event.start.getHours());
+		}
+	});
+</script>
 </body>
 </html>

@@ -1,24 +1,34 @@
 <script>
 	import {getContext} from 'svelte';
+	import {cloneDate} from '../../utils';
 	import Event from './Event.svelte';
 
 	export let day;
 
-	let {date, events, theme} = getContext('store');
+	let {events, theme} = getContext('options');
 
-	let dayEvents;
+	let dayEvents, dayBgEvents;
 
 	$: {
 		dayEvents = [];
-		let start = new Date(day.getFullYear(), day.getMonth(), day.getDate());
-		let end = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
+		dayBgEvents = [];
+		let start = cloneDate(day);
+		let end = cloneDate(day);
+		start.setHours(0, 0, 0, 0);
+		end.setHours(24, 0, 0, 0);
 		for (let event of $events) {
 			if (event.start < end && event.end > start) {
-				dayEvents.push({
+				let e = {
 					id: event.id,
 					start: event.start > start ? event.start : start,
-					end: event.end < end ? event.end : end
-				});
+					end: event.end < end ? event.end : end,
+					title: event.title,
+					display: event.display
+				};
+				switch (e.display) {
+					case 'background': dayBgEvents.push(e); break;
+					default: dayEvents.push(e);
+				}
 			}
 		}
 
@@ -73,12 +83,14 @@
 			event.column = c;
 		}
 	}
-
-	// setTimeout(() => $events = [{start: new Date('2020-07-02 12:00'), end: new Date('2020-07-02 15:00')}], 1000);
-	// setTimeout(() => $date = '2020-07-05', 2000);
 </script>
 
 <div class="{$theme.day}">
+	<div class="{$theme.bgEvents}">
+		{#each dayBgEvents as event}
+			<Event {event}/>
+		{/each}
+	</div>
 	<div class="{$theme.events}">
 		{#each dayEvents as event}
 			<Event {event}/>

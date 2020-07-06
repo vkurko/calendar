@@ -1,17 +1,18 @@
-import App from './App.svelte';
+import Calendar from './Calendar.svelte';
 
-const app = new App({
-	target: document.body,
-	props: {
-		options: {
-			events: [
-				{start: '2020-07-01 10:00', end: '2020-07-01 16:00'},
-				{start: '2020-07-01 11:00', end: '2020-07-01 14:00'},
-				{start: '2020-07-01 13:00', end: '2020-07-01 15:00'},
-				{start: '2020-07-01 15:00', end: '2020-07-02 16:00'}
-			]
+window.Calendar = function (el, options) {
+	const cal = new Calendar({
+		target: el,
+		props: {
+			options
 		}
-	}
-});
+	});
 
-export default app;
+	this.setOption = function (name, value) {
+		cal.setOption(name, value);
+	};
+
+	this.getOption = function (name) {
+		return cal.getOption(name);
+	};
+};

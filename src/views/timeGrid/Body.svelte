@@ -1,9 +1,9 @@
 <script>
 	import {getContext} from 'svelte';
-	import {cloneDate, modifyDate} from './utils';
+	import {cloneDate, modifyDate} from '../../utils';
 	import Day from './Day.svelte';
 
-	let {date, slotDuration, timeFormat, theme} = getContext('store');
+	let {date: currentDate, slotDuration, timeFormat, duration, theme} = getContext('options');
 
 	let times;
 	let lines;
@@ -24,13 +24,18 @@
 
 	$: {
 		days = [];
-		let day = cloneDate($date);
-		while (day.getDay()) {
-			day.setDate(day.getDate() - 1);
+		let date = cloneDate($currentDate);
+		if ($duration.inWeeks) {
+			// First day of week
+			while (date.getDay()) {
+				date.setDate(date.getDate() - 1);
+			}
 		}
-		for (let i = 0; i < 7; ++ i) {
-			days.push(cloneDate(day));
-			day.setDate(day.getDate() + 1);
+		let end = cloneDate(date);
+		modifyDate(end, $duration);
+		while (date < end) {
+			days.push(cloneDate(date));
+			date.setDate(date.getDate() + 1);
 		}
 	}
 </script>
