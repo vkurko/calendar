@@ -38,7 +38,7 @@ body {
 }
 .events {
 	position: relative;
-	margin-right: 12px;
+	margin: 0 6px 0 0;
 }
 .event {
 	position: absolute;
@@ -46,6 +46,18 @@ body {
 	border-radius: 8px;
 	background-color: #87adf1;
 	color: white;
+}
+.event-title {
+	white-space: nowrap;
+	overflow: hidden;
+}
+.bg-events {
+	position: relative;
+}
+.bg-event {
+	position: absolute;
+	background-color: #ccc;
+	opacity: 0.3;
 	width: 100%;
 }
 .time, .line {
