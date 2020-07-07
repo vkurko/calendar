@@ -1,18 +1,22 @@
 import Calendar from './Calendar.svelte';
+import TimeGrid from './plugins/timeGrid/plugin';
 
-window.Calendar = function (el, options) {
-	const cal = new Calendar({
-		target: el,
-		props: {
-			options
-		}
-	});
+export default class {
+	constructor(el, options) {
+		options.plugins = [TimeGrid];
+		this.cal = new Calendar({
+			target: el,
+			props: {
+				options
+			}
+		});
+	}
 
-	this.setOption = function (name, value) {
-		cal.setOption(name, value);
+	setOption(name, value) {
+		this.cal.setOption(name, value);
 	};
 
-	this.getOption = function (name) {
-		return cal.getOption(name);
+	getOption(name) {
+		return this.cal.getOption(name);
 	};
 };

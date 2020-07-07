@@ -48,10 +48,8 @@
 	}
 
 	function handleClick() {
-		$: {
-			if (typeof $eventClick === 'function') {
-				$eventClick({event, el});
-			}
+		if (typeof $eventClick === 'function') {
+			$eventClick({event, el});
 		}
 	}
 </script>

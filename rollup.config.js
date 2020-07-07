@@ -11,7 +11,7 @@ export default {
 	output: {
 		sourcemap: true,
 		format: 'iife',
-		name: 'app',
+		name: 'Calendar',
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
