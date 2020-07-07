@@ -1,27 +1,15 @@
 <script>
 	import {setContext} from 'svelte';
 	import {get} from 'svelte/store';
-	import Options from './options';
+	import Options from './options/options';
 	import Toolbar from './Toolbar.svelte';
-	import TimeGrid from './views/timeGrid/View.svelte';
 
 	export let options;
 
 	let opts = new Options(options);
 	setContext('options', opts);
 
-	let {view: viewName, views, theme} = opts;
-
-	let view;
-
-	$: {
-		switch ($viewName) {
-			case 'timeGridDay':
-			case 'timeGridWeek':
-			default:
-				view = TimeGrid;
-		}
-	}
+	let {_viewComponent, theme} = opts;
 
 	export function setOption(name, value) {
 		if (opts.hasOwnProperty(name)) {
@@ -36,5 +24,5 @@
 
 <div class="{$theme.calendar}">
 	<Toolbar/>
-	<svelte:component this={view}/>
+	<svelte:component this={$_viewComponent}/>
 </div>
