@@ -4,6 +4,16 @@ body {
 .flex {
 	display: flex;
 }
+.grow {
+	flex: 1 1 0;
+	min-width: 0;
+	max-width: 100%;
+}
+.no-grow {
+	flex: 0 0 auto;
+	width: auto;
+	max-width: 100%;
+}
 .calendar {
 	display: flex;
 	flex-direction: column;
@@ -15,24 +25,32 @@ body {
 .header:after {
 	content: '';
 	overflow-y: scroll;
+	visibility: hidden;
+	flex-shrink: 0;
 }
 .body {
 	position: relative;
 	overflow: hidden scroll;
 }
 .sidebar {
-	width: 4em;
+	flex-basis: 4em;
 }
 .content {
-	flex-grow: 1;
 	display: flex;
 }
-.day {
-	flex-basis: 0;
-	flex-grow: 1;
-	border-left: 1px solid #ccc;
+.resource {
+	display: flex;
 }
-.header .day {
+.column {
+	border-width: 0 1px 1px 0;
+	border-style: solid;
+	border-color: #ccc;
+	overflow: hidden;
+}
+.header .resource {
+	flex-direction: column;
+}
+.header .column {
 	min-height: 50px;
 	text-align: center;
 }
@@ -67,7 +85,7 @@ body {
 	position: relative;
 	top: -0.5em;
 }
-.line:after {
+.line:not(:first-child):after {
 	content: '';
 	position: absolute;
 	width: 100%;

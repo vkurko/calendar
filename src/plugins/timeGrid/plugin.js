@@ -1,5 +1,5 @@
 import {createDuration} from '../../utils';
-import {durationStore} from '../../options/stores';
+import * as stores from '../../options/stores';
 import View from './View.svelte';
 
 export default {
@@ -16,6 +16,6 @@ export default {
 		};
 	},
 	createStoresForOptions(obj, options) {
-		obj.slotDuration = durationStore(createDuration(options.slotDuration));
+		obj.slotDuration = stores.duration(createDuration(options.slotDuration));
 	}
 }
