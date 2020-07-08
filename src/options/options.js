@@ -1,6 +1,6 @@
 import {writable} from 'svelte/store';
 import {createOptions} from './defaults';
-import {dateStore, durationStore, eventsStore} from './stores';
+import * as stores from './stores';
 import {createDate, createDuration, assign} from '../utils';
 
 export default class {
@@ -11,17 +11,21 @@ export default class {
         let options = createOptions(plugins);
 
         // Create stores for options
-        this.date = dateStore(createDate(options.date));
-        this.events = eventsStore(options.events);
+        this.date = stores.date(createDate(options.date));
+        this.events = stores.events(options.events);
         this.eventContent = writable(options.eventContent);
         this.eventClick = writable(options.eventClick);
         this.dayHeaderFormat = writable(options.dayHeaderFormat);
+        this.locale = writable(options.locale);
         this.timeFormat = writable(options.timeFormat);
         this.view = writable(options.view);
-        this.duration = durationStore(createDuration(options.duration));
+        this.duration = stores.duration(createDuration(options.duration));
         this.theme = writable(options.theme);
         // Internal options
         this._viewComponent = writable(undefined);
+        this._viewDates = stores.viewDates(this.date, this.duration);
+        this._intlDayHeader = stores.intl(this.locale, this.dayHeaderFormat);
+        this._intlTime = stores.intl(this.locale, this.timeFormat);
         // Let plugins create stores for their options
         for (let plugin of plugins) {
             plugin.createStoresForOptions(this, options);
@@ -38,7 +42,7 @@ export default class {
                 }
             });
             for (let key of Object.keys(opts)) {
-                if (this.hasOwnProperty(key)) {
+                if (this.hasOwnProperty(key) && key[0] !== '_') {
                     let {subscribe, set, _set, update} = this[key];
 
                     this[key] = {

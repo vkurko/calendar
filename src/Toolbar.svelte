@@ -23,4 +23,6 @@
 
 	<button on:click={() => $view = 'timeGridWeek'}>Week</button>
 	<button on:click={() => $view = 'timeGridDay'}>Day</button>
+	<button on:click={() => $view = 'resourceTimeGridWeek'}>Resources Week</button>
+	<button on:click={() => $view = 'resourceTimeGridDay'}>Resources Day</button>
 </div>

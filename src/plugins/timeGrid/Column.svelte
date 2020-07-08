@@ -3,36 +3,38 @@
 	import {cloneDate} from '../../utils';
 	import Event from './Event.svelte';
 
-	export let day;
+	export let date;
+	export let resourceId = undefined;
 
-	let {events, theme} = getContext('options');
+	let {events: allEvents, theme} = getContext('options');
 
-	let dayEvents, dayBgEvents;
+	let events, bgEvents;
 
 	$: {
-		dayEvents = [];
-		dayBgEvents = [];
-		let start = cloneDate(day);
-		let end = cloneDate(day);
+		events = [];
+		bgEvents = [];
+		let start = cloneDate(date);
+		let end = cloneDate(date);
 		start.setHours(0, 0, 0, 0);
 		end.setHours(24, 0, 0, 0);
-		for (let event of $events) {
-			if (event.start < end && event.end > start) {
+		for (let event of $allEvents) {
+			if (event.start < end && event.end > start && (resourceId === undefined || event.resourceIds.includes(resourceId))) {
 				let e = {
 					id: event.id,
+					resourceIds: event.resourceIds,
 					start: event.start > start ? event.start : start,
 					end: event.end < end ? event.end : end,
 					title: event.title,
 					display: event.display
 				};
 				switch (e.display) {
-					case 'background': dayBgEvents.push(e); break;
-					default: dayEvents.push(e);
+					case 'background': bgEvents.push(e); break;
+					default: events.push(e);
 				}
 			}
 		}
 
-		groupEvents(dayEvents);
+		groupEvents(events);
 	}
 
 	function groupEvents(events) {
@@ -85,14 +87,14 @@
 	}
 </script>
 
-<div class="{$theme.day}">
+<div class="{$theme.column}">
 	<div class="{$theme.bgEvents}">
-		{#each dayBgEvents as event}
+		{#each bgEvents as event}
 			<Event {event}/>
 		{/each}
 	</div>
 	<div class="{$theme.events}">
-		{#each dayEvents as event}
+		{#each events as event}
 			<Event {event}/>
 		{/each}
 	</div>
