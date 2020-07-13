@@ -1,10 +1,14 @@
 <script>
-	import {getContext} from 'svelte';
+	import {getContext, setContext} from 'svelte';
+	import State from './state';
 	import Header from './Header.svelte';
 	import Body from './Body.svelte';
 	import Column from './Column.svelte';
 
-	let {_viewDates, _intlDayHeader, theme} = getContext('options');
+	let {_viewDates, _intlDayHeader, theme} = getContext('state');
+
+	let state = new State(getContext('state'));
+	setContext('view-state', state);
 </script>
 
 <Header>

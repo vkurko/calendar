@@ -2,7 +2,7 @@ import {writable} from 'svelte/store';
 import View from './View.svelte';
 
 export default {
-	extendDefaultOptions(options) {
+	createInitOptions(options) {
 		options.resources = [];
 		options.view = 'resourceTimeGridWeek';
 		options.views.resourceTimeGridDay = {
@@ -13,7 +13,9 @@ export default {
 			component: View,
 			duration: {weeks: 1}
 		};
-		options.theme.resource = 'resource grow';
+		options.buttonText.resourceTimeGridDay = 'day';
+		options.buttonText.resourceTimeGridWeek = 'week';
+		options.theme.resource = 'ec-resource ec-grow';
 	},
 	createStoresForOptions(obj, options) {
 		obj.resources = writable(options.resources);
