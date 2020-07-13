@@ -15,31 +15,33 @@
 
 <body>
 
+<div class="ec-flex">
+	<div id='ec' class="ec-grow"></div>
+</div>
+
 <script type="text/javascript">
-	let calendar = new Calendar(document.body, {
+	let ec = new EventCalendar(document.getElementById('ec'), {
+		view: 'timeGridWeek',
 		views: {
-			timeGridDay: {
-				timeFormat: {
-					hour: '2-digit',
-					minute: '2-digit',
-					hour12: true
-				}
-			}
+			// timeGridDay: {
+			// 	eventSources: [{
+			// 		url: '/events.json'
+			// 	}, {
+			// 		url: '/events.json'
+			// 	}]
+			// }
 		},
+		headerToolbar: {
+			start: 'prev,next today',
+			center: 'title',
+			end: 'timeGridWeek,timeGridDay'
+		},
+		slotDuration: 30*60,
+		// locale: 'en-US',
 		resources: [{id: 1, title: 'A'}, {id: 2, title: 'B'}],
-		events: [
-			{start: '2020-07-08 10:00', end: '2020-07-08 18:00', resourceId: 2, title: 'Event title 1'},
-			{start: '2020-07-08 11:00', end: '2020-07-08 19:00', resourceId: 1},
-			{start: '2020-07-08 12:00', end: '2020-07-08 20:00', resourceId: 2},
-			{start: '2020-07-08 13:00', end: '2020-07-08 19:00', resourceId: 1},
-			{start: '2020-07-08 14:00', end: '2020-07-08 15:00', resourceId: 2},
-			{start: '2020-07-08 15:00', end: '2020-07-08 17:00', resourceId: 1},
-			{start: '2020-07-08 16:00', end: '2020-07-08 17:00', resourceId: 1},
-			{start: '2020-07-08 15:00', end: '2020-07-09 16:00', resourceId: 1},
-			{start: '2020-07-07 08:00', end: '2020-07-07 14:00', resourceId: 2},
-			{start: '2020-07-08 00:00', end: '2020-07-08 23:00', resourceId: 1, display: 'background'},
-			{start: '2020-07-08 03:00', end: '2020-07-08 08:00', resourceId: 2, display: 'background'}
-		],
+		eventSources: [{
+			url: '/events.json'
+		}],
 		eventClick: function ({event, el}) {
 			alert(event.start.getHours());
 		}

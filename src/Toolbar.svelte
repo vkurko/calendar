@@ -1,28 +1,34 @@
 <script>
 	import {getContext} from 'svelte';
-	import {modifyDate} from './utils';
+	import Buttons from './Buttons.svelte';
 
-	let {date, view, duration, theme} = getContext('options');
+	let {date, duration, headerToolbar, buttonText, view, theme} = getContext('state');
 
-	function prev() {
-		let d = $date;
-		modifyDate(d, $duration, -1);
-		$date = d;
-	}
+	let sections = {
+		start: [],
+		center: [],
+		end: []
+	};
 
-	function next() {
-		let d = $date;
-		modifyDate(d, $duration);
-		$date = d;
+	$: {
+		for (let key of Object.keys(sections)) {
+			sections[key] = $headerToolbar[key].split(' ').map(group => group.split(','));
+		}
 	}
 </script>
 
 <div class="{$theme.toolbar}">
-	<button on:click={prev}>&lt;</button>
-	<button on:click={next}>&gt;</button>
-
-	<button on:click={() => $view = 'timeGridWeek'}>Week</button>
-	<button on:click={() => $view = 'timeGridDay'}>Day</button>
-	<button on:click={() => $view = 'resourceTimeGridWeek'}>Resources Week</button>
-	<button on:click={() => $view = 'resourceTimeGridDay'}>Resources Day</button>
+	{#each Object.keys(sections) as key}
+		<div>
+			{#each sections[key] as buttons}
+				{#if buttons.length > 1}
+					<div class="{$theme.buttonGroup}">
+						<Buttons {buttons}/>
+					</div>
+				{:else}
+					<Buttons {buttons}/>
+				{/if}
+			{/each}
+		</div>
+	{/each}
 </div>
