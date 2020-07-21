@@ -1,6 +1,6 @@
-import {writable} from 'svelte/store';
+import {derived, writable} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
-import {createInitOptions} from './init';
+import {createOptions} from './options';
 import * as stores from './stores';
 import {createDate, createDuration, setHours} from '../lib/date';
 import {createEvents, createEventSources} from '../lib/events';
@@ -11,7 +11,7 @@ export default class {
         let plugins = input.plugins || [];
 
         // Create init options
-        let init = createInitOptions(plugins);
+        let init = createOptions(plugins);
 
         // Create stores for options
         this.date = stores.writable2(init.date, date => setHours(createDate(date), 0, 0, 0, 0));
@@ -26,6 +26,9 @@ export default class {
         this.dateClick = writable(init.dateClick);
         this.slotDuration = stores.writable2(init.slotDuration, createDuration);
         this.slotLabelFormat = writable(init.slotLabelFormat);
+        this.slotMinTime = stores.writable2(init.slotMinTime, createDuration);
+        this.slotMaxTime = stores.writable2(init.slotMaxTime, createDuration);
+        this.flexibleSlotTimeLimits = writable(init.flexibleSlotTimeLimits);
         this.scrollTime = stores.writable2(init.scrollTime, createDuration);
         this.dayHeaderFormat = writable(init.dayHeaderFormat);
         this.firstDay = writable(init.firstDay);
@@ -42,10 +45,11 @@ export default class {
         this.theme = stores.writable2(init.theme, input => is_function(input) ? input(init.theme) : input);
 
         // Internal options
-        this._viewDates = stores.viewDates(this.date, this.duration, this.firstDay);
-        this._view = stores.view(this.view, this._viewDates);
+        this._activeRange = stores.activeRange(this.date, this.duration, this.firstDay);
+        this._viewDates = stores.viewDates(this._activeRange);
+        this._view = stores.view(this.view, this._activeRange);
         this._fetchedRange = writable({start: undefined, end: undefined});
-        this._events = stores.events(this.events, this.eventSources, this._viewDates, this._fetchedRange, this.lazyFetching, this.loading);
+        this._events = stores.events(this.events, this.eventSources, this._activeRange, this._fetchedRange, this.lazyFetching, this.loading);
         this._intlEventTime = stores.intl(this.locale, this.eventTimeFormat);
         this._intlSlotLabel = stores.intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = stores.intl(this.locale, this.dayHeaderFormat);
@@ -54,7 +58,7 @@ export default class {
 
         // Let plugins create stores for their options
         for (let plugin of plugins) {
-            plugin.createStoresForOptions(this, init);
+            plugin.createStores(this, init);
         }
 
         // Set options for each view

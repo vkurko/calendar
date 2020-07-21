@@ -1,7 +1,7 @@
 <script>
 	import {setContext} from 'svelte';
 	import {get} from 'svelte/store';
-	import State from './options/state';
+	import State from './storage/state';
 	import Toolbar from './Toolbar.svelte';
 	import {assign} from './utils';
 
@@ -218,7 +218,7 @@
 	}
 	:global(.ec-event-content) {
 		position: relative;
-		color: #fff
+		color: #fff;
 	}
 	:global(.ec-event-time) {
 		overflow: hidden;

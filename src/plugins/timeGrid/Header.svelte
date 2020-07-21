@@ -2,13 +2,13 @@
 	import {getContext} from 'svelte';
 
 	let {theme} = getContext('state');
-	let {times, scrollable} = getContext('view-state');
+	let {_times, _scrollable} = getContext('view-state');
 </script>
 
-<div class="{$theme.header}{$scrollable ? ' ' + $theme.withScroll : ''}">
+<div class="{$theme.header}{$_scrollable ? ' ' + $theme.withScroll : ''}">
 	<div class="{$theme.sidebar}">
 		<div class="{$theme.hiddenTimes}">
-			{#each $times as time}
+			{#each $_times as time}
 				<div class="{$theme.time}">{time}</div>
 			{/each}
 		</div>

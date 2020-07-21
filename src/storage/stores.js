@@ -37,20 +37,27 @@ export function derived2(stores, fn, initValue) {
     };
 }
 
-export function viewDates(date, duration, firstDay) {
+export function activeRange(date, duration, firstDay) {
     return derived([date, duration, firstDay], ([$date, $duration, $firstDay]) => {
-        let dates = [];
-        let date = setHours(cloneDate($date), 0, 0, 0, 0);
+        let start = cloneDate($date);
         if ($duration.inWeeks) {
             let max = 7;
             // First day of week
-            while (date.getDay() !== $firstDay && max) {
-                subtractDay(date);
+            while (start.getDay() !== $firstDay && max) {
+                subtractDay(start);
                 --max;
             }
         }
-        let end = cloneDate(date);
-        addDuration(end, $duration);
+        let end = addDuration(cloneDate(start), $duration);
+
+        return {start, end};
+    });
+}
+
+export function viewDates(_activeRange) {
+    return derived(_activeRange, ({start, end}) => {
+        let dates = [];
+        let date = cloneDate(start);
         while (date < end) {
             dates.push(cloneDate(date));
             addDay(date);
@@ -60,25 +67,23 @@ export function viewDates(date, duration, firstDay) {
     });
 }
 
-export function view(view, _viewDates) {
-    return derived2([view, _viewDates], args => createView(...args));
+export function view(view, _activeRange) {
+    return derived2([view, _activeRange], args => createView(...args));
 }
 
-export function events(events, eventSources, _viewDates, _fetchedRange, lazyFetching, loading) {
+export function events(events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading) {
     let _events = writable([]);
     let abortController;
     let fetching = 0;
     derived(
-        [events, eventSources, _viewDates, _fetchedRange, lazyFetching, loading],
-        ([$events, $eventSources, $_viewDates, $_fetchedRange, $lazyFetching, $loading], set) => {
+        [events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading],
+        ([$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading], set) => {
             if (!$eventSources.length) {
                 set($events);
                 return;
             }
-            let start = $_viewDates[0];
-            let end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
             // Do not fetch if new range is within previous one
-            if (!$_fetchedRange.start || $_fetchedRange.start > start || $_fetchedRange.end < end || !$lazyFetching) {
+            if (!$_fetchedRange.start || $_fetchedRange.start > $_activeRange.start || $_fetchedRange.end < $_activeRange.end || !$lazyFetching) {
                 if (abortController) {
                     // Abort previous request
                     abortController.abort();
@@ -93,8 +98,8 @@ export function events(events, eventSources, _viewDates, _fetchedRange, lazyFetc
                 for (let source of $eventSources) {
                     // Set request params
                     let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
-                    params.start = toISOString(start);
-                    params.end = toISOString(end);
+                    params.start = toISOString($_activeRange.start);
+                    params.end = toISOString($_activeRange.end);
                     for (let key of source.url.searchParams.keys()) {
                         source.url.searchParams.delete(key);
                     }
@@ -118,8 +123,8 @@ export function events(events, eventSources, _viewDates, _fetchedRange, lazyFetc
                         });
                     ++fetching;
                     // Save current range for future requests
-                    $_fetchedRange.start = start;
-                    $_fetchedRange.end = end;
+                    $_fetchedRange.start = $_activeRange.start;
+                    $_fetchedRange.end = $_activeRange.end;
                 }
             }
         },

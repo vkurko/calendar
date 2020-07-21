@@ -12,7 +12,7 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'EventCalendar',
-		file: 'public/build/bundle.js'
+		file: 'public/build/event-calendar.min.js'
 	},
 	plugins: [
 		svelte({
@@ -21,7 +21,7 @@ export default {
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
 			css: css => {
-				css.write('public/build/bundle.css');
+				css.write('public/build/event-calendar.min.css');
 			}
 		}),
 
