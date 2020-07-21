@@ -5,6 +5,7 @@
 	export let chunk;
 
 	let {eventContent, eventClick, eventBackgroundColor, eventColor, slotDuration, _view, _intlEventTime, theme} = getContext('state');
+	let {_slotTimes} = getContext('view-state');
 
 	let el;
 	let className;
@@ -14,9 +15,10 @@
 	$: {
 		// Class & Style
 		let step = $slotDuration.seconds / 60;
+		let offset = $_slotTimes.min.seconds / 60;
 		let start = chunk.start.getHours() * 60 + chunk.start.getMinutes();
 		let end = chunk.end.getDate() !== chunk.start.getDate() ? 24 * 60 : (chunk.end.getHours() * 60 + chunk.end.getMinutes());
-		let top = 24 * (start / step);
+		let top = 24 * ((start - offset) / step);
 		let height = 24 * ((end - start) / step);
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =

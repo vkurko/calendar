@@ -2,36 +2,28 @@ import {createDate} from './date';
 
 let eventId = 1;
 export function createEvents(input) {
-    let events = [];
-    for (let event of input) {
-        events.push({
-            id: 'id' in event ? String(event.id) : `{generated}-${eventId++}`,
-            resourceIds: Array.isArray(event.resourceIds)
-                ? event.resourceIds.map(String)
-                : ('resourceId' in event ? [String(event.resourceId)] : []),
-            start: createDate(event.start),
-            end: createDate(event.end),
-            title: event.title || '',
-            display: event.display || 'auto',
-            extendedProps: event.extendedProps || {},
-            backgroundColor: event.backgroundColor || event.color
-        });
-    }
-    return events;
+    return input.map(event => ({
+        id: 'id' in event ? String(event.id) : `{generated}-${eventId++}`,
+        resourceIds: Array.isArray(event.resourceIds)
+            ? event.resourceIds.map(String)
+            : ('resourceId' in event ? [String(event.resourceId)] : []),
+        start: createDate(event.start),
+        end: createDate(event.end),
+        title: event.title || '',
+        display: event.display || 'auto',
+        extendedProps: event.extendedProps || {},
+        backgroundColor: event.backgroundColor || event.color
+    }));
 }
 
 let absURL = new RegExp('^(?:[a-z]+:)?//', 'i');
 let fakeBase = 'http://a';
 export function createEventSources(input) {
-    let sources = [];
-    for (let source of input) {
-        sources.push({
-            url: new URL(source.url, fakeBase),  // for relative URLs we need to provide something as a base,
-            urlFrom: absURL.test(source.url) ? 0 : fakeBase.length,
-            extraParams: source.extraParams || {}
-        });
-    }
-    return sources;
+    return input.map(source => ({
+        url: new URL(source.url, fakeBase),  // for relative URLs we need to provide something as a base,
+        urlFrom: absURL.test(source.url) ? 0 : fakeBase.length,
+        extraParams: source.extraParams || {}
+    }));
 }
 
 export function createEventChunk(event, start, end) {

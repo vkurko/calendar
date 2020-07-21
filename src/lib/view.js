@@ -1,10 +1,10 @@
 
-export function createView(view, _viewDates) {
+export function createView(view, _activeRange) {
     return {
         type: view,
         title: undefined,
-        activeStart: _viewDates[0],
-        activeEnd: _viewDates[_viewDates.length - 1],
+        activeStart: _activeRange.start,
+        activeEnd: _activeRange.end,
         currentStart: undefined,
         currentEnd: undefined,
         calendar: undefined

@@ -1,7 +1,7 @@
 import View from './View.svelte';
 
 export default {
-	createInitOptions(options) {
+	createOptions(options) {
 		options.view = 'timeGridWeek';
 		options.views.timeGridDay = {
 			component: View,
@@ -15,7 +15,7 @@ export default {
 		options.buttonText.timeGridDay = 'day';
 		options.buttonText.timeGridWeek = 'week';
 	},
-	createStoresForOptions(obj, options) {
+	createStores(state, options) {
 
 	}
 }

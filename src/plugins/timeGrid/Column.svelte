@@ -9,6 +9,7 @@
 	export let resource = undefined;
 
 	let {_events, date: currentDate, dateClick, slotDuration, highlightDate, _view, theme} = getContext('state');
+	let {_slotTimes} = getContext('view-state');
 
 	let chunks, bgChunks;
 	let today = setHours(new Date(), 0, 0, 0, 0), isToday, highlight;
@@ -19,11 +20,11 @@
 		let start = cloneDate(date);
 		let end = addDay(cloneDate(date));
 		for (let event of $_events) {
-			if (event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(String(resource.id)))) {
-				let object = createEventChunk(event, start, end);
+			if (event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(resource.id))) {
+				let chunk = createEventChunk(event, start, end);
 				switch (event.display) {
-					case 'background': bgChunks.push(object); break;
-					default: chunks.push(object);
+					case 'background': bgChunks.push(chunk); break;
+					default: chunks.push(chunk);
 				}
 			}
 		}
@@ -39,7 +40,7 @@
 		if (is_function($dateClick)) {
 			let rect = jsEvent.currentTarget.getBoundingClientRect();
 			let y = jsEvent.clientY - rect.top;
-			let d = addDuration(cloneDate(date), $slotDuration, Math.floor(y/24));
+			let d = addDuration(cloneDate(date), $slotDuration, Math.floor(y/24 + $_slotTimes.min.seconds/$slotDuration.seconds));
 			$dateClick({date: d, jsEvent, view: $_view, resource});
 		}
 	}

@@ -15,6 +15,8 @@ export function createDuration(input) {
             seconds += parseInt(part, 10) * Math.pow(60, exp--);
         }
         input = {seconds};
+    } else if (input instanceof Date) {
+        input = {hours: input.getHours(), minutes: input.getMinutes(), seconds: input.getSeconds()};
     }
 
     let weeks = input.weeks || input.week || 0;

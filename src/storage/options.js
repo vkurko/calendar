@@ -1,4 +1,4 @@
-export function createInitOptions(plugins) {
+export function createOptions(plugins) {
     let options = {
         date: new Date(),
         duration: {weeks: 1},
@@ -18,6 +18,9 @@ export function createInitOptions(plugins) {
             hour: 'numeric',
             minute: '2-digit'
         },
+        slotMinTime: '00:00:00',
+        slotMaxTime: '24:00:00',
+        flexibleSlotTimeLimits: false,  // ec option
         scrollTime: '06:00:00',
         dayHeaderFormat: {
             weekday: 'short',
@@ -25,7 +28,7 @@ export function createInitOptions(plugins) {
             day: 'numeric'
         },
         firstDay: 0,
-        highlightDate: false,
+        highlightDate: false,  // ec option
         locale: undefined,
         headerToolbar: {
             start: 'title',
@@ -79,7 +82,7 @@ export function createInitOptions(plugins) {
     };
 
     for (let plugin of plugins) {
-        plugin.createInitOptions(options);
+        plugin.createOptions(options);
     }
 
     return options;
