@@ -3,7 +3,7 @@ import {createDate} from './date';
 let eventId = 1;
 export function createEvents(input) {
     return input.map(event => ({
-        id: 'id' in event ? String(event.id) : `{generated}-${eventId++}`,
+        id: 'id' in event ? String(event.id) : `{generated-${eventId++}}`,
         resourceIds: Array.isArray(event.resourceIds)
             ? event.resourceIds.map(String)
             : ('resourceId' in event ? [String(event.resourceId)] : []),
@@ -34,11 +34,7 @@ export function createEventChunk(event, start, end) {
     };
 }
 
-export function groupEventChunks(chunks) {
-    if (!chunks.length) {
-        return;
-    }
-
+export function sortEventChunks(chunks) {
     // Sort by start date
     chunks.sort((a, b) => {
         if (a.start < b.start) {
@@ -49,36 +45,4 @@ export function groupEventChunks(chunks) {
         }
         return 0;
     });
-
-    // Group
-    let group = {
-        columns: [],
-        end: chunks[0].end
-    };
-    for (let chunk of chunks) {
-        let c = 0;
-        if (chunk.start < group.end) {
-            for (; c < group.columns.length; ++c) {
-                if (group.columns[c][group.columns[c].length - 1].end <= chunk.start) {
-                    break;
-                }
-            }
-            if (chunk.end > group.end) {
-                group.end = chunk.end;
-            }
-        } else {
-            group = {
-                columns: [],
-                end: chunk.end
-            };
-        }
-
-        if (group.columns.length < c + 1) {
-            group.columns.push([]);
-        }
-        group.columns[c].push(chunk);
-
-        chunk.group = group;
-        chunk.column = c;
-    }
 }

@@ -3,7 +3,7 @@
 	import State from './state';
 	import Header from './Header.svelte';
 	import Body from './Body.svelte';
-	import Column from './Column.svelte';
+	import Day from './Day.svelte';
 
 	let {_viewDates, _intlDayHeader, theme} = getContext('state');
 
@@ -13,11 +13,11 @@
 
 <Header>
 	{#each $_viewDates as date}
-		<div class="{$theme.column}">{$_intlDayHeader.format(date)}</div>
+		<div class="{$theme.day}">{$_intlDayHeader.format(date)}</div>
 	{/each}
 </Header>
 <Body>
 	{#each $_viewDates as date}
-		<Column {date}/>
+		<Day {date}/>
 	{/each}
 </Body>

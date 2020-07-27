@@ -1,6 +1,6 @@
 import {derived, writable, get} from 'svelte/store';
-import {is_function} from 'svelte/internal';
-import {cloneDate, addDuration, addDay, subtractDay, setHours, toISOString, formatRange} from '../lib/date';
+import {is_function, tick} from 'svelte/internal';
+import {cloneDate, addDuration, addDay, subtractDay, toISOString, formatRange} from '../lib/date';
 import {createEvents} from '../lib/events';
 import {createView} from '../lib/view';
 import {assign} from '../utils';
@@ -37,10 +37,14 @@ export function derived2(stores, fn, initValue) {
     };
 }
 
-export function activeRange(date, duration, firstDay) {
-    return derived([date, duration, firstDay], ([$date, $duration, $firstDay]) => {
-        let start = cloneDate($date);
-        if ($duration.inWeeks) {
+export function activeRange(date, duration, monthMode, firstDay) {
+    return derived([date, duration, monthMode, firstDay], ([$date, $duration, $monthMode, $firstDay]) => {
+        let start = cloneDate($date), end;
+        if ($monthMode) {
+            start.setDate(1);
+            end = addDuration(cloneDate(start), $duration);
+        }
+        if ($duration.inWeeks || $monthMode) {
             let max = 7;
             // First day of week
             while (start.getDay() !== $firstDay && max) {
@@ -48,7 +52,15 @@ export function activeRange(date, duration, firstDay) {
                 --max;
             }
         }
-        let end = addDuration(cloneDate(start), $duration);
+        if ($monthMode) {
+            let max = 7;
+            while (end.getDay() !== $firstDay && max) {
+                addDay(end);
+                --max;
+            }
+        } else {
+            end = addDuration(cloneDate(start), $duration);
+        }
 
         return {start, end};
     });
@@ -67,8 +79,16 @@ export function viewDates(_activeRange) {
     });
 }
 
-export function view(view, _activeRange) {
-    return derived2([view, _activeRange], args => createView(...args));
+export function viewTitle(date, _activeRange, _titleIntlRange, monthMode) {
+    return derived([date, _activeRange, _titleIntlRange, monthMode], ([$date, $_activeRange, $_titleIntlRange, $monthMode]) => {
+        return $monthMode
+            ? $_titleIntlRange.format($date, $date)
+            : $_titleIntlRange.format($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
+    });
+}
+
+export function view(view, _viewTitle, _activeRange) {
+    return derived2([view, _viewTitle, _activeRange], args => createView(...args));
 }
 
 export function events(events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading) {
@@ -77,7 +97,8 @@ export function events(events, eventSources, _activeRange, _fetchedRange, lazyFe
     let fetching = 0;
     derived(
         [events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading],
-        ([$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading], set) => {
+        (values, set) => tick().then(() => {
+            let [$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading] = values;
             if (!$eventSources.length) {
                 set($events);
                 return;
@@ -127,7 +148,7 @@ export function events(events, eventSources, _activeRange, _fetchedRange, lazyFe
                     $_fetchedRange.end = $_activeRange.end;
                 }
             }
-        },
+        }),
         []
     ).subscribe(events => _events.set(events));
 

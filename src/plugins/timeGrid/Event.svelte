@@ -5,7 +5,7 @@
 	export let chunk;
 
 	let {eventContent, eventClick, eventBackgroundColor, eventColor, slotDuration, _view, _intlEventTime, theme} = getContext('state');
-	let {_slotTimes} = getContext('view-state');
+	let {_slotTimeLimits} = getContext('view-state');
 
 	let el;
 	let className;
@@ -15,20 +15,20 @@
 	$: {
 		// Class & Style
 		let step = $slotDuration.seconds / 60;
-		let offset = $_slotTimes.min.seconds / 60;
+		let offset = $_slotTimeLimits.min.seconds / 60;
 		let start = chunk.start.getHours() * 60 + chunk.start.getMinutes();
 		let end = chunk.end.getDate() !== chunk.start.getDate() ? 24 * 60 : (chunk.end.getHours() * 60 + chunk.end.getMinutes());
 		let top = 24 * ((start - offset) / step);
 		let height = 24 * ((end - start) / step);
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =
-			`top: ${top}px;` +
-			`min-height: ${height}px;` +
-			`max-height: ${height}px;` +
-			`z-index: ${chunk.column + 1};`
+			`top:${top}px;` +
+			`min-height:${height}px;` +
+			`max-height:${height}px;` +
+			`z-index:${chunk.column + 1};`
 		;
 		if (bgColor) {
-			style += `background-color: ${bgColor};`
+			style += `background-color:${bgColor};`;
 		}
 		switch (chunk.event.display) {
 			case 'background':
@@ -37,8 +37,8 @@
 			default:
 				className = $theme.event;
 				style +=
-					`left: ${100 / chunk.group.columns.length * chunk.column}%;` +
-					`width: ${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
+					`left:${100 / chunk.group.columns.length * chunk.column}%;` +
+					`width:${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
 				;
 		}
 

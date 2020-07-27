@@ -11,17 +11,28 @@
 	<link rel='stylesheet' href='./build/event-calendar.min.css'>
 
 	<script src='./build/event-calendar.min.js'></script>
+
+	<style>
+		.row {
+			display: flex;
+		}
+		.col {
+			flex: 1 1 0;
+			min-width: 0;
+			max-width: 100%;
+		}
+	</style>
 </head>
 
 <body>
 
-<div class="ec-flex">
-	<div id='ec' class="ec-grow"></div>
+<div class="row">
+	<div id='ec' class="col"></div>
 </div>
 
 <script type="text/javascript">
 	let ec = new EventCalendar(document.getElementById('ec'), {
-		view: 'timeGridWeek',
+		view: 'dayGridMonth',
 		views: {
 			// timeGridDay: {
 			// 	eventSources: [{
@@ -34,7 +45,7 @@
 		headerToolbar: {
 			start: 'prev,next today',
 			center: 'title',
-			end: 'timeGridWeek,timeGridDay'
+			end: 'dayGridMonth,timeGridWeek,timeGridDay,resourceTimeGridWeek'
 		},
 		slotDuration: 30*60,
 		// locale: 'en-US',

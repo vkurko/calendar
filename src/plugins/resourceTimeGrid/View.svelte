@@ -3,7 +3,7 @@
 	import State from '../timeGrid/state';
 	import Header from '../timeGrid/Header.svelte';
 	import Body from '../timeGrid/Body.svelte';
-	import Column from '../timeGrid/Column.svelte';
+	import Day from '../timeGrid/Day.svelte';
 
 	let {resources, filterResourcesWithEvents, _activeRange, _events, _viewDates, _intlDayHeader, theme} = getContext('state');
 
@@ -33,11 +33,11 @@
 <Header>
 	{#each filteredResources as resource}
 		<div class="{$theme.resource}">
-			<div class="{$theme.column}">{resource.title}</div>
+			<div class="{$theme.day}">{resource.title}</div>
 			{#if $_viewDates.length > 1}
-				<div class="{$theme.flex}">
+				<div class="{$theme.days}">
 					{#each $_viewDates as date}
-						<div class="{$theme.column}">{$_intlDayHeader.format(date)}</div>
+						<div class="{$theme.day}">{$_intlDayHeader.format(date)}</div>
 					{/each}
 				</div>
 			{/if}
@@ -48,7 +48,7 @@
 	{#each filteredResources as resource}
 		<div class="{$theme.resource}">
 			{#each $_viewDates as date}
-				<Column {date} {resource}/>
+				<Day {date} {resource}/>
 			{/each}
 		</div>
 	{/each}

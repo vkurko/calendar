@@ -6,7 +6,8 @@ export default {
 		options.views.timeGridDay = {
 			component: View,
 			duration: {days: 1},
-			dayHeaderFormat: {weekday: 'long'}
+			dayHeaderFormat: {weekday: 'long'},
+			titleFormat: {year: 'numeric', month: 'long', day: 'numeric'}
 		};
 		options.views.timeGridWeek = {
 			component: View,

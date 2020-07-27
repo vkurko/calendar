@@ -17,7 +17,8 @@ export default {
 		};
 		options.buttonText.resourceTimeGridDay = 'day';
 		options.buttonText.resourceTimeGridWeek = 'week';
-		options.theme.resource = 'ec-resource ec-grow';
+		options.theme.resource = 'ec-resource';
+		options.theme.resourceTitle = 'ec-resource-title';
 	},
 	createStores(state, options) {
 		state.resources = writable2(options.resources, createResources);
