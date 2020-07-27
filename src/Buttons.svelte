@@ -1,12 +1,12 @@
 <script>
 	import {getContext} from 'svelte';
-	import {cloneDate, subtractDay, addDuration, subtractDuration, setHours} from './lib/date';
+	import {cloneDate, subtractDay, addDuration, subtractDuration, setMidnight} from './lib/date';
 
 	export let buttons;
 
-	let {date, duration, buttonText, _activeRange, view, _titleIntlRange, theme} = getContext('state');
+	let {date, duration, monthMode, buttonText, _activeRange, view, _viewTitle, theme} = getContext('state');
 
-	let today = setHours(new Date(), 0, 0, 0, 0), isToday;
+	let today = setMidnight(new Date()), isToday;
 
 	$: isToday = today >= $_activeRange.start && today < $_activeRange.end || null;
 
@@ -22,7 +22,7 @@
 {#each buttons as button}
 	{#if button == ''}
 	{:else if button == 'title'}
-		<h2 class="{$theme.title}">{$_titleIntlRange.format($_activeRange.start, subtractDay(cloneDate($_activeRange.end)))}</h2>
+		<h2 class="{$theme.title}">{$_viewTitle}</h2>
 	{:else if button == 'prev'}
 		<button class="{$theme.button} ec-{button}" on:click={prev}><i class="{$theme.icon} ec-{button}"></i></button>
 	{:else if button === 'next'}

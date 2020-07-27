@@ -2,7 +2,7 @@ import {derived, writable} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
 import {createOptions} from './options';
 import * as stores from './stores';
-import {createDate, createDuration, setHours} from '../lib/date';
+import {createDate, createDuration, setMidnight} from '../lib/date';
 import {createEvents, createEventSources} from '../lib/events';
 import {assign} from '../utils';
 
@@ -14,8 +14,9 @@ export default class {
         let init = createOptions(plugins);
 
         // Create stores for options
-        this.date = stores.writable2(init.date, date => setHours(createDate(date), 0, 0, 0, 0));
+        this.date = stores.writable2(init.date, date => setMidnight(createDate(date)));
         this.duration = stores.writable2(init.duration, createDuration);
+        this.monthMode = writable(init.monthMode);
         this.events = stores.writable2(init.events, createEvents);
         this.eventSources = stores.writable2(init.eventSources, createEventSources);
         this.eventColor = writable(init.eventColor);
@@ -45,15 +46,17 @@ export default class {
         this.theme = stores.writable2(init.theme, input => is_function(input) ? input(init.theme) : input);
 
         // Internal options
-        this._activeRange = stores.activeRange(this.date, this.duration, this.firstDay);
-        this._viewDates = stores.viewDates(this._activeRange);
-        this._view = stores.view(this.view, this._activeRange);
+        this._activeRange = stores.activeRange(this.date, this.duration, this.monthMode, this.firstDay);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = stores.events(this.events, this.eventSources, this._activeRange, this._fetchedRange, this.lazyFetching, this.loading);
         this._intlEventTime = stores.intl(this.locale, this.eventTimeFormat);
         this._intlSlotLabel = stores.intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = stores.intl(this.locale, this.dayHeaderFormat);
         this._titleIntlRange = stores.intlRange(this.locale, this.titleFormat);
+        this._scrollable = writable(false);
+        this._viewTitle = stores.viewTitle(this.date, this._activeRange, this._titleIntlRange, this.monthMode);
+        this._viewDates = stores.viewDates(this._activeRange);
+        this._view = stores.view(this.view, this._viewTitle, this._activeRange);
         this._viewComponent = writable(undefined);
 
         // Let plugins create stores for their options

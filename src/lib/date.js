@@ -52,8 +52,8 @@ export function subtractDay(date) {
     return _addSubDays(date, -1);
 }
 
-export function setHours(date, ...args) {
-    date.setHours(...args);
+export function setMidnight(date) {
+    date.setHours(0, 0, 0, 0);
 
     return date;
 }
@@ -109,13 +109,25 @@ export function formatRange(start, end, intl) {
     return full1 + ' - ' + full2;
 }
 
+export function datesEqual(date1, date2) {
+    return date1.getTime() === date2.getTime();
+}
+
 /**
  * Private functions
  */
 
 function _addSubDuration(date, duration, x) {
     date.setFullYear(date.getFullYear() + x * duration.years);
-    date.setMonth(date.getMonth() + x * duration.months);
+    let month = date.getMonth() + x * duration.months;
+    date.setMonth(month);
+    month %= 12;
+    if (month < 0) {
+        month += 12;
+    }
+    while (date.getMonth() !== month) {
+        subtractDay(date);
+    }
     date.setDate(date.getDate() + x * duration.days);
     date.setSeconds(date.getSeconds() + x * duration.seconds);
 

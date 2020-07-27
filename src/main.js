@@ -1,10 +1,11 @@
 import Calendar from './Calendar.svelte';
+import DayGrid from './plugins/dayGrid/plugin';
 import TimeGrid from './plugins/timeGrid/plugin';
 import ResourceTimeGrid from './plugins/resourceTimeGrid/plugin';
 
 export default class {
 	constructor(el, options) {
-		options.plugins = [TimeGrid, ResourceTimeGrid];
+		options.plugins = [DayGrid, TimeGrid, ResourceTimeGrid];
 		this.cal = new Calendar({
 			target: el,
 			props: {
@@ -40,5 +41,9 @@ export default class {
 	removeEvent(eventId) {
 		this.cal.removeEvent(eventId);
 		return this;
+	}
+
+	get view() {
+		return this.cal.getView();
 	}
 };

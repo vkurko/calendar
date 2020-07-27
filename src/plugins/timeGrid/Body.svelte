@@ -1,8 +1,8 @@
 <script>
 	import {getContext, tick} from 'svelte';
 
-	let {slotDuration, _intlSlotLabel, _viewDates, scrollTime, theme} = getContext('state');
-	let {_times, _scrollable} = getContext('view-state');
+	let {slotDuration, _intlSlotLabel, _viewDates, scrollTime, _scrollable, theme} = getContext('state');
+	let {_times} = getContext('view-state');
 
 	let el;
 	let compact;
@@ -18,18 +18,22 @@
 	}
 
 	$: if (el && $_times && $slotDuration) {
-		tick().then(() => $_scrollable = el.scrollHeight > el.clientHeight);
+		tick().then(recheckScrollable);
+	}
+
+	function recheckScrollable() {
+		$_scrollable = el.scrollHeight > el.clientHeight;
 	}
 </script>
 
 <div bind:this="{el}" class="{$theme.body}{compact ? ' ' + $theme.compact : ''}">
-	<div class="{$theme.flex}">
+	<div class="{$theme.content}">
 		<div class="{$theme.sidebar}">
 			{#each $_times as time}
 				<div class="{$theme.time}">{time}</div>
 			{/each}
 		</div>
-		<div class="{$theme.content}">
+		<div class="{$theme.days}">
 			<div class="{$theme.lines}">
 				{#each lines as line}
 					<div class="{$theme.line}"></div>
@@ -39,3 +43,5 @@
 		</div>
 	</div>
 </div>
+
+<svelte:window on:resize={recheckScrollable}/>

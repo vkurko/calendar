@@ -2,6 +2,7 @@ export function createOptions(plugins) {
     let options = {
         date: new Date(),
         duration: {weeks: 1},
+        monthMode: false,
         events: [],
         eventSources: [],
         eventColor: undefined,
@@ -56,12 +57,15 @@ export function createOptions(plugins) {
             body: 'ec-body',
             compact: 'ec-compact',
             toolbar: 'ec-toolbar',
-            sidebar: 'ec-sidebar ec-no-grow',
-            content: 'ec-content ec-grow',
+            sidebar: 'ec-sidebar',
+            content: 'ec-content',
             lines: 'ec-lines',
             line: 'ec-line',
-            column: 'ec-column ec-grow',
+            days: 'ec-days',
+            day: 'ec-day',
+            dayHead: 'ec-day-head',
             today: 'ec-today',
+            otherMonth: 'ec-other-month',
             highlight: 'ec-highlight',
             events: 'ec-events',
             event: 'ec-event',
@@ -76,8 +80,7 @@ export function createOptions(plugins) {
             buttonGroup: 'ec-button-group',
             icon: 'ec-icon',
             active: 'ec-active',
-            title: 'ec-title',
-            flex: 'ec-flex'
+            title: 'ec-title'
         }
     };
 

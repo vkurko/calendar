@@ -57,6 +57,10 @@
 	export function removeEvent(eventId) {
 		state._events.update(events => events.filter(event => event.id != eventId));
 	}
+
+	export function getView() {
+		return state._view.get();
+	}
 </script>
 
 <div class="{$theme.calendar}" style="height: {$height}">
@@ -65,23 +69,20 @@
 </div>
 
 <style>
+	/* Grid */
 	:global(.ec-flex) {
 		display: flex;
 	}
-	:global(.ec-grow) {
+	:global(.ec-days, .ec-day, .ec-day-title, .ec-resource, .ec-body.ec-month) {
 		flex: 1 1 0;
 		min-width: 0;
-		max-width: 100%;
-	}
-	:global(.ec-no-grow) {
-		flex: 0 0 auto;
-		width: auto;
 		max-width: 100%;
 	}
 	:global(.ec) {
 		display: flex;
 		flex-direction: column;
 	}
+	/* Scrollbar */
 	:global(.ec ::-webkit-scrollbar) {
 		background: #fff;
 	}
@@ -95,6 +96,7 @@
 	:global(.ec :hover::-webkit-scrollbar-thumb) {
 		background: #bdc1c6;
 	}
+	/* Toolbar */
 	:global(.ec-toolbar) {
 		display: flex;
 		justify-content: space-between;
@@ -119,7 +121,7 @@
 		color: #212529;
 		cursor: pointer;
 	}
-	:global(.ec-button:not(:disabled):hover) {
+	:global(.ec-button:not(:disabled):hover, .ec-button.ec-active) {
 		background-color: #ececec;
 		border-color: #b1bbc4;
 	}
@@ -154,6 +156,7 @@
 	:global(.ec-icon.ec-next:after) {
 		transform: rotate(45deg) translate(-2px, 2px);
 	}
+	/* Header */
 	:global(.ec-header, .ec-body) {
 		border: 1px solid #dadce0;
 	}
@@ -166,12 +169,29 @@
 		visibility: hidden;
 		flex-shrink: 0;
 	}
+	:global(.ec-header .ec-resource) {
+		flex-direction: column;
+	}
+	:global(.ec-header .ec-resource .ec-days) {
+		border-top: 1px solid #dadce0;
+	}
+	:global(.ec-header .ec-day) {
+		min-height: 24px;
+		line-height: 24px;
+		text-align: center;
+	}
+	/* Body */
 	:global(.ec-body) {
+		display: flex;
+		flex-direction: column;
 		position: relative;
 		overflow: hidden auto;
 		border-top-width: 0;
 	}
 	:global(.ec-sidebar) {
+		flex: 0 0 auto;
+		width: auto;
+		max-width: 100%;
 		padding: 0 4px 0 8px;
 	}
 	:global(.ec-content) {
@@ -180,25 +200,36 @@
 	:global(.ec-resource) {
 		display: flex;
 	}
-	:global(.ec-column) {
-		border-width: 0 0 0 1px;
-		border-style: solid;
-		border-color: #dadce0;
+	:global(.ec-days) {
+		display: flex;
+		border-bottom: 1px solid #dadce0;
+	}
+	:global(.ec-days:last-child) {
+		border-bottom: none;
+	}
+	:global(.ec-day) {
+		border-left: 1px solid #dadce0;
 		overflow: hidden;
 	}
-	:global(.ec-column.ec-today) {
+	:global(.ec-month.ec-body .ec-day) {
+		overflow: visible;
+		min-height: 5em;
+	}
+	:global(.ec-month .ec-day:first-child) {
+		border-left: none;
+	}
+	:global(.ec-month .ec-day-head) {
+		text-align: right;
+		padding: 4px;
+	}
+	:global(.ec-day.ec-today) {
 		background-color: #fcf8e3;
 	}
-	:global(.ec-column.ec-highlight) {
+	:global(.ec-day.ec-other-month .ec-day-head) {
+		opacity: .3;
+	}
+	:global(.ec-day.ec-highlight) {
 		background-color: #e5f7fe;
-	}
-	:global(.ec-header .ec-resource) {
-		flex-direction: column;
-	}
-	:global(.ec-header .ec-column) {
-		min-height: 24px;
-		line-height: 24px;
-		text-align: center;
 	}
 	:global(.ec-events) {
 		position: relative;
@@ -206,25 +237,30 @@
 	}
 	:global(.ec-event) {
 		position: absolute;
-		padding: 1px 2px;
+		padding: 2px;
 		box-sizing: border-box;
 		box-shadow: 0 0 1px 0 #dadce0;
 		background-color: #039be5;
 		border-radius: 3px;
 		font-size: .85em;
-		line-height: 1.3;
+		line-height: 1.5;
 		font-weight: 400;
 		overflow: hidden;
 	}
+	:global(.ec-month .ec-event) {
+		position: static;
+		margin-top: 1px;
+	}
 	:global(.ec-event-content) {
-		position: relative;
 		color: #fff;
 	}
 	:global(.ec-event-time) {
 		overflow: hidden;
 		white-space: nowrap;
-		font-size: .85em;
 		margin-bottom: 1px;
+	}
+	:global(.ec-event-title) {
+		position: sticky;
 	}
 	:global(.ec-bg-events) {
 		position: relative;
