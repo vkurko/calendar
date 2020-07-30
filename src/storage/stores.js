@@ -1,6 +1,6 @@
 import {derived, writable, get} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
-import {cloneDate, addDuration, addDay, subtractDay, toISOString, formatRange} from '../lib/date';
+import {cloneDate, addDuration, addDay, subtractDay, toISOString, formatRange, nextClosestDay, prevClosestDay} from '../lib/date';
 import {createEvents} from '../lib/events';
 import {createView} from '../lib/view';
 import {assign} from '../utils';
@@ -37,30 +37,31 @@ export function derived2(stores, fn, initValue) {
     };
 }
 
-export function activeRange(date, duration, monthMode, firstDay) {
+export function activeRange(_currentRange, monthMode, firstDay) {
+    return derived([_currentRange, monthMode, firstDay], ([$_currentRange, $monthMode, $firstDay]) => {
+        let start = cloneDate($_currentRange.start);
+        let end = cloneDate($_currentRange.end);
+
+        if ($monthMode) {
+            // First day of week
+            prevClosestDay(start, $firstDay);
+            nextClosestDay(end, $firstDay);
+        }
+
+        return {start, end};
+    });
+}
+
+export function currentRange(date, duration, monthMode, firstDay) {
     return derived([date, duration, monthMode, firstDay], ([$date, $duration, $monthMode, $firstDay]) => {
         let start = cloneDate($date), end;
         if ($monthMode) {
             start.setDate(1);
-            end = addDuration(cloneDate(start), $duration);
-        }
-        if ($duration.inWeeks || $monthMode) {
-            let max = 7;
+        } else if ($duration.inWeeks) {
             // First day of week
-            while (start.getDay() !== $firstDay && max) {
-                subtractDay(start);
-                --max;
-            }
+            prevClosestDay(start, $firstDay);
         }
-        if ($monthMode) {
-            let max = 7;
-            while (end.getDay() !== $firstDay && max) {
-                addDay(end);
-                --max;
-            }
-        } else {
-            end = addDuration(cloneDate(start), $duration);
-        }
+        end = addDuration(cloneDate(start), $duration);
 
         return {start, end};
     });
@@ -87,8 +88,8 @@ export function viewTitle(date, _activeRange, _titleIntlRange, monthMode) {
     });
 }
 
-export function view(view, _viewTitle, _activeRange) {
-    return derived2([view, _viewTitle, _activeRange], args => createView(...args));
+export function view(view, _viewTitle, _currentRange, _activeRange) {
+    return derived2([view, _viewTitle, _currentRange, _activeRange], args => createView(...args));
 }
 
 export function events(events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading) {
@@ -133,7 +134,7 @@ export function events(events, eventSources, _activeRange, _fetchedRange, lazyFe
                         .then(data => {
                             events = events.concat(createEvents(data));
                             set(events);
-                            if (-- fetching === 0 && is_function($loading)) {
+                            if (--fetching === 0 && is_function($loading)) {
                                 $loading(false);
                             }
                         })
@@ -171,22 +172,5 @@ export function intlRange(locale, format) {
         return {
             format: (start, end) => formatRange(start, end, intl)
         };
-    });
-}
-
-export function theme(theme) {
-    return derived(theme, theme => {
-        let result = {
-
-        };
-        for (let key of Object.keys(result)) {
-            if (key in theme) {
-                if (is_function(theme[key])) {
-                    result[key] = theme[key] ;
-                }
-                result[key] += ` ${theme[key]}`;
-            }
-        }
-        return result;
     });
 }

@@ -7,13 +7,21 @@
     "start": "sirv public"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@rollup/plugin-babel": "^5.1.0",
     "@rollup/plugin-commonjs": "^12.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
+    "abort-controller": "^3.0.0",
+    "core-js": "^3.6.5",
+    "regenerator-runtime": "^0.13.7",
     "rollup": "^2.3.4",
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^5.1.2",
-    "svelte": "^3.0.0"
+    "svelte": "^3.0.0",
+    "whatwg-fetch": "^3.2.0"
   },
   "dependencies": {
     "sirv-cli": "^0.4.4"

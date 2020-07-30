@@ -13,6 +13,7 @@ export function createOptions(plugins) {
         },
         eventContent: undefined,
         eventClick: undefined,
+        eventDidMount: undefined,
         dateClick: undefined,
         slotDuration: {hours: 1},
         slotLabelFormat: {

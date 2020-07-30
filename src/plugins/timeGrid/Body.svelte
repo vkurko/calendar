@@ -1,5 +1,6 @@
 <script>
 	import {getContext, tick} from 'svelte';
+	import {hasYScroll} from '../../lib/utils';
 
 	let {slotDuration, _intlSlotLabel, _viewDates, scrollTime, _scrollable, theme} = getContext('state');
 	let {_times} = getContext('view-state');
@@ -14,7 +15,7 @@
 	}
 
 	$: if (el && $_viewDates) {
-		el.scrollTo(0, $scrollTime.seconds / $slotDuration.seconds * 24 - 12);
+		el.scrollTop = $scrollTime.seconds / $slotDuration.seconds * 24 - 12;
 	}
 
 	$: if (el && $_times && $slotDuration) {
@@ -22,7 +23,7 @@
 	}
 
 	function recheckScrollable() {
-		$_scrollable = el.scrollHeight > el.clientHeight;
+		$_scrollable = hasYScroll(el);
 	}
 </script>
 

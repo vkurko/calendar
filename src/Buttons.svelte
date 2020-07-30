@@ -4,11 +4,11 @@
 
 	export let buttons;
 
-	let {date, duration, monthMode, buttonText, _activeRange, view, _viewTitle, theme} = getContext('state');
+	let {date, duration, monthMode, buttonText, _currentRange, view, _viewTitle, theme} = getContext('state');
 
 	let today = setMidnight(new Date()), isToday;
 
-	$: isToday = today >= $_activeRange.start && today < $_activeRange.end || null;
+	$: isToday = today >= $_currentRange.start && today < $_currentRange.end || null;
 
 	function prev() {
 		$date = subtractDuration($date, $duration);

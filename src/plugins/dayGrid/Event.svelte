@@ -1,16 +1,17 @@
 <script>
-	import {getContext, afterUpdate} from 'svelte';
+	import {getContext, onMount, afterUpdate} from 'svelte';
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
 
 	export let chunk;
 	export let longChunks;
 
-	let {eventContent, eventClick, eventBackgroundColor, eventColor, _view, _intlEventTime, theme} = getContext('state');
+	let {eventContent, eventClick, eventDidMount, eventBackgroundColor, eventColor, _view, _intlEventTime, theme} = getContext('state');
 
 	let el;
 	let style;
 	let content;
+	let timeText;
 	let margin = writable(1);
 
 	$: {
@@ -27,7 +28,7 @@
 
 	$: {
 		// Content
-		let timeText = `${$_intlEventTime.format(chunk.start)}`;
+		timeText = `${$_intlEventTime.format(chunk.start)}`;
 		if ($eventContent) {
 			content = is_function($eventContent)
 				? $eventContent({
@@ -55,7 +56,9 @@
 					node.removeChild(node.lastChild);
 				}
 				if (content.domNodes) {
-					node.append(...content.domNodes);
+					for (let child of content.domNodes) {
+						node.appendChild(child);
+					}
 				} else if (content.html) {
 					node.innerHTML = content.html;
 				}
@@ -65,6 +68,16 @@
 		return actions;
 	}
 
+	onMount(() => {
+		if (is_function($eventDidMount)) {
+			$eventDidMount({
+				event: chunk.event,
+				timeText,
+				el,
+				view: $_view
+			});
+		}
+	});
 	afterUpdate(reposition);
 
 	function handleClick(jsEvent) {

@@ -2,6 +2,8 @@ import Calendar from './Calendar.svelte';
 import DayGrid from './plugins/dayGrid/plugin';
 import TimeGrid from './plugins/timeGrid/plugin';
 import ResourceTimeGrid from './plugins/resourceTimeGrid/plugin';
+import 'whatwg-fetch';
+import 'abort-controller/polyfill';
 
 export default class {
 	constructor(el, options) {
