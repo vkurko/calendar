@@ -73,8 +73,8 @@
 	:global(.ec-flex) {
 		display: flex;
 	}
-	:global(.ec-days, .ec-day, .ec-day-title, .ec-resource, .ec-body.ec-month) {
-		flex: 1 1 0;
+	:global(.ec-body.ec-month, .ec-days, .ec-day, .ec-day-title, .ec-resource) {
+		flex: 1 1 0%;  /* % for ie11 */
 		min-width: 0;
 		max-width: 100%;
 	}
@@ -162,6 +162,7 @@
 	}
 	:global(.ec-header) {
 		display: flex;
+		flex-shrink: 0;
 	}
 	:global(.ec-header.ec-with-scroll:after) {
 		content: '';
@@ -182,10 +183,9 @@
 	}
 	/* Body */
 	:global(.ec-body) {
-		display: flex;
-		flex-direction: column;
 		position: relative;
-		overflow: hidden auto;
+		overflow-x: hidden;
+		overflow-y: auto;
 		border-top-width: 0;
 	}
 	:global(.ec-sidebar) {
@@ -196,6 +196,11 @@
 	}
 	:global(.ec-content) {
 		display: flex;
+		min-height: 100%;
+	}
+	:global(.ec-month.ec-body .ec-content) {
+		flex-direction: column;
+		height: 0; /* ie11 */
 	}
 	:global(.ec-resource) {
 		display: flex;
@@ -210,6 +215,9 @@
 	:global(.ec-day) {
 		border-left: 1px solid #dadce0;
 		overflow: hidden;
+	}
+	:global(.ec-month.ec-body .ec-days, .ec-resource .ec-days) {
+		flex: 1 0 auto; /* ie11 */
 	}
 	:global(.ec-month.ec-body .ec-day) {
 		overflow: visible;

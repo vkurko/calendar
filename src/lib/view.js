@@ -1,12 +1,12 @@
 
-export function createView(view, _viewTitle, _activeRange) {
+export function createView(view, _viewTitle, _currentRange, _activeRange) {
     return {
         type: view,
         title: _viewTitle,
+        currentStart: _currentRange.start,
+        currentEnd: _currentRange.end,
         activeStart: _activeRange.start,
         activeEnd: _activeRange.end,
-        currentStart: undefined,
-        currentEnd: undefined,
         calendar: undefined
     };
 }

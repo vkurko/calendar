@@ -1,16 +1,17 @@
 <script>
-	import {getContext} from 'svelte';
+	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
 
 	export let chunk;
 
-	let {eventContent, eventClick, eventBackgroundColor, eventColor, slotDuration, _view, _intlEventTime, theme} = getContext('state');
+	let {eventContent, eventClick, eventDidMount, eventBackgroundColor, eventColor, slotDuration, _view, _intlEventTime, theme} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let el;
 	let className;
 	let style;
 	let content;
+	let timeText;
 
 	$: {
 		// Class & Style
@@ -43,12 +44,13 @@
 		}
 
 		// Content
-		let timeText = `${$_intlEventTime.format(chunk.start)} - ${$_intlEventTime.format(chunk.end)}`;
+		timeText = `${$_intlEventTime.format(chunk.start)} - ${$_intlEventTime.format(chunk.end)}`;
 		if ($eventContent) {
 			content = is_function($eventContent)
 				? $eventContent({
 					event: chunk.event,
-					timeText
+					timeText,
+					view: $_view
 				})
 				: $eventContent;
 			if (typeof content === 'string') {
@@ -70,6 +72,17 @@
 		}
 	}
 
+	onMount(() => {
+		if (is_function($eventDidMount)) {
+			$eventDidMount({
+				event: chunk.event,
+				timeText,
+				el,
+				view: $_view
+			});
+		}
+	});
+
 	function action(node, content) {
 		let actions = {
 			update(content) {
@@ -77,7 +90,9 @@
 					node.removeChild(node.lastChild);
 				}
 				if (content.domNodes) {
-					node.append(...content.domNodes);
+					for (let child of content.domNodes) {
+						node.appendChild(child);
+					}
 				} else if (content.html) {
 					node.innerHTML = content.html;
 				}

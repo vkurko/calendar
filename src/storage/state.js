@@ -24,6 +24,7 @@ export default class {
         this.eventTimeFormat = writable(init.eventTimeFormat);
         this.eventContent = writable(init.eventContent);
         this.eventClick = writable(init.eventClick);
+        this.eventDidMount = writable(init.eventDidMount);
         this.dateClick = writable(init.dateClick);
         this.slotDuration = stores.writable2(init.slotDuration, createDuration);
         this.slotLabelFormat = writable(init.slotLabelFormat);
@@ -46,7 +47,8 @@ export default class {
         this.theme = stores.writable2(init.theme, input => is_function(input) ? input(init.theme) : input);
 
         // Internal options
-        this._activeRange = stores.activeRange(this.date, this.duration, this.monthMode, this.firstDay);
+        this._currentRange = stores.currentRange(this.date, this.duration, this.monthMode, this.firstDay);
+        this._activeRange = stores.activeRange(this._currentRange, this.monthMode, this.firstDay);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = stores.events(this.events, this.eventSources, this._activeRange, this._fetchedRange, this.lazyFetching, this.loading);
         this._intlEventTime = stores.intl(this.locale, this.eventTimeFormat);
@@ -56,7 +58,7 @@ export default class {
         this._scrollable = writable(false);
         this._viewTitle = stores.viewTitle(this.date, this._activeRange, this._titleIntlRange, this.monthMode);
         this._viewDates = stores.viewDates(this._activeRange);
-        this._view = stores.view(this.view, this._viewTitle, this._activeRange);
+        this._view = stores.view(this.view, this._viewTitle, this._currentRange, this._activeRange);
         this._viewComponent = writable(undefined);
 
         // Let plugins create stores for their options

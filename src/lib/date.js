@@ -1,7 +1,7 @@
 
 export function createDate(input) {
     return input !== undefined
-        ? (input instanceof Date ? cloneDate(input) : new Date(input))
+        ? (input instanceof Date ? cloneDate(input) : new Date(input.replace(' ', 'T')))  // ie11 needs "T" for time
         : new Date();
 }
 
@@ -113,6 +113,14 @@ export function datesEqual(date1, date2) {
     return date1.getTime() === date2.getTime();
 }
 
+export function nextClosestDay(date, day) {
+    return _closestDay(date, day, addDay);
+}
+
+export function prevClosestDay(date, day) {
+    return _closestDay(date, day, subtractDay);
+}
+
 /**
  * Private functions
  */
@@ -136,6 +144,16 @@ function _addSubDuration(date, duration, x) {
 
 function _addSubDays(date, x) {
     date.setDate(date.getDate() + x);
+
+    return date;
+}
+
+function _closestDay(date, day, fn) {
+    let max = 7;
+    while (date.getDay() !== day && max) {
+        fn(date);
+        --max;
+    }
 
     return date;
 }
