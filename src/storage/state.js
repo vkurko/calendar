@@ -1,4 +1,4 @@
-import {derived, writable} from 'svelte/store';
+import {writable} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
 import {createOptions} from './options';
 import * as stores from './stores';
@@ -24,6 +24,8 @@ export default class {
         this.eventTimeFormat = writable(init.eventTimeFormat);
         this.eventContent = writable(init.eventContent);
         this.eventClick = writable(init.eventClick);
+        this.eventMouseEnter = writable(init.eventMouseEnter);
+        this.eventMouseLeave = writable(init.eventMouseLeave);
         this.eventDidMount = writable(init.eventDidMount);
         this.dateClick = writable(init.dateClick);
         this.slotDuration = stores.writable2(init.slotDuration, createDuration);

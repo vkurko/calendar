@@ -13,6 +13,8 @@ export function createOptions(plugins) {
         },
         eventContent: undefined,
         eventClick: undefined,
+        eventMouseEnter: undefined,
+        eventMouseLeave: undefined,
         eventDidMount: undefined,
         dateClick: undefined,
         slotDuration: {hours: 1},

@@ -6,7 +6,8 @@
 	export let chunk;
 	export let longChunks;
 
-	let {eventContent, eventClick, eventDidMount, eventBackgroundColor, eventColor, _view, _intlEventTime, theme} = getContext('state');
+	let {eventContent, eventClick, eventMouseEnter, eventMouseLeave, eventDidMount, eventBackgroundColor, eventColor,
+		_view, _intlEventTime, theme} = getContext('state');
 
 	let el;
 	let style;
@@ -80,10 +81,12 @@
 	});
 	afterUpdate(reposition);
 
-	function handleClick(jsEvent) {
-		if (is_function($eventClick)) {
-			$eventClick({event: chunk.event, el, jsEvent, view: $_view});
-		}
+	function createHandler(fn) {
+		return jsEvent => {
+			if (is_function(fn)) {
+				fn({event: chunk.event, el, jsEvent, view: $_view});
+			}
+		};
 	}
 
 	function reposition() {
@@ -112,6 +115,14 @@
 	}
 </script>
 
-<div bind:this="{el}" class="{$theme.event}" {style} use:action={content} on:click={handleClick}></div>
+<div
+	bind:this="{el}"
+	class="{$theme.event}"
+	{style}
+	use:action={content}
+	on:click={createHandler($eventClick)}
+	on:mouseenter={createHandler($eventMouseEnter)}
+	on:mouseleave={createHandler($eventMouseLeave)}
+></div>
 
 <svelte:window on:resize={reposition}/>
