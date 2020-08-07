@@ -4,7 +4,9 @@
 
 	export let chunk;
 
-	let {eventContent, eventClick, eventDidMount, eventBackgroundColor, eventColor, slotDuration, _view, _intlEventTime, theme} = getContext('state');
+	let {eventContent, eventClick, eventMouseEnter, eventMouseLeave, eventDidMount, eventBackgroundColor, eventColor,
+		slotDuration, _view, _intlEventTime, theme} = getContext('state');
+
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let el;
@@ -102,11 +104,21 @@
 		return actions;
 	}
 
-	function handleClick(jsEvent) {
-		if (is_function($eventClick)) {
-			$eventClick({event: chunk.event, el, jsEvent, view: $_view});
-		}
+	function createHandler(fn) {
+		return jsEvent => {
+			if (is_function(fn)) {
+				fn({event: chunk.event, el, jsEvent, view: $_view});
+			}
+		};
 	}
 </script>
 
-<div bind:this="{el}" class="{className}" {style} use:action={content} on:click={handleClick}></div>
+<div
+	bind:this="{el}"
+	class="{className}"
+	{style}
+	use:action={content}
+	on:click={createHandler($eventClick)}
+	on:mouseenter={createHandler($eventMouseEnter)}
+	on:mouseleave={createHandler($eventMouseLeave)}
+></div>
