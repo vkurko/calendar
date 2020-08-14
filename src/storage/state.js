@@ -1,77 +1,48 @@
 import {writable} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
-import {createOptions} from './options';
-import * as stores from './stores';
-import {createDate, createDuration, setMidnight} from '../lib/date';
-import {createEvents, createEventSources} from '../lib/events';
+import {createOptions, createMutators} from './options';
+import {writable2, currentRange, activeRange, events, intl, intlRange, viewTitle, viewDates, view} from './stores';
 import {assign} from '../utils';
 
 export default class {
     constructor(input) {
         let plugins = input.plugins || [];
 
-        // Create init options
-        let init = createOptions(plugins);
+        // Create options
+        let options = createOptions(input, plugins);
+        let mutators = createMutators(options, plugins);
 
         // Create stores for options
-        this.date = stores.writable2(init.date, date => setMidnight(createDate(date)));
-        this.duration = stores.writable2(init.duration, createDuration);
-        this.monthMode = writable(init.monthMode);
-        this.events = stores.writable2(init.events, createEvents);
-        this.eventSources = stores.writable2(init.eventSources, createEventSources);
-        this.eventColor = writable(init.eventColor);
-        this.eventBackgroundColor = writable(init.eventBackgroundColor);
-        this.eventTimeFormat = writable(init.eventTimeFormat);
-        this.eventContent = writable(init.eventContent);
-        this.eventClick = writable(init.eventClick);
-        this.eventMouseEnter = writable(init.eventMouseEnter);
-        this.eventMouseLeave = writable(init.eventMouseLeave);
-        this.eventDidMount = writable(init.eventDidMount);
-        this.dateClick = writable(init.dateClick);
-        this.slotDuration = stores.writable2(init.slotDuration, createDuration);
-        this.slotLabelFormat = writable(init.slotLabelFormat);
-        this.slotMinTime = stores.writable2(init.slotMinTime, createDuration);
-        this.slotMaxTime = stores.writable2(init.slotMaxTime, createDuration);
-        this.flexibleSlotTimeLimits = writable(init.flexibleSlotTimeLimits);
-        this.scrollTime = stores.writable2(init.scrollTime, createDuration);
-        this.dayHeaderFormat = writable(init.dayHeaderFormat);
-        this.firstDay = writable(init.firstDay);
-        this.highlightDate = writable(init.highlightDate);
-        this.locale = writable(init.locale);
-        this.headerToolbar = writable(init.headerToolbar);
-        this.titleFormat = writable(init.titleFormat);
-        this.buttonText = writable(init.buttonText);
-        this.height = writable(init.height);
-        this.lazyFetching = writable(init.lazyFetching);
-        this.loading = writable(init.loading);
-        this.viewDidMount = writable(init.viewDidMount);
-        this.view = writable(input.view || init.view);  // set initial view based on input
-        this.theme = stores.writable2(init.theme, input => is_function(input) ? input(init.theme) : input);
+        for (let [option, value] of Object.entries(options)) {
+            this[option] = writable2(value, mutators[option]);
+        }
 
-        // Internal options
-        this._currentRange = stores.currentRange(this.date, this.duration, this.monthMode, this.firstDay);
-        this._activeRange = stores.activeRange(this._currentRange, this.monthMode, this.firstDay);
+        // Private stores
+        this._currentRange = currentRange(this);
+        this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
-        this._events = stores.events(this.events, this.eventSources, this._activeRange, this._fetchedRange, this.lazyFetching, this.loading);
-        this._intlEventTime = stores.intl(this.locale, this.eventTimeFormat);
-        this._intlSlotLabel = stores.intl(this.locale, this.slotLabelFormat);
-        this._intlDayHeader = stores.intl(this.locale, this.dayHeaderFormat);
-        this._titleIntlRange = stores.intlRange(this.locale, this.titleFormat);
+        this._events = events(this);
+        this._intlEventTime = intl(this.locale, this.eventTimeFormat);
+        this._intlSlotLabel = intl(this.locale, this.slotLabelFormat);
+        this._intlDayHeader = intl(this.locale, this.dayHeaderFormat);
+        this._titleIntlRange = intlRange(this.locale, this.titleFormat);
         this._scrollable = writable(false);
-        this._viewTitle = stores.viewTitle(this.date, this._activeRange, this._titleIntlRange, this.monthMode);
-        this._viewDates = stores.viewDates(this._activeRange);
-        this._view = stores.view(this.view, this._viewTitle, this._currentRange, this._activeRange);
+        this._viewTitle = viewTitle(this);
+        this._viewDates = viewDates(this);
+        this._view = view(this);
         this._viewComponent = writable(undefined);
 
-        // Let plugins create stores for their options
+        // Let plugins create their private stores
         for (let plugin of plugins) {
-            plugin.createStores(this, init);
+            if ('createStores' in plugin) {
+                plugin.createStores(this);
+            }
         }
 
         // Set options for each view
-        let views = new Set([...Object.keys(init.views), ...Object.keys(input.views || {})]);
+        let views = new Set([...Object.keys(options.views), ...Object.keys(input.views || {})]);
         for (let view of views) {
-            let opts = assign({}, init, init.views[view] || {}, input, input.views && input.views[view] || {});
+            let opts = assign({}, options, options.views[view] || {}, input, input.views && input.views[view] || {});
             // Change view component when view changes
             this.view.subscribe(newView => {
                 if (newView === view) {

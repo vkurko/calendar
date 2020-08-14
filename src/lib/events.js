@@ -1,4 +1,5 @@
 import {createDate} from './date';
+import {is_function} from 'svelte/internal';
 
 let eventId = 1;
 export function createEvents(input) {
@@ -45,4 +46,38 @@ export function sortEventChunks(chunks) {
         }
         return 0;
     });
+}
+
+export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
+    let timeText = _intlEventTime.format(chunk.start), content;
+    if (displayEventEnd) {
+        timeText += ` - ${_intlEventTime.format(chunk.end)}`;
+    }
+    if (eventContent) {
+        content = is_function(eventContent)
+            ? eventContent({
+                event: chunk.event,
+                timeText,
+                view: _view
+            })
+            : eventContent;
+        if (typeof content === 'string') {
+            content = {html: content};
+        }
+    } else {
+        switch (chunk.event.display) {
+            case 'background':
+                content = {html: ''};
+                break;
+            default:
+                content = {
+                    html: `<div class="${theme.eventContent}">` +
+                        `<div class="${theme.eventTime}">${timeText}</div>` +
+                        `<div class="${theme.eventTitle}">${chunk.event.title}</div>` +
+                        `</div>`
+                };
+        }
+    }
+
+    return [timeText, content];
 }

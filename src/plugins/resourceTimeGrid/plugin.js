@@ -1,11 +1,14 @@
-import {writable} from 'svelte/store';
-import {writable2} from '../../storage/stores';
 import View from './View.svelte';
 
 export default {
 	createOptions(options) {
 		options.resources = [];
 		options.filterResourcesWithEvents = false;
+		// Common options
+		options.buttonText.resourceTimeGridDay = 'day';
+		options.buttonText.resourceTimeGridWeek = 'week';
+		options.theme.resource = 'ec-resource';
+		options.theme.resourceTitle = 'ec-resource-title';
 		options.view = 'resourceTimeGridWeek';
 		options.views.resourceTimeGridDay = {
 			component: View,
@@ -15,14 +18,9 @@ export default {
 			component: View,
 			duration: {weeks: 1}
 		};
-		options.buttonText.resourceTimeGridDay = 'day';
-		options.buttonText.resourceTimeGridWeek = 'week';
-		options.theme.resource = 'ec-resource';
-		options.theme.resourceTitle = 'ec-resource-title';
 	},
-	createStores(state, options) {
-		state.resources = writable2(options.resources, createResources);
-		state.filterResourcesWithEvents = writable(options.filterResourcesWithEvents);
+	createMutators(mutators, options) {
+		mutators.resources = createResources;
 	}
 }
 

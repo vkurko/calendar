@@ -5,14 +5,10 @@ import {createEvents} from '../lib/events';
 import {createView} from '../lib/view';
 import {assign} from '../utils';
 
-export function writable2(initValue, mutator, start) {
-    let storeValue = is_function(mutator) ? mutator(initValue) : initValue;
-    let {set, ...rest} = writable(storeValue, start);
+export function writable2(value, mutator, start) {
     return {
-        set: value => {storeValue = value; set(value);},
-        get: () => storeValue,
-        mutate: mutator,
-        ...rest
+        ...writable(mutator ? mutator(value) : value, start),
+        mutate: mutator
     };
 }
 
@@ -37,38 +33,44 @@ export function derived2(stores, fn, initValue) {
     };
 }
 
-export function activeRange(_currentRange, monthMode, firstDay) {
-    return derived([_currentRange, monthMode, firstDay], ([$_currentRange, $monthMode, $firstDay]) => {
-        let start = cloneDate($_currentRange.start);
-        let end = cloneDate($_currentRange.end);
+export function activeRange(state) {
+    return derived(
+        [state._currentRange, state.monthMode, state.firstDay],
+        ([$_currentRange, $monthMode, $firstDay]) => {
+            let start = cloneDate($_currentRange.start);
+            let end = cloneDate($_currentRange.end);
 
-        if ($monthMode) {
-            // First day of week
-            prevClosestDay(start, $firstDay);
-            nextClosestDay(end, $firstDay);
+            if ($monthMode) {
+                // First day of week
+                prevClosestDay(start, $firstDay);
+                nextClosestDay(end, $firstDay);
+            }
+
+            return {start, end};
         }
-
-        return {start, end};
-    });
+    );
 }
 
-export function currentRange(date, duration, monthMode, firstDay) {
-    return derived([date, duration, monthMode, firstDay], ([$date, $duration, $monthMode, $firstDay]) => {
-        let start = cloneDate($date), end;
-        if ($monthMode) {
-            start.setDate(1);
-        } else if ($duration.inWeeks) {
-            // First day of week
-            prevClosestDay(start, $firstDay);
-        }
-        end = addDuration(cloneDate(start), $duration);
+export function currentRange(state) {
+    return derived(
+        [state.date, state.duration, state.monthMode, state.firstDay],
+        ([$date, $duration, $monthMode, $firstDay]) => {
+            let start = cloneDate($date), end;
+            if ($monthMode) {
+                start.setDate(1);
+            } else if ($duration.inWeeks) {
+                // First day of week
+                prevClosestDay(start, $firstDay);
+            }
+            end = addDuration(cloneDate(start), $duration);
 
-        return {start, end};
-    });
+            return {start, end};
+        }
+    );
 }
 
-export function viewDates(_activeRange) {
-    return derived(_activeRange, ({start, end}) => {
+export function viewDates(state) {
+    return derived(state._activeRange, ({start, end}) => {
         let dates = [];
         let date = cloneDate(start);
         while (date < end) {
@@ -80,24 +82,27 @@ export function viewDates(_activeRange) {
     });
 }
 
-export function viewTitle(date, _activeRange, _titleIntlRange, monthMode) {
-    return derived([date, _activeRange, _titleIntlRange, monthMode], ([$date, $_activeRange, $_titleIntlRange, $monthMode]) => {
-        return $monthMode
-            ? $_titleIntlRange.format($date, $date)
-            : $_titleIntlRange.format($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
-    });
+export function viewTitle(state) {
+    return derived(
+        [state.date, state._activeRange, state._titleIntlRange, state.monthMode],
+        ([$date, $_activeRange, $_titleIntlRange, $monthMode]) => {
+            return $monthMode
+                ? $_titleIntlRange.format($date, $date)
+                : $_titleIntlRange.format($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
+        }
+    );
 }
 
-export function view(view, _viewTitle, _currentRange, _activeRange) {
-    return derived2([view, _viewTitle, _currentRange, _activeRange], args => createView(...args));
+export function view(state) {
+    return derived2([state.view, state._viewTitle, state._currentRange, state._activeRange], args => createView(...args));
 }
 
-export function events(events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading) {
+export function events(state) {
     let _events = writable([]);
     let abortController;
     let fetching = 0;
     derived(
-        [events, eventSources, _activeRange, _fetchedRange, lazyFetching, loading],
+        [state.events, state.eventSources, state._activeRange, state._fetchedRange, state.lazyFetching, state.loading],
         (values, set) => tick().then(() => {
             let [$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading] = values;
             if (!$eventSources.length) {
