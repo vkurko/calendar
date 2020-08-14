@@ -2,12 +2,13 @@
 	import {getContext, onMount, afterUpdate} from 'svelte';
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
+	import {createEventContent} from '../../lib/events';
 
 	export let chunk;
 	export let longChunks;
 
-	let {eventContent, eventClick, eventMouseEnter, eventMouseLeave, eventDidMount, eventBackgroundColor, eventColor,
-		_view, _intlEventTime, theme} = getContext('state');
+	let {displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
+		eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime} = getContext('state');
 
 	let el;
 	let style;
@@ -29,25 +30,7 @@
 
 	$: {
 		// Content
-		timeText = `${$_intlEventTime.format(chunk.start)}`;
-		if ($eventContent) {
-			content = is_function($eventContent)
-				? $eventContent({
-					event: chunk.event,
-					timeText
-				})
-				: $eventContent;
-			if (typeof content === 'string') {
-				content = {html: content};
-			}
-		} else {
-			content = {
-				html: `<div class="${$theme.eventContent}">` +
-					`<div class="${$theme.eventTime}">${timeText}</div>` +
-					`<div class="${$theme.eventTitle}">${chunk.event.title}</div>` +
-					`</div>`
-			};
-		}
+		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
 	}
 
 	function action(node, content) {
@@ -79,6 +62,7 @@
 			});
 		}
 	});
+
 	afterUpdate(reposition);
 
 	function createHandler(fn) {

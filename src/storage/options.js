@@ -1,58 +1,55 @@
-export function createOptions(plugins) {
+import {createDate, createDuration, setMidnight} from '../lib/date';
+import {createEvents, createEventSources} from '../lib/events';
+import {is_function} from 'svelte/internal';
+
+export function createOptions(input, plugins) {
     let options = {
+        buttonText: {
+            today: 'today',
+        },
         date: new Date(),
-        duration: {weeks: 1},
-        monthMode: false,
-        events: [],
-        eventSources: [],
-        eventColor: undefined,
-        eventBackgroundColor: undefined,
-        eventTimeFormat: {
-            hour: 'numeric',
-            minute: '2-digit'
-        },
-        eventContent: undefined,
-        eventClick: undefined,
-        eventMouseEnter: undefined,
-        eventMouseLeave: undefined,
-        eventDidMount: undefined,
         dateClick: undefined,
-        slotDuration: {hours: 1},
-        slotLabelFormat: {
-            hour: 'numeric',
-            minute: '2-digit'
-        },
-        slotMinTime: '00:00:00',
-        slotMaxTime: '24:00:00',
-        flexibleSlotTimeLimits: false,  // ec option
-        scrollTime: '06:00:00',
         dayHeaderFormat: {
             weekday: 'short',
             month: 'numeric',
             day: 'numeric'
         },
+        displayEventEnd: true,
+        duration: {weeks: 1},
+        events: [],
+        eventBackgroundColor: undefined,
+        eventClick: undefined,
+        eventColor: undefined,
+        eventContent: undefined,
+        eventDidMount: undefined,
+        eventMouseEnter: undefined,
+        eventMouseLeave: undefined,
+        eventSources: [],
+        eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit'
+        },
         firstDay: 0,
-        highlightDate: false,  // ec option
-        locale: undefined,
+        flexibleSlotTimeLimits: false,  // ec option
         headerToolbar: {
             start: 'title',
             center: '',
             end: 'today prev,next'
         },
-        titleFormat: {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        },
-        buttonText: {
-            today: 'today',
-        },
         height: '800px',
+        highlightDate: false,  // ec option
         lazyFetching: true,
         loading: undefined,
-        viewDidMount: undefined,
-        view: undefined,
-        views: {},
+        locale: undefined,
+        monthMode: false,
+        scrollTime: '06:00:00',
+        slotDuration: {hours: 1},
+        slotLabelFormat: {
+            hour: 'numeric',
+            minute: '2-digit'
+        },
+        slotMaxTime: '24:00:00',
+        slotMinTime: '00:00:00',
         theme: {
             calendar: 'ec',
             header: 'ec-header',
@@ -84,12 +81,44 @@ export function createOptions(plugins) {
             icon: 'ec-icon',
             active: 'ec-active',
             title: 'ec-title'
-        }
+        },
+        titleFormat: {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        },
+        view: input.view || undefined,  // set initial view based on input
+        viewDidMount: undefined,
+        views: {}
     };
 
     for (let plugin of plugins) {
-        plugin.createOptions(options);
+        if ('createOptions' in plugin) {
+            plugin.createOptions(options, input);
+        }
     }
 
     return options;
+}
+
+export function createMutators(options, plugins) {
+    let mutators = {
+        date: date => setMidnight(createDate(date)),
+        duration: createDuration,
+        events: createEvents,
+        eventSources: createEventSources,
+        scrollTime: createDuration,
+        slotDuration: createDuration,
+        slotMaxTime: createDuration,
+        slotMinTime: createDuration,
+        theme: input => is_function(input) ? input(options.theme) : input
+    };
+
+    for (let plugin of plugins) {
+        if ('createMutators' in plugin) {
+            plugin.createMutators(mutators, options);
+        }
+    }
+
+    return mutators;
 }

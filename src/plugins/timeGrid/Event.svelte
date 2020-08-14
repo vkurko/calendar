@@ -1,11 +1,12 @@
 <script>
 	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
+	import {createEventContent} from '../../lib/events';
 
 	export let chunk;
 
-	let {eventContent, eventClick, eventMouseEnter, eventMouseLeave, eventDidMount, eventBackgroundColor, eventColor,
-		slotDuration, _view, _intlEventTime, theme} = getContext('state');
+	let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
+		eventMouseEnter, eventMouseLeave, slotDuration, theme, _view, _intlEventTime} = getContext('state');
 
 	let {_slotTimeLimits} = getContext('view-state');
 
@@ -46,32 +47,7 @@
 		}
 
 		// Content
-		timeText = `${$_intlEventTime.format(chunk.start)} - ${$_intlEventTime.format(chunk.end)}`;
-		if ($eventContent) {
-			content = is_function($eventContent)
-				? $eventContent({
-					event: chunk.event,
-					timeText,
-					view: $_view
-				})
-				: $eventContent;
-			if (typeof content === 'string') {
-				content = {html: content};
-			}
-		} else {
-			switch (chunk.event.display) {
-				case 'background':
-					content = {html: ''};
-					break;
-				default:
-					content = {
-						html: `<div class="${$theme.eventContent}">` +
-							`<div class="${$theme.eventTime}">${timeText}</div>` +
-							`<div class="${$theme.eventTitle}">${chunk.event.title}</div>` +
-							`</div>`
-					};
-			}
-		}
+		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
 	}
 
 	onMount(() => {
