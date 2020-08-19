@@ -7,73 +7,147 @@ import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
 
-export default {
-	input: 'src/main.js',
-	output: {
-		sourcemap: true,
-		format: 'iife',
-		name: 'EventCalendar',
-		file: 'public/build/event-calendar.min.js'
+export default [
+	{
+		input: 'packages/common/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/common/index.js'
+		},
+		external: ['svelte/internal'],
+		plugins: [
+			svelte({
+				dev: !production,
+				css: false
+			})
+		],
 	},
-	plugins: [
-		svelte({
-			// enable run-time checks when not in production
-			dev: !production,
-			// we'll extract any component CSS out into
-			// a separate file - better for performance
-			css: css => {
-				css.write('public/build/event-calendar.min.css');
-			}
-		}),
+	{
+		input: 'packages/day-grid/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/day-grid/index.js'
+		},
+		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				dev: !production,
+				css: false
+			})
+		],
+	},
+	{
+		input: 'packages/time-grid/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/time-grid/index.js'
+		},
+		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				dev: !production,
+				css: false
+			})
+		],
+	},
+	{
+		input: 'packages/resource-time-grid/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/resource-time-grid/index.js'
+		},
+		external: ['@event-calendar/time-grid', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				dev: !production,
+				css: false
+			})
+		],
+	},
+	{
+		input: 'packages/core/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/core/index.js'
+		},
+		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				// enable run-time checks when not in production
+				dev: !production,
+				// we'll extract any component CSS out into
+				// a separate file - better for performance
+				css: css => {
+					css.write('packages/core/index.css', false);
+					css.write('packages/build/event-calendar.min.css');
+				}
+			})
+		],
+	},
+	{
+		input: 'packages/build/src/index.js',
+		output: {
+			format: 'iife',
+			name: 'EventCalendar',
+			file: 'packages/build/event-calendar.min.js',
+			sourcemap: true
+		},
+		plugins: [
+			svelte({
+				// enable run-time checks when not in production
+				dev: !production
+			}),
+			// If you have external dependencies installed from
+			// npm, you'll most likely need these plugins. In
+			// some cases you'll need additional configuration -
+			// consult the documentation for details:
+			// https://github.com/rollup/plugins/tree/master/packages/commonjs
+			resolve({
+				browser: true,
+				dedupe: ['svelte']
+			}),
+			commonjs(),
 
-		// If you have external dependencies installed from
-		// npm, you'll most likely need these plugins. In
-		// some cases you'll need additional configuration -
-		// consult the documentation for details:
-		// https://github.com/rollup/plugins/tree/master/packages/commonjs
-		resolve({
-			browser: true,
-			dedupe: ['svelte']
-		}),
-		commonjs(),
+			babel({
+				extensions: ['.js', '.mjs', '.html', '.svelte'],
+				// babelHelpers: 'runtime',
+				babelHelpers: 'bundled',
+				exclude: ['node_modules/@babel/**', 'node_modules/core-js/**'],
+				presets: [
+					['@babel/preset-env', {
+						targets: production ? '> 0.25%, not dead' : 'supports es6-module',
+						// modules: false,
+						// spec: true,
+						// forceAllTransforms: true,
+						useBuiltIns: 'usage',
+						shippedProposals: true,
+						corejs: 3
+					}]
+				],
+				// plugins: [
+				// 	['@babel/plugin-transform-runtime', {
+				// 		useESModules: true,
+				// 	}]
+				// ]
+			}),
 
-		production && babel({
-			extensions: ['.js', '.mjs', '.html', '.svelte'],
-			// babelHelpers: 'runtime',
-			exclude: ['node_modules/@babel/**', 'node_modules/core-js/**'],
-			presets: [
-				['@babel/preset-env', {
-					targets: '> 0.25%, not dead',
-					// modules: false,
-					// spec: true,
-					// forceAllTransforms: true,
-					useBuiltIns: 'usage',
-					corejs: 3
-				}]
-			],
-			// plugins: [
-			// 	['@babel/plugin-transform-runtime', {
-			// 		useESModules: true,
-			// 	}]
-			// ]
-		}),
+			// In dev mode, call `npm run start` once
+			// the bundle has been generated
+			!production && serve(),
 
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
+			// Watch the `public` directory and refresh the
+			// browser on changes when not in production
+			!production && livereload('public'),
 
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
-		!production && livereload('public'),
-
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
-		production && terser()
-	],
-	watch: {
-		clearScreen: false
+			// If we're building for production (npm run build
+			// instead of npm run dev), minify
+			production && terser()
+		],
+		watch: {
+			clearScreen: false
+		}
 	}
-};
+];
 
 function serve() {
 	let started = false;
