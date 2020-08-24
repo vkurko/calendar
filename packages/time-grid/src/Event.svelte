@@ -3,6 +3,7 @@
 	import {is_function} from 'svelte/internal';
 	import {createEventContent} from '@event-calendar/common';
 
+	export let date;
 	export let chunk;
 
 	let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
@@ -20,8 +21,8 @@
 		// Class & Style
 		let step = $slotDuration.seconds / 60;
 		let offset = $_slotTimeLimits.min.seconds / 60;
-		let start = chunk.start.getHours() * 60 + chunk.start.getMinutes();
-		let end = chunk.end.getDate() !== chunk.start.getDate() ? 24 * 60 : (chunk.end.getHours() * 60 + chunk.end.getMinutes());
+		let start = (chunk.start - date) / 1000 / 60;
+		let end = (chunk.end - date) / 1000 / 60;
 		let top = 24 * ((start - offset) / step);
 		let height = 24 * ((end - start) / step);
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;

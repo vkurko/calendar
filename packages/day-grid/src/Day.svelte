@@ -8,7 +8,7 @@
 	export let chunks;
 	export let longChunks;
 
-	let {date: currentDate, dateClick, highlightDate, _view, theme} = getContext('state');
+	let {date: currentDate, dateClick, highlightedDates, _view, theme} = getContext('state');
 
 	let dayChunks;
 	let today = setMidnight(new Date()), isToday, otherMonth, highlight;
@@ -25,7 +25,7 @@
 	$: {
 		isToday = datesEqual(date, today);
 		otherMonth = date.getMonth() !== $currentDate.getMonth();
-		highlight = $highlightDate && datesEqual(date, $currentDate);
+		highlight = $highlightedDates.some(d => datesEqual(d, date));
 	}
 
 	function handleClick(jsEvent) {

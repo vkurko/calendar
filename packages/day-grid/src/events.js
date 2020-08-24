@@ -1,7 +1,7 @@
 import {cloneDate, addDay, setMidnight, datesEqual} from '@event-calendar/common';
 import {sortEventChunks} from '@event-calendar/common';
 
-export function prepareEventChunks(chunks) {
+export function prepareEventChunks(chunks, hiddenDays) {
     if (!chunks.length) {
         return;
     }
@@ -11,6 +11,14 @@ export function prepareEventChunks(chunks) {
     let longChunks = {};
     let prevChunk;
     for (let chunk of chunks) {
+        while (hiddenDays.includes(chunk.start.getDay())) {
+            // Try to move the start up to the first visible day
+            let start = addDay(setMidnight(cloneDate(chunk.start)));
+            if (start > chunk.end) {
+                break;
+            }
+            chunk.start = start;
+        }
         chunk.date = setMidnight(cloneDate(chunk.start));
         chunk.days = 1;
         let date = addDay(cloneDate(chunk.date));

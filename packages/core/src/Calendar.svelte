@@ -200,7 +200,7 @@
 	}
 	:global(.ec-month.ec-body .ec-content) {
 		flex-direction: column;
-		height: 0; /* ie11 */
+		height: 100%; /* ie11 */
 	}
 	:global(.ec-resource) {
 		display: flex;

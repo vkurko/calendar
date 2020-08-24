@@ -5,19 +5,21 @@
 	import Body from './Body.svelte';
 	import Week from './Week.svelte';
 
-	let {_viewDates, theme} = getContext('state');
+	let {_viewDates, hiddenDays, theme} = getContext('state');
 
 	let state = new State(getContext('state'));
 	setContext('view-state', state);
 
 	let weeks;
+	let days;
 
 	$: {
 		weeks = [];
-		for (let i = 0; i < $_viewDates.length / 7; ++i) {
+		days = 7 - $hiddenDays.length;
+		for (let i = 0; i < $_viewDates.length / days; ++i) {
 			let dates = [];
-			for (let j = 0; j < 7; ++j) {
-				dates.push($_viewDates[i * 7 + j]);
+			for (let j = 0; j < days; ++j) {
+				dates.push($_viewDates[i * days + j]);
 			}
 			weeks.push(dates);
 		}
