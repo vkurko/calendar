@@ -1,10 +1,16 @@
 import {derived} from 'svelte/store';
-import {createDate, cloneDate, addDay, subtractDay, addDuration, createDuration} from '@event-calendar/common';
+import {
+    DAY_IN_SECONDS,
+    createDate,
+    cloneDate,
+    addDuration,
+    createDuration
+} from '@event-calendar/common';
 
-export function times(slotDuration, _slotTimeLimits, _intlSlotLabel) {
+export function times(state, localState) {
     return derived(
-        [slotDuration, _slotTimeLimits, _intlSlotLabel],
-        ([$slotDuration, $_slotTimeLimits, $_intlSlotLabel]) => {
+        [localState._slotTimeLimits, state._intlSlotLabel, state.slotDuration],
+        ([$_slotTimeLimits, $_intlSlotLabel, $slotDuration]) => {
             let compact = $slotDuration.seconds >= 3600;
             let times = [];
             let date = createDate('2020-01-01 00:00:00');
@@ -23,35 +29,43 @@ export function times(slotDuration, _slotTimeLimits, _intlSlotLabel) {
     );
 }
 
-export function slotTimeLimits(slotMinTime, slotMaxTime, flexibleSlotTimeLimits, _events, _activeRange) {
+export function slotTimeLimits(state) {
     return derived(
-        [slotMinTime, slotMaxTime, flexibleSlotTimeLimits, _events, _activeRange],
-        ([$slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_events, $_activeRange]) => {
-            let min = $slotMinTime;
-            let max = $slotMaxTime;
+        [state._events, state._viewDates, state.flexibleSlotTimeLimits, state.slotMinTime, state.slotMaxTime],
+        ([$_events, $_viewDates, $flexibleSlotTimeLimits, $slotMinTime, $slotMaxTime]) => {
+            let min = createDuration($slotMinTime);
+            let max = createDuration($slotMaxTime);
+
             if ($flexibleSlotTimeLimits) {
-                let testRange = [addDay(cloneDate($_activeRange.start)), subtractDay(cloneDate($_activeRange.end))];
-                for (let event of $_events) {
-                    if (event.display === 'auto' && event.start < $_activeRange.end && event.end > $_activeRange.start) {
-                        let start = createDuration(event.start);
-                        let end = createDuration(event.end);
-                        if (event.start.getDate() !== event.end.getDate()) {
-                            if (event.start < testRange[1]) {
-                                start.seconds = 0;
+                let minMin = createDuration(Math.min(min.seconds, Math.max(0, max.seconds - DAY_IN_SECONDS)));
+                let maxMax = createDuration(Math.max(max.seconds, minMin.seconds + DAY_IN_SECONDS));
+                loop: for (let date of $_viewDates) {
+                    let start = addDuration(cloneDate(date), min);
+                    let end = addDuration(cloneDate(date), max);
+                    let minStart = addDuration(cloneDate(date), minMin);
+                    let maxEnd = addDuration(cloneDate(date), maxMax);
+                    for (let event of $_events) {
+                        if (event.display === 'auto' && event.start < maxEnd && event.end > minStart) {
+                            if (event.start < start) {
+                                let seconds = Math.max((event.start - date) / 1000, minMin.seconds);
+                                if (seconds < min.seconds) {
+                                    min.seconds = seconds;
+                                }
                             }
-                            if (event.end >= testRange[0]) {
-                                end.seconds = 86400;
+                            if (event.end > end) {
+                                let seconds = Math.min((event.end - date) / 1000, maxMax.seconds);
+                                if (seconds > max.seconds) {
+                                    max.seconds = seconds;
+                                }
                             }
-                        }
-                        if (start.seconds < min.seconds) {
-                            min = start;
-                        }
-                        if (end.seconds > max.seconds) {
-                            max = end;
+                            if (min.seconds === minMin.seconds && max.seconds === maxMax.seconds) {
+                                break loop;
+                            }
                         }
                     }
                 }
             }
+
             return {min, max};
         }
     );

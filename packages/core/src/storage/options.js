@@ -36,14 +36,15 @@ export function createOptions(input, plugins) {
             center: '',
             end: 'today prev,next'
         },
-        height: '800px',
-        highlightDate: false,  // ec option
+        height: 'auto',
+        hiddenDays: [],
+        highlightedDates: [],  // ec option
         lazyFetching: true,
         loading: undefined,
         locale: undefined,
         monthMode: false,
         scrollTime: '06:00:00',
-        slotDuration: {hours: 1},
+        slotDuration: '00:30:00',
         slotLabelFormat: {
             hour: 'numeric',
             minute: '2-digit'
@@ -107,6 +108,8 @@ export function createMutators(options, plugins) {
         duration: createDuration,
         events: createEvents,
         eventSources: createEventSources,
+        hiddenDays: days => [...new Set(days)],
+        highlightedDates: dates => dates.map(createDate),
         scrollTime: createDuration,
         slotDuration: createDuration,
         slotMaxTime: createDuration,

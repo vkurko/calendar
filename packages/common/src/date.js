@@ -1,3 +1,4 @@
+export const DAY_IN_SECONDS = 86400;
 
 export function createDate(input) {
     return input !== undefined

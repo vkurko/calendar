@@ -4,14 +4,20 @@
 
 	export let buttons;
 
-	let {date, duration, monthMode, buttonText, _currentRange, view, _viewTitle, theme} = getContext('state');
+	let {_currentRange, _viewTitle, buttonText, date, duration, hiddenDays, monthMode, theme, view} = getContext('state');
 
 	let today = setMidnight(new Date()), isToday;
 
 	$: isToday = today >= $_currentRange.start && today < $_currentRange.end || null;
 
 	function prev() {
-		$date = subtractDuration($date, $duration);
+		let d = subtractDuration($date, $duration);
+		if ($hiddenDays.length && $hiddenDays.length < 7) {
+			while ($hiddenDays.includes(d.getDay())) {
+				subtractDay(d);
+			}
+		}
+		$date = d;
 	}
 
 	function next() {

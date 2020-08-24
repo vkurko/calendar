@@ -1,8 +1,8 @@
 import {derived} from 'svelte/store';
 import {cloneDate, addDay, subtractDay} from '@event-calendar/common';
 
-export function days(date, firstDay) {
-    return derived([date, firstDay], ([$date, $firstDay]) => {
+export function days(state) {
+    return derived([state.date, state.firstDay, state.hiddenDays], ([$date, $firstDay, $hiddenDays]) => {
         let days = [];
         let day = cloneDate($date);
         let max = 7;
@@ -12,7 +12,9 @@ export function days(date, firstDay) {
             --max;
         }
         for (let i = 0; i < 7; ++i) {
-            days.push(cloneDate(day));
+            if (!$hiddenDays.includes(day.getDay())) {
+                days.push(cloneDate(day));
+            }
             addDay(day);
         }
 

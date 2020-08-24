@@ -1,7 +1,7 @@
 <script>
 	import {getContext} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {cloneDate, addDay, addDuration, setMidnight, datesEqual} from '@event-calendar/common';
+	import {cloneDate, addDuration, setMidnight, datesEqual} from '@event-calendar/common';
 	import {createEventChunk} from '@event-calendar/common';
 	import {groupEventChunks} from './events';
 	import Event from './Event.svelte';
@@ -9,7 +9,7 @@
 	export let date;
 	export let resource = undefined;
 
-	let {_events, date: currentDate, dateClick, slotDuration, highlightDate, _view, theme} = getContext('state');
+	let {_events, dateClick, highlightedDates, slotDuration, _view, theme} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let chunks, bgChunks;
@@ -18,8 +18,8 @@
 	$: {
 		chunks = [];
 		bgChunks = [];
-		let start = date;
-		let end = addDay(cloneDate(date));
+		let start = addDuration(cloneDate(date), $_slotTimeLimits.min);
+		let end = addDuration(cloneDate(date), $_slotTimeLimits.max);
 		for (let event of $_events) {
 			if (event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(resource.id))) {
 				let chunk = createEventChunk(event, start, end);
@@ -34,7 +34,7 @@
 
 	$: {
 		isToday = datesEqual(date, today);
-		highlight = $highlightDate && datesEqual(date, $currentDate);
+		highlight = $highlightedDates.some(d => datesEqual(d, date));
 	}
 
 	function handleClick(jsEvent) {
@@ -50,12 +50,12 @@
 <div class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}" on:click={handleClick}>
 	<div class="{$theme.bgEvents}">
 		{#each bgChunks as chunk}
-			<Event {chunk}/>
+			<Event {date} {chunk}/>
 		{/each}
 	</div>
 	<div class="{$theme.events}">
 		{#each chunks as chunk}
-			<Event {chunk}/>
+			<Event {date} {chunk}/>
 		{/each}
 	</div>
 </div>

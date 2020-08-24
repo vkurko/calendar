@@ -1,6 +1,17 @@
 import {derived, writable, get} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
-import {cloneDate, addDuration, addDay, subtractDay, toISOString, formatRange, nextClosestDay, prevClosestDay} from '@event-calendar/common';
+import {
+    DAY_IN_SECONDS,
+    cloneDate,
+    addDuration,
+    addDay,
+    subtractDay,
+    toISOString,
+    formatRange,
+    nextClosestDay,
+    prevClosestDay,
+    setMidnight
+} from '@event-calendar/common';
 import {createEvents} from '@event-calendar/common';
 import {createView} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
@@ -35,8 +46,8 @@ export function derived2(stores, fn, initValue) {
 
 export function activeRange(state) {
     return derived(
-        [state._currentRange, state.monthMode, state.firstDay],
-        ([$_currentRange, $monthMode, $firstDay]) => {
+        [state._currentRange, state.firstDay, state.monthMode, state.slotMinTime, state.slotMaxTime],
+        ([$_currentRange, $firstDay, $monthMode, $slotMinTime, $slotMaxTime]) => {
             let start = cloneDate($_currentRange.start);
             let end = cloneDate($_currentRange.end);
 
@@ -44,6 +55,12 @@ export function activeRange(state) {
                 // First day of week
                 prevClosestDay(start, $firstDay);
                 nextClosestDay(end, $firstDay);
+            } else if ($slotMaxTime.days || $slotMaxTime.seconds > DAY_IN_SECONDS) {
+                addDuration(subtractDay(end), $slotMaxTime);
+                let start2 = subtractDay(cloneDate(end));
+                if (start2 < start) {
+                    start = start2;
+                }
             }
 
             return {start, end};
@@ -70,12 +87,24 @@ export function currentRange(state) {
 }
 
 export function viewDates(state) {
-    return derived(state._activeRange, ({start, end}) => {
+    return derived([state._activeRange, state.hiddenDays], ([$_activeRange, $hiddenDays]) => {
         let dates = [];
-        let date = cloneDate(start);
+        let date = setMidnight(cloneDate($_activeRange.start));
+        let end = setMidnight(cloneDate($_activeRange.end));
         while (date < end) {
-            dates.push(cloneDate(date));
+            if (!$hiddenDays.includes(date.getDay())) {
+                dates.push(cloneDate(date));
+            }
             addDay(date);
+        }
+        if (!dates.length && $hiddenDays.length && $hiddenDays.length < 7) {
+            // Try to move the date
+            state.date.update(date => {
+                while ($hiddenDays.includes(date.getDay())) {
+                    addDay(date);
+                }
+                return date;
+            });
         }
 
         return dates;
@@ -156,7 +185,7 @@ export function events(state) {
             }
         }),
         []
-    ).subscribe(events => _events.set(events));
+    ).subscribe(_events.set);
 
     return _events;
 }

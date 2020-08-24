@@ -7,7 +7,7 @@
 
 	export let dates;
 
-	let {_events, theme} = getContext('state');
+	let {_events, hiddenDays, theme} = getContext('state');
 
 	let chunks;
 	let longChunks;
@@ -22,7 +22,7 @@
 				chunks.push(chunk);
 			}
 		}
-		longChunks = prepareEventChunks(chunks);
+		longChunks = prepareEventChunks(chunks, $hiddenDays);
 	}
 </script>
 

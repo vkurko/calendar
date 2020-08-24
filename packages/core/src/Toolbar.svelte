@@ -2,7 +2,7 @@
 	import {getContext} from 'svelte';
 	import Buttons from './Buttons.svelte';
 
-	let {date, duration, headerToolbar, buttonText, view, theme} = getContext('state');
+	let {headerToolbar, theme} = getContext('state');
 
 	let sections = {
 		start: [],
