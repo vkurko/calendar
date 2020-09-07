@@ -2,6 +2,7 @@
 	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
 	import {createEventContent} from '@event-calendar/common';
+	import {action} from '@event-calendar/common';
 
 	export let date;
 	export let chunk;
@@ -23,13 +24,15 @@
 		let offset = $_slotTimeLimits.min.seconds / 60;
 		let start = (chunk.start - date) / 1000 / 60;
 		let end = (chunk.end - date) / 1000 / 60;
-		let top = 24 * ((start - offset) / step);
-		let height = 24 * ((end - start) / step);
+		let top = (start - offset) / step * 24;
+		let height = (end - start) / step * 24;
+		let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * 24;
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =
 			`top:${top}px;` +
 			`min-height:${height}px;` +
-			`max-height:${height}px;` +
+			`height:${height}px;` +
+			`max-height:${maxHeight}px;` +
 			`z-index:${chunk.column + 1};`
 		;
 		if (bgColor) {
@@ -61,25 +64,6 @@
 			});
 		}
 	});
-
-	function action(node, content) {
-		let actions = {
-			update(content) {
-				while (node.firstChild) {
-					node.removeChild(node.lastChild);
-				}
-				if (content.domNodes) {
-					for (let child of content.domNodes) {
-						node.appendChild(child);
-					}
-				} else if (content.html) {
-					node.innerHTML = content.html;
-				}
-			}
-		};
-		actions.update(content);
-		return actions;
-	}
 
 	function createHandler(fn) {
 		return jsEvent => {

@@ -157,7 +157,7 @@
 		transform: rotate(45deg) translate(-2px, 2px);
 	}
 	/* Header */
-	:global(.ec-header, .ec-body) {
+	:global(.ec-header, .ec-body, .ec-days, .ec-day) {
 		border: 1px solid #dadce0;
 	}
 	:global(.ec-header) {
@@ -174,7 +174,7 @@
 		flex-direction: column;
 	}
 	:global(.ec-header .ec-resource .ec-days) {
-		border-top: 1px solid #dadce0;
+		border-top-style: solid;
 	}
 	:global(.ec-header .ec-day) {
 		min-height: 24px;
@@ -186,7 +186,12 @@
 		position: relative;
 		overflow-x: hidden;
 		overflow-y: auto;
-		border-top-width: 0;
+	}
+	:global(.ec-body:not(.ec-list)) {
+		border-top: none;
+	}
+	:global(.ec-month.ec-body) {
+		flex-basis: auto; /* ie11 */
 	}
 	:global(.ec-sidebar) {
 		flex: 0 0 auto;
@@ -196,31 +201,31 @@
 	}
 	:global(.ec-content) {
 		display: flex;
-		min-height: 100%;
 	}
 	:global(.ec-month.ec-body .ec-content) {
 		flex-direction: column;
 		height: 100%; /* ie11 */
+	}
+	:global(.ec-list.ec-body .ec-content) {
+		flex-direction: column;
 	}
 	:global(.ec-resource) {
 		display: flex;
 	}
 	:global(.ec-days) {
 		display: flex;
-		border-bottom: 1px solid #dadce0;
+		border-style: none none solid;
 	}
 	:global(.ec-days:last-child) {
 		border-bottom: none;
 	}
 	:global(.ec-day) {
-		border-left: 1px solid #dadce0;
-		overflow: hidden;
+		border-style: none none none solid;
 	}
 	:global(.ec-month.ec-body .ec-days, .ec-resource .ec-days) {
 		flex: 1 0 auto; /* ie11 */
 	}
 	:global(.ec-month.ec-body .ec-day) {
-		overflow: visible;
 		min-height: 5em;
 	}
 	:global(.ec-month .ec-day:first-child) {
@@ -229,6 +234,20 @@
 	:global(.ec-month .ec-day-head) {
 		text-align: right;
 		padding: 4px;
+	}
+	:global(.ec-list .ec-day) {
+		flex: 1 0 auto;
+		border-style: solid none;
+		padding: 8px 14px;
+		font-weight: bold;
+		position: sticky;
+		top: 0;
+	}
+	:global(.ec-list .ec-day:first-child) {
+		border-top: none;
+	}
+	:global(.ec-list .ec-day-side) {
+		float: right;
 	}
 	:global(.ec-day.ec-today) {
 		background-color: #fcf8e3;
@@ -245,7 +264,10 @@
 	}
 	:global(.ec-event) {
 		position: absolute;
+		display: flex;
+		flex-direction: column;
 		padding: 2px;
+		color: #fff;
 		box-sizing: border-box;
 		box-shadow: 0 0 1px 0 #dadce0;
 		background-color: #039be5;
@@ -253,22 +275,41 @@
 		font-size: .85em;
 		line-height: 1.5;
 		font-weight: 400;
-		overflow: hidden;
 	}
-	:global(.ec-month .ec-event) {
+	:global(.ec-month .ec-event, .ec-list .ec-event) {
 		position: static;
-		margin-top: 1px;
 	}
-	:global(.ec-event-content) {
-		color: #fff;
+	:global(.ec-list .ec-event) {
+		flex: 1 0 auto;
+		padding: 8px 14px;
+		color: inherit;
+		background-color: transparent;
+		border-radius: 0;
+		font-size: 1em;
+		flex-direction: row;
+		align-items: baseline;
 	}
 	:global(.ec-event-time) {
 		overflow: hidden;
 		white-space: nowrap;
 		margin-bottom: 1px;
+		flex-shrink: 0;
+	}
+	:global(.ec-list .ec-event-time) {
+		width: 23ch;
+		margin: 0;
+		text-overflow: ellipsis;
+	}
+	:global(.ec-list .ec-event-dot) {
+		display: inline-block;
+		border-radius: 50%;
+		border: 6px solid #039be5;
+		margin: 0 14px 0 10px;
 	}
 	:global(.ec-event-title) {
 		position: sticky;
+		top: 0;
+		overflow: hidden;
 	}
 	:global(.ec-bg-events) {
 		position: relative;
@@ -278,6 +319,10 @@
 		background-color: #dadce0;
 		opacity: 0.3;
 		width: 100%;
+	}
+	:global(.ec-list .ec-no-events) {
+		text-align: center;
+		padding: 5em 0;
 	}
 	:global(.ec-hidden-times) {
 		visibility: hidden;

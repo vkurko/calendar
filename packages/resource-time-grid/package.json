@@ -1,13 +1,13 @@
 {
   "name": "@event-calendar/resource-time-grid",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "type": "module",
   "exports": {
     ".": "./index.js",
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/time-grid": "~0.0.1-alpha.2",
-    "svelte": "^3.24.1"
+    "@event-calendar/time-grid": "~0.0.1-alpha.3",
+    "svelte": "^3.25.0"
   }
 }
