@@ -14,7 +14,7 @@ export default [
 			format: 'es',
 			file: 'packages/common/index.js'
 		},
-		external: ['svelte/internal'],
+		external: ['svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
 				dev: !production,
@@ -27,6 +27,20 @@ export default [
 		output: {
 			format: 'es',
 			file: 'packages/day-grid/index.js'
+		},
+		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				dev: !production,
+				css: false
+			})
+		],
+	},
+	{
+		input: 'packages/list/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/list/index.js'
 		},
 		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
@@ -68,7 +82,10 @@ export default [
 		input: 'packages/core/src/index.js',
 		output: {
 			format: 'es',
-			file: 'packages/core/index.js'
+			// set 'dir' and 'entryFileNames' instead of 'file' for css.write()
+			// to be able to emit css file to the 'build' directory
+			dir: 'packages',
+			entryFileNames: 'core/[name].js'
 		},
 		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
@@ -78,8 +95,8 @@ export default [
 				// we'll extract any component CSS out into
 				// a separate file - better for performance
 				css: css => {
-					css.write('packages/core/index.css', false);
-					css.write('packages/build/event-calendar.min.css');
+					css.write('core/index.css', false);
+					css.write('build/event-calendar.min.css');
 				}
 			})
 		],
@@ -110,25 +127,26 @@ export default [
 
 			babel({
 				extensions: ['.js', '.mjs', '.html', '.svelte'],
-				// babelHelpers: 'runtime',
-				babelHelpers: 'bundled',
-				exclude: ['node_modules/@babel/**', 'node_modules/core-js/**'],
+				babelHelpers: 'runtime',
+				// babelHelpers: 'bundled',
+				exclude: ['node_modules/@babel/**', 'node_modules/core-js-pure/**'],
 				presets: [
 					['@babel/preset-env', {
 						targets: production ? '> 0.25%, not dead' : 'supports es6-module',
 						// modules: false,
 						// spec: true,
 						// forceAllTransforms: true,
-						useBuiltIns: 'usage',
+						// useBuiltIns: 'usage',
 						shippedProposals: true,
-						corejs: 3
+						// corejs: '3.6.5'
 					}]
 				],
-				// plugins: [
-				// 	['@babel/plugin-transform-runtime', {
-				// 		useESModules: true,
-				// 	}]
-				// ]
+				plugins: [
+					['@babel/plugin-transform-runtime', {
+						useESModules: true,
+						corejs: 3
+					}]
+				]
 			}),
 
 			// In dev mode, call `npm run start` once

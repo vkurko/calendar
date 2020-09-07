@@ -3,7 +3,7 @@
 	import {hasYScroll} from '@event-calendar/common';
 
 	let {slotDuration, _intlSlotLabel, _viewDates, scrollTime, _scrollable, theme} = getContext('state');
-	let {_times} = getContext('view-state');
+	let {_slotTimeLimits, _times} = getContext('view-state');
 
 	let el;
 	let compact;
@@ -15,7 +15,7 @@
 	}
 
 	$: if (el && $_viewDates) {
-		el.scrollTop = $scrollTime.seconds / $slotDuration.seconds * 24 - 12;
+		el.scrollTop = ($scrollTime.seconds - $_slotTimeLimits.min.seconds) / $slotDuration.seconds * 24 - 12;
 	}
 
 	$: if (el && $_times && $slotDuration) {

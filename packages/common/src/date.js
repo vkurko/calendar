@@ -115,11 +115,15 @@ export function datesEqual(date1, date2) {
 }
 
 export function nextClosestDay(date, day) {
-    return _closestDay(date, day, addDay);
+    let diff = day - date.getDay();
+    date.setDate(date.getDate() + (diff >= 0 ? diff : diff + 7));
+    return date;
 }
 
 export function prevClosestDay(date, day) {
-    return _closestDay(date, day, subtractDay);
+    let diff = day - date.getDay();
+    date.setDate(date.getDate() + (diff <= 0 ? diff : diff - 7));
+    return date;
 }
 
 /**
@@ -145,16 +149,6 @@ function _addSubDuration(date, duration, x) {
 
 function _addSubDays(date, x) {
     date.setDate(date.getDate() + x);
-
-    return date;
-}
-
-function _closestDay(date, day, fn) {
-    let max = 7;
-    while (date.getDay() !== day && max) {
-        fn(date);
-        --max;
-    }
 
     return date;
 }

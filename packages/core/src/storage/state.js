@@ -1,7 +1,8 @@
 import {writable} from 'svelte/store';
 import {is_function, tick} from 'svelte/internal';
 import {createOptions, createMutators} from './options';
-import {writable2, currentRange, activeRange, events, intl, intlRange, viewTitle, viewDates, view} from './stores';
+import {currentRange, activeRange, events, viewTitle, viewDates, view} from './stores';
+import {writable2, intl, intlRange} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
 
 export default class {

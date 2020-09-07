@@ -3,6 +3,7 @@
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
 	import {createEventContent} from '@event-calendar/common';
+	import {action} from '@event-calendar/common';
 
 	export let chunk;
 	export let longChunks;
@@ -31,25 +32,6 @@
 	$: {
 		// Content
 		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
-	}
-
-	function action(node, content) {
-		let actions = {
-			update(content) {
-				while (node.firstChild) {
-					node.removeChild(node.lastChild);
-				}
-				if (content.domNodes) {
-					for (let child of content.domNodes) {
-						node.appendChild(child);
-					}
-				} else if (content.html) {
-					node.innerHTML = content.html;
-				}
-			}
-		};
-		actions.update(content);
-		return actions;
 	}
 
 	onMount(() => {
