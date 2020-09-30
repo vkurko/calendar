@@ -1,8 +1,20 @@
 export const DAY_IN_SECONDS = 86400;
 
+function fromISOString(str) {
+    const parts = str.match(/\d+/g);
+    return new Date(
+        Number(parts[0]),
+        Number(parts[1]) - 1,
+        Number(parts[2]),
+        Number(parts[3] || 0),
+        Number(parts[4] || 0),
+        Number(parts[5] || 0)
+    );
+}
+
 export function createDate(input) {
     return input !== undefined
-        ? (input instanceof Date ? cloneDate(input) : new Date(input.replace(' ', 'T')))  // ie11 needs "T" for time
+        ? (input instanceof Date ? cloneDate(input) : fromISOString(input))
         : new Date();
 }
 

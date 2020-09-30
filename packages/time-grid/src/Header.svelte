@@ -17,4 +17,5 @@
 		<div class="{$theme.lines}"></div>
 		<slot></slot>
 	</div>
+	<div class="{$theme.hiddenScroll}"></div>
 </div>
