@@ -96,8 +96,21 @@
 	:global(.ec :hover::-webkit-scrollbar-thumb) {
 		background: #bdc1c6;
 	}
+	:global(.ec-hidden-scroll) {
+		display: none;
+		overflow-y: scroll;
+		visibility: hidden;
+		flex-shrink: 0;
+	}
+	:global(.ec-hidden-scroll::-webkit-scrollbar) {
+		width: 16px;
+	}
+	:global(.ec-with-scroll .ec-hidden-scroll) {
+		display: block;
+	}
 	/* Toolbar */
 	:global(.ec-toolbar) {
+		flex: 0 0 auto;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -164,14 +177,11 @@
 		display: flex;
 		flex-shrink: 0;
 	}
-	:global(.ec-header.ec-with-scroll:after) {
-		content: '';
-		overflow-y: scroll;
-		visibility: hidden;
-		flex-shrink: 0;
-	}
 	:global(.ec-header .ec-resource) {
 		flex-direction: column;
+	}
+	:global(.ec-header .ec-days) {
+		border-bottom: none;
 	}
 	:global(.ec-header .ec-resource .ec-days) {
 		border-top-style: solid;

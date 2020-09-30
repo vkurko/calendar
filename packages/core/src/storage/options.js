@@ -55,6 +55,7 @@ export function createOptions(input, plugins) {
             calendar: 'ec',
             header: 'ec-header',
             withScroll: 'ec-with-scroll',
+            hiddenScroll: 'ec-hidden-scroll',
             body: 'ec-body',
             compact: 'ec-compact',
             toolbar: 'ec-toolbar',

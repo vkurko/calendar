@@ -11,4 +11,5 @@
 			<div class="{$theme.day}">{$_intlDayHeader.format(day)}</div>
 		{/each}
 	</div>
+	<div class="{$theme.hiddenScroll}"></div>
 </div>

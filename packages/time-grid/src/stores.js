@@ -13,7 +13,7 @@ export function times(state, localState) {
         ([$_slotTimeLimits, $_intlSlotLabel, $slotDuration]) => {
             let compact = $slotDuration.seconds >= 3600;
             let times = [];
-            let date = createDate('2020-01-01 00:00:00');
+            let date = createDate('2020-01-01');
             let end = cloneDate(date);
             let i = 1;
             addDuration(date, $_slotTimeLimits.min);
