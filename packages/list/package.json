@@ -1,13 +1,13 @@
 {
   "name": "@event-calendar/list",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "type": "module",
   "exports": {
     ".": "./index.js",
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.0.1-alpha.3",
+    "@event-calendar/common": "~0.0.1-alpha.4",
     "svelte": "^3.25.0"
   }
 }

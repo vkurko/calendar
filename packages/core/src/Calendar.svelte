@@ -102,9 +102,6 @@
 		visibility: hidden;
 		flex-shrink: 0;
 	}
-	:global(.ec-hidden-scroll::-webkit-scrollbar) {
-		width: 16px;
-	}
 	:global(.ec-with-scroll .ec-hidden-scroll) {
 		display: block;
 	}

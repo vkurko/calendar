@@ -1,0 +1,11 @@
+body {
+	padding: 0 40px;
+}
+.row {
+	display: flex;
+}
+.col {
+	flex: 1 1 0%;
+	min-width: 0;
+	max-width: 100%;
+}

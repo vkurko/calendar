@@ -3,3 +3,4 @@ node_modules
 /packages/*/*.js
 /packages/*/*.css
 /packages/*/*.map
+/public

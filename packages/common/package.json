@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/common",
-  "version": "0.0.1-alpha.3",
+  "version": "0.0.1-alpha.4",
   "type": "module",
   "exports": {
     ".": "./index.js",
