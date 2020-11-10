@@ -12,8 +12,8 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="global.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.0.1-alpha.5/event-calendar.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.0.1-alpha.5/event-calendar.min.js"></script>
 </head>
 
 <body>
@@ -32,14 +32,7 @@
             center: 'title',
             end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek resourceTimeGridWeek'
         },
-        buttonText: {
-            today: 'today',
-            dayGridMonth: 'month',
-            timeGridWeek: 'week',
-            timeGridDay: 'day',
-            listWeek: 'list',
-            resourceTimeGridWeek: 'resources'
-        },
+        buttonText: texts => Object.assign(texts, {resourceTimeGridWeek: 'resources'}),
         resources: [
             {id: 1, title: 'Resource A'},
             {id: 2, title: 'Resource B'}

@@ -105,6 +105,7 @@ export function createOptions(input, plugins) {
 
 export function createMutators(options, plugins) {
     let mutators = {
+        buttonText: input => is_function(input) ? input(options.buttonText) : input,
         date: date => setMidnight(createDate(date)),
         duration: createDuration,
         events: createEvents,
