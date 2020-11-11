@@ -8,14 +8,17 @@
 	let el;
 	let compact;
 	let lines = [];
+	let timeLimitMin;
 
 	$: {
 		compact = $slotDuration.seconds >= 3600;
 		lines.length = $_times.length;
+		// Use intermediate variable so that changes in _slotTimeLimits do not trigger setting the el.scrollTop
+		timeLimitMin = $_slotTimeLimits.min.seconds;
 	}
 
 	$: if (el && $_viewDates) {
-		el.scrollTop = ($scrollTime.seconds - $_slotTimeLimits.min.seconds) / $slotDuration.seconds * 24 - 12;
+		el.scrollTop = ($scrollTime.seconds - timeLimitMin) / $slotDuration.seconds * 24 - 12;
 	}
 
 	$: if (el && $_times && $slotDuration) {
