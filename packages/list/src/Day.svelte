@@ -4,6 +4,7 @@
 	import {
 		addDay,
 		cloneDate,
+		createDate,
 		createEventChunk,
 		datesEqual,
 		setMidnight,
@@ -17,7 +18,7 @@
 	let {_intlListDayFormat, _intlListDaySideFormat} = getContext('view-state');
 
 	let chunks;
-	let today = setMidnight(new Date()), isToday, highlight;
+	let today = setMidnight(createDate()), isToday, highlight;
 
 	$: {
 		chunks = [];

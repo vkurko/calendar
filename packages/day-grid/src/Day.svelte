@@ -1,7 +1,7 @@
 <script>
 	import {getContext} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {setMidnight, datesEqual} from '@event-calendar/common';
+	import {createDate, setMidnight, datesEqual} from '@event-calendar/common';
 	import Event from './Event.svelte';
 
 	export let date;
@@ -11,7 +11,7 @@
 	let {date: currentDate, dateClick, highlightedDates, _view, theme} = getContext('state');
 
 	let dayChunks;
-	let today = setMidnight(new Date()), isToday, otherMonth, highlight;
+	let today = setMidnight(createDate()), isToday, otherMonth, highlight;
 
 	$: {
 		dayChunks = [];

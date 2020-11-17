@@ -2,20 +2,30 @@ export const DAY_IN_SECONDS = 86400;
 
 function fromISOString(str) {
     const parts = str.match(/\d+/g);
-    return new Date(
+    return new Date(Date.UTC(
         Number(parts[0]),
         Number(parts[1]) - 1,
         Number(parts[2]),
         Number(parts[3] || 0),
         Number(parts[4] || 0),
         Number(parts[5] || 0)
-    );
+    ));
 }
 
 export function createDate(input) {
-    return input !== undefined
-        ? (input instanceof Date ? cloneDate(input) : fromISOString(input))
-        : new Date();
+    if (input !== undefined) {
+        return input instanceof Date ? cloneDate(input) : fromISOString(input);
+    }
+
+    let now = new Date();
+    return new Date(Date.UTC(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds()
+    ));
 }
 
 export function createDuration(input) {
@@ -29,7 +39,7 @@ export function createDuration(input) {
         }
         input = {seconds};
     } else if (input instanceof Date) {
-        input = {hours: input.getHours(), minutes: input.getMinutes(), seconds: input.getSeconds()};
+        input = {hours: input.getUTCHours(), minutes: input.getUTCMinutes(), seconds: input.getUTCSeconds()};
     }
 
     let weeks = input.weeks || input.week || 0;
@@ -66,35 +76,25 @@ export function subtractDay(date) {
 }
 
 export function setMidnight(date) {
-    date.setHours(0, 0, 0, 0);
+    date.setUTCHours(0, 0, 0, 0);
 
     return date;
 }
 
 export function toISOString(date) {
-    let tzo = -date.getTimezoneOffset(),
-        dif = tzo >= 0 ? '+' : '-';
-
-    return date.getFullYear() +
-        '-' + _pad(date.getMonth() + 1) +
-        '-' + _pad(date.getDate()) +
-        'T' + _pad(date.getHours()) +
-        ':' + _pad(date.getMinutes()) +
-        ':' + _pad(date.getSeconds()) +
-        dif + _pad(tzo / 60) +
-        ':' + _pad(tzo % 60);
+    return date.toISOString().substring(0, 19);
 }
 
 export function formatRange(start, end, intl) {
-    if (start.getFullYear() !== end.getFullYear()) {
+    if (start.getUTCFullYear() !== end.getUTCFullYear()) {
         return intl.format(start) + ' - ' + intl.format(end);
     }
 
     let diff = [];
-    if (start.getMonth() !== end.getMonth()) {
+    if (start.getUTCMonth() !== end.getUTCMonth()) {
         diff.push('month');
     }
-    if (start.getDate() !== end.getDate()) {
+    if (start.getUTCDate() !== end.getUTCDate()) {
         diff.push('day');
     }
 
@@ -127,14 +127,14 @@ export function datesEqual(date1, date2) {
 }
 
 export function nextClosestDay(date, day) {
-    let diff = day - date.getDay();
-    date.setDate(date.getDate() + (diff >= 0 ? diff : diff + 7));
+    let diff = day - date.getUTCDay();
+    date.setUTCDate(date.getUTCDate() + (diff >= 0 ? diff : diff + 7));
     return date;
 }
 
 export function prevClosestDay(date, day) {
-    let diff = day - date.getDay();
-    date.setDate(date.getDate() + (diff <= 0 ? diff : diff - 7));
+    let diff = day - date.getUTCDay();
+    date.setUTCDate(date.getUTCDate() + (diff <= 0 ? diff : diff - 7));
     return date;
 }
 
@@ -143,31 +143,26 @@ export function prevClosestDay(date, day) {
  */
 
 function _addSubDuration(date, duration, x) {
-    date.setFullYear(date.getFullYear() + x * duration.years);
-    let month = date.getMonth() + x * duration.months;
-    date.setMonth(month);
+    date.setUTCFullYear(date.getUTCFullYear() + x * duration.years);
+    let month = date.getUTCMonth() + x * duration.months;
+    date.setUTCMonth(month);
     month %= 12;
     if (month < 0) {
         month += 12;
     }
-    while (date.getMonth() !== month) {
+    while (date.getUTCMonth() !== month) {
         subtractDay(date);
     }
-    date.setDate(date.getDate() + x * duration.days);
-    date.setSeconds(date.getSeconds() + x * duration.seconds);
+    date.setUTCDate(date.getUTCDate() + x * duration.days);
+    date.setUTCSeconds(date.getUTCSeconds() + x * duration.seconds);
 
     return date;
 }
 
 function _addSubDays(date, x) {
-    date.setDate(date.getDate() + x);
+    date.setUTCDate(date.getUTCDate() + x);
 
     return date;
-}
-
-function _pad(num) {
-    let norm = Math.floor(Math.abs(num));
-    return (norm < 10 ? '0' : '') + norm;
 }
 
 function _commonChunks(str1, substr1, str2, substr2) {
