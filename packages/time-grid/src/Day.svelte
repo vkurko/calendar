@@ -1,7 +1,7 @@
 <script>
 	import {getContext} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {cloneDate, addDuration, setMidnight, datesEqual} from '@event-calendar/common';
+	import {createDate, cloneDate, addDuration, setMidnight, datesEqual} from '@event-calendar/common';
 	import {createEventChunk} from '@event-calendar/common';
 	import {groupEventChunks} from './events';
 	import Event from './Event.svelte';
@@ -13,7 +13,7 @@
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let chunks, bgChunks;
-	let today = setMidnight(new Date()), isToday, highlight;
+	let today = setMidnight(createDate()), isToday, highlight;
 
 	$: {
 		chunks = [];

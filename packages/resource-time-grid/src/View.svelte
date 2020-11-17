@@ -7,9 +7,11 @@
 	let state = new State(getContext('state'));
 	setContext('view-state', state);
 
-	let filteredResources = $resources;
+	let filteredResources;
 
 	$: {
+		filteredResources = $resources;
+
 		if ($filterResourcesWithEvents) {
 			filteredResources = $resources.filter(resource => {
 				for (let event of $_events) {

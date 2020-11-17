@@ -1,12 +1,12 @@
 <script>
 	import {getContext} from 'svelte';
-	import {cloneDate, subtractDay, addDuration, subtractDuration, setMidnight} from '@event-calendar/common';
+	import {createDate, cloneDate, subtractDay, addDuration, subtractDuration, setMidnight} from '@event-calendar/common';
 
 	export let buttons;
 
 	let {_currentRange, _viewTitle, buttonText, date, duration, hiddenDays, monthMode, theme, view} = getContext('state');
 
-	let today = setMidnight(new Date()), isToday;
+	let today = setMidnight(createDate()), isToday;
 
 	$: isToday = today >= $_currentRange.start && today < $_currentRange.end || null;
 

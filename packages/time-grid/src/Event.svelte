@@ -32,8 +32,7 @@
 			`top:${top}px;` +
 			`min-height:${height}px;` +
 			`height:${height}px;` +
-			`max-height:${maxHeight}px;` +
-			`z-index:${chunk.column + 1};`
+			`max-height:${maxHeight}px;`
 		;
 		if (bgColor) {
 			style += `background-color:${bgColor};`;
@@ -45,6 +44,7 @@
 			default:
 				className = $theme.event;
 				style +=
+					`z-index:${chunk.column + 1};` +
 					`left:${100 / chunk.group.columns.length * chunk.column}%;` +
 					`width:${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
 				;

@@ -33,7 +33,7 @@ export function derived2(stores, fn, initValue) {
 export function intl(locale, format) {
     return derived([locale, format], ([$locale, $format]) => is_function($format)
         ? {format: $format}
-        : new Intl.DateTimeFormat($locale, $format)
+        : new Intl.DateTimeFormat($locale, {...$format, timeZone: 'UTC'})
     );
 }
 
@@ -42,7 +42,7 @@ export function intlRange(locale, format) {
         if (is_function($format)) {
             return {format: $format};
         }
-        let intl = new Intl.DateTimeFormat($locale, $format);
+        let intl = new Intl.DateTimeFormat($locale, {...$format, timeZone: 'UTC'});
         return {
             format: (start, end) => formatRange(start, end, intl)
         };

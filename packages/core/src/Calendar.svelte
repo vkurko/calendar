@@ -244,11 +244,13 @@
 	}
 	:global(.ec-list .ec-day) {
 		flex: 1 0 auto;
+		background-color: #fff;
 		border-style: solid none;
 		padding: 8px 14px;
 		font-weight: bold;
 		position: sticky;
 		top: 0;
+		z-index: 1;
 	}
 	:global(.ec-list .ec-day:first-child) {
 		border-top: none;
