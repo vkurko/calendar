@@ -1,7 +1,7 @@
 <script>
 	import {getContext} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {createDate, cloneDate, addDuration, setMidnight, datesEqual} from '@event-calendar/common';
+	import {createDate, cloneDate, addDuration, setMidnight, toLocalDate, datesEqual} from '@event-calendar/common';
 	import {createEventChunk} from '@event-calendar/common';
 	import {groupEventChunks} from './events';
 	import Event from './Event.svelte';
@@ -42,7 +42,7 @@
 			let rect = jsEvent.currentTarget.getBoundingClientRect();
 			let y = jsEvent.clientY - rect.top;
 			let d = addDuration(cloneDate(date), $slotDuration, Math.floor(y/24 + $_slotTimeLimits.min.seconds/$slotDuration.seconds));
-			$dateClick({date: d, jsEvent, view: $_view, resource});
+			$dateClick({date: toLocalDate(d), jsEvent, view: $_view, resource});
 		}
 	}
 </script>

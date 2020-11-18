@@ -1,4 +1,5 @@
-import {createDate} from './date';
+import {createDate, toLocalDate} from './date';
+import {assign} from './utils';
 import {is_function} from 'svelte/internal';
 
 let eventId = 1;
@@ -80,4 +81,12 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
     }
 
     return [timeText, content];
+}
+
+export function toEventWithLocalDates(event) {
+    event = assign({}, event);
+    event.start = toLocalDate(event.start);
+    event.end = toLocalDate(event.end);
+
+    return event;
 }

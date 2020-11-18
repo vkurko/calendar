@@ -1,31 +1,11 @@
 export const DAY_IN_SECONDS = 86400;
 
-function fromISOString(str) {
-    const parts = str.match(/\d+/g);
-    return new Date(Date.UTC(
-        Number(parts[0]),
-        Number(parts[1]) - 1,
-        Number(parts[2]),
-        Number(parts[3] || 0),
-        Number(parts[4] || 0),
-        Number(parts[5] || 0)
-    ));
-}
-
 export function createDate(input) {
     if (input !== undefined) {
-        return input instanceof Date ? cloneDate(input) : fromISOString(input);
+        return input instanceof Date ? _fromLocalDate(input) : _fromISOString(input);
     }
 
-    let now = new Date();
-    return new Date(Date.UTC(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        now.getHours(),
-        now.getMinutes(),
-        now.getSeconds()
-    ));
+    return _fromLocalDate(new Date());
 }
 
 export function createDuration(input) {
@@ -81,20 +61,31 @@ export function setMidnight(date) {
     return date;
 }
 
+export function toLocalDate(date) {
+    return new Date(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        date.getUTCHours(),
+        date.getUTCMinutes(),
+        date.getUTCSeconds()
+    );
+}
+
 export function toISOString(date) {
     return date.toISOString().substring(0, 19);
 }
 
 export function formatRange(start, end, intl) {
-    if (start.getUTCFullYear() !== end.getUTCFullYear()) {
+    if (start.getFullYear() !== end.getFullYear()) {
         return intl.format(start) + ' - ' + intl.format(end);
     }
 
     let diff = [];
-    if (start.getUTCMonth() !== end.getUTCMonth()) {
+    if (start.getMonth() !== end.getMonth()) {
         diff.push('month');
     }
-    if (start.getUTCDate() !== end.getUTCDate()) {
+    if (start.getDate() !== end.getDate()) {
         diff.push('day');
     }
 
@@ -141,6 +132,29 @@ export function prevClosestDay(date, day) {
 /**
  * Private functions
  */
+
+function _fromLocalDate(date) {
+    return new Date(Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds()
+    ));
+}
+
+function _fromISOString(str) {
+    const parts = str.match(/\d+/g);
+    return new Date(Date.UTC(
+        Number(parts[0]),
+        Number(parts[1]) - 1,
+        Number(parts[2]),
+        Number(parts[3] || 0),
+        Number(parts[4] || 0),
+        Number(parts[5] || 0)
+    ));
+}
 
 function _addSubDuration(date, duration, x) {
     date.setUTCFullYear(date.getUTCFullYear() + x * duration.years);
