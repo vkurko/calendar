@@ -1,12 +1,12 @@
 {
   "name": "@event-calendar/build",
-  "version": "0.0.1-alpha.6",
+  "version": "0.0.1-alpha.7",
   "jsdelivr": "event-calendar.min.js",
   "devDependencies": {
-    "@event-calendar/day-grid": "~0.0.1-alpha.6",
-    "@event-calendar/list": "~0.0.1-alpha.6",
-    "@event-calendar/time-grid": "~0.0.1-alpha.6",
-    "@event-calendar/resource-time-grid": "~0.0.1-alpha.6",
+    "@event-calendar/day-grid": "~0.0.1-alpha.7",
+    "@event-calendar/list": "~0.0.1-alpha.7",
+    "@event-calendar/time-grid": "~0.0.1-alpha.7",
+    "@event-calendar/resource-time-grid": "~0.0.1-alpha.7",
     "abort-controller": "^3.0.0",
     "whatwg-fetch": "^3.4.1"
   }

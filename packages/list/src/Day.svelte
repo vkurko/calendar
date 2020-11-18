@@ -8,6 +8,7 @@
 		createEventChunk,
 		datesEqual,
 		setMidnight,
+		toLocalDate,
 		sortEventChunks
 	} from '@event-calendar/common';
 	import Event from './Event.svelte';
@@ -40,7 +41,7 @@
 
 	function handleClick(jsEvent) {
 		if (is_function($dateClick)) {
-			$dateClick({date, jsEvent, view: $_view});
+			$dateClick({date: toLocalDate(date), jsEvent, view: $_view});
 		}
 	}
 </script>

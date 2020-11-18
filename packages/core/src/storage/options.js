@@ -7,7 +7,7 @@ export function createOptions(input, plugins) {
         buttonText: {
             today: 'today',
         },
-        date: createDate(),
+        date: new Date(),
         dateClick: undefined,
         dayHeaderFormat: {
             weekday: 'short',

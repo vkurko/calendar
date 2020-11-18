@@ -1,6 +1,6 @@
 import {derived, writable, get} from 'svelte/store';
 import {is_function} from 'svelte/internal';
-import {formatRange} from './date';
+import {toLocalDate, formatRange} from './date';
 
 export function writable2(value, mutator, start) {
     return {
@@ -31,20 +31,24 @@ export function derived2(stores, fn, initValue) {
 }
 
 export function intl(locale, format) {
-    return derived([locale, format], ([$locale, $format]) => is_function($format)
-        ? {format: $format}
-        : new Intl.DateTimeFormat($locale, {...$format, timeZone: 'UTC'})
-    );
+    return derived([locale, format], ([$locale, $format]) => {
+        let intl = is_function($format)
+            ? {format: $format}
+            : new Intl.DateTimeFormat($locale, $format);
+        return {
+            format: date => intl.format(toLocalDate(date))
+        };
+    });
 }
 
 export function intlRange(locale, format) {
     return derived([locale, format], ([$locale, $format]) => {
         if (is_function($format)) {
-            return {format: $format};
+            return {format: (start, end) => $format(toLocalDate(start), toLocalDate(end))};
         }
-        let intl = new Intl.DateTimeFormat($locale, {...$format, timeZone: 'UTC'});
+        let intl = new Intl.DateTimeFormat($locale, $format);
         return {
-            format: (start, end) => formatRange(start, end, intl)
+            format: (start, end) => formatRange(toLocalDate(start), toLocalDate(end), intl)
         };
     });
 }

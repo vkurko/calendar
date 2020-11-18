@@ -2,7 +2,7 @@
 	import {getContext, onMount, afterUpdate} from 'svelte';
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
-	import {createEventContent} from '@event-calendar/common';
+	import {createEventContent, toEventWithLocalDates} from '@event-calendar/common';
 	import {action} from '@event-calendar/common';
 
 	export let chunk;
@@ -50,7 +50,7 @@
 	function createHandler(fn) {
 		return jsEvent => {
 			if (is_function(fn)) {
-				fn({event: chunk.event, el, jsEvent, view: $_view});
+				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: $_view});
 			}
 		};
 	}
