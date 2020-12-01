@@ -2,8 +2,7 @@
 	import {getContext, onMount, afterUpdate} from 'svelte';
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
-	import {createEventContent, toEventWithLocalDates} from '@event-calendar/common';
-	import {action} from '@event-calendar/common';
+	import {action, createEventContent, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
 
 	export let chunk;
 	export let longChunks;
@@ -37,10 +36,10 @@
 	onMount(() => {
 		if (is_function($eventDidMount)) {
 			$eventDidMount({
-				event: chunk.event,
+				event: toEventWithLocalDates(chunk.event),
 				timeText,
 				el,
-				view: $_view
+				view: toViewWithLocalDates($_view)
 			});
 		}
 	});
@@ -50,7 +49,7 @@
 	function createHandler(fn) {
 		return jsEvent => {
 			if (is_function(fn)) {
-				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: $_view});
+				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)});
 			}
 		};
 	}

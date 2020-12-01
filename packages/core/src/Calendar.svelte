@@ -3,7 +3,7 @@
 	import {get} from 'svelte/store';
 	import State from './storage/state';
 	import Toolbar from './Toolbar.svelte';
-	import {assign} from '@event-calendar/common';
+	import {assign, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
 
 	export let options;
 
@@ -32,7 +32,7 @@
 	export function getEventById(id) {
 		for (let event of get(state._events)) {
 			if (event.id == id) {
-				return event;
+				return toEventWithLocalDates(event);
 			}
 		}
 		return null;
@@ -59,7 +59,7 @@
 	}
 
 	export function getView() {
-		return state._view.get();
+		return toViewWithLocalDates(state._view.get());
 	}
 </script>
 

@@ -1,7 +1,7 @@
 <script>
 	import {getContext} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {createDate, setMidnight, toLocalDate, datesEqual} from '@event-calendar/common';
+	import {createDate, setMidnight, toLocalDate, datesEqual, toViewWithLocalDates} from '@event-calendar/common';
 	import Event from './Event.svelte';
 
 	export let date;
@@ -30,7 +30,7 @@
 
 	function handleClick(jsEvent) {
 		if (is_function($dateClick)) {
-			$dateClick({date: toLocalDate(date), jsEvent, view: $_view});
+			$dateClick({date: toLocalDate(date), jsEvent, view: toViewWithLocalDates($_view)});
 		}
 	}
 </script>

@@ -4,8 +4,7 @@
 	import Body from './Body.svelte';
 	import Day from './Day.svelte';
 	import State from './state';
-	import {addDay, cloneDate} from '@event-calendar/common';
-	import {action} from '@event-calendar/common';
+	import {action, addDay, cloneDate, toViewWithLocalDates} from '@event-calendar/common';
 
 	let {_events, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
 
@@ -35,7 +34,7 @@
 
 	function handleClick(jsEvent) {
 		if (is_function($noEventsClick)) {
-			$noEventsClick({jsEvent, view: $_view});
+			$noEventsClick({jsEvent, view: toViewWithLocalDates($_view)});
 		}
 	}
 </script>

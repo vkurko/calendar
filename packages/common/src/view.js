@@ -1,3 +1,5 @@
+import {assign} from './utils';
+import {toLocalDate} from './date';
 
 export function createView(view, _viewTitle, _currentRange, _activeRange) {
     return {
@@ -9,4 +11,14 @@ export function createView(view, _viewTitle, _currentRange, _activeRange) {
         activeEnd: _activeRange.end,
         calendar: undefined
     };
+}
+
+export function toViewWithLocalDates(view) {
+    view = assign({}, view);
+    view.currentStart = toLocalDate(view.currentStart);
+    view.currentEnd = toLocalDate(view.currentEnd);
+    view.activeStart = toLocalDate(view.activeStart);
+    view.activeEnd = toLocalDate(view.activeEnd);
+
+    return view;
 }

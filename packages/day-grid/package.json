@@ -1,13 +1,22 @@
 {
   "name": "@event-calendar/day-grid",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-beta.1",
+  "title": "EventCalendar DayGrid Plugin",
+  "description": "Full-sized event calendar with resource view",
+  "keywords": ["calendar", "event", "resource", "full-sized"],
+  "homepage": "https://vkurko.github.io/calendar/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vkurko/calendar.git",
+    "directory": "packages/day-grid"
+  },
   "type": "module",
   "exports": {
     ".": "./index.js",
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.0.1-alpha.7",
+    "@event-calendar/common": "~0.0.1-beta.1",
     "svelte": "^3.25.0"
   }
 }

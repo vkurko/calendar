@@ -1,7 +1,7 @@
 <script>
 	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {createEventContent, toEventWithLocalDates} from '@event-calendar/common';
+	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
 	import {action} from '@event-calendar/common';
 
 	export let chunk;
@@ -22,10 +22,10 @@
 	onMount(() => {
 		if (is_function($eventDidMount)) {
 			$eventDidMount({
-				event: chunk.event,
+				event: toEventWithLocalDates(chunk.event),
 				timeText,
 				el,
-				view: $_view
+				view: toViewWithLocalDates($_view)
 			});
 		}
 	});
@@ -33,7 +33,7 @@
 	function createHandler(fn) {
 		return jsEvent => {
 			if (is_function(fn)) {
-				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: $_view});
+				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)});
 			}
 		};
 	}
