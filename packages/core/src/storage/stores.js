@@ -111,7 +111,7 @@ export function events(state) {
                 set($events);
                 return;
             }
-            // Do not fetch if new range is within previous one
+            // Do not fetch if new range is within the previous one
             if (!$_fetchedRange.start || $_fetchedRange.start > $_activeRange.start || $_fetchedRange.end < $_activeRange.end || !$lazyFetching) {
                 if (abortController) {
                     // Abort previous request

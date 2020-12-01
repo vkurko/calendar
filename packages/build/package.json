@@ -1,12 +1,21 @@
 {
   "name": "@event-calendar/build",
-  "version": "0.0.1-alpha.7",
+  "version": "0.0.1-beta.1",
+  "title": "EventCalendar",
+  "description": "Full-sized event calendar with resource view",
+  "keywords": ["calendar", "event", "resource", "full-sized"],
+  "homepage": "https://vkurko.github.io/calendar/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vkurko/calendar.git",
+    "directory": "packages/build"
+  },
   "jsdelivr": "event-calendar.min.js",
   "devDependencies": {
-    "@event-calendar/day-grid": "~0.0.1-alpha.7",
-    "@event-calendar/list": "~0.0.1-alpha.7",
-    "@event-calendar/time-grid": "~0.0.1-alpha.7",
-    "@event-calendar/resource-time-grid": "~0.0.1-alpha.7",
+    "@event-calendar/day-grid": "~0.0.1-beta.1",
+    "@event-calendar/list": "~0.0.1-beta.1",
+    "@event-calendar/time-grid": "~0.0.1-beta.1",
+    "@event-calendar/resource-time-grid": "~0.0.1-beta.1",
     "abort-controller": "^3.0.0",
     "whatwg-fetch": "^3.4.1"
   }

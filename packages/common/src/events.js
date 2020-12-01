@@ -1,5 +1,6 @@
 import {createDate, toLocalDate} from './date';
 import {assign} from './utils';
+import {toViewWithLocalDates} from './view';
 import {is_function} from 'svelte/internal';
 
 let eventId = 1;
@@ -57,9 +58,9 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
     if (eventContent) {
         content = is_function(eventContent)
             ? eventContent({
-                event: chunk.event,
+                event: toEventWithLocalDates(chunk.event),
                 timeText,
-                view: _view
+                view: toViewWithLocalDates(_view)
             })
             : eventContent;
         if (typeof content === 'string') {
