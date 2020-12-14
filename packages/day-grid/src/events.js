@@ -11,7 +11,7 @@ export function prepareEventChunks(chunks, hiddenDays) {
     let longChunks = {};
     let prevChunk;
     for (let chunk of chunks) {
-        while (hiddenDays.includes(chunk.start.getDay())) {
+        while (hiddenDays.includes(chunk.start.getUTCDay())) {
             // Try to move the start up to the first visible day
             let start = addDay(setMidnight(cloneDate(chunk.start)));
             if (start > chunk.end) {
