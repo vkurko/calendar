@@ -64,7 +64,7 @@ export function viewDates(state) {
         let date = setMidnight(cloneDate($_activeRange.start));
         let end = setMidnight(cloneDate($_activeRange.end));
         while (date < end) {
-            if (!$hiddenDays.includes(date.getDay())) {
+            if (!$hiddenDays.includes(date.getUTCDay())) {
                 dates.push(cloneDate(date));
             }
             addDay(date);
@@ -72,7 +72,7 @@ export function viewDates(state) {
         if (!dates.length && $hiddenDays.length && $hiddenDays.length < 7) {
             // Try to move the date
             state.date.update(date => {
-                while ($hiddenDays.includes(date.getDay())) {
+                while ($hiddenDays.includes(date.getUTCDay())) {
                     addDay(date);
                 }
                 return date;

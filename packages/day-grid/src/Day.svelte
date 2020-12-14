@@ -24,7 +24,7 @@
 
 	$: {
 		isToday = datesEqual(date, today);
-		otherMonth = date.getMonth() !== $currentDate.getMonth();
+		otherMonth = date.getUTCMonth() !== $currentDate.getUTCMonth();
 		highlight = $highlightedDates.some(d => datesEqual(d, date));
 	}
 
@@ -36,7 +36,7 @@
 </script>
 
 <div class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}" on:click={handleClick}>
-	<div class="{$theme.dayHead}">{date.getDate()}</div>
+	<div class="{$theme.dayHead}">{date.getUTCDate()}</div>
 	<div class="{$theme.events}">
 		{#each dayChunks as chunk}
 			<Event {chunk} {longChunks}/>

@@ -13,7 +13,7 @@
 	function prev() {
 		let d = subtractDuration($date, $duration);
 		if ($hiddenDays.length && $hiddenDays.length < 7) {
-			while ($hiddenDays.includes(d.getDay())) {
+			while ($hiddenDays.includes(d.getUTCDay())) {
 				subtractDay(d);
 			}
 		}
