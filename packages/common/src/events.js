@@ -19,12 +19,10 @@ export function createEvents(input) {
     }));
 }
 
-let absURL = new RegExp('^(?:[a-z]+:)?//', 'i');
-let fakeBase = 'http://a';
 export function createEventSources(input) {
     return input.map(source => ({
-        url: new URL(source.url, fakeBase),  // for relative URLs we need to provide something as a base
-        urlFrom: absURL.test(source.url) ? 0 : fakeBase.length,
+        url: (source.url && source.url.trimEnd('&')) || '',
+        method: (source.method && source.method.toUpperCase()) || 'GET',
         extraParams: source.extraParams || {}
     }));
 }

@@ -125,18 +125,20 @@ export function events(state) {
                 }
                 let events = [];
                 for (let source of $eventSources) {
-                    // Set request params
+                    // Prepare params
                     let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
                     params.start = toISOString($_activeRange.start);
                     params.end = toISOString($_activeRange.end);
-                    for (let key of source.url.searchParams.keys()) {
-                        source.url.searchParams.delete(key);
+                    params = new URLSearchParams(params);
+                    // Prepare fetch
+                    let url = source.url, body;
+                    if (['GET', 'HEAD'].includes(source.method)) {
+                        url += (url.includes('?') ? '&' : '?') + params;
+                    } else {
+                        body = params;
                     }
-                    for (let [name, value] of Object.entries(params)) {
-                        source.url.searchParams.set(name, value);
-                    }
-                    // For relative URL cut the fake base out
-                    fetch(source.url.href.substr(source.urlFrom), {signal: abortController.signal, credentials: 'same-origin'})
+                    // Do the fetch
+                    fetch(url, {method: source.method, body, signal: abortController.signal, credentials: 'same-origin'})
                         .then(response => response.json())
                         .then(data => {
                             events = events.concat(createEvents(data));
