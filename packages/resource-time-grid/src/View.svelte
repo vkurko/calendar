@@ -2,7 +2,7 @@
 	import {getContext, setContext} from 'svelte';
 	import {State, Header, Body, Day} from '@event-calendar/time-grid';
 
-	let {resources, filterResourcesWithEvents, _activeRange, _events, _viewDates, _intlDayHeader, theme} = getContext('state');
+	let {resources, hideResourcesWithNoEvents, _activeRange, _events, _viewDates, _intlDayHeader, theme} = getContext('state');
 
 	let state = new State(getContext('state'));
 	setContext('view-state', state);
@@ -12,7 +12,7 @@
 	$: {
 		filteredResources = $resources;
 
-		if ($filterResourcesWithEvents) {
+		if ($hideResourcesWithNoEvents) {
 			filteredResources = $resources.filter(resource => {
 				for (let event of $_events) {
 					if (event.display === 'auto' && event.resourceIds.includes(resource.id) && event.start < $_activeRange.end && event.end > $_activeRange.start) {
