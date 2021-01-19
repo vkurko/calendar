@@ -4,7 +4,7 @@
 
 	export let buttons;
 
-	let {_currentRange, _viewTitle, buttonText, date, duration, hiddenDays, monthMode, theme, view} = getContext('state');
+	let {_currentRange, _viewTitle, buttonText, date, duration, hiddenDays, theme, view} = getContext('state');
 
 	let today = setMidnight(createDate()), isToday;
 

@@ -3,7 +3,7 @@ import View from './View.svelte';
 export default {
 	createOptions(options) {
 		options.resources = [];
-		options.filterResourcesWithEvents = false;
+		options.hideResourcesWithNoEvents = false;
 		// Common options
 		options.buttonText.resourceTimeGridDay = 'day';
 		options.buttonText.resourceTimeGridWeek = 'week';
