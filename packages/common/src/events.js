@@ -48,7 +48,7 @@ export function sortEventChunks(chunks) {
     });
 }
 
-export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view, withDot, dotColor) {
+export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
     let timeText = _intlEventTime.format(chunk.start), content;
     if (displayEventEnd) {
         timeText += ` - ${_intlEventTime.format(chunk.end)}`;
@@ -72,8 +72,6 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
             default:
                 content = {
                     html: `<div class="${theme.eventTime}">${timeText}</div>` +
-                        // ie11 needs nested div
-                        (withDot ? `<div><div class="${theme.eventDot}"${dotColor ? ` style="border-color:${dotColor}"` : ''}></div></div>` : '') +
                         `<div class="${theme.eventTitle}">${chunk.event.title}</div>`
                 };
         }

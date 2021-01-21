@@ -12,6 +12,7 @@ export default {
 		options.noEventsClick = undefined;  // ec option
 		options.noEventsContent = 'No events';
 		options.theme.daySide = 'ec-day-side';
+		options.theme.eventTag = 'ec-event-tag';
 		options.theme.list = 'ec-list';
 		options.theme.noEvents = 'ec-no-events';
 		options.view = 'listWeek';
