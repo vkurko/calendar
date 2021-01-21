@@ -10,13 +10,21 @@
 		eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime} = getContext('state');
 
 	let el;
+	let style;
 	let content;
 	let timeText;
 
 	$: {
-		// Content
+		// Class & Style
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
-		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view, true, bgColor);
+		if (bgColor) {
+			style = `border-color:${bgColor};`;
+		}
+	}
+
+	$: {
+		// Content
+		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
 	}
 
 	onMount(() => {
@@ -42,8 +50,10 @@
 <div
 	bind:this="{el}"
 	class="{$theme.event}"
-	use:action={content}
 	on:click={createHandler($eventClick)}
 	on:mouseenter={createHandler($eventMouseEnter)}
 	on:mouseleave={createHandler($eventMouseLeave)}
-></div>
+>
+	<div class="{$theme.eventTag}" {style}></div>
+	<div use:action={content}></div>
+</div>

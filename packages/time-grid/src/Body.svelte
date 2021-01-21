@@ -30,7 +30,7 @@
 	}
 </script>
 
-<div bind:this="{el}" class="{$theme.body}{compact ? ' ' + $theme.compact : ''}">
+<div bind:this="{el}" class="{$theme.body} {$theme.week}{compact ? ' ' + $theme.compact : ''}">
 	<div class="{$theme.content}">
 		<div class="{$theme.sidebar}">
 			{#each $_times as time}

@@ -209,11 +209,11 @@
 	:global(.ec-content) {
 		display: flex;
 	}
-	:global(.ec-month.ec-body .ec-content) {
+	:global(.ec-month .ec-content) {
 		flex-direction: column;
 		height: 100%; /* ie11 */
 	}
-	:global(.ec-list.ec-body .ec-content) {
+	:global(.ec-list .ec-content) {
 		flex-direction: column;
 	}
 	:global(.ec-resource) {
@@ -229,10 +229,10 @@
 	:global(.ec-day) {
 		border-style: none none none solid;
 	}
-	:global(.ec-month.ec-body .ec-days, .ec-resource .ec-days) {
+	:global(.ec-month .ec-days, .ec-resource .ec-days) {
 		flex: 1 0 auto; /* ie11 */
 	}
-	:global(.ec-month.ec-body .ec-day) {
+	:global(.ec-month .ec-day) {
 		min-height: 5em;
 	}
 	:global(.ec-month .ec-day:first-child) {
@@ -243,7 +243,7 @@
 		padding: 4px;
 	}
 	:global(.ec-list .ec-day) {
-		flex: 1 0 auto;
+		flex: 1 0 auto; /* ie11 */
 		background-color: #fff;
 		border-style: solid none;
 		padding: 8px 14px;
@@ -283,20 +283,21 @@
 		border-radius: 3px;
 		font-size: .85em;
 		line-height: 1.5;
-		font-weight: 400;
 	}
 	:global(.ec-month .ec-event, .ec-list .ec-event) {
 		position: static;
 	}
 	:global(.ec-list .ec-event) {
-		flex: 1 0 auto;
+		flex-direction: row;
 		padding: 8px 14px;
 		color: inherit;
 		background-color: transparent;
 		border-radius: 0;
-		font-size: 1em;
-		flex-direction: row;
-		align-items: baseline;
+	}
+	:global(.ec-event-tag) {
+		border: 2px solid transparent;
+		border-radius: 2px;
+		margin-right: 8px;
 	}
 	:global(.ec-event-time) {
 		overflow: hidden;
@@ -304,21 +305,13 @@
 		margin-bottom: 1px;
 		flex-shrink: 0;
 	}
-	:global(.ec-list .ec-event-time) {
-		width: 23ch;
-		margin: 0;
-		text-overflow: ellipsis;
-	}
-	:global(.ec-list .ec-event-dot) {
-		display: inline-block;
-		border-radius: 50%;
-		border: 6px solid #039be5;
-		margin: 0 14px 0 10px;
-	}
-	:global(.ec-event-title) {
+	:global(.ec-week .ec-event-title) {
 		position: sticky;
 		top: 0;
 		overflow: hidden;
+	}
+	:global(.ec-list .ec-event-title) {
+		font-size: 1rem;
 	}
 	:global(.ec-bg-events) {
 		position: relative;
