@@ -18,7 +18,7 @@
 		// Class & Style
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
 		if (bgColor) {
-			style = `border-color:${bgColor};`;
+			style = `background-color:${bgColor};`;
 		}
 	}
 

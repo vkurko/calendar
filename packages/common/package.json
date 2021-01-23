@@ -10,12 +10,13 @@
     "url": "https://github.com/vkurko/calendar.git",
     "directory": "packages/common"
   },
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": "./index.js",
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "svelte": "^3.25.0"
+    "svelte": "^3.31.2"
   }
 }

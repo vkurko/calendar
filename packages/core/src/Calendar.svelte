@@ -295,7 +295,7 @@
 		border-radius: 0;
 	}
 	:global(.ec-event-tag) {
-		border: 2px solid transparent;
+		width: 4px;
 		border-radius: 2px;
 		margin-right: 8px;
 	}

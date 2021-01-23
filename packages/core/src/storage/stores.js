@@ -131,14 +131,15 @@ export function events(state) {
                     params.end = toISOString($_activeRange.end);
                     params = new URLSearchParams(params);
                     // Prepare fetch
-                    let url = source.url, body;
+                    let url = source.url, headers = {}, body;
                     if (['GET', 'HEAD'].includes(source.method)) {
                         url += (url.includes('?') ? '&' : '?') + params;
                     } else {
+                        headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
                         body = params;
                     }
                     // Do the fetch
-                    fetch(url, {method: source.method, body, signal: abortController.signal, credentials: 'same-origin'})
+                    fetch(url, {method: source.method, headers, body, signal: abortController.signal, credentials: 'same-origin'})
                         .then(response => response.json())
                         .then(data => {
                             events = events.concat(createEvents(data));

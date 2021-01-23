@@ -4,6 +4,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
+import css from 'rollup-plugin-css-only';
+import {writeFileSync} from 'fs';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -17,8 +19,10 @@ export default [
 		external: ['svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
-				dev: !production,
-				css: false
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
 			})
 		],
 	},
@@ -31,8 +35,10 @@ export default [
 		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
-				dev: !production,
-				css: false
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
 			})
 		],
 	},
@@ -45,8 +51,10 @@ export default [
 		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
-				dev: !production,
-				css: false
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
 			})
 		],
 	},
@@ -59,8 +67,10 @@ export default [
 		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
-				dev: !production,
-				css: false
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
 			})
 		],
 	},
@@ -73,8 +83,10 @@ export default [
 		external: ['@event-calendar/time-grid', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
-				dev: !production,
-				css: false
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
 			})
 		],
 	},
@@ -82,23 +94,25 @@ export default [
 		input: 'packages/core/src/index.js',
 		output: {
 			format: 'es',
-			// set 'dir' and 'entryFileNames' instead of 'file' for css.write()
-			// to be able to emit css file to the 'build' directory
-			dir: 'packages',
-			entryFileNames: 'core/[name].js'
+			file: 'packages/core/index.js'
 		},
 		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
-				// enable run-time checks when not in production
-				dev: !production,
-				// we'll extract any component CSS out into
-				// a separate file - better for performance
-				css: css => {
-					css.write('core/index.css', false);
-					css.write('build/event-calendar.min.css');
+				compilerOptions: {
+					// enable run-time checks when not in production
+					dev: !production,
+					css: false
+				},
+			}),
+			// we'll extract any component CSS out into
+			// a separate file - better for performance
+			css({
+				output: (styles, styleNodes) => {
+					writeFileSync('packages/core/index.css', styles);
+					writeFileSync('packages/build/event-calendar.min.css', styles);
 				}
-			})
+			}),
 		],
 	},
 	{
@@ -110,10 +124,6 @@ export default [
 			sourcemap: true
 		},
 		plugins: [
-			svelte({
-				// enable run-time checks when not in production
-				dev: !production
-			}),
 			// If you have external dependencies installed from
 			// npm, you'll most likely need these plugins. In
 			// some cases you'll need additional configuration -

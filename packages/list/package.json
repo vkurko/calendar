@@ -10,6 +10,7 @@
     "url": "https://github.com/vkurko/calendar.git",
     "directory": "packages/list"
   },
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": "./index.js",
@@ -17,6 +18,6 @@
   },
   "dependencies": {
     "@event-calendar/common": "~0.0.1-beta.3",
-    "svelte": "^3.25.0"
+    "svelte": "^3.31.2"
   }
 }
