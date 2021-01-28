@@ -305,10 +305,12 @@
 		margin-bottom: 1px;
 		flex-shrink: 0;
 	}
+	:global(.ec-event-title) {
+		overflow: hidden;
+	}
 	:global(.ec-week .ec-event-title) {
 		position: sticky;
 		top: 0;
-		overflow: hidden;
 	}
 	:global(.ec-list .ec-event-title) {
 		font-size: 1rem;
