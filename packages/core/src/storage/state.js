@@ -1,16 +1,16 @@
 import {writable} from 'svelte/store';
-import {is_function, tick} from 'svelte/internal';
+import {is_function, tick, noop} from 'svelte/internal';
 import {createOptions, createMutators} from './options';
 import {currentRange, activeRange, events, viewTitle, viewDates, view} from './stores';
 import {writable2, intl, intlRange} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
 
 export default class {
-    constructor(input) {
-        let plugins = input.plugins || [];
+    constructor(plugins, input) {
+        plugins = plugins || [];
 
         // Create options
-        let options = createOptions(input, plugins);
+        let options = createOptions(plugins);
         let mutators = createMutators(options, plugins);
 
         // Create stores for options
@@ -38,6 +38,11 @@ export default class {
             if ('createStores' in plugin) {
                 plugin.createStores(this);
             }
+        }
+
+        if (input.view) {
+            // Set initial view based on input
+            this.view.set(input.view);
         }
 
         // Set options for each view

@@ -1,16 +1,23 @@
 <script>
 	import {setContext} from 'svelte';
 	import {get} from 'svelte/store';
+	import {diff} from './storage/options';
 	import State from './storage/state';
 	import Toolbar from './Toolbar.svelte';
 	import {assign, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
 
-	export let options;
+	export let plugins = [];
+	export let options = {};
 
-	let state = new State(options);
+	let state = new State(plugins, options);
 	setContext('state', state);
 
 	let {_viewComponent, height, theme} = state;
+
+	// Reactively update options that did change
+	$: for (let [name, value] of diff(options)) {
+		setOption(name, value);
+	}
 
 	export function setOption(name, value) {
 		if (state.hasOwnProperty(name)) {
@@ -19,6 +26,7 @@
 			}
 			state[name].set(value);
 		}
+		return this;
 	}
 
 	export function getOption(name) {
@@ -27,6 +35,7 @@
 
 	export function refetchEvents() {
 		state._fetchedRange.set({start: undefined, end: undefined});
+		return this;
 	}
 
 	export function getEventById(id) {
@@ -40,6 +49,7 @@
 
 	export function addEvent(event) {
 		state._events.update(events => events.concat(state.events.mutate([event])));
+		return this;
 	}
 
 	export function updateEvent(event) {
@@ -52,10 +62,12 @@
 			}
 			return events;
 		});
+		return this;
 	}
 
 	export function removeEvent(eventId) {
 		state._events.update(events => events.filter(event => event.id != eventId));
+		return this;
 	}
 
 	export function getView() {

@@ -1,8 +1,8 @@
-import {createDate, createDuration, setMidnight} from '@event-calendar/common';
+import {assign, createDate, createDuration, setMidnight} from '@event-calendar/common';
 import {createEvents, createEventSources} from '@event-calendar/common';
 import {is_function} from 'svelte/internal';
 
-export function createOptions(input, plugins) {
+export function createOptions(plugins) {
     let options = {
         buttonText: {
             today: 'today',
@@ -89,14 +89,14 @@ export function createOptions(input, plugins) {
             month: 'short',
             day: 'numeric'
         },
-        view: input.view || undefined,  // set initial view based on input
+        view: undefined,
         viewDidMount: undefined,
         views: {}
     };
 
     for (let plugin of plugins) {
         if ('createOptions' in plugin) {
-            plugin.createOptions(options, input);
+            plugin.createOptions(options);
         }
     }
 
@@ -126,4 +126,19 @@ export function createMutators(options, plugins) {
     }
 
     return mutators;
+}
+
+let prev;
+export function diff(options) {
+    let diff = [];
+    if (prev) {
+        for (let name of Object.keys(options)) {
+            if (options[name] !== prev[name]) {
+                diff.push([name, options[name]]);
+            }
+        }
+    }
+    prev = assign({}, options);
+
+    return diff;
 }

@@ -8,8 +8,16 @@ import 'abort-controller/polyfill';
 
 export default class extends Calendar {
     constructor(el, options) {
-        options.plugins = options.plugins || [DayGrid, List, TimeGrid, ResourceTimeGrid];
+        super({
+            target: el,
+            props: {
+                plugins: [DayGrid, List, TimeGrid, ResourceTimeGrid],
+                options
+            }
+        });
+    }
 
-        super(el, options);
+    get view() {
+        return this.getView();
     }
 }
