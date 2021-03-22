@@ -1,4 +1,4 @@
-# EventCalendar List Plugin
+# Event Calendar List plugin
 
 Full-sized JavaScript event calendar with resource view.
 

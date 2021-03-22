@@ -1,4 +1,4 @@
-# EventCalendar ResourceTimeGrid Plugin
+# Event Calendar ResourceTimeGrid plugin
 
 Full-sized JavaScript event calendar with resource view.
 

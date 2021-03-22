@@ -1,4 +1,4 @@
-# EventCalendar Core Package
+# Event Calendar core package
 
 Full-sized JavaScript event calendar with resource view.
 

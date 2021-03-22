@@ -1,4 +1,4 @@
-# EventCalendar TimeGrid Plugin
+# Event Calendar TimeGrid plugin
 
 Full-sized JavaScript event calendar with resource view.
 

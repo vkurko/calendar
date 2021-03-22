@@ -1,4 +1,4 @@
-# EventCalendar Common Package
+# Event Calendar common package
 
 Full-sized JavaScript event calendar with resource view.
 

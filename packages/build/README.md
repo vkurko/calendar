@@ -1,4 +1,4 @@
-# EventCalendar
+# Event Calendar
 
 Full-sized JavaScript event calendar with resource view.
 

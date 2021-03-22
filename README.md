@@ -1,4 +1,4 @@
-# EventCalendar
+# Event Calendar
 
 See [demo](https://vkurko.github.io/calendar/).
 
@@ -8,6 +8,8 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 
 ## Table of contents
 - [Usage](#usage)
+    - [Svelte component / ES6 module](#svelte-component--es6-module)
+    - [Pre-built browser ready bundle](#pre-built-browser-ready-bundle)
 - [Options](#options)
     - [buttonText](#buttontext)
     - [date](#date)
@@ -60,7 +62,59 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 - [Browser support](#browser-support)
 
 ## Usage
+### Svelte component / ES6 module
+The first step is to install the Event Calendar `core` package:
+```bash
+npm install --save-dev @event-calendar/core
+```
+Then install any additional plugins you plan to use:
+```bash
+npm install --save-dev @event-calendar/time-grid
+```
+You must use at least one plugin that provides a view. The following plugins are currently available:
 
+* `@event-calendar/day-grid`
+* `@event-calendar/list`
+* `@event-calendar/resource-time-grid`
+* `@event-calendar/time-grid`
+
+Then, in your Svelte component, use the calendar something like this:
+```html
+<script>
+    import Calendar from '@event-calendar/core';
+    import TimeGrid from '@event-calendar/time-grid';
+
+    let plugins = [TimeGrid];
+    let options = {
+        view: 'timeGridWeek',
+        events: [
+            // your list of events
+        ]
+    };
+</script>
+
+<Calendar {plugins} {options} />
+```
+Or in ES6 module:
+```js
+import Calendar from '@event-calendar/core';
+import TimeGrid from '@event-calendar/time-grid';
+
+let ec = new Calendar({
+    target: document.getElementById('ec'),
+    props: {
+        plugins: [TimeGrid],
+        options: {
+            view: 'timeGridWeek',
+            events: [
+                // your list of events
+            ]
+        }
+    }
+});
+```
+
+### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
@@ -75,6 +129,7 @@ let ec = new EventCalendar(document.getElementById('ec'), {
     ]
 });
 ```
+
 ## Options
 
 ### buttonText

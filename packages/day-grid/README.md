@@ -1,4 +1,4 @@
-# EventCalendar DayGrid Plugin
+# Event Calendar DayGrid plugin
 
 Full-sized JavaScript event calendar with resource view.
 
