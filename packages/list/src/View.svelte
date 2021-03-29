@@ -4,7 +4,7 @@
 	import Body from './Body.svelte';
 	import Day from './Day.svelte';
 	import State from './state';
-	import {action, addDay, cloneDate, toViewWithLocalDates} from '@event-calendar/common';
+	import {addDay, cloneDate, toViewWithLocalDates, setContent} from '@event-calendar/common';
 
 	let {_events, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
 
@@ -41,7 +41,7 @@
 
 <Body>
 	{#if noEvents}
-		<div use:action={content} class="{$theme.noEvents}" on:click={handleClick}></div>
+		<div use:setContent={content} class="{$theme.noEvents}" on:click={handleClick}></div>
 	{:else}
 		{#each $_viewDates as date}
 			<Day {date}/>

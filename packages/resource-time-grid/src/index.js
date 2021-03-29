@@ -19,8 +19,8 @@ export default {
 			duration: {weeks: 1}
 		};
 	},
-	createMutators(mutators, options) {
-		mutators.resources = createResources;
+	createParsers(parsers, options) {
+		parsers.resources = createResources;
 	}
 }
 

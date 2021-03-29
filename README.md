@@ -17,15 +17,20 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
     - [dayHeaderFormat](#dayheaderformat)
     - [displayEventEnd](#displayeventend)
     - [duration](#duration)
+    - [editable](#editable)
     - [events](#events)
     - [eventBackgroundColor](#eventbackgroundcolor)
     - [eventClick](#eventclick)
     - [eventColor](#eventcolor)
     - [eventContent](#eventcontent)
     - [eventDidMount](#eventdidmount)
+    - [eventDragStart](#eventdragstart)
+    - [eventDragStop](#eventdragstop)
+    - [eventDrop](#eventdrop)
     - [eventMouseEnter](#eventmouseenter)
     - [eventMouseLeave](#eventmouseleave)
     - [eventSources](#eventsources)
+    - [eventStartEditable](#eventstarteditable)
     - [eventTimeFormat](#eventtimeformat)
     - [firstDay](#firstday)
     - [flexibleSlotTimeLimits](#flexibleslottimelimits)
@@ -134,7 +139,7 @@ let ec = new EventCalendar(document.getElementById('ec'), {
 
 ### buttonText
 - Type `object`
-- Default `{today: 'today', dayGridMonth: 'month', listDay: 'list', listWeek: 'list', listMonth: 'list', listYear: 'list', resourceTimeGridDay: 'day',resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week'}`
+- Default `{today: 'today', dayGridMonth: 'month', listDay: 'list', listWeek: 'list', listMonth: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week'}`
 
 Text that is displayed in buttons of the header toolbar.
 
@@ -227,6 +232,12 @@ function (date) {
 
 Determines whether to display an event’s end time.
 
+### dragScroll
+- Type `boolean`
+- Default `true`
+
+Determines whether the calendar should automatically scroll during the event drag-and-drop when the mouse crosses the edge.
+
 ### duration
 - Type `string`, `integer` or `object`
 - Default `{weeks: 1}`
@@ -244,6 +255,14 @@ Determines whether to display an event’s end time.
 Sets the duration of a view.
 
 This should be a value that can be parsed into a [Duration](#duration-object) object.
+
+### editable
+- Type `boolean`
+- Default `false`
+
+Determines whether the events on the calendar can be dragged and resized (both at the same time).
+
+Currently, only **dragging** is supported. See [eventStartEditable](#eventstarteditable).
 
 ### events
 - Type `Array`
@@ -405,6 +424,180 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+### eventDragStart
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the event dragging begins.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventDragStop
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the event dragging stops.
+
+It is triggered before the event’s information has been modified (if moved to a new date/time) and before the [eventDrop](#eventdrop) callback is triggered.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventDrop
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when dragging stops, and the event has moved to a different day/time.
+
+It is triggered after the event’s information has been modified and after the [eventDragStop](#eventdrop) callback has been triggered.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`oldEvent`
+</td>
+<td>
+
+An [Event](#event-object) object that holds information about the event before the drop
+</td>
+</tr>
+<tr>
+<td>
+
+`oldResource`
+</td>
+<td>
+
+If the resource has changed, this is the [Resource](#resource-object) object the event came from. If the resource has not changed, this will be undefined
+</td>
+</tr>
+<tr>
+<td>
+
+`newResource`
+</td>
+<td>
+
+If the resource has changed, this is the [Resource](#resource-object) object the event went to. If the resource has not changed, this will be undefined
+</td>
+</tr>
+<tr>
+<td>
+
+`delta`
+</td>
+<td>
+
+A [Duration](#duration-object) object that represents the amount of time the event was moved by
+</td>
+</tr>
+<tr>
+<td>
+
+`revert`
+</td>
+<td>
+
+A function that, if called, reverts the event’s start/end date to the values before the drag
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
 ### eventMouseEnter
 - Type `function`
 - Default `undefined`
@@ -503,7 +696,7 @@ The current [View](#view-object) object
 - Type `EventSource[]`
 - Default `[]`
 
-Array of EventSource objects that will provide EventCalendar with data about events.
+Array of EventSource objects that will provide the Event Calendar with data about events.
 
 This option is used instead of the `events` option.
 
@@ -540,6 +733,12 @@ Other GET/POST data you want to send to the server. Can be a plain object or a f
 </td>
 </tr>
 </table>
+
+### eventStartEditable
+- Type `boolean`
+- Default `true`
+
+Determines whether the events on the calendar can be dragged.
 
 ### eventTimeFormat
 - Type `object` or `function`
@@ -655,7 +854,7 @@ Each date can be either an ISO8601 date string like `'2022-12-31'`, or a JavaScr
 
 Determines when event fetching should occur.
 
-When set to `true` (the default), the calendar will only fetch events when it absolutely needs to, minimizing HTTP requests. For example, say your calendar starts out in month view, in February. EventCalendar will fetch events for the entire month of February and store them in its internal storage. Then, say the user switches to week view and begins browsing the weeks in February. The calendar will avoid fetching events because it already has this information stored.
+When set to `true` (the default), the calendar will only fetch events when it absolutely needs to, minimizing HTTP requests. For example, say your calendar starts out in month view, in February. The Event Calendar will fetch events for the entire month of February and store them in its internal storage. Then, say the user switches to week view and begins browsing the weeks in February. The calendar will avoid fetching events because it already has this information stored.
 
 When set to `false`, the calendar will fetch events any time the view is switched, or any time the current date changes (for example, as a result of the user clicking prev/next).
 
@@ -731,7 +930,7 @@ function (isLoading) { }
 - Type `string`
 - Default `undefined`
 
-Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object that the EventCalendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
+Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object that the Event Calendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
 
 ### monthMode
 - Type `boolean`
@@ -850,7 +1049,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 - Type `object` or `function`
 - Default `{calendar: 'ec', header: 'ec-header', withScroll: 'ec-with-scroll', hiddenScroll: 'ec-hidden-scroll', body: 'ec-body', week: 'ec-week', compact: 'ec-compact', toolbar: 'ec-toolbar', sidebar: 'ec-sidebar', content: 'ec-content', lines: 'ec-lines', line: 'ec-line', days: 'ec-days', day: 'ec-day', dayHead: 'ec-day-head', today: 'ec-today', otherMonth: 'ec-other-month', highlight: 'ec-highlight', events: 'ec-events', event: 'ec-event', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', bgEvents: 'ec-bg-events', bgEvent: 'ec-bg-event', hiddenTimes: 'ec-hidden-times', time: 'ec-time', button: 'ec-button', buttonGroup: 'ec-button-group', icon: 'ec-icon', active: 'ec-active', title: 'ec-title', month: 'ec-month', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title'}`
 
-Defines the CSS classes that EventCalendar uses to generate HTML markup.
+Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 
 This value can be either a plain object with all necessary properties, or a callback function that receives default theme object and should return an actual one:
 
@@ -931,7 +1130,7 @@ The mounted [View](#view-object) object
 You can specify options that apply only to specific views. To do so provide separate options objects within the `views` option, keyed by the name of the view.
 
 ## Event object
-This is a JavaScript object that EventCalendar uses to store information about a calendar event.
+This is a JavaScript object that the Event Calendar uses to store information about a calendar event.
 
 Here are all properties that exist in Event object:
 <table>
@@ -1003,7 +1202,7 @@ A plain object holding miscellaneous properties specified during parsing in the 
 </table>
 
 ### Parsing event from a plain object
-When EventCalendar receives an array of plain event’s objects either from the `events` option or as a result of an HTTP request to a URL of an event source, it parses the input objects into proper Event objects.
+When Event Calendar receives an array of plain event’s objects either from the `events` option or as a result of an HTTP request to a URL of an event source, it parses the input objects into proper Event objects.
 
 Here are all admissible fields for the event’s input object:
 <table>
@@ -1075,6 +1274,8 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `string` The rendering type of the event. Can be `'auto'` or `'background'`. Default `'auto'`
+
+In addition, in your callback functions, you may get the `'ghost'` and `'preview'` for this property, which are internal values and are used to display events during drag-and-drop operations
 </td>
 </tr>
 <tr>
@@ -1110,7 +1311,7 @@ Here are all admissible fields for the event’s input object:
 </table>
 
 ## Duration object
-This is a JavaScript object that EventCalendar uses to store information about a period of time, like _30 minutes_ or _1 day and 6 hours_.
+This is a JavaScript object that the Event Calendar uses to store information about a period of time, like _30 minutes_ or _1 day and 6 hours_.
 
 Here are all properties that exist in Duration object:
 <table>
@@ -1152,7 +1353,7 @@ Here are all properties that exist in Duration object:
 </table>
 
 ### Parsing duration from input values
-When EventCalendar receives a value for options like `duration`, `scrollTime`, `slotDuration` and others, it parses it into a proper Duration object.
+When Event Calendar receives a value for options like `duration`, `scrollTime`, `slotDuration` and others, it parses it into a proper Duration object.
 
 The admissible input value can be specified in one of three formats:
 - an object with any of the following keys: `year`, `years`, `month`, `months`, `day`, `days`, `minute`, `minutes`, `second`, `seconds`
@@ -1160,7 +1361,7 @@ The admissible input value can be specified in one of three formats:
 - an integer specifying the total number of seconds
 
 ## Resource object
-This is a JavaScript object that EventCalendar uses to store information about a resource. Calendar events can be associated with resources and displayed separately using the resource view.
+This is a JavaScript object that the Event Calendar uses to store information about a resource. Calendar events can be associated with resources and displayed separately using the resource view.
 
 Here are all properties that exist in Resource object:
 <table>
@@ -1181,7 +1382,7 @@ Here are all properties that exist in Resource object:
 </table>
 
 ### Parsing resource from a plain object
-When EventCalendar receives an array of plain resource’s objects for the `resources` option, it parses the input objects into proper Resource objects.
+When Event Calendar receives an array of plain resource’s objects for the `resources` option, it parses the input objects into proper Resource objects.
 
 Here are all admissible fields for the resource’s input object:
 <table>

@@ -2,7 +2,7 @@
 	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
 	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
-	import {action} from '@event-calendar/common';
+	import {setContent} from '@event-calendar/common';
 
 	export let chunk;
 
@@ -48,12 +48,12 @@
 </script>
 
 <div
-	bind:this="{el}"
+	bind:this={el}
 	class="{$theme.event}"
 	on:click={createHandler($eventClick)}
 	on:mouseenter={createHandler($eventMouseEnter)}
 	on:mouseleave={createHandler($eventMouseLeave)}
 >
 	<div class="{$theme.eventTag}" {style}></div>
-	<div use:action={content}></div>
+	<div use:setContent={content}></div>
 </div>

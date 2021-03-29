@@ -1,22 +1,26 @@
 <script>
-	import {getContext, onMount, afterUpdate} from 'svelte';
+	import {getContext, onMount, afterUpdate, tick} from 'svelte';
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
-	import {action, createEventContent, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
+	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, rect, setContent} from '@event-calendar/common';
 
 	export let chunk;
-	export let longChunks;
+	export let longChunks = {};
 
 	let {displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
-		eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime} = getContext('state');
+		eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction} = getContext('state');
 
 	let el;
+	let classes;
 	let style;
 	let content;
 	let timeText;
 	let margin = writable(1);
+	let display;
 
 	$: {
+		display = chunk.event.display;
+
 		// Class & Style
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =
@@ -26,12 +30,12 @@
 		if (bgColor) {
 			style += `background-color:${bgColor};`;
 		}
+
+		classes = $_interaction.drag ? $_interaction.drag.classes(display, $theme.event) : $theme.event;
 	}
 
-	$: {
-		// Content
-		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
-	}
+	// Content
+	$: [timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
 
 	onMount(() => {
 		if (is_function($eventDidMount)) {
@@ -46,28 +50,42 @@
 
 	afterUpdate(reposition);
 
-	function createHandler(fn) {
-		return jsEvent => {
-			if (is_function(fn)) {
-				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)});
-			}
-		};
+	function createHandler(fn, display) {
+		return display !== 'preview' && is_function(fn)
+			? jsEvent => fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)})
+			: undefined;
+	}
+
+	function createMouseDownHandler(interaction, display) {
+		return display === 'auto' && interaction.drag
+			? jsEvent => interaction.drag.startDayGrid(chunk.event, el, jsEvent)
+			: undefined;
 	}
 
 	function reposition() {
-		if (!el) {
+		if (!el || display === 'preview') {
 			return;
 		}
 		let c = chunk;
 		c.top = 0;
 		if (c.prev) {
+			if (c.prev.bottom === undefined) {
+				// 'prev' is not ready yet, try again later
+				tick().then(reposition);
+				return;
+			}
 			c.top = c.prev.bottom + 1;
 		}
-		c.bottom = c.top + el.getBoundingClientRect().height;
+		c.bottom = c.top + el.offsetHeight;
+		let m = 1;
 		let key = c.date.getTime();
 		if (longChunks[key]) {
-			let m = 1;
 			for (let longChunk of longChunks[key]) {
+				if (longChunk.bottom === undefined) {
+					// 'longChunk' is not ready yet, try again later
+					tick().then(reposition);
+					return;
+				}
 				if (c.top < longChunk.bottom && c.bottom > longChunk.top) {
 					let offset = longChunk.bottom - c.top + 1;
 					m += offset;
@@ -75,19 +93,20 @@
 					c.bottom += offset;
 				}
 			}
-			$margin = m;
 		}
+		$margin = m;
 	}
 </script>
 
 <div
-	bind:this="{el}"
-	class="{$theme.event}"
+	bind:this={el}
+	class="{classes}"
 	{style}
-	use:action={content}
-	on:click={createHandler($eventClick)}
-	on:mouseenter={createHandler($eventMouseEnter)}
-	on:mouseleave={createHandler($eventMouseLeave)}
+	use:setContent={content}
+	on:click={createHandler($eventClick, display)}
+	on:mouseenter={createHandler($eventMouseEnter, display)}
+	on:mouseleave={createHandler($eventMouseLeave, display)}
+	on:mousedown={createMouseDownHandler($_interaction, display)}
 ></div>
 
 <svelte:window on:resize={reposition}/>

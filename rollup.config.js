@@ -27,6 +27,22 @@ export default [
 		],
 	},
 	{
+		input: 'packages/interaction/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/interaction/index.js'
+		},
+		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
+			})
+		],
+	},
+	{
 		input: 'packages/day-grid/src/index.js',
 		output: {
 			format: 'es',

@@ -5,10 +5,10 @@
 	import Body from './Body.svelte';
 	import Day from './Day.svelte';
 
-	let {_viewDates, _intlDayHeader, theme} = getContext('state');
+	let state = getContext('state');
+	let {_viewDates, _intlDayHeader, theme} = state;
 
-	let state = new State(getContext('state'));
-	setContext('view-state', state);
+	setContext('view-state', new State(state));
 </script>
 
 <Header>

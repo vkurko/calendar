@@ -12,8 +12,8 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="global.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.0.1/event-calendar.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.0.1/event-calendar.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.1.0-beta.1/event-calendar.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.1.0-beta.1/event-calendar.min.js"></script>
 </head>
 
 <body>
@@ -58,12 +58,13 @@
             {start: days[1] + " 12:00", end: days[1] + " 14:00", resourceId: 2, display: "background"},
             {start: days[2] + " 17:00", end: days[2] + " 24:00", resourceId: 1, display: "background"},
             {start: days[0] + " 10:00", end: days[0] + " 14:00", resourceId: 1, title: "The calendar can display background and regular events", color: "#FE6B64"},
-            {start: days[1] + " 16:00", end: days[2] + " 06:00", resourceId: 2, title: "An event may span to another day", color: "#B29DD9"},
-            {start: days[2] + " 09:00", end: days[2] + " 12:00", resourceId: 2, title: "Events can be assigned to resources and the calendar has the resources view built-in", color: "#779ECB"},
+            {start: days[1] + " 16:00", end: days[2] + " 08:00", resourceId: 2, title: "An event may span to another day", color: "#B29DD9"},
+            {start: days[2] + " 09:00", end: days[2] + " 13:00", resourceId: 2, title: "Events can be assigned to resources and the calendar has the resources view built-in", color: "#779ECB"},
             {start: days[3] + " 14:00", end: days[3] + " 20:00", resourceId: 1, title: "", color: "#FE6B64"},
             {start: days[3] + " 15:00", end: days[3] + " 18:00", resourceId: 1, title: "Overlapping events are positioned properly", color: "#779ECB"},
-            {start: days[3] + " 17:00", end: days[3] + " 19:00", resourceId: 1, title: "", color: "#B29DD9"},
-            {start: days[5] + " 10:00", end: days[5] + " 19:00", resourceId: 2, title: "You have complete control over the <i><b>display</b></i> of events", color: "#779ECB"}
+            {start: days[5] + " 10:00", end: days[5] + " 16:00", resourceId: 2, title: "You have complete control over the <i><b>display</b></i> of events…", color: "#779ECB"},
+            {start: days[5] + " 14:00", end: days[5] + " 19:00", resourceId: 2, title: "…and you can drag and drop the events <small>(currently only on desktop)</small>", color: "#FE6B64"},
+            {start: days[5] + " 18:00", end: days[5] + " 21:00", resourceId: 2, title: "", color: "#B29DD9"}
         ];
     }
 

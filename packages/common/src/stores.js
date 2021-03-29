@@ -2,10 +2,10 @@ import {derived, writable, get} from 'svelte/store';
 import {is_function} from 'svelte/internal';
 import {toLocalDate, formatRange} from './date';
 
-export function writable2(value, mutator, start) {
+export function writable2(value, parser, start) {
     return {
-        ...writable(mutator ? mutator(value) : value, start),
-        mutate: mutator
+        ...writable(parser ? parser(value) : value, start),
+        parse: parser
     };
 }
 

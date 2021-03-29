@@ -12,7 +12,7 @@
 	let state = new State(plugins, options);
 	setContext('state', state);
 
-	let {_viewComponent, height, theme} = state;
+	let {_viewComponent, _interactionComponent, height, theme} = state;
 
 	// Reactively update options that did change
 	$: for (let [name, value] of diff(options)) {
@@ -21,8 +21,8 @@
 
 	export function setOption(name, value) {
 		if (state.hasOwnProperty(name)) {
-			if (state[name].mutate) {
-				value = state[name].mutate(value);
+			if (state[name].parse) {
+				value = state[name].parse(value);
 			}
 			state[name].set(value);
 		}
@@ -48,7 +48,7 @@
 	}
 
 	export function addEvent(event) {
-		state._events.update(events => events.concat(state.events.mutate([event])));
+		state._events.update(events => events.concat(state.events.parse([event])));
 		return this;
 	}
 
@@ -56,7 +56,7 @@
 		state._events.update(events => {
 			for (let e of events) {
 				if (e.id == event.id) {
-					assign(e, state.events.mutate([event])[0]);
+					assign(e, state.events.parse([event])[0]);
 					break;
 				}
 			}
@@ -78,6 +78,7 @@
 <div class="{$theme.calendar}" style="height: {$height}">
 	<Toolbar/>
 	<svelte:component this={$_viewComponent}/>
+	<svelte:component this={$_interactionComponent}/>
 </div>
 
 <style>
@@ -280,11 +281,12 @@
 		background-color: #e5f7fe;
 	}
 	:global(.ec-events) {
-		position: relative;
 		margin: 0 6px 0 0;
 	}
+	:global(.ec-week .ec-events, .ec-events.ec-preview) {
+		position: relative;
+	}
 	:global(.ec-event) {
-		position: absolute;
 		display: flex;
 		flex-direction: column;
 		padding: 2px;
@@ -296,8 +298,11 @@
 		font-size: .85em;
 		line-height: 1.5;
 	}
-	:global(.ec-month .ec-event, .ec-list .ec-event) {
-		position: static;
+	:global(.ec-month .ec-event) {
+		position: relative;
+	}
+	:global(.ec-week .ec-event, .ec-event.ec-preview) {
+		position: absolute;
 	}
 	:global(.ec-list .ec-event) {
 		flex-direction: row;
@@ -326,6 +331,26 @@
 	}
 	:global(.ec-list .ec-event-title) {
 		font-size: 1rem;
+	}
+	:global(.ec-draggable) {
+		cursor: pointer;
+		user-select: none;
+		-ms-user-select: none;
+	}
+	:global(.ec-ghost) {
+		opacity: .5;
+		user-select: none;
+		-ms-user-select: none;
+	}
+	:global(.ec-event.ec-preview) {
+		cursor: pointer;
+		z-index: 99999;
+		width: 100%;
+		user-select: none;
+		-ms-user-select: none;
+	}
+	:global(.ec-month .ec-preview) {
+		top: 0;
 	}
 	:global(.ec-bg-events) {
 		position: relative;

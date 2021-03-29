@@ -1,7 +1,9 @@
-import {createDate, toLocalDate} from './date';
+import {createDate, cloneDate, toLocalDate} from './date';
 import {assign} from './utils';
 import {toViewWithLocalDates} from './view';
 import {is_function} from 'svelte/internal';
+
+const display = ['background'];
 
 let eventId = 1;
 export function createEvents(input) {
@@ -13,7 +15,7 @@ export function createEvents(input) {
         start: createDate(event.start),
         end: createDate(event.end),
         title: event.title || '',
-        display: event.display || 'auto',
+        display: display.includes(event.display) ? event.display : 'auto',
         extendedProps: event.extendedProps || {},
         backgroundColor: event.backgroundColor || event.color
     }));
@@ -81,9 +83,17 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
 }
 
 export function toEventWithLocalDates(event) {
+    return _cloneEvent(event, toLocalDate);
+}
+
+export function cloneEvent(event) {
+    return _cloneEvent(event, cloneDate);
+}
+
+function _cloneEvent(event, dateFn) {
     event = assign({}, event);
-    event.start = toLocalDate(event.start);
-    event.end = toLocalDate(event.end);
+    event.start = dateFn(event.start);
+    event.end = dateFn(event.end);
 
     return event;
 }

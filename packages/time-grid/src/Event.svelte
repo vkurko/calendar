@@ -1,24 +1,28 @@
 <script>
 	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {action, createEventContent, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
+	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '@event-calendar/common';
 
 	export let date;
 	export let chunk;
 
 	let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-		eventMouseEnter, eventMouseLeave, slotDuration, theme, _view, _intlEventTime} = getContext('state');
+		eventMouseEnter, eventMouseLeave, slotDuration, theme, _view, _intlEventTime, _interaction} = getContext('state');
 
-	let {_slotTimeLimits} = getContext('view-state');
+	let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
 	let el;
-	let className;
+	let display;
+	let classes;
 	let style;
 	let content;
 	let timeText;
+	let dragged = false;
 
 	$: {
-		// Class & Style
+		display = chunk.event.display;
+
+		// Style
 		let step = $slotDuration.seconds / 60;
 		let offset = $_slotTimeLimits.min.seconds / 60;
 		let start = (chunk.start - date) / 1000 / 60;
@@ -36,22 +40,21 @@
 		if (bgColor) {
 			style += `background-color:${bgColor};`;
 		}
-		switch (chunk.event.display) {
-			case 'background':
-				className = $theme.bgEvent;
-				break;
-			default:
-				className = $theme.event;
-				style +=
-					`z-index:${chunk.column + 1};` +
-					`left:${100 / chunk.group.columns.length * chunk.column}%;` +
-					`width:${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
-				;
+		if (display === 'auto' || display === 'ghost') {
+			style +=
+				`z-index:${chunk.column + 1};` +
+				`left:${100 / chunk.group.columns.length * chunk.column}%;` +
+				`width:${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
+			;
 		}
 
-		// Content
-		[timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
+		// Class
+		let className = display === 'background' ? $theme.bgEvent : $theme.event;
+		classes = $_interaction.drag ? $_interaction.drag.classes(display, className) : className;
 	}
+
+	// Content
+	$: [timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
 
 	onMount(() => {
 		if (is_function($eventDidMount)) {
@@ -64,21 +67,26 @@
 		}
 	});
 
-	function createHandler(fn) {
-		return jsEvent => {
-			if (is_function(fn)) {
-				fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)});
-			}
-		};
+	function createHandler(fn, display) {
+		return display !== 'preview' && is_function(fn)
+			? jsEvent => fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)})
+			: undefined;
+	}
+
+	function createMouseDownHandler(interaction, display) {
+		return display === 'auto' &&  interaction.drag
+			? jsEvent => interaction.drag.startTimeGrid(chunk.event, el, jsEvent, _viewResources)
+			: undefined;
 	}
 </script>
 
 <div
-	bind:this="{el}"
-	class="{className}"
+	bind:this={el}
+	class="{classes}"
 	{style}
-	use:action={content}
-	on:click={createHandler($eventClick)}
-	on:mouseenter={createHandler($eventMouseEnter)}
-	on:mouseleave={createHandler($eventMouseLeave)}
+	use:setContent={content}
+	on:click={createHandler($eventClick, display)}
+	on:mouseenter={createHandler($eventMouseEnter, display)}
+	on:mouseleave={createHandler($eventMouseLeave, display)}
+	on:mousedown={createMouseDownHandler($_interaction, display)}
 ></div>

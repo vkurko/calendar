@@ -39,20 +39,38 @@ export function cloneDate(date) {
     return new Date(date.getTime());
 }
 
-export function addDuration(date, duration, multiplier) {
-    return _addSubDuration(date, duration, multiplier === undefined ? +1 : multiplier);
+export function addDuration(date, duration, x) {
+    if (x === undefined) {
+        x = 1;
+    }
+    date.setUTCFullYear(date.getUTCFullYear() + x * duration.years);
+    let month = date.getUTCMonth() + x * duration.months;
+    date.setUTCMonth(month);
+    month %= 12;
+    if (month < 0) {
+        month += 12;
+    }
+    while (date.getUTCMonth() !== month) {
+        subtractDay(date);
+    }
+    date.setUTCDate(date.getUTCDate() + x * duration.days);
+    date.setUTCSeconds(date.getUTCSeconds() + x * duration.seconds);
+
+    return date;
 }
 
-export function subtractDuration(date, duration, multiplier) {
-    return _addSubDuration(date, duration, multiplier === undefined ? -1 : multiplier);
+export function subtractDuration(date, duration, x) {
+    return addDuration(date, duration, x === undefined ? -1 : -x);
 }
 
-export function addDay(date) {
-    return _addSubDays(date, +1);
+export function addDay(date, x) {
+    date.setUTCDate(date.getUTCDate() + (x === undefined ? 1 : x));
+
+    return date;
 }
 
-export function subtractDay(date) {
-    return _addSubDays(date, -1);
+export function subtractDay(date, x) {
+    return addDay(date, x === undefined ? -1 : -x);
 }
 
 export function setMidnight(date) {
@@ -154,29 +172,6 @@ function _fromISOString(str) {
         Number(parts[4] || 0),
         Number(parts[5] || 0)
     ));
-}
-
-function _addSubDuration(date, duration, x) {
-    date.setUTCFullYear(date.getUTCFullYear() + x * duration.years);
-    let month = date.getUTCMonth() + x * duration.months;
-    date.setUTCMonth(month);
-    month %= 12;
-    if (month < 0) {
-        month += 12;
-    }
-    while (date.getUTCMonth() !== month) {
-        subtractDay(date);
-    }
-    date.setUTCDate(date.getUTCDate() + x * duration.days);
-    date.setUTCSeconds(date.getUTCSeconds() + x * duration.seconds);
-
-    return date;
-}
-
-function _addSubDays(date, x) {
-    date.setUTCDate(date.getUTCDate() + x);
-
-    return date;
 }
 
 function _commonChunks(str1, substr1, str2, substr2) {

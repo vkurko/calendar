@@ -1,6 +1,6 @@
 import {writable} from 'svelte/store';
-import {is_function, tick, noop} from 'svelte/internal';
-import {createOptions, createMutators} from './options';
+import {is_function, tick} from 'svelte/internal';
+import {createOptions, createParsers} from './options';
 import {currentRange, activeRange, events, viewTitle, viewDates, view} from './stores';
 import {writable2, intl, intlRange} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
@@ -11,11 +11,11 @@ export default class {
 
         // Create options
         let options = createOptions(plugins);
-        let mutators = createMutators(options, plugins);
+        let parsers = createParsers(options, plugins);
 
         // Create stores for options
         for (let [option, value] of Object.entries(options)) {
-            this[option] = writable2(value, mutators[option]);
+            this[option] = writable2(value, parsers[option]);
         }
 
         // Private stores
@@ -32,6 +32,9 @@ export default class {
         this._viewDates = viewDates(this);
         this._view = view(this);
         this._viewComponent = writable(undefined);
+        this._interaction = writable({});
+        this._interactionComponent = writable(null);
+        this._dragEvent = writable(null);
 
         // Let plugins create their private stores
         for (let plugin of plugins) {
@@ -60,22 +63,22 @@ export default class {
             });
             for (let key of Object.keys(opts)) {
                 if (this.hasOwnProperty(key) && key[0] !== '_') {
-                    let {set, _set, mutate, ...rest} = this[key];
+                    let {set, _set, parse, ...rest} = this[key];
 
                     if (!_set) {
                         // Original set
                         _set = set;
                     }
 
-                    if (mutate) {
-                        opts[key] = mutate(opts[key]);
+                    if (parse) {
+                        opts[key] = parse(opts[key]);
                     }
 
                     this[key] = {
                         // Set value in all views
                         set: value => {opts[key] = value; set(value);},
                         _set,
-                        mutate,
+                        parse,
                         ...rest
                     };
 

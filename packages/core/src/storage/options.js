@@ -103,8 +103,8 @@ export function createOptions(plugins) {
     return options;
 }
 
-export function createMutators(options, plugins) {
-    let mutators = {
+export function createParsers(options, plugins) {
+    let parsers = {
         buttonText: input => is_function(input) ? input(options.buttonText) : input,
         date: date => setMidnight(createDate(date)),
         duration: createDuration,
@@ -120,12 +120,12 @@ export function createMutators(options, plugins) {
     };
 
     for (let plugin of plugins) {
-        if ('createMutators' in plugin) {
-            plugin.createMutators(mutators, options);
+        if ('createParsers' in plugin) {
+            plugin.createParsers(parsers, options);
         }
     }
 
-    return mutators;
+    return parsers;
 }
 
 let prev;

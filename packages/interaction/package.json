@@ -1,14 +1,14 @@
 {
-  "name": "@event-calendar/common",
+  "name": "@event-calendar/interaction",
   "version": "0.1.0-beta.1",
-  "title": "Event Calendar Common package",
+  "title": "Event Calendar Interaction plugin",
   "description": "Full-sized event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
     "type": "git",
     "url": "https://github.com/vkurko/calendar.git",
-    "directory": "packages/common"
+    "directory": "packages/interaction"
   },
   "license": "MIT",
   "type": "module",
