@@ -24,6 +24,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
     - [eventColor](#eventcolor)
     - [eventContent](#eventcontent)
     - [eventDidMount](#eventdidmount)
+    - [eventDragMinDistance](#eventdragmindistance)
     - [eventDragStart](#eventdragstart)
     - [eventDragStop](#eventdragstop)
     - [eventDrop](#eventdrop)
@@ -423,6 +424,12 @@ The current [View](#view-object) object
 </td>
 </tr>
 </table>
+
+### eventDragMinDistance
+- Type `integer`
+- Default `5`
+
+Defines how many pixels the user’s mouse must move before the event dragging begins.
 
 ### eventDragStart
 - Type `function`

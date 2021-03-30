@@ -5,13 +5,14 @@
         toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid} from './utils';
 
-    let {_dragEvent, _events, _viewDates, eventDragStart, eventDragStop, eventDrop, dragScroll,
+    let {_dragEvent, _events, _viewDates, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, dragScroll,
         slotDuration, hiddenDays, _view, theme} = getContext('state');
 
     let dragging = false;
     let event;
     let dayCol, dayRow;
     let offset;
+    let fromX, fromY;
     let toX, toY;
     let delta;
     let dayEl, daysEls, bodyEl;
@@ -55,8 +56,8 @@
         dayRect = rect(dayEl);
         bodyRect = rect(bodyEl);
 
-        toX = jsEvent.clientX;
-        toY = jsEvent.clientY;
+        fromX = toX = jsEvent.clientX;
+        fromY = toY = jsEvent.clientY;
     }
 
     function move(jsEvent) {
@@ -72,7 +73,7 @@
                 newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaRCol));
                 deltaDCol -= (newResourceCol - resourceCol) * $_viewDates.length;
 
-                if ($_dragEvent || newResourceCol !== resourceCol) {
+                if ($_dragEvent || distance() >= $eventDragMinDistance) {
                     if (!$_dragEvent) {
                         createDragEvent(jsEvent);
                     }
@@ -119,7 +120,7 @@
             });
         }
 
-        if ($_dragEvent || delta.days || delta.seconds) {
+        if ($_dragEvent || distance() >= $eventDragMinDistance) {
             if (!$_dragEvent) {
                 createDragEvent(jsEvent);
             }
@@ -220,6 +221,10 @@
         target.end = source.end;
         target.resourceIds = source.resourceIds;
         $_events = $_events;
+    }
+
+    function distance() {
+        return Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
     }
 
     function handleSelectStart(jsEvent) {

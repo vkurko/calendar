@@ -4,6 +4,7 @@ export default {
 	createOptions(options) {
 		options.editable = false;
 		options.eventStartEditable = true;
+		options.eventDragMinDistance = 5;
 		options.eventDragStart = undefined;
 		options.eventDragStop = undefined;
 		options.eventDrop = undefined;

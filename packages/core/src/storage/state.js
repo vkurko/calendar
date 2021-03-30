@@ -49,9 +49,13 @@ export default class {
         }
 
         // Set options for each view
+        let commonOpts = assign({}, options, input);
+        parseOpts(commonOpts, this);
         let views = new Set([...Object.keys(options.views), ...Object.keys(input.views || {})]);
         for (let view of views) {
-            let opts = assign({}, options, options.views[view] || {}, input, input.views && input.views[view] || {});
+            let viewOpts = assign({}, options.views[view] || {}, input.views && input.views[view] || {});
+            parseOpts(viewOpts, this);
+            let opts = assign({}, commonOpts, viewOpts);
             // Change view component when view changes
             this.view.subscribe(newView => {
                 if (newView === view) {
@@ -63,22 +67,17 @@ export default class {
             });
             for (let key of Object.keys(opts)) {
                 if (this.hasOwnProperty(key) && key[0] !== '_') {
-                    let {set, _set, parse, ...rest} = this[key];
+                    let {set, _set, ...rest} = this[key];
 
                     if (!_set) {
                         // Original set
                         _set = set;
                     }
 
-                    if (parse) {
-                        opts[key] = parse(opts[key]);
-                    }
-
                     this[key] = {
                         // Set value in all views
                         set: value => {opts[key] = value; set(value);},
                         _set,
-                        parse,
                         ...rest
                     };
 
@@ -89,6 +88,16 @@ export default class {
                         }
                     });
                 }
+            }
+        }
+    }
+}
+
+function parseOpts(opts, state) {
+    for (let key of Object.keys(opts)) {
+        if (state.hasOwnProperty(key) && key[0] !== '_') {
+            if (state[key].parse) {
+                opts[key] = state[key].parse(opts[key]);
             }
         }
     }
