@@ -10,13 +10,14 @@
 
     let dragging = false;
     let event;
-    let dayCol, dayRow, resourceCol;
+    let dayCol, dayRow;
     let offset;
     let toX, toY;
     let delta;
     let dayEl, daysEls, bodyEl;
     let dayRect, bodyRect;
     let _viewResources;
+    let resourceCol, newResourceCol;
 
     export function startTimeGrid(event, el, jsEvent, resourcesStore) {
         if (!dragging) {
@@ -68,14 +69,16 @@
             // timeGrid
             if (_viewResources) {
                 let deltaRCol = Math.floor((dayCol + deltaDCol) / $_viewDates.length);
-                let rCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaRCol));
-                deltaDCol -= (rCol - resourceCol) * $_viewDates.length;
+                newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaRCol));
+                deltaDCol -= (newResourceCol - resourceCol) * $_viewDates.length;
 
-                if (!$_dragEvent) {
-                    createDragEvent(jsEvent);
+                if ($_dragEvent || newResourceCol !== resourceCol) {
+                    if (!$_dragEvent) {
+                        createDragEvent(jsEvent);
+                    }
+                    $_dragEvent.resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
+                    $_dragEvent.resourceIds.push($_viewResources[newResourceCol].id);
                 }
-                $_dragEvent.resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
-                $_dragEvent.resourceIds.push($_viewResources[rCol].id);
             }
 
             let dCol = Math.max(0, Math.min($_viewDates.length - 1, dayCol + deltaDCol));
@@ -116,7 +119,7 @@
             });
         }
 
-        if (delta.days || delta.seconds) {
+        if ($_dragEvent || delta.days || delta.seconds) {
             if (!$_dragEvent) {
                 createDragEvent(jsEvent);
             }
@@ -182,13 +185,11 @@
 
                 if (is_function($eventDrop)) {
                     let eventRef = event;
-                    let oldResource = arrayDiff(oldEvent.resourceIds, event.resourceIds);
-                    let newResource = arrayDiff(event.resourceIds, oldEvent.resourceIds);
                     $eventDrop({
                         event: toEventWithLocalDates(event),
                         oldEvent: toEventWithLocalDates(oldEvent),
-                        oldResource: oldResource.length ? findResource(oldResource[0]) : undefined,
-                        newResource: newResource.length ? findResource(newResource[0]) : undefined,
+                        oldResource: resourceCol !== newResourceCol ? $_viewResources[resourceCol] : undefined,
+                        newResource: resourceCol !== newResourceCol ? $_viewResources[newResourceCol] : undefined,
                         delta,
                         jsEvent,
                         view: toViewWithLocalDates($_view),
@@ -199,6 +200,7 @@
                 }
             }
             dayEl = daysEls = bodyEl = null;
+            resourceCol = newResourceCol = undefined;
             dragging = false;
         }
     }
@@ -218,14 +220,6 @@
         target.end = source.end;
         target.resourceIds = source.resourceIds;
         $_events = $_events;
-    }
-
-    function findResource(id) {
-        return $_viewResources.find(resource => resource.id === id);
-    }
-
-    function arrayDiff(arr1, arr2) {
-        return arr1.filter(item => !arr2.includes(item));
     }
 
     function handleSelectStart(jsEvent) {

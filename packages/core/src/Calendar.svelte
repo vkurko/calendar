@@ -210,9 +210,9 @@
 	:global(.ec-body:not(.ec-list)) {
 		border-top: none;
 	}
-	:global(.ec-month.ec-body) {
-		flex-basis: auto; /* ie11 */
-	}
+	/*:global(.ec-month.ec-body) {*/
+	/*	flex-basis: auto; !* ie11 *!*/
+	/*}*/
 	:global(.ec-sidebar) {
 		flex: 0 0 auto;
 		width: auto;

@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/resource-time-grid",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "title": "Event Calendar ResourceTimeGrid plugin",
   "description": "Full-sized event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/time-grid": "~0.1.0-beta.1",
+    "@event-calendar/time-grid": "~0.1.0-beta.2",
     "svelte": "^3.35.0"
   }
 }
