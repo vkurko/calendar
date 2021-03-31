@@ -1,37 +1,43 @@
 {
   "name": "event-calendar",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.4",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.10",
+    "@babel/core": "^7.13.14",
     "@babel/plugin-transform-runtime": "^7.13.10",
-    "@babel/preset-env": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
     "@babel/runtime-corejs3": "^7.13.10",
-    "@event-calendar/build": "~0.1.0-beta.3",
-    "@event-calendar/common": "~0.1.0-beta.3",
-    "@event-calendar/core": "~0.1.0-beta.3",
-    "@event-calendar/day-grid": "~0.1.0-beta.3",
-    "@event-calendar/interaction": "~0.1.0-beta.3",
-    "@event-calendar/list": "~0.1.0-beta.3",
-    "@event-calendar/resource-time-grid": "~0.1.0-beta.3",
-    "@event-calendar/time-grid": "~0.1.0-beta.3",
+    "@event-calendar/build": "~0.1.0-beta.4",
+    "@event-calendar/common": "~0.1.0-beta.4",
+    "@event-calendar/core": "~0.1.0-beta.4",
+    "@event-calendar/day-grid": "~0.1.0-beta.4",
+    "@event-calendar/interaction": "~0.1.0-beta.4",
+    "@event-calendar/list": "~0.1.0-beta.4",
+    "@event-calendar/resource-time-grid": "~0.1.0-beta.4",
+    "@event-calendar/time-grid": "~0.1.0-beta.4",
     "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^17.1.0",
-    "@rollup/plugin-node-resolve": "^11.2.0",
+    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-node-resolve": "^11.2.1",
     "abort-controller": "^3.0.0",
-    "rollup": "^2.42.2",
-    "rollup-plugin-css-only": "^3.1.0",
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.9",
+    "rollup": "^2.44.0",
     "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-scss": "^2.6.1",
     "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-terser": "^7.0.2",
-    "svelte": "^3.35.0",
+    "sass": "^1.32.8",
+    "svelte": "^3.37.0",
     "whatwg-fetch": "^3.6.2"
   },
   "dependencies": {
     "sirv-cli": "^1.0.11"
-  }
+  },
+  "browserslist": [
+    "> 0.25%, not dead"
+  ]
 }

@@ -1,8 +1,12 @@
-# Event Calendar
+# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build)
 
 See [demo](https://vkurko.github.io/calendar/).
 
-Full-sized JavaScript event calendar with resource view.
+Full-sized drag & drop JavaScript event calendar with resource view:
+
+* Lightweight (34kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Zero-dependency (pre-built bundle)
+* Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
 Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options.
 
@@ -126,6 +130,8 @@ Include the following lines of code in the `<head>` section of your page:
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
 ```
+> If you don't need IE11 support, you can use the `modern` version of the bundle instead: `event-calendar-modern.min.css` and `event-calendar-modern.min.js`. The lack of IE11 support makes the bundle ~1.5 times smaller.
+
 Then initialize the calendar with something like this:
 ```js
 let ec = new EventCalendar(document.getElementById('ec'), {

@@ -2,7 +2,7 @@
 	import {getContext, onMount, afterUpdate, tick} from 'svelte';
 	import {writable} from 'svelte/store';
 	import {is_function} from 'svelte/internal';
-	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, rect, setContent} from '@event-calendar/common';
+	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '@event-calendar/common';
 
 	export let chunk;
 	export let longChunks = {};
