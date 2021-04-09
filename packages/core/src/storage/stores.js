@@ -136,7 +136,7 @@ export function events(state) {
                         url += (url.includes('?') ? '&' : '?') + params;
                     } else {
                         headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-                        body = params;
+                        body = String(params);  // Safari 10.1 doesn't convert to string automatically
                     }
                     // Do the fetch
                     fetch(url, {method: source.method, headers, body, signal: abortController.signal, credentials: 'same-origin'})

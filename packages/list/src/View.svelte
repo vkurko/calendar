@@ -15,12 +15,14 @@
 
 	$: {
 		noEvents = true;
-		let start = $_viewDates[0];
-		let end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
-		for (let event of $_events) {
-			if (event.display === 'auto' && event.start < end && event.end > start) {
-				noEvents = false;
-				break;
+		if ($_viewDates.length) {
+			let start = $_viewDates[0];
+			let end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
+			for (let event of $_events) {
+				if (event.display === 'auto' && event.start < end && event.end > start) {
+					noEvents = false;
+					break;
+				}
 			}
 		}
 	}
