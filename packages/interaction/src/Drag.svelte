@@ -20,6 +20,9 @@
     let _viewResources;
     let resourceCol, newResourceCol;
 
+    let touchCache;
+    let cacheTouchTarget;
+
     export function startTimeGrid(event, el, jsEvent, resourcesStore) {
         if (!dragging) {
             if (resourcesStore) {
@@ -28,7 +31,7 @@
                 [dayEl, bodyEl, dayCol] = traverseTimeGrid(el);
             }
 
-            start(event, el, jsEvent);
+            jsEvent = start(event, el, jsEvent);
 
             offset = Math.floor((jsEvent.clientY - dayRect.top) / 24);
 
@@ -42,7 +45,7 @@
         if (!dragging) {
             [dayEl, bodyEl, dayCol, dayRow, daysEls] = traverseDayGrid(el);
 
-            start(event, el, jsEvent);
+            jsEvent = start(event, el, jsEvent);
 
             offset = Math.floor((jsEvent.clientX - dayRect.left) / dayRect.width);
 
@@ -56,8 +59,20 @@
         dayRect = rect(dayEl);
         bodyRect = rect(bodyEl);
 
+        // Handle touch events
+        cacheTouchTarget = false;
+        if (jsEvent instanceof TouchEvent) {
+            jsEvent.preventDefault();
+            if (jsEvent.target !== el) {
+                cacheTouchTarget = jsEvent.target;
+            }
+            jsEvent = jsEvent.changedTouches[0];
+        }
+
         fromX = toX = jsEvent.clientX;
         fromY = toY = jsEvent.clientY;
+
+        return jsEvent;
     }
 
     function move(jsEvent) {
@@ -203,12 +218,20 @@
             dayEl = daysEls = bodyEl = null;
             resourceCol = newResourceCol = undefined;
             dragging = false;
+
+            // Clear touch cache
+            while (touchCache.firstChild) {
+                touchCache.removeChild(touchCache.lastChild);
+            }
         }
     }
 
     function createDragEvent(jsEvent) {
         if (is_function($eventDragStart)) {
             $eventDragStart({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
+        }
+        if (cacheTouchTarget) {
+            touchCache.appendChild(cacheTouchTarget);
         }
         event.display = 'preview';
         $_dragEvent = cloneEvent(event);
@@ -232,6 +255,14 @@
             jsEvent.preventDefault();
         }
     }
+
+    function handleTouchMove(jsEvent) {
+        handleMouseMove(jsEvent.changedTouches[0]);
+    }
+
+    function handleTouchEnd(jsEvent) {
+        handleMouseUp(jsEvent.changedTouches[0]);
+    }
 </script>
 
 <svelte:window
@@ -239,4 +270,8 @@
     on:mouseup={handleMouseUp}
     on:selectstart={handleSelectStart}
     on:scroll={handleScroll}
+
+    on:touchmove={handleTouchMove}
+    on:touchend={handleTouchEnd}
 />
+<div bind:this={touchCache} style="display: none"></div>

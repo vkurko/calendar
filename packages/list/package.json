@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/list",
-  "version": "0.1.0-beta.4",
+  "version": "0.1.0",
   "title": "Event Calendar List plugin",
   "description": "Full-sized event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.1.0-beta.4",
+    "@event-calendar/common": "~0.1.0",
     "svelte": "^3.35.0"
   }
 }

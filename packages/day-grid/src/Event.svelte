@@ -56,7 +56,7 @@
 			: undefined;
 	}
 
-	function createMouseDownHandler(interaction, display) {
+	function createDragStartHandler(interaction, display) {
 		return display === 'auto' && interaction.drag
 			? jsEvent => interaction.drag.startDayGrid(chunk.event, el, jsEvent)
 			: undefined;
@@ -106,7 +106,8 @@
 	on:click={createHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:mousedown={createMouseDownHandler($_interaction, display)}
+	on:mousedown={createDragStartHandler($_interaction, display)}
+	on:touchstart={createDragStartHandler($_interaction, display)}
 ></div>
 
 <svelte:window on:resize={reposition}/>

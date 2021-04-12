@@ -73,7 +73,7 @@
 			: undefined;
 	}
 
-	function createMouseDownHandler(interaction, display) {
+	function createDragStartHandler(interaction, display) {
 		return display === 'auto' &&  interaction.drag
 			? jsEvent => interaction.drag.startTimeGrid(chunk.event, el, jsEvent, _viewResources)
 			: undefined;
@@ -88,5 +88,6 @@
 	on:click={createHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:mousedown={createMouseDownHandler($_interaction, display)}
+	on:mousedown={createDragStartHandler($_interaction, display)}
+	on:touchstart={createDragStartHandler($_interaction, display)}
 ></div>
