@@ -61,7 +61,7 @@
 
         // Handle touch events
         cacheTouchTarget = false;
-        if (jsEvent instanceof TouchEvent) {
+        if (jsEvent.type === 'touchstart') {
             jsEvent.preventDefault();
             if (jsEvent.target !== el) {
                 cacheTouchTarget = jsEvent.target;
