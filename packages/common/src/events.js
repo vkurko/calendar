@@ -23,6 +23,7 @@ export function createEvents(input) {
 
 export function createEventSources(input) {
     return input.map(source => ({
+        events: source.events,
         url: (source.url && source.url.trimEnd('&')) || '',
         method: (source.method && source.method.toUpperCase()) || 'GET',
         extraParams: source.extraParams || {}

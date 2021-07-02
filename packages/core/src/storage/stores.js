@@ -9,7 +9,8 @@ import {
     toISOString,
     nextClosestDay,
     prevClosestDay,
-    setMidnight
+    setMidnight,
+    toLocalDate
 } from '@event-calendar/common';
 import {derived2} from '@event-calendar/common';
 import {createEvents} from '@event-calendar/common';
@@ -123,41 +124,56 @@ export function events(state) {
                 if (is_function($loading) && !fetching) {
                     $loading(true);
                 }
-                let events = [];
-                for (let source of $eventSources) {
-                    // Prepare params
-                    let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
-                    params.start = toISOString($_activeRange.start);
-                    params.end = toISOString($_activeRange.end);
-                    params = new URLSearchParams(params);
-                    // Prepare fetch
-                    let url = source.url, headers = {}, body;
-                    if (['GET', 'HEAD'].includes(source.method)) {
-                        url += (url.includes('?') ? '&' : '?') + params;
-                    } else {
-                        headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-                        body = String(params);  // Safari 10.1 doesn't convert to string automatically
+                let stopLoading = () => {
+                    if (--fetching === 0 && is_function($loading)) {
+                        $loading(false);
                     }
-                    // Do the fetch
-                    fetch(url, {method: source.method, headers, body, signal: abortController.signal, credentials: 'same-origin'})
-                        .then(response => response.json())
-                        .then(data => {
-                            events = events.concat(createEvents(data));
-                            set(events);
-                            if (--fetching === 0 && is_function($loading)) {
-                                $loading(false);
-                            }
-                        })
-                        .catch(e => {
-                            if (--fetching === 0 && is_function($loading)) {
-                                $loading(false);
-                            }
-                        });
+                };
+                let events = [];
+                // Prepare handlers
+                let failure = e => stopLoading();
+                let success = data => {
+                    events = events.concat(createEvents(data));
+                    set(events);
+                    stopLoading();
+                };
+                // Loop over event sources
+                for (let source of $eventSources) {
+                    if (is_function(source.events)) {
+                        // Events as a function
+                        let result = source.events({
+                            start: toLocalDate($_activeRange.start),
+                            end: toLocalDate($_activeRange.end)
+                        }, success, failure);
+                        if (result !== undefined) {
+                            Promise.resolve(result).then(success, failure);
+                        }
+                    } else if ('url' in source) {
+                        // Events as a JSON feed
+                        // Prepare params
+                        let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
+                        params.start = toISOString($_activeRange.start);
+                        params.end = toISOString($_activeRange.end);
+                        params = new URLSearchParams(params);
+                        // Prepare fetch
+                        let url = source.url, headers = {}, body;
+                        if (['GET', 'HEAD'].includes(source.method)) {
+                            url += (url.includes('?') ? '&' : '?') + params;
+                        } else {
+                            headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+                            body = String(params);  // Safari 10.1 doesn't convert to string automatically
+                        }
+                        // Do the fetch
+                        fetch(url, {method: source.method, headers, body, signal: abortController.signal, credentials: 'same-origin'})
+                            .then(response => response.json())
+                            .then(success)
+                            .catch(failure);
+                    }
                     ++fetching;
-                    // Save current range for future requests
-                    $_fetchedRange.start = $_activeRange.start;
-                    $_fetchedRange.end = $_activeRange.end;
                 }
+                // Save current range for future requests
+                $_fetchedRange.start = $_activeRange.start;
+                $_fetchedRange.end = $_activeRange.end;
             }
         }),
         []

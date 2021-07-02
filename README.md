@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (34kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (37.8kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -722,7 +722,9 @@ Array of EventSource objects that will provide the Event Calendar with data abou
 
 This option is used instead of the `events` option.
 
-`EventSource` should be an object with the following properties:
+`EventSource` should be an object with one of the following sets of properties:
+
+###### 1. Fetch events from a URL
 <table>
 <tr>
 <td>
@@ -752,6 +754,47 @@ HTTP request method. Default `'GET'`
 <td>
 
 Other GET/POST data you want to send to the server. Can be a plain object or a function that returns an object. Default `{}`
+</td>
+</tr>
+</table>
+
+###### 2. Execute custom function
+<table>
+<tr>
+<td>
+
+`events`
+</td>
+<td>
+
+A custom function that is executed whenever the Event Calendar needs new event data.
+
+```js
+function(fetchInfo, successCallback, failureCallback) { }
+```
+`fetchInfo` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>JavaScript Date object for the beginning of the range the calendar needs events for</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
+</tr>
+</table>
+
+The `successCallback` function must be called by the custom function with an array of parsable [Event](#event-object) objects.
+
+If there is any failure (e.g., if an AJAX request fails), then call the `failureCallback` instead. It accepts an argument with information about the failure.
+
+Instead of calling `successCallback` and `failureCallback`, you may return the resulting array of events or return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) (or [thenable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)) object instead.
 </td>
 </tr>
 </table>
