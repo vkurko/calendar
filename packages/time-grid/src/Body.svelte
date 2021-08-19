@@ -2,7 +2,7 @@
 	import {getContext, tick} from 'svelte';
 	import {hasYScroll} from '@event-calendar/common';
 
-	let {slotDuration, _intlSlotLabel, _viewDates, scrollTime, _scrollable, theme, _interaction} = getContext('state');
+	let {slotDuration, slotHeight, _intlSlotLabel, _viewDates, scrollTime, _scrollable, theme, _interaction} = getContext('state');
 	let {_slotTimeLimits, _times} = getContext('view-state');
 
 	let el;
@@ -18,7 +18,7 @@
 	}
 
 	$: if (el && $_viewDates) {
-		el.scrollTop = ($scrollTime.seconds - timeLimitMin) / $slotDuration.seconds * 24 - 12;
+		el.scrollTop = (($scrollTime.seconds - timeLimitMin) / $slotDuration.seconds - 0.5) * $slotHeight;
 	}
 
 	$: if (el && $_times && $slotDuration) {

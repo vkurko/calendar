@@ -6,7 +6,7 @@
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid} from './utils';
 
     let {_dragEvent, _events, _viewDates, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, dragScroll,
-        slotDuration, hiddenDays, _view, theme} = getContext('state');
+        slotDuration, slotHeight, hiddenDays, _view, datesAboveResources, theme} = getContext('state');
 
     let dragging = false;
     let event;
@@ -26,14 +26,14 @@
     export function startTimeGrid(event, el, jsEvent, resourcesStore) {
         if (!dragging) {
             if (resourcesStore) {
-                [dayEl, bodyEl, dayCol, resourceCol] = traverseResourceTimeGrid(el);
+                [dayEl, bodyEl, dayCol, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
             } else {
                 [dayEl, bodyEl, dayCol] = traverseTimeGrid(el);
             }
 
             jsEvent = start(event, el, jsEvent);
 
-            offset = Math.floor((jsEvent.clientY - dayRect.top) / 24);
+            offset = Math.floor((jsEvent.clientY - dayRect.top) / $slotHeight);
 
             _viewResources = resourcesStore;
 
@@ -79,14 +79,23 @@
         let rx = toX - dayRect.left;
         let ry = toY - dayRect.top;
 
-        let deltaDCol = Math.floor(rx / dayRect.width);
+        let deltaCols = Math.floor(rx / dayRect.width);
 
         if (dragging === 1) {
+            let newDayCol;
             // timeGrid
             if (_viewResources) {
-                let deltaRCol = Math.floor((dayCol + deltaDCol) / $_viewDates.length);
-                newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaRCol));
-                deltaDCol -= (newResourceCol - resourceCol) * $_viewDates.length;
+                if ($datesAboveResources) {
+                    let deltaResources = deltaCols;
+                    deltaCols = Math.floor((resourceCol + deltaResources) / $_viewResources.length);
+                    newDayCol = Math.max(0, Math.min($_viewDates.length - 1, dayCol + deltaCols));
+                    deltaResources -= (newDayCol - dayCol) * $_viewResources.length;
+                    newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaResources));
+                } else {
+                    let deltaResources = Math.floor((dayCol + deltaCols) / $_viewDates.length);
+                    newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaResources));
+                    deltaCols -= (newResourceCol - resourceCol) * $_viewDates.length;
+                }
 
                 if ($_dragEvent || distance() >= $eventDragMinDistance) {
                     if (!$_dragEvent) {
@@ -97,17 +106,17 @@
                 }
             }
 
-            let dCol = Math.max(0, Math.min($_viewDates.length - 1, dayCol + deltaDCol));
+            newDayCol = Math.max(0, Math.min($_viewDates.length - 1, dayCol + deltaCols));
             let step = $slotDuration.seconds / 60;
 
             delta = createDuration({
-                days: ($_viewDates[dCol] - $_viewDates[dayCol]) / 1000 / 60 / 60 / 24,
-                minutes: (Math.floor(ry / 24) - offset) * step
+                days: ($_viewDates[newDayCol] - $_viewDates[dayCol]) / 1000 / 60 / 60 / 24,
+                minutes: (Math.floor(ry / $slotHeight) - offset) * step
             });
         } else {
             // dayGrid
             let cols = 7 - $hiddenDays.length;
-            let col = Math.max(0, Math.min(cols - 1, dayCol + deltaDCol));
+            let col = Math.max(0, Math.min(cols - 1, dayCol + deltaCols));
             let row = dayRow;
             while (true) {
                 if (ry < 0) {

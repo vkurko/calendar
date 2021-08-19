@@ -7,14 +7,14 @@ export function traverseTimeGrid(el) {
     return [day, body, dayCol];
 }
 
-export function traverseResourceTimeGrid(el) {
+export function traverseResourceTimeGrid(el, datesAboveResources) {
     let day = ancestor(el, 2);
     let resource = ancestor(day, 1);
     let body = ancestor(resource, 3);
     let dayCol = pos(day);
     let resourceCol = pos(resource) - 1;
 
-    return [day, body, dayCol, resourceCol];
+    return datesAboveResources ? [day, body, resourceCol, dayCol] : [day, body, dayCol, resourceCol];
 }
 
 export function traverseDayGrid(el) {

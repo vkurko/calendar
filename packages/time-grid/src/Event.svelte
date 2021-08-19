@@ -7,7 +7,7 @@
 	export let chunk;
 
 	let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-		eventMouseEnter, eventMouseLeave, slotDuration, theme, _view, _intlEventTime, _interaction} = getContext('state');
+		eventMouseEnter, eventMouseLeave, slotDuration, slotHeight, theme, _view, _intlEventTime, _interaction} = getContext('state');
 
 	let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
@@ -27,9 +27,9 @@
 		let offset = $_slotTimeLimits.min.seconds / 60;
 		let start = (chunk.start - date) / 1000 / 60;
 		let end = (chunk.end - date) / 1000 / 60;
-		let top = (start - offset) / step * 24;
-		let height = (end - start) / step * 24;
-		let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * 24;
+		let top = (start - offset) / step * $slotHeight;
+		let height = (end - start) / step * $slotHeight;
+		let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
 		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =
 			`top:${top}px;` +

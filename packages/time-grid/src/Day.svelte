@@ -18,7 +18,7 @@
 	export let date;
 	export let resource = undefined;
 
-	let {_events, _dragEvent, dateClick, highlightedDates, slotDuration, _view, theme} = getContext('state');
+	let {_events, _dragEvent, dateClick, highlightedDates, slotDuration, slotHeight, _view, theme} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let chunks, bgChunks, dragChunk;
@@ -63,7 +63,7 @@
 			? jsEvent =>  {
 				let r = rect(jsEvent.currentTarget);
 				let y = jsEvent.clientY - r.top;
-				let d = addDuration(cloneDate(date), $slotDuration, Math.floor(y/24 + $_slotTimeLimits.min.seconds/$slotDuration.seconds));
+				let d = addDuration(cloneDate(date), $slotDuration, Math.floor(y/$slotHeight + $_slotTimeLimits.min.seconds/$slotDuration.seconds));
 				fn({date: toLocalDate(d), jsEvent, view: toViewWithLocalDates($_view), resource});
 			}
 			: undefined;

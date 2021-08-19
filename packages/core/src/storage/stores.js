@@ -148,7 +148,7 @@ export function events(state) {
                         if (result !== undefined) {
                             Promise.resolve(result).then(success, failure);
                         }
-                    } else if ('url' in source) {
+                    } else {
                         // Events as a JSON feed
                         // Prepare params
                         let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);

@@ -131,7 +131,7 @@ export default [
 					writeFileSync(production ? 'packages/build/event-calendar-modern.min.css' : 'packages/build/event-calendar.min.css', styles);
 				},
 				outputStyle: 'compressed',
-				processor: css => postcss([autoprefixer({ overrideBrowserslist: 'browserslist config and supports fetch'})]),
+				processor: css => postcss([autoprefixer({overrideBrowserslist: 'browserslist config and supports fetch'})]),
 				sass: require('sass')
 			}),
 		],

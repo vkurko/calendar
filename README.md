@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (37.8kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (40.7kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -12,15 +12,16 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 
 ## Table of contents
 - [Usage](#usage)
-    - [Svelte component / ES6 module](#svelte-component--es6-module)
-    - [Pre-built browser ready bundle](#pre-built-browser-ready-bundle)
+  - [Svelte component / ES6 module](#svelte-component--es6-module)
+  - [Pre-built browser ready bundle](#pre-built-browser-ready-bundle)
 - [Options](#options)
   <table>
   <tr><td>
-  
+
   - [buttonText](#buttontext)
   - [date](#date)
   - [dateClick](#dateclick)
+  - [datesAboveResources](#datesaboveresources)
   - [dayHeaderFormat](#dayheaderformat)
   - [displayEventEnd](#displayeventend)
   - [duration](#duration)
@@ -42,19 +43,19 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventSources](#eventsources)
   - [eventStartEditable](#eventstarteditable)
   - [eventTimeFormat](#eventtimeformat)
+  - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
   - [flexibleSlotTimeLimits](#flexibleslottimelimits)
   - [headerToolbar](#headertoolbar)
   - [height](#height)
   - [hiddenDays](#hiddendays)
-  - [hideResourcesWithNoEvents](#hideresourceswithnoevents)
   - [highlightedDates](#highlighteddates)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
   - [listDaySideFormat](#listdaysideformat)
+  - [loading](#loading)
   </td><td>
 
-  - [loading](#loading)
   - [locale](#locale)
   - [monthMode](#monthmode)
   - [noEventsClick](#noeventsclick)
@@ -62,6 +63,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [resources](#resources)
   - [scrollTime](#scrolltime)
   - [slotDuration](#slotduration)
+  - [slotHeight](#slotheight)
   - [slotLabelFormat](#slotlabelformat)
   - [slotMaxTime](#slotmaxtime)
   - [slotMinTime](#slotmintime)
@@ -72,11 +74,11 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   </td></tr>
   </table>
 - [Event object](#event-object)
-    - [Parsing event from a plain object](#parsing-event-from-a-plain-object)
+  - [Parsing event from a plain object](#parsing-event-from-a-plain-object)
 - [Duration object](#duration-object)
-    - [Parsing duration from input values](#parsing-duration-from-input-values)
+  - [Parsing duration from input values](#parsing-duration-from-input-values)
 - [Resource object](#resource-object)
-    - [Parsing resource from a plain object](#parsing-resource-from-a-plain-object)
+  - [Parsing resource from a plain object](#parsing-resource-from-a-plain-object)
 - [View object](#view-object)
 - [Browser support](#browser-support)
 
@@ -213,6 +215,12 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 </td>
 </tr>
 </table>
+
+### datesAboveResources
+- Type `boolean`
+- Default `false`
+
+Determines whether the resource view should render the date headings above the resource headings.
 
 ### dayHeaderFormat
 - Type `object` or `function`
@@ -724,7 +732,7 @@ This option is used instead of the `events` option.
 
 `EventSource` should be an object with one of the following sets of properties:
 
-###### 1. Fetch events from a URL
+#### 1. Fetch events from a URL
 <table>
 <tr>
 <td>
@@ -758,7 +766,7 @@ Other GET/POST data you want to send to the server. Can be a plain object or a f
 </tr>
 </table>
 
-###### 2. Execute custom function
+#### 2. Execute custom function
 <table>
 <tr>
 <td>
@@ -827,6 +835,12 @@ function (time) {
 <td>JavaScript Date object that needs to be formatted</td>
 </tr>
 </table>
+
+### filterResourcesWithEvents
+- Type `boolean`
+- Default `false`
+
+Determines whether resources with no events for the current range should be hidden in the resource view.
 
 ### firstDay
 - Type `integer`
@@ -899,12 +913,6 @@ This should be a valid CSS value like `'100%'` or `'600px'`.
 
 Exclude certain days-of-the-week from being displayed, where Sunday is `0`, Monday is `1`, etc. Saturday is `6`.
 
-### hideResourcesWithNoEvents
-- Type `boolean`
-- Default `false`
-
-Determines whether resources with no events for the current range should be hidden in the resource view.
-
 ### highlightedDates
 - Type `Array`
 - Default `[]`
@@ -933,7 +941,7 @@ This value can be either an object with options for the native JavaScript [Intl.
 
 ```js
 function (date) {
-    // return formatted date string
+  // return formatted date string
 }
 ```
 <table>
@@ -956,7 +964,7 @@ This value can be either an object with options for the native JavaScript [Intl.
 
 ```js
 function (date) {
-    // return formatted date string
+  // return formatted date string
 }
 ```
 <table>
@@ -1045,7 +1053,7 @@ This value can be either a string containing HTML `'<p>...</p>'`, an object cont
 
 ```js
 function () {
-    // return string or object
+  // return string or object
 }
 ```
 
@@ -1071,6 +1079,18 @@ Defines the frequency for displaying time slots.
 
 This should be a value that can be parsed into a [Duration](#duration-object) object.
 
+### slotHeight
+- Type `integer`
+- Default `24`
+
+Defines the time slot height in pixels. When changing the setting, you must additionally override the following CSS styles:
+
+```css
+.ec-time, .ec-line {
+  height: 24px;  /* override this value */
+}
+```
+
 ### slotLabelFormat
 - Type `object` or `function`
 - Default `{hour: 'numeric', minute: '2-digit'}`
@@ -1081,7 +1101,7 @@ This value can be either an object with options for the native JavaScript [Intl.
 
 ```js
 function (time) {
-    // return formatted time string
+  // return formatted time string
 }
 ```
 <table>
@@ -1120,7 +1140,7 @@ This value can be either a plain object with all necessary properties, or a call
 
 ```js
 function (theme) {
-    // return actual theme object
+  // return actual theme object
 }
 ```
 <table>
@@ -1146,7 +1166,7 @@ This value can be either an object with options for the native JavaScript [Intl.
 
 ```js
 function (date) {
-    // return formatted date string
+  // return formatted date string
 }
 ```
 <table>

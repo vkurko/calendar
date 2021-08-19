@@ -1,5 +1,12 @@
 # Event Calendar changelog
 
+## 0.3.0
+August 19, 2021
+
+* :warning: `hideResourcesWithNoEvents` was renamed to `filterResourcesWithEvents`
+* Added ability to specify slot height ([#16](https://github.com/vkurko/calendar/issues/16))
+* Added ability to render date headings above resource headings ([#19](https://github.com/vkurko/calendar/issues/19))
+
 ## 0.2.0
 July 2, 2021
 

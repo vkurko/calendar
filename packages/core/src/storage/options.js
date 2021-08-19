@@ -45,6 +45,7 @@ export function createOptions(plugins) {
         monthMode: false,
         scrollTime: '06:00:00',
         slotDuration: '00:30:00',
+        slotHeight: 24,  // ec option
         slotLabelFormat: {
             hour: 'numeric',
             minute: '2-digit'

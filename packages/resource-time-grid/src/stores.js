@@ -2,11 +2,11 @@ import {derived} from 'svelte/store';
 
 export function viewResources(state) {
     return derived(
-        [state.resources, state.hideResourcesWithNoEvents, state._events, state._activeRange],
-        ([$resources, $hideResourcesWithNoEvents, $_events, $_activeRange]) => {
+        [state.resources, state.filterResourcesWithEvents, state._events, state._activeRange],
+        ([$resources, $filterResourcesWithEvents, $_events, $_activeRange]) => {
             let result = $resources;
 
-            if ($hideResourcesWithNoEvents) {
+            if ($filterResourcesWithEvents) {
                 result = $resources.filter(resource => {
                     for (let event of $_events) {
                         if (
