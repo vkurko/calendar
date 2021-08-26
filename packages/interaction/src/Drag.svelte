@@ -46,6 +46,8 @@
 
             offset = floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
 
+            _viewResources = undefined;
+
             dragging = 2;
         }
     }

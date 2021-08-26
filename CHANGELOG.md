@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.3.3
+August 26, 2021
+
+* Fixed another drag&drop regression bug
+
 ## 0.3.2
 August 26, 2021
 
