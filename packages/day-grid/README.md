@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (40.7kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (40.6kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -14,6 +14,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 - [Usage](#usage)
   - [Svelte component / ES6 module](#svelte-component--es6-module)
   - [Pre-built browser ready bundle](#pre-built-browser-ready-bundle)
+  - [Modifying options after initialization](#modifying-options-after-initialization)
 - [Options](#options)
   <table>
   <tr><td>
@@ -24,6 +25,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [datesAboveResources](#datesaboveresources)
   - [dayHeaderFormat](#dayheaderformat)
   - [displayEventEnd](#displayeventend)
+  - [dragScroll](#dragscroll)
   - [duration](#duration)
   - [editable](#editable)
   - [events](#events)
@@ -34,9 +36,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
-  - [eventDragStop](#eventdragstop)
   </td><td>
 
+  - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -53,9 +55,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
   - [listDaySideFormat](#listdaysideformat)
-  - [loading](#loading)
   </td><td>
 
+  - [loading](#loading)
   - [locale](#locale)
   - [monthMode](#monthmode)
   - [noEventsClick](#noeventsclick)
@@ -71,6 +73,24 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [view](#view)
   - [viewDidMount](#viewdidmount)
   - [views](#views)
+  </td></tr>
+  </table>
+- [Methods](#methods)
+  <table>
+  <tr><td>
+
+  - [getOption](#getoption-name-)
+  - [setOption](#setoption-name-value-)
+  </td><td>
+
+  - [getEventById](#geteventbyid-id-)
+  - [removeEventById](#removeeventbyid-id-)
+  - [addEvent](#addevent-event-)
+  - [updateEvent](#updateevent-event-)
+  - [refetchEvents](#refetchevents)
+  </td><td>
+
+  - [getView](#getview)
   </td></tr>
   </table>
 - [Event object](#event-object)
@@ -98,6 +118,7 @@ You must use at least one plugin that provides a view. The following plugins are
 * `@event-calendar/list`
 * `@event-calendar/resource-time-grid`
 * `@event-calendar/time-grid`
+* `@event-calendar/interaction` (doesn't provide a view)
 
 Then, in your Svelte component, use the calendar something like this:
 ```html
@@ -151,6 +172,31 @@ let ec = new EventCalendar(document.getElementById('ec'), {
     // your list of events
   ]
 });
+```
+
+### Modifying options after initialization
+You can modify the calendar options after initialization using the [setOption](#setoption-name-value-) method.
+```js
+ec.setOption('slotDuration', '01:00');
+```
+In Svelte, you can simply update the original `options` object.
+```html
+<script>
+  import Calendar from '@event-calendar/core';
+  import TimeGrid from '@event-calendar/time-grid';
+
+  let plugins = [TimeGrid];
+  let options = {
+    view: 'timeGridWeek'
+  };
+
+  function updateOptions() {
+    options.slotDuration = '01:00';
+  }
+</script>
+
+<button on:click={updateOptions}>Change slot duration</button>
+<Calendar {plugins} {options} />
 ```
 
 ## Options
@@ -1213,6 +1259,96 @@ The mounted [View](#view-object) object
 - Default `{}`
 
 You can specify options that apply only to specific views. To do so provide separate options objects within the `views` option, keyed by the name of the view.
+
+## Methods
+Methods allow you to manipulate the Event Calendar after initialization. They are accessible from the calendar instance.
+
+In Svelte, methods are available from a component instance:
+```html
+<script>
+  import Calendar from '@event-calendar/core';
+  import TimeGrid from '@event-calendar/time-grid';
+
+  let ec;
+  let plugins = [TimeGrid];
+  let options = {
+    view: 'timeGridWeek',
+    eventSources: [{events: function() {
+        console.log('fetching...');
+        return [];
+      }}]
+  };
+
+  function invokeMethod() {
+    ec.refetchEvents();
+  }
+</script>
+
+<button on:click={invokeMethod}>Refetch events</button>
+<Calendar bind:this={ec} {plugins} {options} />
+```
+
+### getOption( name )
+- Parameters
+  - `name` `string` The option name
+- Return value `mixed` or `undefined`
+
+This method allows you to get the current value of any calendar option.
+
+```js
+// E.g. Get current date
+let date = ec.getOption('date');
+```
+
+### setOption( name, value )
+- Parameters
+  - `name` `string` The option name
+  - `value` `mixed` The new option value
+- Return value `EventCalendar` The calendar instance for chaining
+
+This method allows you to set new value to any calendar option.
+
+```js
+// E.g. Change the current date
+ec.setOption('date', new Date());
+```
+### getEventById( id )
+- Parameters
+  - `id` `string|integer` The ID of the event
+- Return value [Event](#event-object) object or `null`
+
+Returns a single event with the matching `id`.
+
+### removeEventById( id )
+- Parameters
+  - `id` `string|integer` The ID of the event
+- Return value `EventCalendar` The calendar instance for chaining
+
+Removes a single event with the matching `id`.
+
+### addEvent( event )
+- Parameters
+  - `event` `object` A plain object that will be parsed into an [Event](#event-object) object
+- Return value [Event](#event-object) object or `null`
+
+Adds a new event to the calendar.
+
+### updateEvent( event )
+- Parameters
+  - `event` `object` A plain object or [Event](#event-object) object
+- Return value `EventCalendar` The calendar instance for chaining
+
+Updates a single event with the matching `event`.`id`.
+
+### refetchEvents()
+- Return value `EventCalendar` The calendar instance for chaining
+
+Refetches events from all sources.
+
+### getView()
+- Return value `View`
+
+Returns the [View](#view-object) object for the current view.
 
 ## Event object
 This is a JavaScript object that the Event Calendar uses to store information about a calendar event.

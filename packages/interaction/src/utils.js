@@ -1,31 +1,34 @@
 
 export function traverseTimeGrid(el) {
-    let day = ancestor(el, 2);
-    let body = ancestor(day, 3);
-    let dayCol = pos(day) - 1;
+    let dayEl = ancestor(el, 2);
+    let colEl = child(ancestor(dayEl, 1), 1);
+    let bodyEl = ancestor(dayEl, 3);
+    let col = pos(dayEl) - 1;
 
-    return [day, body, dayCol];
+    return [colEl, bodyEl, col];
 }
 
 export function traverseResourceTimeGrid(el, datesAboveResources) {
-    let day = ancestor(el, 2);
-    let resource = ancestor(day, 1);
-    let body = ancestor(resource, 3);
-    let dayCol = pos(day);
-    let resourceCol = pos(resource) - 1;
+    let dayEl = ancestor(el, 2);
+    let colEl = child(child(ancestor(dayEl, 2), 1), 0);
+    let resourceEl = ancestor(dayEl, 1);
+    let bodyEl = ancestor(resourceEl, 3);
+    let col = pos(dayEl);
+    let resourceCol = pos(resourceEl) - 1;
 
-    return datesAboveResources ? [day, body, resourceCol, dayCol] : [day, body, dayCol, resourceCol];
+    return datesAboveResources ? [colEl, bodyEl, resourceCol, col] : [colEl, bodyEl, col, resourceCol];
 }
 
 export function traverseDayGrid(el) {
-    let day = ancestor(el, 2);
-    let days = ancestor(day, 1);
-    let content = ancestor(days, 1);
-    let body = ancestor(content, 1);
-    let dayCol = pos(day);
-    let dayRow = pos(days);
+    let dayEl = ancestor(el, 2);
+    let daysEl = ancestor(dayEl, 1);
+    let contentEl = ancestor(daysEl, 1);
+    let colEl = child(child(contentEl, 0), 0);
+    let bodyEl = ancestor(contentEl, 1);
+    let col = pos(dayEl);
+    let row = pos(daysEl);
 
-    return [day, body, dayCol, dayRow, content.children];
+    return [colEl, bodyEl, col, row, contentEl.children];
 }
 
 function ancestor(el, up) {
@@ -33,6 +36,10 @@ function ancestor(el, up) {
         el = el.parentElement;
     }
     return el;
+}
+
+function child(el, pos) {
+    return el.children[pos];
 }
 
 function pos(el) {
@@ -52,4 +59,12 @@ export function animate(fn) {
             busy = false;
         });
     }
+}
+
+export function limit(value, max) {
+    return Math.max(0, Math.min(max, value));
+}
+
+export function floor(value) {
+    return Math.floor(value);
 }

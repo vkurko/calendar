@@ -88,6 +88,5 @@
 	on:click={createHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:mousedown={createDragStartHandler($_interaction, display)}
-	on:touchstart={createDragStartHandler($_interaction, display)}
+	on:pointerdown={createDragStartHandler($_interaction, display)}
 ></div>

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.3.1
+August 26, 2021
+
+* Drag&Drop optimization (switch to [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events))
+
 ## 0.3.0
 August 19, 2021
 

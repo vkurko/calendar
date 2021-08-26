@@ -1,8 +1,8 @@
 {
   "name": "@event-calendar/common",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "title": "Event Calendar Common package",
-  "description": "Full-sized event calendar with resource view",
+  "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
@@ -17,6 +17,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "svelte": "^3.42.1"
+    "svelte": "^3.42.3"
   }
 }

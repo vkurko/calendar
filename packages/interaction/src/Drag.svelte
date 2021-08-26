@@ -3,37 +3,34 @@
     import {is_function} from 'svelte/internal';
     import {addDuration, cloneDate, cloneEvent, createDuration, rect,
         toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
-    import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid} from './utils';
+    import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
 
     let {_dragEvent, _events, _viewDates, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, dragScroll,
         slotDuration, slotHeight, hiddenDays, _view, datesAboveResources, theme} = getContext('state');
 
     let dragging = false;
     let event;
-    let dayCol, dayRow;
+    let col, row;
     let offset;
     let fromX, fromY;
     let toX, toY;
     let delta;
-    let dayEl, daysEls, bodyEl;
-    let dayRect, bodyRect;
+    let colEl, rowEls, bodyEl;
+    let colRect, bodyRect;
     let _viewResources;
     let resourceCol, newResourceCol;
-
-    let touchCache;
-    let cacheTouchTarget;
 
     export function startTimeGrid(event, el, jsEvent, resourcesStore) {
         if (!dragging) {
             if (resourcesStore) {
-                [dayEl, bodyEl, dayCol, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
+                [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
             } else {
-                [dayEl, bodyEl, dayCol] = traverseTimeGrid(el);
+                [colEl, bodyEl, col] = traverseTimeGrid(el);
             }
 
-            jsEvent = start(event, el, jsEvent);
+            start(event, jsEvent);
 
-            offset = Math.floor((jsEvent.clientY - dayRect.top) / $slotHeight);
+            offset = floor((jsEvent.clientY - colRect.top) / $slotHeight);
 
             _viewResources = resourcesStore;
 
@@ -43,104 +40,65 @@
 
     export function startDayGrid(event, el, jsEvent) {
         if (!dragging) {
-            [dayEl, bodyEl, dayCol, dayRow, daysEls] = traverseDayGrid(el);
+            [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el);
 
-            jsEvent = start(event, el, jsEvent);
+            start(event, jsEvent);
 
-            offset = Math.floor((jsEvent.clientX - dayRect.left) / dayRect.width);
+            offset = floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
 
             dragging = 2;
         }
     }
 
-	function start(eventToDrag, el, jsEvent) {
+	function start(eventToDrag, jsEvent) {
+        (window.getSelection ? window.getSelection() : document.selection).empty();
+
         event = eventToDrag;
 
-        dayRect = rect(dayEl);
+        colRect = rect(colEl);
         bodyRect = rect(bodyEl);
-
-        // Handle touch events
-        cacheTouchTarget = false;
-        if (jsEvent.type === 'touchstart') {
-            jsEvent.preventDefault();
-            if (jsEvent.target !== el) {
-                cacheTouchTarget = jsEvent.target;
-            }
-            jsEvent = jsEvent.changedTouches[0];
-        }
 
         fromX = toX = jsEvent.clientX;
         fromY = toY = jsEvent.clientY;
-
-        return jsEvent;
     }
 
     function move(jsEvent) {
-        let rx = toX - dayRect.left;
-        let ry = toY - dayRect.top;
+        let rx = toX - colRect.left;
+        let ry = toY - colRect.top;
 
-        let deltaCols = Math.floor(rx / dayRect.width);
+        let newCol = floor(rx / colRect.width);
 
         if (dragging === 1) {
-            let newDayCol;
             // timeGrid
             if (_viewResources) {
                 if ($datesAboveResources) {
-                    let deltaResources = deltaCols;
-                    deltaCols = Math.floor((resourceCol + deltaResources) / $_viewResources.length);
-                    newDayCol = Math.max(0, Math.min($_viewDates.length - 1, dayCol + deltaCols));
-                    deltaResources -= (newDayCol - dayCol) * $_viewResources.length;
-                    newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaResources));
+                    let dayCol = limit(floor(newCol / $_viewResources.length), $_viewDates.length - 1);
+                    newResourceCol = limit(newCol - dayCol * $_viewResources.length, $_viewResources.length - 1);
+                    newCol = dayCol;
                 } else {
-                    let deltaResources = Math.floor((dayCol + deltaCols) / $_viewDates.length);
-                    newResourceCol = Math.max(0, Math.min($_viewResources.length - 1, resourceCol + deltaResources));
-                    deltaCols -= (newResourceCol - resourceCol) * $_viewDates.length;
-                }
-
-                if ($_dragEvent || distance() >= $eventDragMinDistance) {
-                    if (!$_dragEvent) {
-                        createDragEvent(jsEvent);
-                    }
-                    $_dragEvent.resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
-                    $_dragEvent.resourceIds.push($_viewResources[newResourceCol].id);
+                    newResourceCol = limit(floor(newCol / $_viewDates.length), $_viewResources.length - 1);
+                    newCol -= newResourceCol * $_viewDates.length;
                 }
             }
 
-            newDayCol = Math.max(0, Math.min($_viewDates.length - 1, dayCol + deltaCols));
-            let step = $slotDuration.seconds / 60;
+            newCol = limit(newCol, $_viewDates.length - 1);
 
             delta = createDuration({
-                days: ($_viewDates[newDayCol] - $_viewDates[dayCol]) / 1000 / 60 / 60 / 24,
-                minutes: (Math.floor(ry / $slotHeight) - offset) * step
+                days: ($_viewDates[newCol] - $_viewDates[col]) / 1000 / 60 / 60 / 24,
+                seconds: (floor(ry / $slotHeight) - offset) * $slotDuration.seconds
             });
         } else {
             // dayGrid
             let cols = 7 - $hiddenDays.length;
-            let col = Math.max(0, Math.min(cols - 1, dayCol + deltaCols));
-            let row = dayRow;
-            while (true) {
-                if (ry < 0) {
-                    if (row > 0) {
-                        --row;
-                        ry += daysEls[row].offsetHeight;
-                        if (ry < 0) {
-                            continue
-                        }
-                    }
-                } else {
-                    ry -= daysEls[row].offsetHeight;
-                    if (ry > 0) {
-                        if (row < daysEls.length - 1) {
-                            ++row;
-                            continue;
-                        }
-                    }
-                }
-                break;
-            }
+            newCol = limit(newCol, cols - 1);
+            let newRow = -1;
+            do {
+                ++newRow;
+                ry -= rowEls[newRow].offsetHeight;
+            } while (ry > 0 && newRow < rowEls.length - 1);
 
             delta = createDuration({
-                days: ($_viewDates[row * cols + col] - $_viewDates[dayRow * cols + dayCol]) / 1000 / 60 / 60 / 24 - offset,
+                days: ($_viewDates[newRow * cols + newCol] - $_viewDates[row * cols + col]) / 1000 / 60 / 60 / 24 - offset,
             });
         }
 
@@ -150,6 +108,10 @@
             }
             $_dragEvent.start = addDuration(cloneDate(event.start), delta);
             $_dragEvent.end = addDuration(cloneDate(event.end), delta);
+            if (_viewResources) {
+                $_dragEvent.resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
+                $_dragEvent.resourceIds.push($_viewResources[newResourceCol].id);
+            }
         }
 
         if ($dragScroll) {
@@ -181,13 +143,13 @@
 
     export function handleScroll() {
         if (dragging) {
-            dayRect = rect(dayEl);
+            colRect = rect(colEl);
             bodyRect = rect(bodyEl);
             move();
         }
     }
 
-    function handleMouseMove(jsEvent) {
+    function handlePointerMove(jsEvent) {
         if (dragging) {
             toX = jsEvent.clientX;
             toY = jsEvent.clientY;
@@ -195,7 +157,7 @@
         }
     }
 
-    function handleMouseUp(jsEvent) {
+    function handlePointerUp(jsEvent) {
         if (dragging) {
             if ($_dragEvent) {
                 event.display = 'auto';
@@ -224,23 +186,15 @@
                     });
                 }
             }
-            dayEl = daysEls = bodyEl = null;
+            colEl = rowEls = bodyEl = null;
             resourceCol = newResourceCol = undefined;
             dragging = false;
-
-            // Clear touch cache
-            while (touchCache.firstChild) {
-                touchCache.removeChild(touchCache.lastChild);
-            }
         }
     }
 
     function createDragEvent(jsEvent) {
         if (is_function($eventDragStart)) {
             $eventDragStart({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
-        }
-        if (cacheTouchTarget) {
-            touchCache.appendChild(cacheTouchTarget);
         }
         event.display = 'preview';
         $_dragEvent = cloneEvent(event);
@@ -264,23 +218,11 @@
             jsEvent.preventDefault();
         }
     }
-
-    function handleTouchMove(jsEvent) {
-        handleMouseMove(jsEvent.changedTouches[0]);
-    }
-
-    function handleTouchEnd(jsEvent) {
-        handleMouseUp(jsEvent.changedTouches[0]);
-    }
 </script>
 
 <svelte:window
-    on:mousemove={handleMouseMove}
-    on:mouseup={handleMouseUp}
+    on:pointermove={handlePointerMove}
+    on:pointerup={handlePointerUp}
     on:selectstart={handleSelectStart}
     on:scroll={handleScroll}
-
-    on:touchmove={handleTouchMove}
-    on:touchend={handleTouchEnd}
 />
-<div bind:this={touchCache} style="display: none"></div>
