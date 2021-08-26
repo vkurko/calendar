@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "title": "Event Calendar Core package",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
@@ -18,7 +18,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.3.1",
+    "@event-calendar/common": "~0.3.2",
     "svelte": "^3.42.3"
   }
 }

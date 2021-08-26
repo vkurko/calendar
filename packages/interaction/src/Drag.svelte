@@ -51,7 +51,7 @@
     }
 
 	function start(eventToDrag, jsEvent) {
-        (window.getSelection ? window.getSelection() : document.selection).empty();
+        window.getSelection().removeAllRanges();
 
         event = eventToDrag;
 

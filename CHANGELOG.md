@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.3.2
+August 26, 2021
+
+* Fixed an issue with IE11 support
+
 ## 0.3.1
 August 26, 2021
 
