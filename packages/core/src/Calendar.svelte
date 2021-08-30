@@ -66,8 +66,8 @@
 		return this;
 	}
 
-	export function removeEventById(eventId) {
-		state._events.update(events => events.filter(event => event.id != eventId));
+	export function removeEventById(id) {
+		state._events.update(events => events.filter(event => event.id != id));
 		return this;
 	}
 

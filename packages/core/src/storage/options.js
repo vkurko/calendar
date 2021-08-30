@@ -9,6 +9,7 @@ export function createOptions(plugins) {
         },
         date: new Date(),
         dateClick: undefined,
+        datesSet: undefined,
         dayHeaderFormat: {
             weekday: 'short',
             month: 'numeric',

@@ -397,6 +397,7 @@
   position: absolute;
   width: 100%;
   border-bottom: 1px solid #dadce0;
+  pointer-events: none;
 }
 
 .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {

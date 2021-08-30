@@ -1,5 +1,5 @@
 import {derived, writable} from 'svelte/store';
-import {is_function, tick} from 'svelte/internal';
+import {is_function, noop, tick} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
     cloneDate,
@@ -18,7 +18,7 @@ import {createView} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
 
 export function activeRange(state) {
-    return derived(
+    let _activeRange = derived(
         [state._currentRange, state.firstDay, state.monthMode, state.slotMinTime, state.slotMaxTime],
         ([$_currentRange, $firstDay, $monthMode, $slotMinTime, $slotMaxTime]) => {
             let start = cloneDate($_currentRange.start);
@@ -39,6 +39,24 @@ export function activeRange(state) {
             return {start, end};
         }
     );
+
+    let debounce = 0;
+    derived([_activeRange, state.datesSet], ([$_activeRange, $datesSet]) => {
+        if ($datesSet && !debounce) {
+            ++debounce;
+            tick().then(() => {
+                --debounce;
+                $datesSet({
+                    start: toLocalDate($_activeRange.start),
+                    end: toLocalDate($_activeRange.end),
+                    startStr: toISOString($_activeRange.start),
+                    endStr: toISOString($_activeRange.end)
+                });
+            });
+        }
+    }).subscribe(noop);
+
+    return _activeRange;
 }
 
 export function currentRange(state) {
@@ -137,13 +155,18 @@ export function events(state) {
                     set(events);
                     stopLoading();
                 };
+                // Prepare other stuff
+                let startStr = toISOString($_activeRange.start)
+                let endStr = toISOString($_activeRange.end);
                 // Loop over event sources
                 for (let source of $eventSources) {
                     if (is_function(source.events)) {
                         // Events as a function
                         let result = source.events({
                             start: toLocalDate($_activeRange.start),
-                            end: toLocalDate($_activeRange.end)
+                            end: toLocalDate($_activeRange.end),
+                            startStr,
+                            endStr
                         }, success, failure);
                         if (result !== undefined) {
                             Promise.resolve(result).then(success, failure);
@@ -152,8 +175,8 @@ export function events(state) {
                         // Events as a JSON feed
                         // Prepare params
                         let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
-                        params.start = toISOString($_activeRange.start);
-                        params.end = toISOString($_activeRange.end);
+                        params.start = startStr;
+                        params.end = endStr;
                         params = new URLSearchParams(params);
                         // Prepare fetch
                         let url = source.url, headers = {}, body;

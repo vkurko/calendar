@@ -1,5 +1,12 @@
 # Event Calendar changelog
 
+## 0.4.0
+August 30, 2021
+
+* Added `datesSet` option ([#20](https://github.com/vkurko/calendar/issues/20))
+* Added `dateStr` and `dayEl` parameters for the `dateClick` callback
+* Added `startStr` and `endStr` parameters for the `events` callback of the `eventSources` option
+
 ## 0.3.3
 August 26, 2021
 

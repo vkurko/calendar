@@ -23,6 +23,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [date](#date)
   - [dateClick](#dateclick)
   - [datesAboveResources](#datesaboveresources)
+  - [datesSet](#datesset)
   - [dayHeaderFormat](#dayheaderformat)
   - [displayEventEnd](#displayeventend)
   - [dragScroll](#dragscroll)
@@ -35,9 +36,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
-  - [eventDragStart](#eventdragstart)
   </td><td>
 
+  - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
   - [eventMouseEnter](#eventmouseenter)
@@ -54,9 +55,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [highlightedDates](#highlighteddates)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
-  - [listDaySideFormat](#listdaysideformat)
   </td><td>
 
+  - [listDaySideFormat](#listdaysideformat)
   - [loading](#loading)
   - [locale](#locale)
   - [monthMode](#monthmode)
@@ -123,16 +124,16 @@ You must use at least one plugin that provides a view. The following plugins are
 Then, in your Svelte component, use the calendar something like this:
 ```html
 <script>
-  import Calendar from '@event-calendar/core';
-  import TimeGrid from '@event-calendar/time-grid';
+    import Calendar from '@event-calendar/core';
+    import TimeGrid from '@event-calendar/time-grid';
 
-  let plugins = [TimeGrid];
-  let options = {
-    view: 'timeGridWeek',
-    events: [
-      // your list of events
-    ]
-  };
+    let plugins = [TimeGrid];
+    let options = {
+        view: 'timeGridWeek',
+        events: [
+            // your list of events
+        ]
+    };
 </script>
 
 <Calendar {plugins} {options} />
@@ -143,16 +144,16 @@ import Calendar from '@event-calendar/core';
 import TimeGrid from '@event-calendar/time-grid';
 
 let ec = new Calendar({
-  target: document.getElementById('ec'),
-  props: {
-    plugins: [TimeGrid],
-    options: {
-      view: 'timeGridWeek',
-      events: [
-        // your list of events
-      ]
+    target: document.getElementById('ec'),
+    props: {
+        plugins: [TimeGrid],
+        options: {
+            view: 'timeGridWeek',
+            events: [
+                // your list of events
+            ]
+        }
     }
-  }
 });
 ```
 
@@ -167,10 +168,10 @@ Include the following lines of code in the `<head>` section of your page:
 Then initialize the calendar with something like this:
 ```js
 let ec = new EventCalendar(document.getElementById('ec'), {
-  view: 'timeGridWeek',
-  events: [
-    // your list of events
-  ]
+    view: 'timeGridWeek',
+    events: [
+        // your list of events
+    ]
 });
 ```
 
@@ -182,17 +183,17 @@ ec.setOption('slotDuration', '01:00');
 In Svelte, you can simply update the original `options` object.
 ```html
 <script>
-  import Calendar from '@event-calendar/core';
-  import TimeGrid from '@event-calendar/time-grid';
+    import Calendar from '@event-calendar/core';
+    import TimeGrid from '@event-calendar/time-grid';
 
-  let plugins = [TimeGrid];
-  let options = {
-    view: 'timeGridWeek'
-  };
+    let plugins = [TimeGrid];
+    let options = {
+        view: 'timeGridWeek'
+    };
 
-  function updateOptions() {
-    options.slotDuration = '01:00';
-  }
+    function updateOptions() {
+        options.slotDuration = '01:00';
+    }
 </script>
 
 <button on:click={updateOptions}>Change slot duration</button>
@@ -236,6 +237,20 @@ function (dateClickInfo) {}
 <tr>
 <td>
 
+`dateStr`
+</td>
+<td>ISO8601 string representation of the date</td>
+</tr>
+<tr>
+<td>
+
+`dayEl`
+</td>
+<td>HTML element that represents the whole-day that was clicked on</td>
+</tr>
+<tr>
+<td>
+
 `jsEvent`
 </td>
 <td>JavaScript native event object with low-level information such as click coordinates</td>
@@ -268,6 +283,57 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 
 Determines whether the resource view should render the date headings above the resource headings.
 
+### datesSet
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the date range of the calendar was originally set or changed by clicking the previous/next buttons, changing the view, manipulating the current date via the API, etc.
+
+```js
+function (info) {}
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>JavaScript Date object for the beginning of the range the calendar needs events for</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
+</tr>
+<tr>
+<td>
+
+`startStr`
+</td>
+<td>ISO8601 string representation of the start date</td>
+</tr>
+<tr>
+<td>
+
+`endStr`
+</td>
+<td>ISO8601 string representation of the end date</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
 ### dayHeaderFormat
 - Type `object` or `function`
 - Default `{weekday: 'short', month: 'numeric', day: 'numeric'}`
@@ -281,7 +347,7 @@ This value can be either an object with options for the native JavaScript [Intl.
 
 ```js
 function (date) {
-  // return formatted date string
+    // return formatted date string
 }
 ```
 <table>
@@ -413,7 +479,7 @@ This value can be either a string containing HTML `'<p>...</p>'`, an object cont
 
 ```js
 function (eventInfo) {
-  // return string or object
+    // return string or object
 }
 ```
 `eventInfo` is an object with the following properties:
@@ -842,6 +908,20 @@ function(fetchInfo, successCallback, failureCallback) { }
 </td>
 <td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
 </tr>
+<tr>
+<td>
+
+`startStr`
+</td>
+<td>ISO8601 string representation of the start date</td>
+</tr>
+<tr>
+<td>
+
+`endStr`
+</td>
+<td>ISO8601 string representation of the end date</td>
+</tr>
 </table>
 
 The `successCallback` function must be called by the custom function with an array of parsable [Event](#event-object) objects.
@@ -869,7 +949,7 @@ This value can be either an object with options for the native JavaScript [Intl.
 
 ```js
 function (time) {
-  // return formatted time string
+    // return formatted time string
 }
 ```
 <table>
@@ -1266,22 +1346,22 @@ Methods allow you to manipulate the Event Calendar after initialization. They ar
 In Svelte, methods are available from a component instance:
 ```html
 <script>
-  import Calendar from '@event-calendar/core';
-  import TimeGrid from '@event-calendar/time-grid';
+    import Calendar from '@event-calendar/core';
+    import TimeGrid from '@event-calendar/time-grid';
 
-  let ec;
-  let plugins = [TimeGrid];
-  let options = {
-    view: 'timeGridWeek',
-    eventSources: [{events: function() {
-        console.log('fetching...');
-        return [];
-      }}]
-  };
+    let ec;
+    let plugins = [TimeGrid];
+    let options = {
+        view: 'timeGridWeek',
+        eventSources: [{events: function() {
+            console.log('fetching...');
+            return [];
+        }}]
+    };
 
-  function invokeMethod() {
-    ec.refetchEvents();
-  }
+    function invokeMethod() {
+        ec.refetchEvents();
+    }
 </script>
 
 <button on:click={invokeMethod}>Refetch events</button>

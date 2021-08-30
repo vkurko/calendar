@@ -6,7 +6,8 @@
 		setMidnight,
 		toLocalDate,
 		datesEqual,
-		toViewWithLocalDates
+		toViewWithLocalDates,
+		toISOString
 	} from '@event-calendar/common';
 	import Event from './Event.svelte';
 
@@ -17,6 +18,7 @@
 
 	let {date: currentDate, dateClick, highlightedDates, _view, theme} = getContext('state');
 
+	let el;
 	let dayChunks;
 	let today = setMidnight(createDate()), isToday, otherMonth, highlight;
 
@@ -37,12 +39,21 @@
 
 	function createClickHandler(fn) {
 		return is_function(fn)
-			? jsEvent => fn({date: toLocalDate(date), jsEvent, view: toViewWithLocalDates($_view)})
+			? jsEvent => {
+				fn({
+					date: toLocalDate(date),
+					dateStr: toISOString(date),
+					dayEl: el,
+					jsEvent,
+					view: toViewWithLocalDates($_view)
+				});
+			}
 			: undefined;
 	}
 </script>
 
 <div
+	bind:this={el}
 	class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}"
 	on:click={createClickHandler($dateClick)}
 >
@@ -56,6 +67,5 @@
 		{#each dayChunks as chunk}
 			<Event {chunk} {longChunks}/>
 		{/each}
-
 	</div>
 </div>

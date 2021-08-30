@@ -23,6 +23,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [date](#date)
   - [dateClick](#dateclick)
   - [datesAboveResources](#datesaboveresources)
+  - [datesSet](#datesset)
   - [dayHeaderFormat](#dayheaderformat)
   - [displayEventEnd](#displayeventend)
   - [dragScroll](#dragscroll)
@@ -35,9 +36,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
-  - [eventDragStart](#eventdragstart)
   </td><td>
 
+  - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
   - [eventMouseEnter](#eventmouseenter)
@@ -54,9 +55,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [highlightedDates](#highlighteddates)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
-  - [listDaySideFormat](#listdaysideformat)
   </td><td>
 
+  - [listDaySideFormat](#listdaysideformat)
   - [loading](#loading)
   - [locale](#locale)
   - [monthMode](#monthmode)
@@ -236,6 +237,20 @@ function (dateClickInfo) {}
 <tr>
 <td>
 
+`dateStr`
+</td>
+<td>ISO8601 string representation of the date</td>
+</tr>
+<tr>
+<td>
+
+`dayEl`
+</td>
+<td>HTML element that represents the whole-day that was clicked on</td>
+</tr>
+<tr>
+<td>
+
 `jsEvent`
 </td>
 <td>JavaScript native event object with low-level information such as click coordinates</td>
@@ -267,6 +282,57 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 - Default `false`
 
 Determines whether the resource view should render the date headings above the resource headings.
+
+### datesSet
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the date range of the calendar was originally set or changed by clicking the previous/next buttons, changing the view, manipulating the current date via the API, etc.
+
+```js
+function (info) {}
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>JavaScript Date object for the beginning of the range the calendar needs events for</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
+</tr>
+<tr>
+<td>
+
+`startStr`
+</td>
+<td>ISO8601 string representation of the start date</td>
+</tr>
+<tr>
+<td>
+
+`endStr`
+</td>
+<td>ISO8601 string representation of the end date</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
 
 ### dayHeaderFormat
 - Type `object` or `function`
@@ -841,6 +907,20 @@ function(fetchInfo, successCallback, failureCallback) { }
 `end`
 </td>
 <td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
+</tr>
+<tr>
+<td>
+
+`startStr`
+</td>
+<td>ISO8601 string representation of the start date</td>
+</tr>
+<tr>
+<td>
+
+`endStr`
+</td>
+<td>ISO8601 string representation of the end date</td>
 </tr>
 </table>
 

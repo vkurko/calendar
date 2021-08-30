@@ -10,7 +10,8 @@
 		setMidnight,
 		toLocalDate,
 		sortEventChunks,
-		toViewWithLocalDates
+		toViewWithLocalDates,
+		toISOString
 	} from '@event-calendar/common';
 	import Event from './Event.svelte';
 
@@ -19,6 +20,7 @@
 	let {_events, _intlDayHeader, _view, date: currentDate, dateClick, highlightedDates, theme} = getContext('state');
 	let {_intlListDayFormat, _intlListDaySideFormat} = getContext('view-state');
 
+	let el;
 	let chunks;
 	let today = setMidnight(createDate()), isToday, highlight;
 
@@ -40,15 +42,26 @@
 		highlight = $highlightedDates.some(d => datesEqual(d, date));
 	}
 
-	function handleClick(jsEvent) {
-		if (is_function($dateClick)) {
-			$dateClick({date: toLocalDate(date), jsEvent, view: toViewWithLocalDates($_view)});
-		}
+	function createClickHandler(fn) {
+		return is_function(fn)
+			? jsEvent => {
+				fn({
+					date: toLocalDate(date),
+					dateStr: toISOString(date),
+					dayEl: el,
+					jsEvent,
+					view: toViewWithLocalDates($_view)
+				});
+			}
+			: undefined;
 	}
 </script>
 
 {#if chunks.length}
-	<div class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}" on:click={handleClick}>
+	<div
+		class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+		on:click={createClickHandler($dateClick)}
+	>
 		{$_intlListDayFormat.format(date)}
 		<span class="{$theme.daySide}">{$_intlListDaySideFormat.format(date)}</span>
 	</div>

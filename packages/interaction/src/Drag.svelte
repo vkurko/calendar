@@ -21,7 +21,7 @@
     let resourceCol, newResourceCol;
 
     export function startTimeGrid(event, el, jsEvent, resourcesStore) {
-        if (!dragging) {
+        if (!dragging && jsEvent.isPrimary) {
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
             } else {
@@ -39,7 +39,7 @@
     }
 
     export function startDayGrid(event, el, jsEvent) {
-        if (!dragging) {
+        if (!dragging && jsEvent.isPrimary) {
             [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el);
 
             start(event, jsEvent);
@@ -152,7 +152,7 @@
     }
 
     function handlePointerMove(jsEvent) {
-        if (dragging) {
+        if (dragging && jsEvent.isPrimary) {
             toX = jsEvent.clientX;
             toY = jsEvent.clientY;
             move(jsEvent);
@@ -160,7 +160,7 @@
     }
 
     function handlePointerUp(jsEvent) {
-        if (dragging) {
+        if (dragging && jsEvent.isPrimary) {
             if ($_dragEvent) {
                 event.display = 'auto';
 

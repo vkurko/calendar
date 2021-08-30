@@ -10,7 +10,8 @@
 		datesEqual,
 		createEventChunk,
 		toViewWithLocalDates,
-		rect
+		rect,
+		toISOString
 	} from '@event-calendar/common';
 	import {groupEventChunks} from './events';
 	import Event from './Event.svelte';
@@ -21,6 +22,7 @@
 	let {_events, _dragEvent, dateClick, highlightedDates, slotDuration, slotHeight, _view, theme} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
+	let el;
 	let chunks, bgChunks, dragChunk;
 	let today = setMidnight(createDate()), isToday, highlight;
 
@@ -60,11 +62,22 @@
 
 	function createClickHandler(fn) {
 		return is_function(fn)
-			? jsEvent =>  {
-				let r = rect(jsEvent.currentTarget);
+			? jsEvent => {
+				let r = rect(el);
 				let y = jsEvent.clientY - r.top;
-				let d = addDuration(cloneDate(date), $slotDuration, Math.floor(y/$slotHeight + $_slotTimeLimits.min.seconds/$slotDuration.seconds));
-				fn({date: toLocalDate(d), jsEvent, view: toViewWithLocalDates($_view), resource});
+				let d = addDuration(
+					cloneDate(date),
+					$slotDuration,
+					Math.floor(y / $slotHeight + $_slotTimeLimits.min.seconds / $slotDuration.seconds)
+				);
+				fn({
+					date: toLocalDate(d),
+					dateStr: toISOString(d),
+					dayEl: el,
+					jsEvent,
+					view: toViewWithLocalDates($_view),
+					resource
+				});
 			}
 			: undefined;
 	}
@@ -75,6 +88,7 @@
 </script>
 
 <div
+	bind:this={el}
 	class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
 	on:click={createClickHandler($dateClick)}
 >
