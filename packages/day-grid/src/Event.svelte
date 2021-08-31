@@ -31,7 +31,9 @@
 			style += `background-color:${bgColor};`;
 		}
 
-		classes = $_interaction.drag ? $_interaction.drag.classes(display, $theme.event) : $theme.event;
+		classes = $_interaction.drag && $_interaction.drag.draggable(chunk.event)
+			? $_interaction.drag.classes(display, $theme.event)
+			: $theme.event;
 	}
 
 	// Content
@@ -57,7 +59,7 @@
 	}
 
 	function createDragStartHandler(interaction, display) {
-		return display === 'auto' && interaction.drag
+		return display === 'auto' && interaction.drag && interaction.drag.draggable(chunk.event)
 			? jsEvent => interaction.drag.startDayGrid(chunk.event, el, jsEvent)
 			: undefined;
 	}

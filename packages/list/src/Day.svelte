@@ -59,6 +59,7 @@
 
 {#if chunks.length}
 	<div
+		bind:this={el}
 		class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
 		on:click={createClickHandler($dateClick)}
 	>

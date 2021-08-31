@@ -15,6 +15,8 @@ export function createEvents(input) {
         start: createDate(event.start),
         end: createDate(event.end),
         title: event.title || '',
+        editable: event.editable,
+        startEditable: event.startEditable,
         display: display.includes(event.display) ? event.display : 'auto',
         extendedProps: event.extendedProps || {},
         backgroundColor: event.backgroundColor || event.color

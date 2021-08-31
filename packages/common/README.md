@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (40.6kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (40.8kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -1473,11 +1473,33 @@ Here are all properties that exist in Event object:
 <tr>
 <td>
 
+`editable`
+</td>
+<td>
+
+Boolean (`true` or `false`) or `undefined`. The value overriding the [editable](#editable) setting for this specific event
+</td>
+</tr>
+<tr>
+<td>
+
+`startEditable`
+</td>
+<td>
+
+Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStartEditable](#eventstarteditable) setting for this specific event
+</td>
+</tr>
+<tr>
+<td>
+
 `display`
 </td>
 <td>
 
 The rendering type of the event. Can be `'auto'` or `'background'`
+
+In addition, in your callback functions, you may get the `'ghost'` and `'preview'` for this property, which are internal values and are used to display events during drag-and-drop operations
 </td>
 </tr>
 <tr>
@@ -1570,13 +1592,31 @@ Here are all admissible fields for the event’s input object:
 <tr>
 <td>
 
+`editable`
+</td>
+<td>
+
+`boolean` Overrides the master [editable](#editable) option for this single event. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
+`startEditable`
+</td>
+<td>
+
+`boolean` Overrides the master [eventStartEditable](#eventstarteditable) option for this single event. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
 `display`
 </td>
 <td>
 
 `string` The rendering type of the event. Can be `'auto'` or `'background'`. Default `'auto'`
-
-In addition, in your callback functions, you may get the `'ghost'` and `'preview'` for this property, which are internal values and are used to display events during drag-and-drop operations
 </td>
 </tr>
 <tr>

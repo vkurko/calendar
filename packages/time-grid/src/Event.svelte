@@ -50,7 +50,9 @@
 
 		// Class
 		let className = display === 'background' ? $theme.bgEvent : $theme.event;
-		classes = $_interaction.drag ? $_interaction.drag.classes(display, className) : className;
+		classes = $_interaction.drag && $_interaction.drag.draggable(chunk.event)
+			? $_interaction.drag.classes(display, className)
+			: className;
 	}
 
 	// Content
@@ -74,7 +76,7 @@
 	}
 
 	function createDragStartHandler(interaction, display) {
-		return display === 'auto' &&  interaction.drag
+		return display === 'auto' && interaction.drag && interaction.drag.draggable(chunk.event)
 			? jsEvent => interaction.drag.startTimeGrid(chunk.event, el, jsEvent, _viewResources)
 			: undefined;
 	}

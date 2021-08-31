@@ -5,8 +5,9 @@
         toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
 
-    let {_dragEvent, _events, _viewDates, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, dragScroll,
-        slotDuration, slotHeight, hiddenDays, _view, datesAboveResources, theme} = getContext('state');
+    let {_dragEvent, _events, _viewDates, editable, eventStartEditable, eventDragMinDistance, eventDragStart,
+        eventDragStop, eventDrop, dragScroll, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
+        theme} = getContext('state');
 
     let dragging = false;
     let event;
@@ -141,6 +142,10 @@
             case 'preview': return `${$theme.event} ${$theme.preview}`;
             default: return className;
         }
+    }
+
+    export function draggable(event) {
+        return (event.startEditable ?? $eventStartEditable) || (event.editable ?? $editable);
     }
 
     export function handleScroll() {

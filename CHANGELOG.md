@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.5.0
+September 1, 2021
+
+* Added ability to disable `editable` on per event basis ([#22](https://github.com/vkurko/calendar/issues/22))
+
 ## 0.4.0
 August 30, 2021
 

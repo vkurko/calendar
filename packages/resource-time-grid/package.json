@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/resource-time-grid",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "title": "Event Calendar ResourceTimeGrid plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/time-grid": "~0.4.0",
+    "@event-calendar/time-grid": "~0.5.0",
     "svelte": "^3.42.4"
   }
 }
