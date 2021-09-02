@@ -223,12 +223,12 @@
     background-color: #e5f7fe;
   }
 
-  .ec-month & {
+  .ec-month.ec-body & {
     min-height: 5em;
+  }
 
-    &:first-child {
-      border-left: none;
-    }
+  .ec-month &:first-child {
+    border-left: none;
   }
 
   &.ec-other-month .ec-day-head {
@@ -255,10 +255,6 @@
   .ec-day-head {
     text-align: right;
     padding: 4px;
-  }
-
-  .ec-preview {
-    top: 0;
   }
 }
 
@@ -293,6 +289,7 @@
   border-radius: 3px;
   font-size: .85em;
   line-height: 1.5;
+  z-index: 1;  // put it above the pointer event (for multi-day events in month view)
 
   .ec-month & {
     position: relative;
@@ -317,6 +314,18 @@
     width: 100%;
     user-select: none;
     opacity: .8;
+  }
+
+  &.ec-pointer {
+    color: inherit;
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+    z-index: 0;
+    display: none;
+    .ec-day:hover & {
+      display: flex;
+    }
   }
 }
 

@@ -7,11 +7,9 @@
 
 	export let dates;
 
-	let {_events, _dragEvent, hiddenDays, theme} = getContext('state');
+	let {_events, _interactionEvents, hiddenDays, theme} = getContext('state');
 
-	let chunks;
-	let longChunks;
-	let dragChunk;
+	let chunks, longChunks, interactionChunks = [];
 
 	let start;
 	let end;
@@ -32,13 +30,16 @@
 		longChunks = prepareEventChunks(chunks, $hiddenDays);
 	}
 
-	// Drag & drop
-	$: if ($_dragEvent && intersects($_dragEvent)) {
-		dragChunk = createEventChunk($_dragEvent, start, end);
-		prepareEventChunks([dragChunk], $hiddenDays);
-	} else {
-		dragChunk = null;
-	}
+	$: interactionChunks = $_interactionEvents.map(event => {
+		let chunk;
+		if (event && intersects(event)) {
+			chunk = createEventChunk(event, start, end);
+			prepareEventChunks([chunk], $hiddenDays);
+		} else {
+			chunk = null;
+		}
+		return chunk;
+	});
 
 	function intersects(event) {
 		return event.start < end && event.end > start;
@@ -47,6 +48,6 @@
 
 <div class="{$theme.days}">
 	{#each dates as date}
-		<Day {date} {chunks} {longChunks} {dragChunk}/>
+		<Day {date} {chunks} {longChunks} {interactionChunks} />
 	{/each}
 </div>

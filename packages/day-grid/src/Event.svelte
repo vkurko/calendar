@@ -8,32 +8,33 @@
 	export let longChunks = {};
 
 	let {displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
-		eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction} = getContext('state');
+		eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable} = getContext('state');
 
 	let el;
+	let event;
 	let classes;
 	let style;
 	let content;
 	let timeText;
-	let margin = writable(1);
+	let margin = 1;
 	let display;
 
+	$: event = chunk.event;
+
 	$: {
-		display = chunk.event.display;
+		display = event.display;
 
 		// Class & Style
-		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
+		let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =
 			`width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
-			`margin-top:${$margin}px;`
+			`margin-top:${margin}px;`
 		;
 		if (bgColor) {
 			style += `background-color:${bgColor};`;
 		}
 
-		classes = $_interaction.drag && $_interaction.drag.draggable(chunk.event)
-			? $_interaction.drag.classes(display, $theme.event)
-			: $theme.event;
+		classes = $_classes($theme.event, event);
 	}
 
 	// Content
@@ -42,7 +43,7 @@
 	onMount(() => {
 		if (is_function($eventDidMount)) {
 			$eventDidMount({
-				event: toEventWithLocalDates(chunk.event),
+				event: toEventWithLocalDates(event),
 				timeText,
 				el,
 				view: toViewWithLocalDates($_view)
@@ -54,13 +55,13 @@
 
 	function createHandler(fn, display) {
 		return display !== 'preview' && is_function(fn)
-			? jsEvent => fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)})
+			? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
 			: undefined;
 	}
 
-	function createDragStartHandler(interaction, display) {
-		return display === 'auto' && interaction.drag && interaction.drag.draggable(chunk.event)
-			? jsEvent => interaction.drag.startDayGrid(chunk.event, el, jsEvent)
+	function createPointerDownHandler(draggable, display, event) {
+		return display === 'auto' && draggable(event)
+			? jsEvent => $_interaction.drag.startDayGrid(event, el, jsEvent)
 			: undefined;
 	}
 
@@ -96,7 +97,7 @@
 				}
 			}
 		}
-		$margin = m;
+		margin = m;
 	}
 </script>
 
@@ -108,7 +109,7 @@
 	on:click={createHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:pointerdown={createDragStartHandler($_interaction, display)}
+	on:pointerdown={createPointerDownHandler($_draggable, display, event)}
 ></div>
 
 <svelte:window on:resize={reposition}/>

@@ -63,6 +63,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [monthMode](#monthmode)
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
+  - [pointer](#pointer)
   - [resources](#resources)
   - [scrollTime](#scrolltime)
   - [slotDuration](#slotduration)
@@ -1182,6 +1183,12 @@ function () {
   // return string or object
 }
 ```
+
+### pointer
+- Type `boolean`
+- Default `false`
+
+Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` views.
 
 ### resources
 - Type `Array`

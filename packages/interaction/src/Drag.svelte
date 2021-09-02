@@ -5,9 +5,8 @@
         toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
 
-    let {_dragEvent, _events, _viewDates, editable, eventStartEditable, eventDragMinDistance, eventDragStart,
-        eventDragStop, eventDrop, dragScroll, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
-        theme} = getContext('state');
+    let {_interactionEvents, _events, _viewDates, editable, eventStartEditable, eventDragMinDistance, eventDragStart,
+        eventDragStop, eventDrop, dragScroll, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources} = getContext('state');
 
     let dragging = false;
     let event;
@@ -105,15 +104,15 @@
             });
         }
 
-        if ($_dragEvent || distance() >= $eventDragMinDistance) {
-            if (!$_dragEvent) {
+        if ($_interactionEvents[0] || distance() >= $eventDragMinDistance) {
+            if (!$_interactionEvents[0]) {
                 createDragEvent(jsEvent);
             }
-            $_dragEvent.start = addDuration(cloneDate(event.start), delta);
-            $_dragEvent.end = addDuration(cloneDate(event.end), delta);
+            $_interactionEvents[0].start = addDuration(cloneDate(event.start), delta);
+            $_interactionEvents[0].end = addDuration(cloneDate(event.end), delta);
             if (_viewResources) {
-                $_dragEvent.resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
-                $_dragEvent.resourceIds.push($_viewResources[newResourceCol].id);
+                $_interactionEvents[0].resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
+                $_interactionEvents[0].resourceIds.push($_viewResources[newResourceCol].id);
             }
         }
 
@@ -135,19 +134,6 @@
         }
     }
 
-    export function classes(display, className) {
-        switch (display) {
-            case 'auto': return `${className} ${$theme.draggable}`;
-            case 'ghost': return `${$theme.event} ${$theme.ghost}`;
-            case 'preview': return `${$theme.event} ${$theme.preview}`;
-            default: return className;
-        }
-    }
-
-    export function draggable(event) {
-        return (event.startEditable ?? $eventStartEditable) || (event.editable ?? $editable);
-    }
-
     export function handleScroll() {
         if (dragging) {
             colRect = rect(colEl);
@@ -166,7 +152,7 @@
 
     function handlePointerUp(jsEvent) {
         if (dragging && jsEvent.isPrimary) {
-            if ($_dragEvent) {
+            if ($_interactionEvents[0]) {
                 event.display = 'auto';
 
                 if (is_function($eventDragStop)) {
@@ -174,8 +160,8 @@
                 }
 
                 let oldEvent = cloneEvent(event);
-                updateEvent(event, $_dragEvent);
-                $_dragEvent = null;
+                updateEvent(event, $_interactionEvents[0]);
+                $_interactionEvents[0] = null;
 
                 if (is_function($eventDrop)) {
                     let eventRef = event;
@@ -204,7 +190,7 @@
             $eventDragStart({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
         }
         event.display = 'preview';
-        $_dragEvent = cloneEvent(event);
+        $_interactionEvents[0] = cloneEvent(event);
         event.display = 'ghost';
         $_events = $_events;
     }

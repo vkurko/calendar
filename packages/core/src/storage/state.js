@@ -1,5 +1,5 @@
 import {writable} from 'svelte/store';
-import {is_function, tick} from 'svelte/internal';
+import {is_function, tick, noop, identity} from 'svelte/internal';
 import {createOptions, createParsers} from './options';
 import {currentRange, activeRange, events, viewTitle, viewDates, view} from './stores';
 import {writable2, intl, intlRange} from '@event-calendar/common';
@@ -32,9 +32,12 @@ export default class {
         this._viewDates = viewDates(this);
         this._view = view(this);
         this._viewComponent = writable(undefined);
+        // Interaction
         this._interaction = writable({});
-        this._interactionComponent = writable(null);
-        this._dragEvent = writable(null);
+        this._interactionEvents = writable([null, null]);  // drag, pointer
+        this._draggable = writable(noop);
+        this._classes = writable(identity);
+        this._scroll = writable(undefined);
 
         // Let plugins create their private stores
         for (let plugin of plugins) {

@@ -7,11 +7,13 @@
 	export let chunk;
 
 	let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-		eventMouseEnter, eventMouseLeave, slotDuration, slotHeight, theme, _view, _intlEventTime, _interaction} = getContext('state');
+		eventMouseEnter, eventMouseLeave, slotDuration, slotHeight, theme, _view, _intlEventTime,
+		_interaction, _classes, _draggable} = getContext('state');
 
 	let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
 	let el;
+	let event;
 	let display;
 	let classes;
 	let style;
@@ -19,8 +21,10 @@
 	let timeText;
 	let dragged = false;
 
+	$: event = chunk.event;
+
 	$: {
-		display = chunk.event.display;
+		display = event.display;
 
 		// Style
 		let step = $slotDuration.seconds / 60;
@@ -30,7 +34,7 @@
 		let top = (start - offset) / step * $slotHeight;
 		let height = (end - start) / step * $slotHeight;
 		let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
-		let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
+		let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
 		style =
 			`top:${top}px;` +
 			`min-height:${height}px;` +
@@ -49,10 +53,7 @@
 		}
 
 		// Class
-		let className = display === 'background' ? $theme.bgEvent : $theme.event;
-		classes = $_interaction.drag && $_interaction.drag.draggable(chunk.event)
-			? $_interaction.drag.classes(display, className)
-			: className;
+		classes = $_classes(display === 'background' ? $theme.bgEvent : $theme.event, event);
 	}
 
 	// Content
@@ -61,7 +62,7 @@
 	onMount(() => {
 		if (is_function($eventDidMount)) {
 			$eventDidMount({
-				event: toEventWithLocalDates(chunk.event),
+				event: toEventWithLocalDates(event),
 				timeText,
 				el,
 				view: toViewWithLocalDates($_view)
@@ -71,13 +72,13 @@
 
 	function createHandler(fn, display) {
 		return display !== 'preview' && is_function(fn)
-			? jsEvent => fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)})
+			? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
 			: undefined;
 	}
 
-	function createDragStartHandler(interaction, display) {
-		return display === 'auto' && interaction.drag && interaction.drag.draggable(chunk.event)
-			? jsEvent => interaction.drag.startTimeGrid(chunk.event, el, jsEvent, _viewResources)
+	function createPointerDownHandler(draggable, display, event) {
+		return display === 'auto' && draggable(event)
+			? jsEvent => $_interaction.drag.startTimeGrid(event, el, jsEvent, _viewResources)
 			: undefined;
 	}
 </script>
@@ -90,5 +91,5 @@
 	on:click={createHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:pointerdown={createDragStartHandler($_interaction, display)}
+	on:pointerdown={createPointerDownHandler($_draggable, display, event)}
 ></div>

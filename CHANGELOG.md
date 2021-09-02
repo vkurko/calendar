@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.6.0
+September 28, 2021
+
+* Added mouse cursor `pointer` in `timeGrid`/`resourceTimeGrid` views
+
 ## 0.5.0
 September 1, 2021
 

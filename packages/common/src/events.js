@@ -55,7 +55,7 @@ export function sortEventChunks(chunks) {
 
 export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
     let timeText = _intlEventTime.format(chunk.start), content;
-    if (displayEventEnd) {
+    if (displayEventEnd && chunk.event.display !== 'pointer') {
         timeText += ` - ${_intlEventTime.format(chunk.end)}`;
     }
     if (eventContent) {
@@ -73,6 +73,11 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
         switch (chunk.event.display) {
             case 'background':
                 content = {html: ''};
+                break;
+            case 'pointer':
+                content = {
+                    html: `<div class="${theme.eventTime}">${timeText}</div>`
+                };
                 break;
             default:
                 content = {

@@ -2,7 +2,7 @@
 	import {getContext, tick} from 'svelte';
 	import {hasYScroll} from '@event-calendar/common';
 
-	let {slotDuration, slotHeight, _intlSlotLabel, _viewDates, scrollTime, _scrollable, theme, _interaction} = getContext('state');
+	let {slotDuration, slotHeight, _intlSlotLabel, _viewDates, scrollTime, _scrollable, _scroll, theme} = getContext('state');
 	let {_slotTimeLimits, _times} = getContext('view-state');
 
 	let el;
@@ -28,15 +28,13 @@
 	function recheckScrollable() {
 		$_scrollable = hasYScroll(el);
 	}
-
-	function handleScroll() {
-		if ($_interaction.drag) {
-			$_interaction.drag.handleScroll();
-		}
-	}
 </script>
 
-<div bind:this={el} class="{$theme.body} {$theme.week}{compact ? ' ' + $theme.compact : ''}" on:scroll={handleScroll}>
+<div
+	bind:this={el}
+	class="{$theme.body} {$theme.week}{compact ? ' ' + $theme.compact : ''}"
+	on:scroll={$_scroll}
+>
 	<div class="{$theme.content}">
 		<div class="{$theme.sidebar}">
 			{#each $_times as time}

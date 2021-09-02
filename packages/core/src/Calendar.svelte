@@ -13,7 +13,7 @@
 	let state = new State(plugins, options);
 	setContext('state', state);
 
-	let {_viewComponent, _interactionComponent, height, theme} = state;
+	let {_viewComponent, _interaction, height, theme} = state;
 
 	// Reactively update options that did change
 	$: for (let [name, value] of diff(options)) {
@@ -79,5 +79,5 @@
 <div class="{$theme.calendar}" style="height: {$height}">
 	<Toolbar/>
 	<svelte:component this={$_viewComponent}/>
-	<svelte:component this={$_interactionComponent}/>
+	<svelte:component this={$_interaction.component}/>
 </div>

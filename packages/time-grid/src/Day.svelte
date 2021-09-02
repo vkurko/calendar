@@ -19,11 +19,11 @@
 	export let date;
 	export let resource = undefined;
 
-	let {_events, _dragEvent, dateClick, highlightedDates, slotDuration, slotHeight, _view, theme} = getContext('state');
+	let {_events, _interactionEvents, dateClick, highlightedDates, slotDuration, slotHeight, _view, theme, _interaction} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let el;
-	let chunks, bgChunks, dragChunk;
+	let chunks, bgChunks, interactionChunks = [];
 	let today = setMidnight(createDate()), isToday, highlight;
 
 	let start, end;
@@ -48,12 +48,9 @@
 		groupEventChunks(chunks);
 	}
 
-	// Drag & drop
-	$: if ($_dragEvent && intersects($_dragEvent)) {
-		dragChunk = createEventChunk($_dragEvent, start, end);
-	} else {
-		dragChunk = null;
-	}
+	$: interactionChunks = $_interactionEvents.map(
+		event => event && intersects(event) ? createEventChunk(event, start, end) : null
+	);
 
 	$: {
 		isToday = datesEqual(date, today);
@@ -82,6 +79,16 @@
 			: undefined;
 	}
 
+	function createPointerEnterHandler(interaction) {
+		return interaction.pointer
+			? jsEvent => interaction.pointer.enterTimeGrid(date, el, jsEvent, _slotTimeLimits, resource)
+			: undefined;
+	}
+
+	function createPointerLeaveHandler(interaction) {
+		return interaction.pointer ? interaction.pointer.leave : undefined;
+	}
+
 	function intersects(event) {
 		return event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(resource.id));
 	}
@@ -91,6 +98,8 @@
 	bind:this={el}
 	class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
 	on:click={createClickHandler($dateClick)}
+	on:pointerenter={createPointerEnterHandler($_interaction)}
+	on:pointerleave={createPointerLeaveHandler($_interaction)}
 >
 	<div class="{$theme.bgEvents}">
 		{#each bgChunks as chunk}
@@ -98,11 +107,16 @@
 		{/each}
 	</div>
 	<div class="{$theme.events}">
+		<!-- Pointer -->
+		{#if interactionChunks[1]}
+			<Event {date} chunk={interactionChunks[1]}/>
+		{/if}
 		{#each chunks as chunk}
 			<Event {date} {chunk}/>
 		{/each}
-		{#if dragChunk}
-			<Event {date} chunk={dragChunk}/>
+		<!-- Drag -->
+		{#if interactionChunks[0]}
+			<Event {date} chunk={interactionChunks[0]}/>
 		{/if}
 	</div>
 </div>
