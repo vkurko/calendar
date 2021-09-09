@@ -10,3 +10,14 @@ export function hasYScroll(el) {
 export function rect(el) {
     return el.getBoundingClientRect();
 }
+
+export function ancestor(el, up) {
+    while (up--) {
+        el = el.parentElement;
+    }
+    return el;
+}
+
+export function height(el) {
+    return el.offsetHeight;
+}

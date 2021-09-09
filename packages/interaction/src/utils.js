@@ -1,3 +1,4 @@
+import {ancestor} from '@event-calendar/common';
 
 export function traverseTimeGrid(el) {
     let dayEl = ancestor(el, 2);
@@ -19,8 +20,8 @@ export function traverseResourceTimeGrid(el, datesAboveResources) {
     return datesAboveResources ? [colEl, bodyEl, resourceCol, col] : [colEl, bodyEl, col, resourceCol];
 }
 
-export function traverseDayGrid(el) {
-    let dayEl = ancestor(el, 2);
+export function traverseDayGrid(el, inPopup) {
+    let dayEl = ancestor(el, inPopup ? 3 : 2);
     let daysEl = ancestor(dayEl, 1);
     let contentEl = ancestor(daysEl, 1);
     let colEl = child(child(contentEl, 0), 0);
@@ -29,13 +30,6 @@ export function traverseDayGrid(el) {
     let row = pos(daysEl);
 
     return [colEl, bodyEl, col, row, contentEl.children];
-}
-
-function ancestor(el, up) {
-    while (up--) {
-        el = el.parentElement;
-    }
-    return el;
 }
 
 function child(el, pos) {

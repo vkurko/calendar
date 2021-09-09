@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.7.0
+September 29, 2021
+
+* Added `dayMaxEvents` option with implemented value `true` ([#23](https://github.com/vkurko/calendar/issues/23))
+
 ## 0.6.0
 September 28, 2021
 

@@ -1,32 +1,41 @@
 <script>
 	import {getContext} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {
-		createDate,
-		setMidnight,
-		toLocalDate,
-		datesEqual,
-		toViewWithLocalDates,
-		toISOString
-	} from '@event-calendar/common';
+	import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
+		createEventChunk, addDay, cloneDate, assign} from '@event-calendar/common';
 	import Event from './Event.svelte';
+	import Popup from './Popup.svelte';
 
 	export let date;
 	export let chunks;
 	export let longChunks;
 	export let interactionChunks = [];
 
-	let {date: currentDate, dateClick, highlightedDates, _view, theme, _interaction} = getContext('state');
+	let {date: currentDate, dateClick, dayMaxEvents, highlightedDates, moreLinkContent, theme,
+		_view, _interaction} = getContext('state');
+	let {_hiddenEvents, _popup} = getContext('view-state');
 
 	let el;
 	let dayChunks;
-	let today = setMidnight(createDate()), isToday, otherMonth, highlight;
+	let today = setMidnight(createDate());
+	let isToday;
+	let otherMonth;
+	let highlight;
+	let hiddenEvents = new Set();  // hidden events of this day
+	let moreLink = '';
+
+	$: $_hiddenEvents[date.getTime()] = hiddenEvents;
 
 	$: {
 		dayChunks = [];
+		hiddenEvents.clear();
+		hiddenEvents = hiddenEvents;
 		for (let chunk of chunks) {
 			if (datesEqual(chunk.date, date)) {
 				dayChunks.push(chunk);
+				// if ($dayMaxEvents !== false && dayChunks.length > $dayMaxEvents) {
+				// 	chunk.hidden = true;
+				// }
 			}
 		}
 	}
@@ -37,10 +46,26 @@
 		highlight = $highlightedDates.some(d => datesEqual(d, date));
 	}
 
+	$: if ($_hiddenEvents && hiddenEvents.size) {  // make Svelte update this block on $_hiddenEvents update
+		let text = '+' + hiddenEvents.size + ' more';
+		if ($moreLinkContent) {
+			moreLink = is_function($moreLinkContent) ? $moreLinkContent({num: hiddenEvents.size, text}) : $moreLinkContent;
+			if (typeof moreLink === 'string') {
+				moreLink = {html: moreLink};
+			}
+		} else {
+			moreLink = {html: text};
+		}
+	}
+
+	$: if ($_popup.date && datesEqual(date, $_popup.date) && longChunks && dayChunks) {
+		setPopupChunks();
+	}
+
 	function createClickHandler(fn) {
 		return is_function(fn)
 			? jsEvent => {
-				fn({
+				!jsEvent.ecClosingPopup && fn({
 					date: toLocalDate(date),
 					dateStr: toISOString(date),
 					dayEl: el,
@@ -59,6 +84,18 @@
 
 	function createPointerLeaveHandler(interaction) {
 		return interaction.pointer ? interaction.pointer.leave : undefined;
+	}
+
+	function showMore() {
+		setPopupChunks();
+		$_popup.date = date;
+	}
+
+	function setPopupChunks() {
+		let nextDay = addDay(cloneDate(date));
+		$_popup.chunks = dayChunks.concat((longChunks[date.getTime()] || []))
+			.map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}))
+			.sort((a, b) => a.top - b.top);
 	}
 </script>
 
@@ -84,5 +121,13 @@
 		{#each dayChunks as chunk}
 			<Event {chunk} {longChunks}/>
 		{/each}
+	</div>
+	{#if $_popup.date && datesEqual(date, $_popup.date)}
+		<Popup/>
+	{/if}
+	<div class="{$theme.dayFoot}">
+		{#if hiddenEvents.size}
+			<a on:click|stopPropagation={showMore} use:setContent={moreLink}></a>
+		{/if}
 	</div>
 </div>

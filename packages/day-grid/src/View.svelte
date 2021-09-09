@@ -10,12 +10,15 @@
 	let state = new State(getContext('state'));
 	setContext('view-state', state);
 
+	let {_hiddenEvents} = state;
+
 	let weeks;
 	let days;
 
 	$: {
 		weeks = [];
 		days = 7 - $hiddenDays.length;
+		$_hiddenEvents = {};
 		for (let i = 0; i < $_viewDates.length / days; ++i) {
 			let dates = [];
 			for (let j = 0; j < days; ++j) {

@@ -38,13 +38,13 @@
         }
     }
 
-    export function startDayGrid(event, el, jsEvent) {
+    export function startDayGrid(event, el, jsEvent, inPopup) {
         if (!dragging && jsEvent.isPrimary) {
-            [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el);
+            [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el, inPopup);
 
             start(event, jsEvent);
 
-            offset = floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
+            offset = inPopup ? 0 : floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
 
             _viewResources = undefined;
 

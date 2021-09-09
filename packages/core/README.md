@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (40.8kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (41.9kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -25,6 +25,8 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [datesAboveResources](#datesaboveresources)
   - [datesSet](#datesset)
   - [dayHeaderFormat](#dayheaderformat)
+  - [dayMaxEvents](#daymaxevents)
+  - [dayPopoverFormat](#daypopoverformat)
   - [displayEventEnd](#displayeventend)
   - [dragScroll](#dragscroll)
   - [duration](#duration)
@@ -35,9 +37,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventColor](#eventcolor)
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
-  - [eventDragMinDistance](#eventdragmindistance)
   </td><td>
 
+  - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
@@ -61,6 +63,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [loading](#loading)
   - [locale](#locale)
   - [monthMode](#monthmode)
+  - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
   - [pointer](#pointer)
@@ -360,6 +363,24 @@ function (date) {
 <td>JavaScript Date object that needs to be formatted</td>
 </tr>
 </table>
+
+### dayMaxEvents
+- Type `boolean`
+- Default `false`
+
+Determines the maximum number of stacked event levels for a given day in the `dayGrid` view.
+
+If there are too many events, a link like `+2 more` is displayed.
+
+Currently, only the value `true` is supported, which limits the number of events to the height of the day cell.
+
+### dayPopoverFormat
+- Type `object` or `function`
+- Default `{month: 'long', day: 'numeric', year: 'numeric'}`
+
+Defines the date format of title of the popover created by the [dayMaxEvents](#daymaxevents) option.
+
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
 
 ### displayEventEnd
 - Type `boolean`
@@ -1140,6 +1161,40 @@ Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](
 
 Tells the calendar that visible dates should start from the [firstDay](#firstday) of the week, even if it will display days outside the current range (this is a common case for a month calendar when you can see days from adjacent months).
 
+### moreLinkContent
+- Type `string`, `object`or `function`
+- Default `undefined`
+
+Defines the text that is displayed instead of the default `+2 more` created by the [dayMaxEvents](#daymaxevents) option.
+
+This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+
+```js
+function (arg) {
+  // return string or object
+}
+```
+`arg` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`num`
+</td>
+<td>The number of hidden events</td>
+</tr>
+<tr>
+<td>
+
+`text`
+</td>
+<td>
+
+The default text like `+2 more`
+</td>
+</tr>
+</table>
+
 ### noEventsClick
 - Type `function`
 - Default `undefined`
@@ -1265,7 +1320,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### theme
 - Type `object` or `function`
-- Default `{calendar: 'ec', header: 'ec-header', withScroll: 'ec-with-scroll', hiddenScroll: 'ec-hidden-scroll', body: 'ec-body', week: 'ec-week', compact: 'ec-compact', toolbar: 'ec-toolbar', sidebar: 'ec-sidebar', content: 'ec-content', lines: 'ec-lines', line: 'ec-line', days: 'ec-days', day: 'ec-day', dayHead: 'ec-day-head', today: 'ec-today', otherMonth: 'ec-other-month', highlight: 'ec-highlight', events: 'ec-events', event: 'ec-event', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', bgEvents: 'ec-bg-events', bgEvent: 'ec-bg-event', hiddenTimes: 'ec-hidden-times', time: 'ec-time', button: 'ec-button', buttonGroup: 'ec-button-group', icon: 'ec-icon', active: 'ec-active', title: 'ec-title', month: 'ec-month', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title'}`
+- Default `{calendar: 'ec', header: 'ec-header', withScroll: 'ec-with-scroll', hiddenScroll: 'ec-hidden-scroll', body: 'ec-body', week: 'ec-week', compact: 'ec-compact', toolbar: 'ec-toolbar', sidebar: 'ec-sidebar', content: 'ec-content', lines: 'ec-lines', line: 'ec-line', days: 'ec-days', day: 'ec-day', dayHead: 'ec-day-head', today: 'ec-today', otherMonth: 'ec-other-month', highlight: 'ec-highlight', events: 'ec-events', event: 'ec-event', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', bgEvents: 'ec-bg-events', bgEvent: 'ec-bg-event', hiddenTimes: 'ec-hidden-times', time: 'ec-time', button: 'ec-button', buttonGroup: 'ec-button-group', icon: 'ec-icon', active: 'ec-active', title: 'ec-title', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', month: 'ec-month', popup: 'ec-popup', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title', draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer'}`
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 
@@ -1506,7 +1561,7 @@ Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStart
 
 The rendering type of the event. Can be `'auto'` or `'background'`
 
-In addition, in your callback functions, you may get the `'ghost'` and `'preview'` for this property, which are internal values and are used to display events during drag-and-drop operations
+In addition, in your callback functions, you may get the `'ghost'`, `'preview'` and `'pointer'` for this property, which are internal values and are used, for example, to display events during drag-and-drop operations
 </td>
 </tr>
 <tr>

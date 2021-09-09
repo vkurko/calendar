@@ -2,7 +2,7 @@
 	import {getContext, tick} from 'svelte';
 	import {hasYScroll} from '@event-calendar/common';
 
-	let {_events, _scrollable, _scroll, theme} = getContext('state');
+	let {dayMaxEvents, _events, _scrollable, _scroll, theme} = getContext('state');
 
 	let el;
 
@@ -17,7 +17,7 @@
 
 <div
 	bind:this={el}
-	class="{$theme.body} {$theme.month}"
+	class="{$theme.body} {$theme.month}{$dayMaxEvents === true ? ' ' + $theme.uniform : ''}"
 	on:scroll={$_scroll}
 >
 	<div class="{$theme.content}">

@@ -189,6 +189,10 @@
     height: 100%; /* ie11 */
   }
 
+  .ec-month.ec-uniform & {
+    overflow: hidden;
+  }
+
   .ec-list & {
     flex-direction: column;
   }
@@ -210,6 +214,11 @@
   .ec-resource & {
     flex: 1 0 auto; /* ie11 */
   }
+
+  .ec-month.ec-uniform & {
+    flex: 1 1 0%;
+    min-height: 0;
+  }
 }
 
 .ec-day {
@@ -225,6 +234,11 @@
 
   .ec-month.ec-body & {
     min-height: 5em;
+    position: relative;
+  }
+
+  .ec-month.ec-uniform & {
+    min-height: 0;
   }
 
   .ec-month &:first-child {
@@ -254,7 +268,18 @@
 .ec-month {
   .ec-day-head {
     text-align: right;
-    padding: 4px;
+    padding: 4px 4px 3px;
+  }
+
+  .ec-day-foot {
+    position: absolute;
+    bottom: 0;
+    padding: 2px;
+    font-size: .85em;
+
+    a {
+      cursor: pointer;
+    }
   }
 }
 
@@ -293,6 +318,7 @@
 
   .ec-month & {
     position: relative;
+    flex-direction: row;
   }
 
   .ec-week & {
@@ -310,7 +336,7 @@
   &.ec-preview {
     cursor: pointer;
     position: absolute;
-    z-index: 99999;
+    z-index: 99990;
     width: 100%;
     user-select: none;
     opacity: .8;
@@ -338,12 +364,23 @@
 .ec-event-time {
   overflow: hidden;
   white-space: nowrap;
-  margin-bottom: 1px;
+  margin: 0 0 1px 0;
   flex-shrink: 0;
+
+  .ec-month & {
+    margin: 0 3px 0 0;
+    max-width: 100%;
+    text-overflow: ellipsis;
+  }
 }
 
 .ec-event-title {
   overflow: hidden;
+
+  .ec-month & {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
   .ec-week & {
     position: sticky;
@@ -411,4 +448,32 @@
 
 .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
   border-bottom-style: dotted;
+}
+
+.ec-popup {
+  position: absolute;
+  top: 0;
+  width: 110%;
+  z-index: 99992;
+  padding: 8px 10px 14px;
+  background-color: #fff;
+  border-radius: 6px;
+  outline: 1px solid transparent;
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, .3), 0 4px 8px 3px rgba(60, 64, 67, .15);
+
+  .ec-day-head {
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      cursor: pointer;
+      font-size: 1.5em;
+      line-height: .8;
+    }
+  }
+
+  .ec-events {
+    margin: 0;
+  }
 }
