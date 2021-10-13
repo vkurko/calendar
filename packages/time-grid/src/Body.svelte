@@ -22,7 +22,7 @@
 	}
 
 	$: if (el && $_times && $slotDuration) {
-		tick().then(recheckScrollable);
+		setTimeout(recheckScrollable);
 	}
 
 	function recheckScrollable() {

@@ -257,7 +257,7 @@
     font-weight: bold;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
 
     &:first-child {
       border-top: none;
@@ -336,7 +336,7 @@
   &.ec-preview {
     cursor: pointer;
     position: absolute;
-    z-index: 99990;
+    z-index: 1000;
     width: 100%;
     user-select: none;
     opacity: .8;
@@ -454,7 +454,8 @@
   position: absolute;
   top: 0;
   width: 110%;
-  z-index: 99992;
+  min-width: 180px;
+  z-index: 1010;
   padding: 8px 10px 14px;
   background-color: #fff;
   border-radius: 6px;

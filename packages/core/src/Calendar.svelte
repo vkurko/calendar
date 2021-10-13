@@ -13,7 +13,7 @@
 	let state = new State(plugins, options);
 	setContext('state', state);
 
-	let {_viewComponent, _interaction, height, theme} = state;
+	let {_viewComponent, _interaction, _events, events, eventSources, height, theme} = state;
 
 	// Reactively update options that did change
 	$: for (let [name, value] of diff(options)) {
@@ -49,12 +49,12 @@
 	}
 
 	export function addEvent(event) {
-		state._events.update(events => events.concat(state.events.parse([event])));
+		updateEvents(events => events.concat(state.events.parse([event])));
 		return this;
 	}
 
 	export function updateEvent(event) {
-		state._events.update(events => {
+		updateEvents(events => {
 			for (let e of events) {
 				if (e.id == event.id) {
 					assign(e, state.events.parse([event])[0]);
@@ -67,12 +67,20 @@
 	}
 
 	export function removeEventById(id) {
-		state._events.update(events => events.filter(event => event.id != id));
+		updateEvents(events => events.filter(event => event.id != id));
 		return this;
 	}
 
 	export function getView() {
 		return toViewWithLocalDates(state._view.get());
+	}
+
+	function updateEvents(func) {
+		if ($eventSources.length) {
+			$_events = func($_events);
+		} else {
+			$events = func($events);
+		}
 	}
 </script>
 

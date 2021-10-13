@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 0.7.1
+October 13, 2021
+
+* Added minimum width for the `dayMaxEvents` popover ([#24](https://github.com/vkurko/calendar/issues/24))
+* Fixed issues with `addEvent`, `updateEvent` and `removeEventById` methods
+
 ## 0.7.0
 September 29, 2021
 
