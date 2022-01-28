@@ -1,5 +1,5 @@
 <script>
-	import {getContext, tick} from 'svelte';
+	import {getContext} from 'svelte';
 	import {hasYScroll} from '@event-calendar/common';
 
 	let {slotDuration, slotHeight, _intlSlotLabel, _viewDates, scrollTime, _scrollable, _scroll, theme} = getContext('state');

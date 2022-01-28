@@ -15,11 +15,13 @@
 	} from '@event-calendar/common';
 	import {groupEventChunks} from './events';
 	import Event from './Event.svelte';
+	import NowIndicator from './NowIndicator.svelte';
 
 	export let date;
 	export let resource = undefined;
 
-	let {_events, _interactionEvents, dateClick, highlightedDates, slotDuration, slotHeight, _view, theme, _interaction} = getContext('state');
+	let {_events, _interactionEvents, dateClick, highlightedDates, nowIndicator, slotDuration, slotHeight, _view, theme,
+		_interaction} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let el;
@@ -117,6 +119,12 @@
 		<!-- Drag -->
 		{#if interactionChunks[0]}
 			<Event {date} chunk={interactionChunks[0]}/>
+		{/if}
+	</div>
+	<div class="{$theme.extra}">
+		<!-- Now indicator -->
+		{#if $nowIndicator && isToday}
+			<NowIndicator />
 		{/if}
 	</div>
 </div>

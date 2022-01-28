@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.8.0
+January 28, 2022
+
+* Added `nowIndicator` option ([#29](https://github.com/vkurko/calendar/issues/29))
+
 ## 0.7.1
 October 13, 2021
 

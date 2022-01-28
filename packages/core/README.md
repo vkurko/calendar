@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (44kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (47kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -37,9 +37,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventColor](#eventcolor)
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
+  - [eventDragMinDistance](#eventdragmindistance)
   </td><td>
 
-  - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
@@ -57,15 +57,16 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [highlightedDates](#highlighteddates)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
-  </td><td>
-
   - [listDaySideFormat](#listdaysideformat)
   - [loading](#loading)
+  </td><td>
+
   - [locale](#locale)
   - [monthMode](#monthmode)
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
+  - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
   - [scrollTime](#scrolltime)
@@ -1239,6 +1240,12 @@ function () {
 }
 ```
 
+### nowIndicator
+- Type `boolean`
+- Default `false`
+
+Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` views.
+
 ### pointer
 - Type `boolean`
 - Default `false`
@@ -1320,7 +1327,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### theme
 - Type `object` or `function`
-- Default `{calendar: 'ec', header: 'ec-header', withScroll: 'ec-with-scroll', hiddenScroll: 'ec-hidden-scroll', body: 'ec-body', week: 'ec-week', compact: 'ec-compact', toolbar: 'ec-toolbar', sidebar: 'ec-sidebar', content: 'ec-content', lines: 'ec-lines', line: 'ec-line', days: 'ec-days', day: 'ec-day', dayHead: 'ec-day-head', today: 'ec-today', otherMonth: 'ec-other-month', highlight: 'ec-highlight', events: 'ec-events', event: 'ec-event', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', bgEvents: 'ec-bg-events', bgEvent: 'ec-bg-event', hiddenTimes: 'ec-hidden-times', time: 'ec-time', button: 'ec-button', buttonGroup: 'ec-button-group', icon: 'ec-icon', active: 'ec-active', title: 'ec-title', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', month: 'ec-month', popup: 'ec-popup', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title', draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer'}`
+- Default `{active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', days: 'ec-days', event: 'ec-event', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', hiddenTimes: 'ec-hidden-times', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', sidebar: 'ec-sidebar', today: 'ec-today', time: 'ec-time', title: 'ec-title', toolbar: 'ec-toolbar', week: 'ec-week', withScroll: 'ec-with-scroll', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', month: 'ec-month', popup: 'ec-popup', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title', draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer'}`
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 

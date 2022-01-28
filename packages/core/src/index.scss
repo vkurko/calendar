@@ -348,6 +348,7 @@
     user-select: none;
     position: absolute;
     z-index: 0;
+    box-shadow: none;
     display: none;
     .ec-day:hover & {
       display: flex;
@@ -476,5 +477,27 @@
 
   .ec-events {
     margin: 0;
+  }
+}
+
+.ec-extra {
+  position: relative;
+}
+
+.ec-now-indicator {
+  position: absolute;
+  z-index: 1005;
+  width: 100%;
+  border-top: #ea4335 solid 2px;
+
+  &:before {
+    background: #ea4335;
+    border-radius: 50%;
+    content: "";
+    position: absolute;
+    height: 12px;
+    margin-left: -7px;
+    margin-top: -7px;
+    width: 12px;
   }
 }
