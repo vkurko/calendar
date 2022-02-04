@@ -482,6 +482,9 @@
 
 .ec-extra {
   position: relative;
+  height: 100%;
+  overflow: hidden;
+  margin-left: -6.5px;
 }
 
 .ec-now-indicator {
@@ -489,6 +492,7 @@
   z-index: 1005;
   width: 100%;
   border-top: #ea4335 solid 2px;
+  pointer-events: none;
 
   &:before {
     background: #ea4335;
@@ -496,8 +500,8 @@
     content: "";
     position: absolute;
     height: 12px;
-    margin-left: -7px;
     margin-top: -7px;
     width: 12px;
+    pointer-events: none;
   }
 }

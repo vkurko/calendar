@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.8.1
+February 4, 2022
+
+* Fixed an issue with the `nowIndicator` and `slotMaxTime` option ([#29](https://github.com/vkurko/calendar/issues/29))
+
 ## 0.8.0
 January 28, 2022
 

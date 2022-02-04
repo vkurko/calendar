@@ -21,7 +21,11 @@
 		top = (start - offset) / step * $slotHeight;
 	}
 
-	onMount(() => intervalID = setInterval(timer, 60000));
+	onMount(() => setTimeout(() => {
+		intervalID = setInterval(timer, 60000);
+		timer();
+	}, (60 - now.getSeconds()) * 1000));
+
 	onDestroy(() => clearInterval(intervalID));
 
 	function timer() {
