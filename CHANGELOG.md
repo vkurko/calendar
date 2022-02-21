@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.8.2
+February 21, 2022
+
+* Added support for SvelteKit ([#26](https://github.com/vkurko/calendar/issues/26))
+
 ## 0.8.1
 February 4, 2022
 

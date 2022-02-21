@@ -1,7 +1,14 @@
 import {writable} from 'svelte/store';
 import {is_function, tick, noop, identity} from 'svelte/internal';
 import {createOptions, createParsers} from './options';
-import {currentRange, activeRange, events, viewTitle, viewDates, view} from './stores';
+import {
+    activeRange,
+    currentRange,
+    events,
+    viewDates,
+    viewTitle,
+    view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
+} from './stores';
 import {writable2, intl, intlRange} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
 
@@ -30,7 +37,7 @@ export default class {
         this._scrollable = writable(false);
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
-        this._view = view(this);
+        this._view = view2(this);
         this._viewComponent = writable(undefined);
         // Interaction
         this._interaction = writable({});

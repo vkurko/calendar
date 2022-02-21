@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/time-grid",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "title": "Event Calendar TimeGrid plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": ["calendar", "event", "resource", "full-sized"],
@@ -12,12 +12,13 @@
   },
   "license": "MIT",
   "type": "module",
+  "svelte": "src/index.js",
   "exports": {
     ".": "./index.js",
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.8.1",
-    "svelte": "^3.46.3"
+    "@event-calendar/common": "~0.8.2",
+    "svelte": "^3.46.4"
   }
 }
