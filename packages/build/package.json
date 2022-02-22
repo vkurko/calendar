@@ -1,9 +1,14 @@
 {
   "name": "@event-calendar/build",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "title": "Event Calendar",
   "description": "Full-sized drag & drop event calendar with resource view",
-  "keywords": ["calendar", "event", "resource", "full-sized"],
+  "keywords": [
+    "calendar",
+    "event",
+    "resource",
+    "full-sized"
+  ],
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
     "type": "git",
@@ -13,11 +18,11 @@
   "license": "MIT",
   "jsdelivr": "event-calendar.min.js",
   "devDependencies": {
-    "@event-calendar/day-grid": "~0.8.2",
-    "@event-calendar/interaction": "~0.8.2",
-    "@event-calendar/list": "~0.8.2",
-    "@event-calendar/time-grid": "~0.8.2",
-    "@event-calendar/resource-time-grid": "~0.8.2",
+    "@event-calendar/day-grid": "~0.8.3",
+    "@event-calendar/interaction": "~0.8.3",
+    "@event-calendar/list": "~0.8.3",
+    "@event-calendar/time-grid": "~0.8.3",
+    "@event-calendar/resource-time-grid": "~0.8.3",
     "abort-controller": "^3.0.0",
     "whatwg-fetch": "^3.6.2"
   }

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.8.3
+February 22, 2022
+
+* Removed dependency on `sass` in Svelte/SvelteKit modules ([#26](https://github.com/vkurko/calendar/issues/26#issuecomment-1047812407))
+
 ## 0.8.2
 February 21, 2022
 

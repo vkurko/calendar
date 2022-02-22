@@ -1,9 +1,14 @@
 {
   "name": "@event-calendar/common",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "title": "Event Calendar Common package",
   "description": "Full-sized drag & drop event calendar with resource view",
-  "keywords": ["calendar", "event", "resource", "full-sized"],
+  "keywords": [
+    "calendar",
+    "event",
+    "resource",
+    "full-sized"
+  ],
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
     "type": "git",

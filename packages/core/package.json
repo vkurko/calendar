@@ -1,9 +1,14 @@
 {
   "name": "@event-calendar/core",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "title": "Event Calendar Core package",
   "description": "Full-sized drag & drop event calendar with resource view",
-  "keywords": ["calendar", "event", "resource", "full-sized"],
+  "keywords": [
+    "calendar",
+    "event",
+    "resource",
+    "full-sized"
+  ],
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
     "type": "git",
@@ -19,7 +24,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.8.2",
+    "@event-calendar/common": "~0.8.3",
     "svelte": "^3.46.4"
   }
 }
