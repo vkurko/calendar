@@ -39,6 +39,10 @@
 		return this;
 	}
 
+	export function getEvents() {
+		return get(state._events).map(toEventWithLocalDates);
+	}
+
 	export function getEventById(id) {
 		for (let event of get(state._events)) {
 			if (event.id == id) {

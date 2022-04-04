@@ -9,25 +9,26 @@ if (!args.length) {
 const version = args[0];
 const packages = require('./packages.json');
 
-let file = __dirname + '/../package.json';
-setVersion(file);
+let dir = __dirname + '/..';
+setVersion(dir);
 
 for (let name of packages) {
-    const file = __dirname + '/../packages/' + name + '/package.json';
-    setVersion(file);
+    dir = __dirname + '/../packages/' + name;
+    setVersion(dir);
 }
 
-function setVersion(file) {
+function setVersion(dir) {
+    const file = dir + '/package.json';
     const json = require(file);
 
     json.version = version;
-    for (let dep of packages) {
-        dep = '@event-calendar/' + dep;
-        if (json.dependencies && json.dependencies[dep]) {
-            json.dependencies[dep] = '~' + version;
+    for (let name of packages) {
+        name = '@event-calendar/' + name;
+        if (json.dependencies && json.dependencies[name]) {
+            json.dependencies[name] = '~' + version;
         }
-        if (json.devDependencies && json.devDependencies[dep]) {
-            json.devDependencies[dep] = '~' + version;
+        if (json.devDependencies && json.devDependencies[name]) {
+            json.devDependencies[name] = '~' + version;
         }
     }
 

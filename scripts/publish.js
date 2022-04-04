@@ -9,7 +9,7 @@ for (let name of packages) {
     if (name === 'core') {
         const file = dir + '/src/Calendar.svelte';
         const buf = fs.readFileSync(file);
-        const tmp = buf.toString().replace(/\.\/index.scss/g, '\.\.\/index.css');
+        const tmp = buf.toString().replace(/\.\/index\.scss/g, '../index.css');
 
         fs.writeFileSync(file, tmp);
         publish(dir);

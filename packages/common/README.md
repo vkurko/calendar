@@ -89,6 +89,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [setOption](#setoption-name-value-)
   </td><td>
 
+  - [getEvents](#getevents)
   - [getEventById](#geteventbyid-id-)
   - [removeEventById](#removeeventbyid-id-)
   - [addEvent](#addevent-event-)
@@ -1461,6 +1462,11 @@ This method allows you to set new value to any calendar option.
 // E.g. Change the current date
 ec.setOption('date', new Date());
 ```
+### getEvents()
+- Return value `Event[]` Array of [Event](#event-object) objects
+
+Returns an array of events that the calendar has in memory.
+
 ### getEventById( id )
 - Parameters
   - `id` `string|integer` The ID of the event
