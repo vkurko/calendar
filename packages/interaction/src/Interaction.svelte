@@ -3,7 +3,8 @@
     import Drag from './Drag.svelte';
     import Pointer from './Pointer.svelte';
 
-    let {theme, editable, eventStartEditable, pointer, _interaction, _classes, _draggable, _scroll} = getContext('state');
+    let {theme, editable, eventStartEditable, eventDurationEditable, pointer,
+        _interaction, _classes, _draggable, _resizable, _scroll} = getContext('state');
 
     $: $_classes = (className, event) => {
         switch (event.display) {
@@ -16,6 +17,7 @@
     };
 
     $: $_draggable = event => (event.startEditable ?? $eventStartEditable) || (event.editable ?? $editable);
+    $: $_resizable = event => (event.durationEditable ?? $eventDurationEditable) || (event.editable ?? $editable);
 
     $_scroll = () => {
         for (let component of Object.values($_interaction)) {

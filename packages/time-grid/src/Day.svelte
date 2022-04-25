@@ -20,12 +20,12 @@
 	export let date;
 	export let resource = undefined;
 
-	let {_events, _interactionEvents, dateClick, highlightedDates, nowIndicator, slotDuration, slotHeight, _view, theme,
+	let {_events, _iEvents, dateClick, highlightedDates, nowIndicator, slotDuration, slotHeight, _view, theme,
 		_interaction} = getContext('state');
 	let {_slotTimeLimits} = getContext('view-state');
 
 	let el;
-	let chunks, bgChunks, interactionChunks = [];
+	let chunks, bgChunks, iChunks = [];
 	let today = setMidnight(createDate()), isToday, highlight;
 
 	let start, end;
@@ -50,7 +50,7 @@
 		groupEventChunks(chunks);
 	}
 
-	$: interactionChunks = $_interactionEvents.map(
+	$: iChunks = $_iEvents.map(
 		event => event && intersects(event) ? createEventChunk(event, start, end) : null
 	);
 
@@ -110,15 +110,15 @@
 	</div>
 	<div class="{$theme.events}">
 		<!-- Pointer -->
-		{#if interactionChunks[1]}
-			<Event {date} chunk={interactionChunks[1]}/>
+		{#if iChunks[1]}
+			<Event {date} chunk={iChunks[1]}/>
 		{/if}
 		{#each chunks as chunk}
 			<Event {date} {chunk}/>
 		{/each}
-		<!-- Drag -->
-		{#if interactionChunks[0]}
-			<Event {date} chunk={interactionChunks[0]}/>
+		<!-- Drag & Resize -->
+		{#if iChunks[0]}
+			<Event {date} chunk={iChunks[0]}/>
 		{/if}
 	</div>
 	<div class="{$theme.extra}">

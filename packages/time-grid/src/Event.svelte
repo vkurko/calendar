@@ -76,10 +76,8 @@
 			: undefined;
 	}
 
-	function createPointerDownHandler(draggable, display, event) {
-		return display === 'auto' && draggable(event)
-			? jsEvent => $_interaction.drag.startTimeGrid(event, el, jsEvent, _viewResources)
-			: undefined;
+	function createDragHandler(resize) {
+		return jsEvent => $_interaction.drag.startTimeGrid(event, el, jsEvent, _viewResources, resize);
 	}
 </script>
 
@@ -87,9 +85,15 @@
 	bind:this={el}
 	class="{classes}"
 	{style}
-	use:setContent={content}
 	on:click={createHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:pointerdown={createPointerDownHandler($_draggable, display, event)}
-></div>
+	on:pointerdown={display === 'auto' && $_draggable(event) ? createDragHandler() : undefined}
+>
+	<div class="{$theme.eventBody}" use:setContent={content}></div>
+	<svelte:component
+		this={$_interaction.resizer}
+		{event}
+		on:pointerdown={createDragHandler(true)}
+	/>
+</div>

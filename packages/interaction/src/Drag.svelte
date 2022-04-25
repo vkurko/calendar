@@ -1,14 +1,20 @@
 <script>
     import {getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {addDuration, cloneDate, cloneEvent, createDuration, rect,
-        toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
+    import {
+        addDay, addDuration, assign, cloneDate, cloneEvent, createDuration, rect,
+        toEventWithLocalDates, toViewWithLocalDates
+    } from '@event-calendar/common';
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
 
-    let {_interactionEvents, _events, _viewDates, editable, eventStartEditable, eventDragMinDistance, eventDragStart,
-        eventDragStop, eventDrop, dragScroll, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources} = getContext('state');
+    let {_iEvents, _iClass, _events, _viewDates, editable, eventStartEditable, eventDragMinDistance, eventDragStart,
+        eventDragStop, eventDrop, eventResizeStart, eventResizeStop, eventResize, dragScroll, slotDuration, slotHeight,
+        hiddenDays, _view, datesAboveResources} = getContext('state');
 
-    let dragging = false;
+    const INTERACTING_TIME_GRID = 1;
+    const INTERACTING_DAY_GRID = 2;
+    let interacting = false;
+    let resizing;  // whether it is just resizing
     let event;
     let col, row;
     let offset;
@@ -19,9 +25,10 @@
     let colRect, bodyRect;
     let _viewResources;
     let resourceCol, newResourceCol;
+    let minEnd;  // minimum end time when resizing
 
-    export function startTimeGrid(event, el, jsEvent, resourcesStore) {
-        if (!dragging && jsEvent.isPrimary) {
+    export function startTimeGrid(event, el, jsEvent, resourcesStore, resize) {
+        if (!interacting && jsEvent.isPrimary) {
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
             } else {
@@ -34,12 +41,17 @@
 
             _viewResources = resourcesStore;
 
-            dragging = 1;
+            interacting = INTERACTING_TIME_GRID;
+            resizing = resize;
+            if (resizing) {
+                minEnd = addDuration(cloneDate(event.start), $slotDuration);
+                $_iClass = 'resizingY';
+            }
         }
     }
 
-    export function startDayGrid(event, el, jsEvent, inPopup) {
-        if (!dragging && jsEvent.isPrimary) {
+    export function startDayGrid(event, el, jsEvent, inPopup, resize) {
+        if (!interacting && jsEvent.isPrimary) {
             [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el, inPopup);
 
             start(event, jsEvent);
@@ -48,7 +60,17 @@
 
             _viewResources = undefined;
 
-            dragging = 2;
+            interacting = INTERACTING_DAY_GRID;
+            resizing = resize;
+            if (resizing) {
+                minEnd = cloneDate(event.start);
+                minEnd.setUTCHours(event.end.getUTCHours(), event.end.getUTCMinutes(), event.end.getUTCSeconds());
+                if (minEnd < event.start) {
+                    addDay(minEnd);
+                    // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
+                }
+                $_iClass = 'resizingX';
+            }
         }
     }
 
@@ -62,6 +84,8 @@
 
         fromX = toX = jsEvent.clientX;
         fromY = toY = jsEvent.clientY;
+
+        $_iClass = 'dragging';
     }
 
     function move(jsEvent) {
@@ -70,7 +94,7 @@
 
         let newCol = floor(rx / colRect.width);
 
-        if (dragging === 1) {
+        if (interacting === INTERACTING_TIME_GRID) {
             // timeGrid
             if (_viewResources) {
                 if ($datesAboveResources) {
@@ -104,15 +128,22 @@
             });
         }
 
-        if ($_interactionEvents[0] || distance() >= $eventDragMinDistance) {
-            if (!$_interactionEvents[0]) {
-                createDragEvent(jsEvent);
+        if ($_iEvents[0] || resizing || distance() >= $eventDragMinDistance) {
+            if (!$_iEvents[0]) {
+                createIEvent(jsEvent, resizing ? $eventResizeStart : $eventDragStart);
             }
-            $_interactionEvents[0].start = addDuration(cloneDate(event.start), delta);
-            $_interactionEvents[0].end = addDuration(cloneDate(event.end), delta);
-            if (_viewResources) {
-                $_interactionEvents[0].resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
-                $_interactionEvents[0].resourceIds.push($_viewResources[newResourceCol].id);
+            $_iEvents[0].end = addDuration(cloneDate(event.end), delta);
+            if (resizing) {
+                if ($_iEvents[0].end < minEnd) {
+                    $_iEvents[0].end = minEnd;
+                    delta = createDuration(($_iEvents[0].end - event.end) / 1000);
+                }
+            } else {
+                $_iEvents[0].start = addDuration(cloneDate(event.start), delta);
+                if (_viewResources) {
+                    $_iEvents[0].resourceIds = event.resourceIds.filter(id => id !== $_viewResources[resourceCol].id);
+                    $_iEvents[0].resourceIds.push($_viewResources[newResourceCol].id);
+                }
             }
         }
 
@@ -135,7 +166,7 @@
     }
 
     export function handleScroll() {
-        if (dragging) {
+        if (interacting) {
             colRect = rect(colEl);
             bodyRect = rect(bodyEl);
             move();
@@ -143,7 +174,7 @@
     }
 
     function handlePointerMove(jsEvent) {
-        if (dragging && jsEvent.isPrimary) {
+        if (interacting && jsEvent.isPrimary) {
             toX = jsEvent.clientX;
             toY = jsEvent.clientY;
             move(jsEvent);
@@ -151,46 +182,51 @@
     }
 
     function handlePointerUp(jsEvent) {
-        if (dragging && jsEvent.isPrimary) {
-            if ($_interactionEvents[0]) {
+        if (interacting && jsEvent.isPrimary) {
+            if ($_iEvents[0]) {
                 event.display = 'auto';
 
-                if (is_function($eventDragStop)) {
-                    $eventDragStop({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
+                let callback = resizing ? $eventResizeStop : $eventDragStop;
+                if (is_function(callback)) {
+                    callback({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
                 }
 
                 let oldEvent = cloneEvent(event);
-                updateEvent(event, $_interactionEvents[0]);
-                $_interactionEvents[0] = null;
+                updateEvent(event, $_iEvents[0]);
+                $_iEvents[0] = null;
 
-                if (is_function($eventDrop)) {
+                callback = resizing ? $eventResize : $eventDrop;
+                if (is_function(callback)) {
                     let eventRef = event;
-                    $eventDrop({
-                        event: toEventWithLocalDates(event),
-                        oldEvent: toEventWithLocalDates(oldEvent),
+                    let info = resizing ? {endDelta: delta} : {
+                        delta,
                         oldResource: resourceCol !== newResourceCol ? $_viewResources[resourceCol] : undefined,
                         newResource: resourceCol !== newResourceCol ? $_viewResources[newResourceCol] : undefined,
-                        delta,
+                    };
+                    callback(assign(info, {
+                        event: toEventWithLocalDates(event),
+                        oldEvent: toEventWithLocalDates(oldEvent),
                         jsEvent,
                         view: toViewWithLocalDates($_view),
                         revert() {
                             updateEvent(eventRef, oldEvent);
                         }
-                    });
+                    }));
                 }
             }
             colEl = rowEls = bodyEl = null;
             resourceCol = newResourceCol = undefined;
-            dragging = false;
+            interacting = false;
+            $_iClass = undefined;
         }
     }
 
-    function createDragEvent(jsEvent) {
-        if (is_function($eventDragStart)) {
-            $eventDragStart({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
+    function createIEvent(jsEvent, callback) {
+        if (is_function(callback)) {
+            callback({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
         }
         event.display = 'preview';
-        $_interactionEvents[0] = cloneEvent(event);
+        $_iEvents[0] = cloneEvent(event);
         event.display = 'ghost';
         $_events = $_events;
     }
@@ -207,7 +243,7 @@
     }
 
     function handleSelectStart(jsEvent) {
-        if (dragging) {
+        if (interacting) {
             jsEvent.preventDefault();
         }
     }

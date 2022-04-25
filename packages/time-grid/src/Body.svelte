@@ -32,7 +32,7 @@
 
 <div
 	bind:this={el}
-	class="{$theme.body} {$theme.week}{compact ? ' ' + $theme.compact : ''}"
+	class="{$theme.body}{compact ? ' ' + $theme.compact : ''}"
 	on:scroll={$_scroll}
 >
 	<div class="{$theme.content}">

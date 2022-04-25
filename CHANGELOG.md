@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.10.0
+April 25, 2022
+
+* Added the ability to `resize` events ([#15](https://github.com/vkurko/calendar/issues/15))
+
 ## 0.9.0
 April 4, 2022
 

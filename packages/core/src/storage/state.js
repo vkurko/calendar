@@ -39,11 +39,14 @@ export default class {
         this._viewDates = viewDates(this);
         this._view = view2(this);
         this._viewComponent = writable(undefined);
+        this._viewClass = writable(undefined);
         // Interaction
         this._interaction = writable({});
-        this._interactionEvents = writable([null, null]);  // drag, pointer
+        this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]
         this._draggable = writable(noop);
+        this._resizable = writable(noop);
         this._classes = writable(identity);
+        this._iClass = writable(undefined);
         this._scroll = writable(undefined);
 
         // Let plugins create their private stores

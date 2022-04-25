@@ -17,6 +17,7 @@ export function createEvents(input) {
         title: event.title || '',
         editable: event.editable,
         startEditable: event.startEditable,
+        durationEditable: event.durationEditable,
         display: display.includes(event.display) ? event.display : 'auto',
         extendedProps: event.extendedProps || {},
         backgroundColor: event.backgroundColor || event.color

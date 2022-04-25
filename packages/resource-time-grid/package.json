@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/resource-time-grid",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "title": "Event Calendar ResourceTimeGrid plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -15,6 +15,16 @@
     "url": "https://github.com/vkurko/calendar.git",
     "directory": "packages/resource-time-grid"
   },
+  "funding": [
+    {
+      "type": "paypal_$10",
+      "url": "https://paypal.me/vkurko/10usd"
+    },
+    {
+      "type": "paypal_$1",
+      "url": "https://paypal.me/vkurko/1usd"
+    }
+  ],
   "license": "MIT",
   "type": "module",
   "svelte": "src/index.js",
@@ -23,7 +33,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/time-grid": "~0.9.0",
+    "@event-calendar/time-grid": "~0.10.0",
     "svelte": "^3.46.6"
   }
 }

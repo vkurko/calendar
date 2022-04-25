@@ -3,7 +3,7 @@
     import {addDuration, cloneDate, rect} from '@event-calendar/common';
     import {floor} from './utils';
 
-    let {_interactionEvents, _events, _viewDates, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
+    let {_iEvents, _events, _viewDates, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
         theme} = getContext('state');
 
     let y;
@@ -16,7 +16,7 @@
 
     let date;
 
-    $: if ($_interactionEvents[0]) {
+    $: if ($_iEvents[0]) {
         removePointerEvent();
     }
 
@@ -66,12 +66,12 @@
             date = colDate;
         }
 
-        if (!$_interactionEvents[1]) {
+        if (!$_iEvents[1]) {
             createPointerEvent();
         }
-        $_interactionEvents[1].start = date;
-        $_interactionEvents[1].end = addDuration(cloneDate(date), $slotDuration);
-        $_interactionEvents[1].resourceIds = resource ? [resource.id] : [];
+        $_iEvents[1].start = date;
+        $_iEvents[1].end = addDuration(cloneDate(date), $slotDuration);
+        $_iEvents[1].resourceIds = resource ? [resource.id] : [];
     }
 
     export function handleScroll() {
@@ -89,7 +89,7 @@
     }
 
     function createPointerEvent() {
-        $_interactionEvents[1] = {
+        $_iEvents[1] = {
             id: '{pointer}',
             title: '',
             display: 'pointer',
@@ -99,7 +99,7 @@
     }
 
     function removePointerEvent() {
-        colDate = colEl = $_interactionEvents[1] = null;
+        colDate = colEl = $_iEvents[1] = null;
     }
 
     function validEvent(jsEvent) {

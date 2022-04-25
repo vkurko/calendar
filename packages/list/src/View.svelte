@@ -6,10 +6,12 @@
 	import State from './state';
 	import {addDay, cloneDate, toViewWithLocalDates, setContent} from '@event-calendar/common';
 
-	let {_events, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
+	let {_events, _view, _viewDates, _viewClass, noEventsClick, noEventsContent, theme} = getContext('state');
 
 	let state = new State(getContext('state'));
 	setContext('view-state', state);
+
+	$_viewClass = 'list';
 
 	let noEvents, content;
 

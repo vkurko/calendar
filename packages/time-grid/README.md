@@ -1,10 +1,10 @@
-# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build)
+# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![Donate](https://img.shields.io/badge/Donate_$10-PayPal-green.svg)](https://www.paypal.me/vkurko/10usd) [![Donate](https://img.shields.io/badge/Donate_$1-PayPal-green.svg)](https://www.paypal.me/vkurko/1usd)
 
 See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (47kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (48kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -38,13 +38,17 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
+  - [eventDragStart](#eventdragstart)
   </td><td>
 
-  - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
+  - [eventDurationEditable](#eventdurationeditable)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
+  - [eventResize](#eventresize)
+  - [eventResizeStart](#eventresizestart)
+  - [eventResizeStop](#eventresizestop)
   - [eventSources](#eventsources)
   - [eventStartEditable](#eventstarteditable)
   - [eventTimeFormat](#eventtimeformat)
@@ -57,10 +61,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [highlightedDates](#highlighteddates)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
+  </td><td>
+  
   - [listDaySideFormat](#listdaysideformat)
   - [loading](#loading)
-  </td><td>
-
   - [locale](#locale)
   - [monthMode](#monthmode)
   - [moreLinkContent](#morelinkcontent)
@@ -422,7 +426,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 Determines whether the events on the calendar can be dragged and resized (both at the same time).
 
-Currently, only **dragging** is supported. See [eventStartEditable](#eventstarteditable).
+If you don't need both, use the more specific [eventStartEditable](#eventstarteditable) and [eventDurationEditable](#eventdurationeditable) instead.
 
 ### events
 - Type `Array`
@@ -678,7 +682,7 @@ The current [View](#view-object) object
 
 Callback function that is triggered when dragging stops, and the event has moved to a different day/time.
 
-It is triggered after the event’s information has been modified and after the [eventDragStop](#eventdrop) callback has been triggered.
+It is triggered after the event’s information has been modified and after the [eventDragStop](#eventdragstop) callback has been triggered.
 
 ```js
 function (info) { }
@@ -764,6 +768,12 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+### eventDurationEditable
+- Type `boolean`
+- Default `true`
+
+Determines whether calendar events can be resized.
+
 ### eventMouseEnter
 - Type `function`
 - Default `undefined`
@@ -829,6 +839,160 @@ function (mouseLeaveInfo) { }
 </td>
 <td>The HTML element for the event</td>
 </tr>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventResize
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when resizing stops, and the duration of the event has changed.
+
+It is triggered after the event’s information has been modified and after the [eventResizeStop](#eventresizestop) callback has been triggered.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`oldEvent`
+</td>
+<td>
+
+An [Event](#event-object) object that holds information about the event before the resize
+</td>
+</tr>
+<tr>
+<td>
+
+`endDelta`
+</td>
+<td>
+
+A [Duration](#duration-object) object that represents the amount of time the event’s end date was moved by
+</td>
+</tr>
+<tr>
+<td>
+
+`revert`
+</td>
+<td>
+
+A function that, if called, reverts the event’s end date to the values before the resize
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventResizeStart
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the event resizing begins.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventResizeStop
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the event resizing stops.
+
+It is triggered before the event’s information has been modified (if duration is changed) and before the [eventResize](#eventresize) callback is triggered.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
 <tr>
 <td>
 
@@ -1328,7 +1492,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### theme
 - Type `object` or `function`
-- Default `{active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', days: 'ec-days', event: 'ec-event', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', hiddenTimes: 'ec-hidden-times', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', sidebar: 'ec-sidebar', today: 'ec-today', time: 'ec-time', title: 'ec-title', toolbar: 'ec-toolbar', week: 'ec-week', withScroll: 'ec-with-scroll', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', month: 'ec-month', popup: 'ec-popup', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title', draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer'}`
+- Default `{active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', days: 'ec-days', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', hiddenTimes: 'ec-hidden-times', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', sidebar: 'ec-sidebar', today: 'ec-today', time: 'ec-time', title: 'ec-title', toolbar: 'ec-toolbar', week: 'ec-week', withScroll: 'ec-with-scroll', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', month: 'ec-month', popup: 'ec-popup', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title', draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x'}`
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 
@@ -1563,6 +1727,16 @@ Boolean (`true` or `false`) or `undefined`. The value overriding the [editable](
 <td>
 
 Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStartEditable](#eventstarteditable) setting for this specific event
+</td>
+</tr>
+<tr>
+<td>
+
+`durationEditable`
+</td>
+<td>
+
+Boolean (`true` or `false`) or `undefined`. The value overriding the [eventDurationEditable](#eventdurationeditable) setting for this specific event
 </td>
 </tr>
 <tr>

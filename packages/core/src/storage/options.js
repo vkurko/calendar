@@ -68,6 +68,7 @@ export function createOptions(plugins) {
             dayHead: 'ec-day-head',
             days: 'ec-days',
             event: 'ec-event',
+            eventBody: 'ec-event-body',
             eventTime: 'ec-event-time',
             eventTitle: 'ec-event-title',
             events: 'ec-events',

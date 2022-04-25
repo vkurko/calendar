@@ -79,10 +79,8 @@
 		return handler ? jsEvent => !jsEvent.ecClosingPopup && handler(jsEvent) : handler;
 	}
 
-	function createPointerDownHandler(draggable, display, event) {
-		return display === 'auto' && draggable(event)
-			? jsEvent => $_interaction.drag.startDayGrid(event, el, jsEvent, inPopup)
-			: undefined;
+	function createDragHandler(resize) {
+		return jsEvent => $_interaction.drag.startDayGrid(event, el, jsEvent, inPopup, resize);
 	}
 
 	function reposition() {
@@ -119,6 +117,8 @@
 		margin = m;
 		if ($dayMaxEvents === true) {
 			hide();
+		} else {
+			hidden = false;
 		}
 	}
 
@@ -172,11 +172,17 @@
 	bind:this={el}
 	class="{classes}"
 	{style}
-	use:setContent={content}
 	on:click={createClickHandler($eventClick, display)}
 	on:mouseenter={createHandler($eventMouseEnter, display)}
 	on:mouseleave={createHandler($eventMouseLeave, display)}
-	on:pointerdown={createPointerDownHandler($_draggable, display, event)}
-></div>
+	on:pointerdown={display === 'auto' && $_draggable(event) ? createDragHandler() : undefined}
+>
+	<div use:setContent={content}></div>
+	<svelte:component
+		this={$_interaction.resizer}
+		{event}
+		on:pointerdown={createDragHandler(true)}
+	/>
+</div>
 
 <svelte:window on:resize={reposition}/>

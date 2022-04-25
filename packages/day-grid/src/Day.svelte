@@ -9,7 +9,7 @@
 	export let date;
 	export let chunks;
 	export let longChunks;
-	export let interactionChunks = [];
+	export let iChunks = [];
 
 	let {date: currentDate, dateClick, dayMaxEvents, highlightedDates, moreLinkContent, theme,
 		_view, _interaction} = getContext('state');
@@ -107,14 +107,14 @@
 	on:pointerleave={createPointerLeaveHandler($_interaction)}
 >
 	<div class="{$theme.dayHead}">{date.getUTCDate()}</div>
-	{#if interactionChunks[1] && datesEqual(interactionChunks[1].date, date)}
+	{#if iChunks[1] && datesEqual(iChunks[1].date, date)}
 		<div class="{$theme.events}">
-			<Event chunk={interactionChunks[1]}/>
+			<Event chunk={iChunks[1]}/>
 		</div>
 	{/if}
-	{#if interactionChunks[0] && datesEqual(interactionChunks[0].date, date)}
+	{#if iChunks[0] && datesEqual(iChunks[0].date, date)}
 		<div class="{$theme.events} {$theme.preview}">
-			<Event chunk={interactionChunks[0]}/>
+			<Event chunk={iChunks[0]}/>
 		</div>
 	{/if}
 	<div class="{$theme.events}">

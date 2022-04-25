@@ -3,7 +3,7 @@
   display: flex;
 }
 
-.ec-body.ec-month,
+.ec-month .ec-body,
 .ec-days,
 .ec-day,
 .ec-day-title,
@@ -189,7 +189,7 @@
     height: 100%; /* ie11 */
   }
 
-  .ec-month.ec-uniform & {
+  .ec-month .ec-uniform & {
     overflow: hidden;
   }
 
@@ -215,7 +215,7 @@
     flex: 1 0 auto; /* ie11 */
   }
 
-  .ec-month.ec-uniform & {
+  .ec-month .ec-uniform & {
     flex: 1 1 0%;
     min-height: 0;
   }
@@ -232,12 +232,12 @@
     background-color: #e5f7fe;
   }
 
-  .ec-month.ec-body & {
+  .ec-month .ec-body & {
     min-height: 5em;
     position: relative;
   }
 
-  .ec-month.ec-uniform & {
+  .ec-month .ec-uniform & {
     min-height: 0;
   }
 
@@ -305,7 +305,6 @@
 
 .ec-event {
   display: flex;
-  flex-direction: column;
   padding: 2px;
   color: #fff;
   box-sizing: border-box;
@@ -334,7 +333,6 @@
   }
 
   &.ec-preview {
-    cursor: pointer;
     position: absolute;
     z-index: 1000;
     width: 100%;
@@ -354,6 +352,11 @@
       display: flex;
     }
   }
+}
+
+.ec-event-body {
+  display: flex;
+  flex-direction: column;
 }
 
 .ec-event-tag {
@@ -504,4 +507,37 @@
     width: 12px;
     pointer-events: none;
   }
+}
+
+.ec-resizer {
+  position: absolute;
+  user-select: none;
+
+  .ec-month & {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    max-width: 8px;
+    cursor: ew-resize;
+  }
+
+  .ec-week & {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    max-height: 8px;
+    cursor: ns-resize;
+  }
+}
+
+.ec-dragging {
+  cursor: pointer!important;
+}
+.ec-resizing-y {
+  cursor: ns-resize!important;
+}
+.ec-resizing-x {
+  cursor: ew-resize!important;
 }

@@ -7,9 +7,9 @@
 
 	export let dates;
 
-	let {_events, _interactionEvents, hiddenDays, theme} = getContext('state');
+	let {_events, _iEvents, hiddenDays, theme} = getContext('state');
 
-	let chunks, longChunks, interactionChunks = [];
+	let chunks, longChunks, iChunks = [];
 
 	let start;
 	let end;
@@ -30,7 +30,7 @@
 		longChunks = prepareEventChunks(chunks, $hiddenDays);
 	}
 
-	$: interactionChunks = $_interactionEvents.map(event => {
+	$: iChunks = $_iEvents.map(event => {
 		let chunk;
 		if (event && intersects(event)) {
 			chunk = createEventChunk(event, start, end);
@@ -48,6 +48,6 @@
 
 <div class="{$theme.days}">
 	{#each dates as date}
-		<Day {date} {chunks} {longChunks} {interactionChunks} />
+		<Day {date} {chunks} {longChunks} {iChunks} />
 	{/each}
 </div>

@@ -17,7 +17,7 @@
 
 <div
 	bind:this={el}
-	class="{$theme.body} {$theme.month}{$dayMaxEvents === true ? ' ' + $theme.uniform : ''}"
+	class="{$theme.body}{$dayMaxEvents === true ? ' ' + $theme.uniform : ''}"
 	on:scroll={$_scroll}
 >
 	<div class="{$theme.content}">

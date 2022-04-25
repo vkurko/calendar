@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/build",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "title": "Event Calendar",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -15,14 +15,24 @@
     "url": "https://github.com/vkurko/calendar.git",
     "directory": "packages/build"
   },
+  "funding": [
+    {
+      "type": "paypal_$10",
+      "url": "https://paypal.me/vkurko/10usd"
+    },
+    {
+      "type": "paypal_$1",
+      "url": "https://paypal.me/vkurko/1usd"
+    }
+  ],
   "license": "MIT",
   "jsdelivr": "event-calendar.min.js",
   "devDependencies": {
-    "@event-calendar/day-grid": "~0.9.0",
-    "@event-calendar/interaction": "~0.9.0",
-    "@event-calendar/list": "~0.9.0",
-    "@event-calendar/time-grid": "~0.9.0",
-    "@event-calendar/resource-time-grid": "~0.9.0",
+    "@event-calendar/day-grid": "~0.10.0",
+    "@event-calendar/interaction": "~0.10.0",
+    "@event-calendar/list": "~0.10.0",
+    "@event-calendar/time-grid": "~0.10.0",
+    "@event-calendar/resource-time-grid": "~0.10.0",
     "abort-controller": "^3.0.0",
     "whatwg-fetch": "^3.6.2"
   }
