@@ -4,12 +4,14 @@
 	import {Header, Body, Day} from '@event-calendar/time-grid';
 
 	let state = getContext('state');
-	let {datesAboveResources, _viewDates, _intlDayHeader, theme} = state;
+	let {datesAboveResources, _viewDates, _intlDayHeader, _viewClass, theme} = state;
 
 	let viewState = new State(state);
 	setContext('view-state', viewState);
 
 	let {_viewResources} = viewState;
+
+	$_viewClass = 'week';
 
 	let loops, titles;
 	$: {

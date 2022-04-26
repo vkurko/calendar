@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.10.1
+April 26, 2022
+
+* Fixed regression bugs with calendar display ([#39](https://github.com/vkurko/calendar/issues/39))
+
 ## 0.10.0
 April 25, 2022
 
