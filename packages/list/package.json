@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/list",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "title": "Event Calendar List plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -33,7 +33,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.10.1",
+    "@event-calendar/common": "~0.10.2",
     "svelte": "^3.47.0"
   }
 }

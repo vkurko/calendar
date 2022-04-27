@@ -102,8 +102,12 @@
                     newResourceCol = limit(newCol - dayCol * $_viewResources.length, $_viewResources.length - 1);
                     newCol = dayCol;
                 } else {
-                    newResourceCol = limit(floor(newCol / $_viewDates.length), $_viewResources.length - 1);
-                    newCol -= newResourceCol * $_viewDates.length;
+                    if (resizing) {
+                        newCol -= resourceCol * $_viewDates.length;
+                    } else {
+                        newResourceCol = limit(floor(newCol / $_viewDates.length), $_viewResources.length - 1);
+                        newCol -= newResourceCol * $_viewDates.length;
+                    }
                 }
             }
 

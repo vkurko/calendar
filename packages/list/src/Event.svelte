@@ -55,5 +55,5 @@
 	on:mouseleave={createHandler($eventMouseLeave)}
 >
 	<div class="{$theme.eventTag}" {style}></div>
-	<div use:setContent={content}></div>
+	<div class="{$theme.eventBody}" use:setContent={content}></div>
 </div>

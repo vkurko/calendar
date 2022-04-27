@@ -177,7 +177,7 @@
 	on:mouseleave={createHandler($eventMouseLeave, display)}
 	on:pointerdown={display === 'auto' && $_draggable(event) ? createDragHandler() : undefined}
 >
-	<div use:setContent={content}></div>
+	<div class="{$theme.eventBody}" use:setContent={content}></div>
 	<svelte:component
 		this={$_interaction.resizer}
 		{event}
