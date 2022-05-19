@@ -20,7 +20,8 @@ export function createEvents(input) {
         durationEditable: event.durationEditable,
         display: display.includes(event.display) ? event.display : 'auto',
         extendedProps: event.extendedProps || {},
-        backgroundColor: event.backgroundColor || event.color
+        backgroundColor: event.backgroundColor || event.color,
+        isAllDay: event.isAllDay || false,
     }));
 }
 
@@ -70,7 +71,12 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
         if (typeof content === 'string') {
             content = {html: content};
         }
-    } else {
+    } else if(chunk.event.isAllDay){
+      content = {
+        html:`<div class="${theme.eventTitle}">${chunk.event.title}</div>`
+      };
+    }
+    else {
         switch (chunk.event.display) {
             case 'background':
                 content = {html: ''};

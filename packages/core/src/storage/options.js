@@ -58,6 +58,7 @@ export function createOptions(plugins) {
             active: 'ec-active',
             bgEvent: 'ec-bg-event',
             bgEvents: 'ec-bg-events',
+            allDayEvents: "ec-all-day-events",
             body: 'ec-body',
             button: 'ec-button',
             buttonGroup: 'ec-button-group',

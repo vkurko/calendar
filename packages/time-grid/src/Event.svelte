@@ -1,7 +1,7 @@
 <script>
 	import {getContext, onMount} from 'svelte';
 	import {is_function} from 'svelte/internal';
-	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '@event-calendar/common';
+	import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '../../common/index';
 
 	export let date;
 	export let chunk;
@@ -35,22 +35,38 @@
 		let height = (end - start) / step * $slotHeight;
 		let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
 		let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
-		style =
-			`top:${top}px;` +
-			`min-height:${height}px;` +
-			`height:${height}px;` +
-			`max-height:${maxHeight}px;`
-		;
-		if (bgColor) {
-			style += `background-color:${bgColor};`;
-		}
-		if (display === 'auto' || display === 'ghost') {
-			style +=
-				`z-index:${chunk.column + 1};` +
-				`left:${100 / chunk.group.columns.length * chunk.column}%;` +
-				`width:${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
-			;
-		}
+		 // caculate based on days
+     let width = "";
+    if (event.isAllDay) {
+      const diffTime = Math.abs(event.start - event.end);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      width = diffDays * 100;
+      height = $slotHeight;
+      top = 0;
+    }
+    style =
+      `top:${top}px;` +
+      `min-height:${height}px;` +
+      `height:${height}px;` +
+      `max-height:${maxHeight}px;`;
+
+    if (bgColor) {
+      style += `background-color:${bgColor};`;
+    }
+
+    if (!event.isAllDay && (display === "auto" || display === "ghost")) {
+      style +=
+        `z-index:${chunk.column + 1};` +
+        `left:${(100 / chunk.group.columns.length) * chunk.column}%;` +
+        `width:${
+          (100 / chunk.group.columns.length) *
+          0.5 *
+          (1 + chunk.group.columns.length - chunk.column)
+        }%;`;
+    } else if (event.isAllDay && (display === "auto" || display === "ghost")) {
+      style += `width:${width}%;` + `z-index:${10}; position:relative;`;
+    }
 
 		// Class
 		classes = $_classes(display === 'background' ? $theme.bgEvent : $theme.event, event);
