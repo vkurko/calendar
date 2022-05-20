@@ -32,6 +32,19 @@ export function traverseDayGrid(el, inPopup) {
     return [colEl, bodyEl, col, row, contentEl.children];
 }
 
+export function traverseAllDayGrid(el, inPopup) {
+    let dayEl = ancestor(el, inPopup ? 3 : 2);
+    let daysEl = ancestor(dayEl, 1);
+    let contentEl = ancestor(daysEl, 1);
+    let colEl = child(daysEl, 1);
+  
+    let bodyEl = ancestor(contentEl, 0);
+    let col = pos(dayEl);
+    let row = pos(daysEl);
+  
+    return [colEl, bodyEl, col, row, contentEl.children];
+  }
+
 function child(el, pos) {
     return el.children[pos];
 }

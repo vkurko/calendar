@@ -5,7 +5,7 @@
         addDay, addDuration, assign, cloneDate, cloneEvent, createDuration, rect,
         toEventWithLocalDates, toViewWithLocalDates
     } from '@event-calendar/common';
-    import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
+    import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor, traverseAllDayGrid} from './utils';
 
     let {_iEvents, _iClass, _events, _viewDates, editable, eventStartEditable, eventDragMinDistance, eventDragStart,
         eventDragStop, eventDrop, eventResizeStart, eventResizeStop, eventResize, dragScroll, slotDuration, slotHeight,
@@ -50,9 +50,13 @@
         }
     }
 
-    export function startDayGrid(event, el, jsEvent, inPopup, resize) {
+    export function startDayGrid(event, el, jsEvent, inPopup, resize, isAllDay = false) {
         if (!interacting && jsEvent.isPrimary) {
-            [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el, inPopup);
+            if(isAllDay){
+                [colEl, bodyEl, col, row, rowEls] = traverseAllDayGrid(el, inPopup);
+            }else{
+                [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(el, inPopup);
+            }
 
             start(event, jsEvent);
 

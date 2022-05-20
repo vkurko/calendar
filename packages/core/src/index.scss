@@ -163,6 +163,31 @@
   }
 }
 
+.ec-all-day {
+  display: flex;
+  flex-shrink: 0;
+
+  .ec-resource {
+    flex-direction: column;
+
+    .ec-days {
+      border-top-style: solid;
+    }
+  }
+
+  .ec-days {
+    border-bottom: none;
+  }
+
+  .ec-day {
+    min-height: 24px;
+    line-height: 24px;
+    text-align: center;
+    overflow: visible;
+    text-overflow: ellipsis;
+  }
+}
+
 /* Body */
 .ec-body {
   position: relative;
@@ -320,8 +345,13 @@
     flex-direction: row;
   }
 
+ 
   .ec-week & {
     position: absolute;
+  }
+
+  .ec-all-day & {
+    position: relative;
   }
 
   .ec-list & {
@@ -535,6 +565,18 @@
     height: 50%;
     max-height: 8px;
     cursor: ns-resize;
+  }
+
+  .ec-all-day & {
+    left: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    max-width: 8px;
+    max-height: none;
+    height: 100%;
+    cursor: ew-resize;
   }
 }
 

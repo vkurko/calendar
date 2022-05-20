@@ -13,18 +13,19 @@
     rect,
     toISOString,
   } from "@event-calendar/common";
-  import { groupEventChunks } from "./events";
-  import Event from "./Event.svelte";
+  import AllDayEvent from "./AllDayEvent.svelte";
 
   export let date;
   export let resource = undefined;
+  export let chunks;
+  export let longChunks;
+  export let iChunks = [];
 
   let {
     _events,
     _iEvents,
     dateClick,
     highlightedDates,
-    nowIndicator,
     slotDuration,
     slotHeight,
     _view,
@@ -35,39 +36,22 @@
   let { _slotTimeLimits } = getContext("view-state");
 
   let el;
-  let chunks,
-    iChunks = [];
+  let dayChunks;
   let today = setMidnight(createDate()),
     isToday,
     highlight;
 
-  let start, end;
-
   $: {
-    start = addDuration(cloneDate(date), $_slotTimeLimits.min);
-    end = addDuration(cloneDate(date), $_slotTimeLimits.max);
-  }
-
-  $: {
-    chunks = [];
-
-    for (let event of $_events.filter((e) => e.isAllDay)) {
-      if (intersects(event)) {
-        let chunk = createEventChunk(event, start, end);
-
-        let startMidnight = setMidnight(new Date(event.start));
-        if (datesEqual(date, startMidnight)) {
-          chunks.push(chunk);
-        }
+    dayChunks = [];
+    for (let chunk of chunks) {
+      if (datesEqual(chunk.date, date)) {
+        dayChunks.push(chunk);
+        // if ($dayMaxEvents !== false && dayChunks.length > $dayMaxEvents) {
+        // 	chunk.hidden = true;
+        // }
       }
     }
-
-    groupEventChunks(chunks);
   }
-
-  $: iChunks = $_iEvents.map((event) =>
-    event && intersects(event) ? createEventChunk(event, start, end) : null
-  );
 
   $: {
     isToday = datesEqual(date, today);
@@ -77,28 +61,17 @@
   function createClickHandler(fn) {
     return is_function(fn)
       ? (jsEvent) => {
-          let r = rect(el);
-          let y = jsEvent.clientY - r.top;
-          let d = addDuration(
-            cloneDate(date),
-            $slotDuration,
-            Math.floor(
-              y / $slotHeight +
-                $_slotTimeLimits.min.seconds / $slotDuration.seconds
-            )
-          );
-          fn({
-            date: toLocalDate(d),
-            dateStr: toISOString(d),
-            dayEl: el,
-            jsEvent,
-            view: toViewWithLocalDates($_view),
-            resource,
-          });
+          !jsEvent.ecClosingPopup &&
+            fn({
+              date: toLocalDate(date),
+              dateStr: toISOString(date),
+              dayEl: el,
+              jsEvent,
+              view: toViewWithLocalDates($_view),
+            });
         }
       : undefined;
   }
-
   function createPointerEnterHandler(interaction) {
     return interaction.pointer
       ? (jsEvent) =>
@@ -115,19 +88,11 @@
   function createPointerLeaveHandler(interaction) {
     return interaction.pointer ? interaction.pointer.leave : undefined;
   }
-
-  function intersects(event) {
-    return (
-      event.start < end &&
-      event.end > start &&
-      (resource === undefined || event.resourceIds.includes(resource.id))
-    );
-  }
 </script>
 
 <div
   bind:this={el}
-  style="overflow:visible;"
+  style="position: relative;min-height: 1em;"
   class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight
     ? ' ' + $theme.highlight
     : ''}"
@@ -135,25 +100,21 @@
   on:pointerenter={createPointerEnterHandler($_interaction)}
   on:pointerleave={createPointerLeaveHandler($_interaction)}
 >
-  <div
-    class={$theme.events}
-    style="display:flex;height:100%;    flex-direction: column;
-  "
-  >
-    <!-- Pointer -->
-    {#if iChunks[1]}
-      <Event {date} chunk={iChunks[1]} />
-    {/if}
-    <!-- 
-        columnbs: []
-        end: []
-       -->
-    {#each chunks as chunk}
-      <Event {date} {chunk} />
+  {#if iChunks[1] && datesEqual(iChunks[1].date, date)}
+    <div class={$theme.events}>
+      <AllDayEvent chunk={iChunks[1]} />
+    </div>
+  {/if}
+
+  {#if iChunks[0] && datesEqual(iChunks[0].date, date)}
+    <div class="{$theme.events} {$theme.preview}">
+      <AllDayEvent chunk={iChunks[0]} />
+    </div>
+  {/if}
+
+  <div class={$theme.events}>
+    {#each dayChunks as chunk}
+      <AllDayEvent {date} {chunk} {longChunks} />
     {/each}
-    <!-- Drag & Resize -->
-    {#if iChunks[0]}
-      <Event {date} chunk={iChunks[0]} />
-    {/if}
   </div>
 </div>

@@ -1,5 +1,5 @@
 import {assign, createDate, createDuration, setMidnight} from '@event-calendar/common';
-import {createEvents, createEventSources} from '@event-calendar/common';
+import {createEvents, createEventSources} from '../../../common/index';
 import {is_function} from 'svelte/internal';
 
 export function createOptions(plugins) {
@@ -59,6 +59,7 @@ export function createOptions(plugins) {
             bgEvent: 'ec-bg-event',
             bgEvents: 'ec-bg-events',
             allDayEvents: "ec-all-day-events",
+            allDay: "ec-all-day",
             body: 'ec-body',
             button: 'ec-button',
             buttonGroup: 'ec-button-group',

@@ -36,15 +36,7 @@
 		let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
 		let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
 		 // caculate based on days
-     let width = "";
-    if (event.isAllDay) {
-      const diffTime = Math.abs(event.start - event.end);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      width = diffDays * 100;
-      height = $slotHeight;
-      top = 0;
-    }
+    
     style =
       `top:${top}px;` +
       `min-height:${height}px;` +
@@ -55,7 +47,7 @@
       style += `background-color:${bgColor};`;
     }
 
-    if (!event.isAllDay && (display === "auto" || display === "ghost")) {
+    if (!event.allDay && (display === "auto" || display === "ghost")) {
       style +=
         `z-index:${chunk.column + 1};` +
         `left:${(100 / chunk.group.columns.length) * chunk.column}%;` +
@@ -64,8 +56,8 @@
           0.5 *
           (1 + chunk.group.columns.length - chunk.column)
         }%;`;
-    } else if (event.isAllDay && (display === "auto" || display === "ghost")) {
-      style += `width:${width}%;` + `z-index:${10}; position:relative;`;
+    } else if (event.allDay) {
+      style += `display:none;`;
     }
 
 		// Class

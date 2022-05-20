@@ -38,7 +38,7 @@
 	$: {
 		chunks = [];
 		bgChunks = [];
-    for (let event of $_events.filter((e) => !e.isAllDay)) {
+    for (let event of $_events.filter((e) => !e.allDay)) {
 			if (intersects(event)) {
 				let chunk = createEventChunk(event, start, end);
 				switch (event.display) {

@@ -1,12 +1,11 @@
 <script>
   import { getContext, setContext } from "svelte";
-  import { derived } from "svelte/store";
   import State from "./state";
   import Header from "./Header.svelte";
   import Body from "./Body.svelte";
   import Day from "./Day.svelte";
   import AllDayBody from "./AllDayBody.svelte";
-  import AllDay from "./AllDay.svelte";
+  import AllDayOverview from "./AllDayOverview.svelte";
 
   let state = getContext("state");
   let { _viewDates, _intlDayHeader, _viewClass, theme } = state;
@@ -23,9 +22,7 @@
 </Header>
 
 <AllDayBody>
-  {#each $_viewDates as date}
-    <AllDay {date} />
-  {/each}
+  <AllDayOverview dates={$_viewDates} />
 </AllDayBody>
 
 <Body>
