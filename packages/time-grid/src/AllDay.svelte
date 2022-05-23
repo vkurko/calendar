@@ -44,7 +44,11 @@
   $: {
     dayChunks = [];
     for (let chunk of chunks) {
-      if (datesEqual(chunk.date, date)) {
+      if (
+        datesEqual(chunk.date, date) &&
+        (resource === undefined ||
+          chunk.event.resourceIds.includes(resource.id))
+      ) {
         dayChunks.push(chunk);
         // if ($dayMaxEvents !== false && dayChunks.length > $dayMaxEvents) {
         // 	chunk.hidden = true;

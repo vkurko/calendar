@@ -121,17 +121,11 @@
       : handler;
   }
 
+
+
   function createDragHandler(resize) {
-    return (jsEvent) =>
-      $_interaction.drag.startDayGrid(
-        event,
-        el,
-        jsEvent,
-        _viewResources,
-        resize,
-        true,
-      );
-  }
+		return jsEvent => $_interaction.drag.startTimeGrid(event, el, jsEvent, _viewResources, resize, true);
+	}
 
   function reposition() {
     if (!el || display === "preview" || inPopup) {

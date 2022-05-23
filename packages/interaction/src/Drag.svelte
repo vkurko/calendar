@@ -27,7 +27,7 @@
     let resourceCol, newResourceCol;
     let minEnd;  // minimum end time when resizing
 
-    export function startTimeGrid(event, el, jsEvent, resourcesStore, resize) {
+    export function startTimeGrid(event, el, jsEvent, resourcesStore, resize, allDay) {
         if (!interacting && jsEvent.isPrimary) {
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
@@ -45,7 +45,7 @@
             resizing = resize;
             if (resizing) {
                 minEnd = addDuration(cloneDate(event.start), $slotDuration);
-                $_iClass = 'resizingY';
+                $_iClass = allDay ? 'resizingX' :'resizingY';
             }
         }
     }
@@ -92,36 +92,49 @@
         $_iClass = 'dragging';
     }
 
-    function move(jsEvent) {
-        let rx = toX - colRect.left;
-        let ry = toY - colRect.top;
+  function move(jsEvent) {
+    let rx = toX - colRect.left;
+    let ry = toY - colRect.top;
 
-        let newCol = floor(rx / colRect.width);
+    let newCol = floor(rx / colRect.width);
 
-        if (interacting === INTERACTING_TIME_GRID) {
-            // timeGrid
-            if (_viewResources) {
-                if ($datesAboveResources) {
-                    let dayCol = limit(floor(newCol / $_viewResources.length), $_viewDates.length - 1);
-                    newResourceCol = limit(newCol - dayCol * $_viewResources.length, $_viewResources.length - 1);
-                    newCol = dayCol;
-                } else {
-                    if (resizing) {
-                        newCol -= resourceCol * $_viewDates.length;
-                    } else {
-                        newResourceCol = limit(floor(newCol / $_viewDates.length), $_viewResources.length - 1);
-                        newCol -= newResourceCol * $_viewDates.length;
-                    }
-                }
-            }
-
-            newCol = limit(newCol, $_viewDates.length - 1);
-
-            delta = createDuration({
-                days: ($_viewDates[newCol] - $_viewDates[col]) / 1000 / 60 / 60 / 24,
-                seconds: (floor(ry / $slotHeight) - offset) * $slotDuration.seconds
-            });
+    if (interacting === INTERACTING_TIME_GRID) {
+      // timeGrid
+      if (_viewResources) {
+        if ($datesAboveResources) {
+          let dayCol = limit(
+            floor(newCol / $_viewResources.length),
+            $_viewDates.length - 1
+          );
+          newResourceCol = limit(
+            newCol - dayCol * $_viewResources.length,
+            $_viewResources.length - 1
+          );
+          newCol = dayCol;
         } else {
+          if (resizing) {
+            newCol -= resourceCol * $_viewDates.length;
+            newResourceCol = limit(
+              floor(newCol / $_viewDates.length),
+              $_viewResources.length - 1
+            );
+          } else {
+            newResourceCol = limit(
+              floor(newCol / $_viewDates.length),
+              $_viewResources.length - 1
+            );
+            newCol -= newResourceCol * $_viewDates.length;
+          }
+        }
+      }
+
+      newCol = limit(newCol, $_viewDates.length - 1);
+
+      delta = createDuration({
+        days: ($_viewDates[newCol] - $_viewDates[col]) / 1000 / 60 / 60 / 24,
+        seconds: (floor(ry / $slotHeight) - offset) * $slotDuration.seconds,
+      });
+    } else {
             // dayGrid
             let cols = 7 - $hiddenDays.length;
             newCol = limit(newCol, cols - 1);

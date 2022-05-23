@@ -6,6 +6,8 @@
   import AllDay from "./AllDay.svelte";
 
   export let dates;
+  export let resource = undefined;
+  export let loops;
 
   let { _events, _iEvents, hiddenDays } = getContext("state");
 
@@ -44,10 +46,14 @@
   });
 
   function intersects(event) {
-    return event.start < end && event.end > start;
+    return (
+      event.start < end &&
+      event.end > start &&
+      (resource === undefined || event.resourceIds.includes(resource.id))
+    );
   }
 </script>
 
 {#each dates as date}
-  <AllDay {date} {chunks} {longChunks} {iChunks} />
+  <AllDay {date} {chunks} {longChunks} {iChunks} {resource} />
 {/each}
