@@ -132,6 +132,7 @@
 
 /* Header */
 .ec-header,
+.ec-all-day,
 .ec-body,
 .ec-days,
 .ec-day {
@@ -163,6 +164,25 @@
   }
 }
 
+/* All Day */
+.ec-all-day {
+  display: flex;
+  flex-shrink: 0;
+  border-top: none;
+
+  .ec-days {
+    border-bottom: none;
+  }
+
+  .ec-day {
+    padding-bottom: 4px;
+  }
+
+  .ec-event-time {
+    display: none;
+  }
+}
+
 /* Body */
 .ec-body {
   position: relative;
@@ -179,6 +199,21 @@
   width: auto;
   max-width: 100%;
   padding: 0 4px 0 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ec-sidebar-title {
+  visibility: hidden;
+  overflow-y: hidden;
+  height: 0;
+
+  .ec-all-day & {
+    visibility: visible;
+    height: auto;
+    padding: 8px 0;
+  }
 }
 
 .ec-content {
@@ -315,12 +350,13 @@
   line-height: 1.5;
   z-index: 1;  // put it above the pointer event (for multi-day events in month view)
 
-  .ec-month & {
+  .ec-month &,
+  .ec-all-day & {
     position: relative;
     flex-direction: row;
   }
 
-  .ec-week & {
+  .ec-week .ec-body & {
     position: absolute;
   }
 
@@ -382,12 +418,13 @@
 .ec-event-title {
   overflow: hidden;
 
-  .ec-month & {
+  .ec-month &,
+  .ec-all-day & {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .ec-week & {
+  .ec-week .ec-body & {
     position: sticky;
     top: 0;
   }
@@ -514,7 +551,8 @@
   position: absolute;
   user-select: none;
 
-  .ec-month & {
+  .ec-month &,
+  .ec-all-day & {
     top: 0;
     right: 0;
     bottom: 0;
@@ -523,7 +561,7 @@
     cursor: ew-resize;
   }
 
-  .ec-week & {
+  .ec-week .ec-body & {
     left: 0;
     right: 0;
     bottom: 0;

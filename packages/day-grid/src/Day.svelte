@@ -107,11 +107,13 @@
 	on:pointerleave={createPointerLeaveHandler($_interaction)}
 >
 	<div class="{$theme.dayHead}">{date.getUTCDate()}</div>
+	<!-- Pointer -->
 	{#if iChunks[1] && datesEqual(iChunks[1].date, date)}
 		<div class="{$theme.events}">
 			<Event chunk={iChunks[1]}/>
 		</div>
 	{/if}
+	<!-- Drag & Resize -->
 	{#if iChunks[0] && datesEqual(iChunks[0].date, date)}
 		<div class="{$theme.events} {$theme.preview}">
 			<Event chunk={iChunks[0]}/>

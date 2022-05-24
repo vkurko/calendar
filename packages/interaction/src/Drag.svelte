@@ -17,7 +17,7 @@
     let resizing;  // whether it is just resizing
     let event;
     let col, row;
-    let offset;
+    let offsetX, offsetY;
     let fromX, fromY;
     let toX, toY;
     let delta;
@@ -25,23 +25,29 @@
     let colRect, bodyRect;
     let _viewResources;
     let resourceCol, newResourceCol;
+    let isAllDay;
     let minEnd;  // minimum end time when resizing
 
-    export function startTimeGrid(event, el, jsEvent, resourcesStore, resize) {
+    export function startTimeGrid(event, el, jsEvent, resourcesStore, allDay, resize) {
         if (!interacting && jsEvent.isPrimary) {
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
             } else {
-                [colEl, bodyEl, col] = traverseTimeGrid(el);
+                [colEl, bodyEl, col, resourceCol = 0] = traverseTimeGrid(el);
             }
 
             start(event, jsEvent);
 
-            offset = floor((jsEvent.clientY - colRect.top) / $slotHeight);
+            offsetY = floor((jsEvent.clientY - colRect.top) / $slotHeight);
+            offsetX = 0;  // applicable for all-day slot
+            if (allDay && (!resourcesStore || !$datesAboveResources)) {
+                offsetX = floor((jsEvent.clientX - colRect.left) / colRect.width) - col - resourceCol * $_viewDates.length;
+            }
 
             _viewResources = resourcesStore;
 
             interacting = INTERACTING_TIME_GRID;
+            isAllDay = allDay;
             resizing = resize;
             if (resizing) {
                 minEnd = addDuration(cloneDate(event.start), $slotDuration);
@@ -56,11 +62,12 @@
 
             start(event, jsEvent);
 
-            offset = inPopup ? 0 : floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
+            offsetX = inPopup ? 0 : floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
 
             _viewResources = undefined;
 
             interacting = INTERACTING_DAY_GRID;
+            isAllDay = false;
             resizing = resize;
             if (resizing) {
                 minEnd = cloneDate(event.start);
@@ -114,8 +121,8 @@
             newCol = limit(newCol, $_viewDates.length - 1);
 
             delta = createDuration({
-                days: ($_viewDates[newCol] - $_viewDates[col]) / 1000 / 60 / 60 / 24,
-                seconds: (floor(ry / $slotHeight) - offset) * $slotDuration.seconds
+                days: ($_viewDates[newCol] - $_viewDates[col]) / 1000 / 60 / 60 / 24 - offsetX,
+                seconds: isAllDay ? 0 : (floor(ry / $slotHeight) - offsetY) * $slotDuration.seconds
             });
         } else {
             // dayGrid
@@ -128,7 +135,7 @@
             } while (ry > 0 && newRow < rowEls.length - 1);
 
             delta = createDuration({
-                days: ($_viewDates[newRow * cols + newCol] - $_viewDates[row * cols + col]) / 1000 / 60 / 60 / 24 - offset,
+                days: ($_viewDates[newRow * cols + newCol] - $_viewDates[row * cols + col]) / 1000 / 60 / 60 / 24 - offsetX,
             });
         }
 

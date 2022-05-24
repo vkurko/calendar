@@ -12,6 +12,7 @@ export function createEvents(input) {
         resourceIds: Array.isArray(event.resourceIds)
             ? event.resourceIds.map(String)
             : ('resourceId' in event ? [String(event.resourceId)] : []),
+        allDay: event.allDay || false,
         start: createDate(event.start),
         end: createDate(event.end),
         title: event.title || '',

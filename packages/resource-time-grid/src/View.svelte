@@ -1,10 +1,10 @@
 <script>
 	import {getContext, setContext} from 'svelte';
 	import State from './state';
-	import {Header, Body, Day} from '@event-calendar/time-grid';
+	import {Header, Body, Day, Week} from '@event-calendar/time-grid';
 
 	let state = getContext('state');
-	let {datesAboveResources, _viewDates, _intlDayHeader, _viewClass, theme} = state;
+	let {datesAboveResources, _viewDates, _intlDayHeader, _viewClass, allDaySlot, theme} = state;
 
 	let viewState = new State(state);
 	setContext('view-state', viewState);
@@ -38,13 +38,32 @@
 		</div>
 	{/each}
 </Header>
+{#if $allDaySlot}
+	<Header allDay>
+		{#if $datesAboveResources}
+			{#each $_viewDates as date}
+				<div class="{$theme.resource}">
+					{#each $_viewResources as resource}
+						<Week dates={[date]} {resource}/>
+					{/each}
+				</div>
+			{/each}
+		{:else}
+			{#each $_viewResources as resource}
+				<div class="{$theme.resource}">
+					<Week dates={$_viewDates} {resource}/>
+				</div>
+			{/each}
+		{/if}
+	</Header>
+{/if}
 <Body>
 	{#each loops[0] as item0}
 		<div class="{$theme.resource}">
 			{#each loops[1] as item1}
 				<Day
-						date={$datesAboveResources ? item0 : item1}
-						resource={$datesAboveResources ? item1 : item0}
+					date={$datesAboveResources ? item0 : item1}
+					resource={$datesAboveResources ? item1 : item0}
 				/>
 			{/each}
 		</div>

@@ -4,6 +4,8 @@ import {is_function} from 'svelte/internal';
 
 export function createOptions(plugins) {
     let options = {
+        allDayContent: undefined,
+        allDaySlot: true,
         buttonText: {
             today: 'today',
         },
@@ -55,6 +57,7 @@ export function createOptions(plugins) {
         slotMaxTime: '24:00:00',
         slotMinTime: '00:00:00',
         theme: {
+            allDay: 'ec-all-day',
             active: 'ec-active',
             bgEvent: 'ec-bg-event',
             bgEvents: 'ec-bg-events',
@@ -84,6 +87,7 @@ export function createOptions(plugins) {
             nowIndicator: 'ec-now-indicator',
             otherMonth: 'ec-other-month',
             sidebar: 'ec-sidebar',
+            sidebarTitle: 'ec-sidebar-title',
             today: 'ec-today',
             time: 'ec-time',
             title: 'ec-title',

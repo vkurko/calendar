@@ -7,10 +7,10 @@
 
 	let {_viewDates, _viewClass, dayMaxEvents, hiddenDays, theme} = getContext('state');
 
-	let state = new State(getContext('state'));
-	setContext('view-state', state);
+	let viewState = new State(getContext('state'));
+	setContext('view-state', viewState);
 
-	let {_hiddenEvents} = state;
+	let {_hiddenEvents} = viewState;
 
 	$_viewClass = 'month';
 

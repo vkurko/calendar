@@ -13,7 +13,7 @@
 		rect,
 		toISOString
 	} from '@event-calendar/common';
-	import {groupEventChunks} from './events';
+	import {groupEventChunks} from './utils';
 	import Event from './Event.svelte';
 	import NowIndicator from './NowIndicator.svelte';
 
@@ -39,7 +39,7 @@
 		chunks = [];
 		bgChunks = [];
 		for (let event of $_events) {
-			if (intersects(event)) {
+			if (!event.allDay && intersects(event)) {
 				let chunk = createEventChunk(event, start, end);
 				switch (event.display) {
 					case 'background': bgChunks.push(chunk); break;
@@ -117,7 +117,7 @@
 			<Event {date} {chunk}/>
 		{/each}
 		<!-- Drag & Resize -->
-		{#if iChunks[0]}
+		{#if iChunks[0] && !iChunks[0].event.allDay}
 			<Event {date} chunk={iChunks[0]}/>
 		{/if}
 	</div>
