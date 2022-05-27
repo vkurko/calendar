@@ -1,10 +1,10 @@
-# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![Donate](https://img.shields.io/badge/Donate_$10-PayPal-green.svg)](https://www.paypal.me/vkurko/10usd) [![Donate](https://img.shields.io/badge/Donate_$1-PayPal-green.svg)](https://www.paypal.me/vkurko/1usd)
+# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![Sponsor](https://img.shields.io/badge/Sponsor-$10-green.svg)](https://www.paypal.me/vkurko/10usd) [![Sponsor](https://img.shields.io/badge/Sponsor-$1-green.svg)](https://www.paypal.me/vkurko/1usd)
 
 See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (49kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (51kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -19,6 +19,8 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   <table>
   <tr><td>
 
+  - [allDayContent](#alldaycontent)
+  - [allDaySlot](#alldayslot)
   - [buttonText](#buttontext)
   - [date](#date)
   - [dateClick](#dateclick)
@@ -38,9 +40,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
-  - [eventDragStart](#eventdragstart)
   </td><td>
 
+  - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
   - [eventDurationEditable](#eventdurationeditable)
@@ -211,6 +213,41 @@ In Svelte, you can simply update the original `options` object.
 ```
 
 ## Options
+
+### allDayContent
+- Type `string`, `object`or `function`
+- Default `'all-day'`
+
+Defines the content that is displayed as a title of the `all-day` slot.
+
+This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+
+```js
+function (arg) {
+    // return string or object
+}
+```
+`arg` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`text`
+</td>
+<td>
+
+The default text
+</td>
+</tr>
+</table>
+
+### allDaySlot
+- Type `boolean`
+- Default `true`
+
+Determines whether the `all-day` slot is displayed at the top of the calendar.
+
+When hidden with false, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
 
 ### buttonText
 - Type `object`
@@ -1691,6 +1728,15 @@ Here are all properties that exist in Event object:
 <tr>
 <td>
 
+`allDay`
+</td>
+<td>
+
+Boolean (`true` or `false`). Determines if the event is shown in the `all-day` slot</td>
+</tr>
+<tr>
+<td>
+
 `start`
 </td>
 <td>JavaScript Date object holding the event’s start time</td>
@@ -1806,6 +1852,16 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `Array` An array of resource IDs that the event is associated with. This field is used instead of `resourceId`. Default `[]`
+</td>
+</tr>
+<tr>
+<td>
+
+`allDay`
+</td>
+<td>
+
+`boolean` Determines if the event is shown in the all-day slot. Default `false`
 </td>
 </tr>
 <tr>

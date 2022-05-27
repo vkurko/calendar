@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.11.0
+May 27, 2022
+
+* Added "all-day" slot ([#41](https://github.com/vkurko/calendar/issues/41))
+
 ## 0.10.2
 April 27, 2022
 
