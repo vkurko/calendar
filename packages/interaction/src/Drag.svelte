@@ -33,7 +33,7 @@
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(el, $datesAboveResources);
             } else {
-                [colEl, bodyEl, col, resourceCol = 0] = traverseTimeGrid(el);
+                [colEl, bodyEl, col] = traverseTimeGrid(el);
             }
 
             start(event, jsEvent);
@@ -41,7 +41,7 @@
             offsetY = floor((jsEvent.clientY - colRect.top) / $slotHeight);
             offsetX = 0;  // applicable for all-day slot
             if (allDay && (!resourcesStore || !$datesAboveResources)) {
-                offsetX = floor((jsEvent.clientX - colRect.left) / colRect.width) - col - resourceCol * $_viewDates.length;
+                offsetX = floor((jsEvent.clientX - colRect.left) / colRect.width) - col - (resourceCol || 0) * $_viewDates.length;
             }
 
             _viewResources = resourcesStore;

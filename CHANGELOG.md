@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.11.1
+June 3, 2022
+
+* Fixed regression bug with `eventDrop` ([#43](https://github.com/vkurko/calendar/issues/43))
+
 ## 0.11.0
 May 27, 2022
 

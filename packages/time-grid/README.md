@@ -247,7 +247,7 @@ The default text
 
 Determines whether the `all-day` slot is displayed at the top of the calendar.
 
-When hidden with false, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
+When hidden with `false`, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
 
 ### buttonText
 - Type `object`
@@ -1529,7 +1529,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### theme
 - Type `object` or `function`
-- Default `{active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', days: 'ec-days', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', hiddenTimes: 'ec-hidden-times', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', sidebar: 'ec-sidebar', today: 'ec-today', time: 'ec-time', title: 'ec-title', toolbar: 'ec-toolbar', week: 'ec-week', withScroll: 'ec-with-scroll', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', month: 'ec-month', popup: 'ec-popup', daySide: 'ec-day-side', eventTag: 'ec-event-tag', list: 'ec-list', noEvents: 'ec-no-events', resource: 'ec-resource', resourceTitle: 'ec-resource-title', draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x'}`
+- Default `{active: 'ec-active', allDay: 'ec-all-day', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayFoot: 'ec-day-foot', dayHead: 'ec-day-head', daySide: 'ec-day-side', days: 'ec-days', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', hiddenTimes: 'ec-hidden-times', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', list: 'ec-list', month: 'ec-month', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', resourceTitle: 'ec-resource-title', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', time: 'ec-time', title: 'ec-title', today: 'ec-today', toolbar: 'ec-toolbar', uniform: 'ec-uniform', week: 'ec-week', withScroll: 'ec-with-scroll'}`
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 
