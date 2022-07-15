@@ -33,7 +33,7 @@
     "rollup-plugin-svelte": "^7.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.51.0",
-    "svelte": "^3.47.0",
+    "svelte": "^3.49.0",
     "whatwg-fetch": "^3.6.2"
   },
   "dependencies": {
