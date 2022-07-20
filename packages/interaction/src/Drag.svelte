@@ -14,7 +14,7 @@
     const INTERACTING_TIME_GRID = 1;
     const INTERACTING_DAY_GRID = 2;
     let interacting = false;
-    let resizing;  // whether it is just resizing
+    let resizing;  // whether it is resizing
     let event;
     let col, row;
     let offsetX, offsetY;

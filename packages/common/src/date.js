@@ -131,8 +131,8 @@ export function formatRange(start, end, intl) {
     return full1 + ' - ' + full2;
 }
 
-export function datesEqual(date1, date2) {
-    return date1.getTime() === date2.getTime();
+export function datesEqual(date1, ...dates2) {
+    return dates2.every(date2 => date1.getTime() === date2.getTime());
 }
 
 export function nextClosestDay(date, day) {

@@ -8,6 +8,7 @@ import sass from 'rollup-plugin-scss';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import {writeFileSync} from 'fs';
+import { version } from './package.json';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -142,7 +143,8 @@ export default [
 			format: 'iife',
 			name: 'EventCalendar',
 			file: 'packages/build/event-calendar.min.js',
-			sourcemap: true
+			sourcemap: true,
+			banner: '/*!\nEventCalendar v' + version + '\nhttps://github.com/vkurko/calendar\n*/'
 		},
 		plugins: [
 			// If you have external dependencies installed from
@@ -211,7 +213,8 @@ export default [
 			format: 'iife',
 			name: 'EventCalendar',
 			file: 'packages/build/event-calendar-modern.min.js',
-			sourcemap: true
+			sourcemap: true,
+			banner: '/*!\nEventCalendar v' + version + '\nhttps://github.com/vkurko/calendar\n*/'
 		},
 		plugins: [
 			// If you have external dependencies installed from

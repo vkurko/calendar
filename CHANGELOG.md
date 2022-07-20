@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.11.2
+July 20, 2022
+
+* Fixed issue with displaying events without duration in month view ([#50](https://github.com/vkurko/calendar/issues/50))
+
 ## 0.11.1
 June 3, 2022
 

@@ -1,6 +1,6 @@
 <script>
 	import {getContext} from 'svelte';
-	import {cloneDate, addDay} from '@event-calendar/common';
+	import {cloneDate, addDay, datesEqual} from '@event-calendar/common';
 	import {createEventChunk} from '@event-calendar/common';
 	import {prepareEventChunks} from './events';
 	import Day from './Day.svelte';
@@ -42,7 +42,7 @@
 	});
 
 	function intersects(event) {
-		return event.start < end && event.end > start;
+		return event.start < end && event.end > start || datesEqual(event.start, event.end, start);
 	}
 </script>
 
