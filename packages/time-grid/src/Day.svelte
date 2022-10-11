@@ -21,8 +21,8 @@
 	export let resource = undefined;
 
 	let {_events, _iEvents, dateClick, highlightedDates, nowIndicator, slotDuration, slotHeight, _view, theme,
-		_interaction} = getContext('state');
-	let {_slotTimeLimits} = getContext('view-state');
+		_interaction, selectable} = getContext('state');
+	let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
 	let el;
 	let chunks, bgChunks, iChunks = [];
@@ -91,6 +91,12 @@
 		return interaction.pointer ? interaction.pointer.leave : undefined;
 	}
 
+	function createPointerDownHandler(interaction, selectable) {
+		return selectable && interaction.action
+			? jsEvent => interaction.action.selectTimeGrid(date, el, jsEvent, _viewResources, $_slotTimeLimits, false)
+			: undefined;
+	}
+
 	function intersects(event) {
 		return event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(resource.id));
 	}
@@ -102,6 +108,7 @@
 	on:click={createClickHandler($dateClick)}
 	on:pointerenter={createPointerEnterHandler($_interaction)}
 	on:pointerleave={createPointerLeaveHandler($_interaction)}
+	on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
 >
 	<div class="{$theme.bgEvents}">
 		{#each bgChunks as chunk}
@@ -116,7 +123,7 @@
 		{#each chunks as chunk}
 			<Event {date} {chunk}/>
 		{/each}
-		<!-- Drag & Resize -->
+		<!-- Drag, Resize & Select -->
 		{#if iChunks[0] && !iChunks[0].event.allDay}
 			<Event {date} chunk={iChunks[0]}/>
 		{/if}

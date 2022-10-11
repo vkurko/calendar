@@ -15,6 +15,12 @@ export default {
 		options.eventResize = undefined;
 		options.dragScroll = true;
 		options.pointer = false;
+		options.select = undefined;
+		options.selectBackgroundColor = undefined;  // ec option
+		options.selectMinDistance = 0;
+		options.unselect = undefined;
+		options.unselectAuto = true;
+		options.unselectCancel = '';
 		options.theme.draggable = 'ec-draggable';
 		options.theme.ghost = 'ec-ghost';
 		options.theme.preview = 'ec-preview';
@@ -23,6 +29,7 @@ export default {
 		options.theme.dragging = 'ec-dragging';
 		options.theme.resizingY = 'ec-resizing-y';
 		options.theme.resizingX = 'ec-resizing-x';
+		options.theme.selecting = 'ec-selecting';
 	},
 
 	createStores(state) {

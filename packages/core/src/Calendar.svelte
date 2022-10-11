@@ -79,6 +79,13 @@
 		return toViewWithLocalDates(state._view.get());
 	}
 
+	export function unselect() {
+		if ($_interaction.action) {
+			$_interaction.action.clearSelection();
+		}
+		return this;
+	}
+
 	function updateEvents(func) {
 		if ($eventSources.length) {
 			$_events = func($_events);

@@ -354,7 +354,6 @@
   .ec-month &,
   .ec-all-day & {
     position: relative;
-    flex-direction: row;
   }
 
   .ec-week .ec-body & {
@@ -395,6 +394,11 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+
+  .ec-month &,
+  .ec-all-day & {
+    flex-direction: row;
+  }
 }
 
 .ec-event-tag {
@@ -421,6 +425,7 @@
 
   .ec-month &,
   .ec-all-day & {
+    min-height: 1.5em;
     white-space: nowrap;
     text-overflow: ellipsis;
   }

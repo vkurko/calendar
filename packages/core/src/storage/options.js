@@ -47,6 +47,7 @@ export function createOptions(plugins) {
         locale: undefined,
         monthMode: false,
         nowIndicator: false,
+        selectable: false,
         scrollTime: '06:00:00',
         slotDuration: '00:30:00',
         slotHeight: 24,  // ec option

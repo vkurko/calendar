@@ -77,7 +77,7 @@
 	}
 
 	function createDragHandler(resize) {
-		return jsEvent => $_interaction.drag.startTimeGrid(event, el, jsEvent, _viewResources, false, resize);
+		return jsEvent => $_interaction.action.dragTimeGrid(event, el, jsEvent, _viewResources, false, resize);
 	}
 </script>
 

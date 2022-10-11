@@ -80,7 +80,7 @@
 	}
 
 	function createDragHandler(resize) {
-		return jsEvent => $_interaction.drag.startDayGrid(event, el, jsEvent, inPopup, resize);
+		return jsEvent => $_interaction.action.dragDayGrid(event, el, jsEvent, inPopup, resize);
 	}
 
 	function reposition() {

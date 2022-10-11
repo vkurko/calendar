@@ -1,10 +1,10 @@
-# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![Sponsor](https://img.shields.io/badge/Sponsor-$10-green.svg)](https://www.paypal.me/vkurko/10usd) [![Sponsor](https://img.shields.io/badge/Sponsor-$1-green.svg)](https://www.paypal.me/vkurko/1usd)
+# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![npm](https://img.shields.io/npm/dm/@event-calendar/core?color=red&label=npm&style=flat-square)](https://www.npmjs.com/package/@event-calendar/core) [![Sponsor](https://img.shields.io/badge/Sponsor-$10-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/vkurko/10usd)
 
 See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (51kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (52kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -40,10 +40,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventContent](#eventcontent)
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
-  </td><td>
-
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
+  </td><td>
+
   - [eventDrop](#eventdrop)
   - [eventDurationEditable](#eventdurationeditable)
   - [eventMouseEnter](#eventmouseenter)
@@ -63,18 +63,22 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [highlightedDates](#highlighteddates)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
-  </td><td>
-  
   - [listDaySideFormat](#listdaysideformat)
   - [loading](#loading)
   - [locale](#locale)
   - [monthMode](#monthmode)
+  </td><td>
+  
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
+  - [select](#select)
+  - [selectable](#selectable)
+  - [selectBackgroundColor](#selectbackgroundcolor)
+  - [selectMinDistance](#selectmindistance)
   - [scrollTime](#scrolltime)
   - [slotDuration](#slotduration)
   - [slotHeight](#slotheight)
@@ -82,6 +86,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [slotMaxTime](#slotmaxtime)
   - [slotMinTime](#slotmintime)
   - [theme](#theme)
+  - [titleFormat](#titleformat)
+  - [unselect](#unselect)
+  - [unselectAuto](#unselectauto)
+  - [unselectCancel](#unselectcancel)
   - [view](#view)
   - [viewDidMount](#viewdidmount)
   - [views](#views)
@@ -104,6 +112,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   </td><td>
 
   - [getView](#getview)
+  </td><td>
+
+  - [unselect](#unselect-1)
   </td></tr>
   </table>
 - [Event object](#event-object)
@@ -1460,6 +1471,103 @@ Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` views.
 
 Array of plain objects that will be parsed into [Resource](#resource-object) objects for displaying in the resource view.
 
+### select
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when a date/time selection is made.
+
+```js
+function (selectInfo) { }
+```
+`selectInfo` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>JavaScript Date object indicating the start of the selection</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object indicating the end of the selection</td>
+</tr>
+<tr>
+<td>
+
+`startStr`
+</td>
+<td>ISO8601 string representation of the start date</td>
+</tr>
+<tr>
+<td>
+
+`endStr`
+</td>
+<td>ISO8601 string representation of the end date</td>
+</tr>
+<tr>
+<td>
+
+`allDay`
+</td>
+<td>
+
+Boolean (`true` or `false`). Determines if the selection has occurred in the `all-day` slot</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+If the current view is a resource view, the [Resource](#resource-object) object that was selected
+</td>
+</tr>
+</table>
+
+### selectable
+- Type `boolean`
+- Default `false`
+
+Determines whether the user is allowed to highlight multiple days or time slots by clicking and moving the pointer.
+
+### selectBackgroundColor
+- Type `string`
+- Default `undefined`
+
+Sets the background color for the event indicating the current selection. See [selectable](#selectable).
+
+You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+
+### selectMinDistance
+- Type `integer`
+- Default `0`
+
+Defines how many pixels the user’s mouse must move before the selection begins.
+
 ### scrollTime
 - Type `string`, `integer` or `object`
 - Default `'06:00:00'`
@@ -1575,6 +1683,61 @@ function (date) {
 <td>JavaScript Date object that needs to be formatted</td>
 </tr>
 </table>
+
+### unselect
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when the current selection is cleared.
+
+A selection can be cleared for a number of reasons:
+
+- The user clicks away from the current selection (this does not happen when [unselectAuto](#unselectauto) is `false`).
+- The user makes a new selection. The unselect callback will be fired before the new selection occurs.
+- The user navigates forward or backward in the current view, or switches to a new view.
+- The [unselect](#unselect-1) method is called via the API.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>
+
+JavaScript native event object with low-level information such as click coordinates.
+
+If unselect has been triggered via the [unselect](#unselect-1) method, jsEvent will be `undefined`</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### unselectAuto
+- Type `boolean`
+- Default `true`
+
+Determines whether clicking elsewhere on the page will clear the current selection. See [selectable](#selectable).
+
+### unselectCancel
+- Type `string`
+- Default `''`
+
+A CSS selector that specifies elements that will ignore the [unselectAuto](#unselectauto) option.
+
+Clicking on elements that match this CSS selector will prevent the current selection from being cleared (because of the [unselectAuto](#unselectauto) option).
 
 ### view
 - Type `string`
@@ -1705,6 +1868,11 @@ Refetches events from all sources.
 - Return value `View`
 
 Returns the [View](#view-object) object for the current view.
+
+### unselect()
+- Return value `EventCalendar` The calendar instance for chaining
+
+Clears the current selection. See [selectable](#selectable).
 
 ## Event object
 This is a JavaScript object that the Event Calendar uses to store information about a calendar event.

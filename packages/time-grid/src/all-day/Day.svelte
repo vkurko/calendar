@@ -10,7 +10,8 @@
 	export let iChunks = [];
 	export let resource = undefined;
 
-	let {date: currentDate, dateClick, highlightedDates, theme, _view, _interaction} = getContext('state');
+	let {date: currentDate, dateClick, highlightedDates, theme, _view, _interaction, selectable} = getContext('state');
+	let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
 	let el;
 	let dayChunks;
@@ -46,14 +47,21 @@
 			}
 			: undefined;
 	}
+
+	function createPointerDownHandler(interaction, selectable) {
+		return selectable && interaction.action
+			? jsEvent => interaction.action.selectTimeGrid(date, el, jsEvent, _viewResources, $_slotTimeLimits, true)
+			: undefined;
+	}
 </script>
 
 <div
 	bind:this={el}
 	class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
 	on:click={createClickHandler($dateClick)}
+	on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
 >
-	<!-- Drag & Resize -->
+	<!-- Drag, Resize & Select -->
 	{#if iChunks[0] && datesEqual(iChunks[0].date, date)}
 		<div class="{$theme.events} {$theme.preview}">
 			<Event chunk={iChunks[0]}/>

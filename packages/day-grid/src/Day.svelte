@@ -1,5 +1,5 @@
 <script>
-	import {getContext} from 'svelte';
+	import {getContext, tick} from 'svelte';
 	import {is_function} from 'svelte/internal';
 	import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
 		createEventChunk, addDay, cloneDate, assign} from '@event-calendar/common';
@@ -12,7 +12,7 @@
 	export let iChunks = [];
 
 	let {date: currentDate, dateClick, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-		_view, _interaction} = getContext('state');
+		_view, _interaction, selectable} = getContext('state');
 	let {_hiddenEvents, _popup} = getContext('view-state');
 
 	let el;
@@ -93,9 +93,31 @@
 
 	function setPopupChunks() {
 		let nextDay = addDay(cloneDate(date));
-		$_popup.chunks = dayChunks.concat((longChunks[date.getTime()] || []))
-			.map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}))
-			.sort((a, b) => a.top - b.top);
+		let chunks = dayChunks.concat((longChunks[date.getTime()] || []))
+			.map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}));
+		if (chunks.length) {
+			if (chunks[0].top) {
+				// top is available, sort now
+				sortChunks(chunks);
+			} else {
+				// sort later
+				tick().then(() => {
+					sortChunks($_popup.chunks);
+					$_popup = $_popup;
+				});
+			}
+		}
+		$_popup.chunks = chunks;
+	}
+
+	function sortChunks(chunks) {
+		chunks.sort((a, b) => a.top - b.top);
+	}
+
+	function createPointerDownHandler(interaction, selectable) {
+		return selectable && interaction.action
+			? jsEvent => interaction.action.selectDayGrid(date, el, jsEvent)
+			: undefined;
 	}
 </script>
 
@@ -105,6 +127,7 @@
 	on:click={createClickHandler($dateClick)}
 	on:pointerenter={createPointerEnterHandler($_interaction)}
 	on:pointerleave={createPointerLeaveHandler($_interaction)}
+	on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
 >
 	<div class="{$theme.dayHead}">{date.getUTCDate()}</div>
 	<!-- Pointer -->

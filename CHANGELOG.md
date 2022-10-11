@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.12.0
+October 11, 2022
+
+* Added the ability to `select` time intervals ([#8](https://github.com/vkurko/calendar/issues/8))
+
 ## 0.11.2
 July 20, 2022
 

@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import Drag from './Drag.svelte';
+    import Action from './Action.svelte';
     import Pointer from './Pointer.svelte';
 
     let {theme, editable, eventStartEditable, eventDurationEditable, pointer,
@@ -26,7 +26,7 @@
     };
 </script>
 
-<Drag bind:this={$_interaction.drag}/>
+<Action bind:this={$_interaction.action}/>
 {#if $pointer}
     <Pointer bind:this={$_interaction.pointer}/>
 {/if}
