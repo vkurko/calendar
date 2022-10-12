@@ -1,40 +1,40 @@
 <script>
-	import {getContext, onMount, onDestroy} from 'svelte';
-	import {createDate, setMidnight} from '@event-calendar/common';
+    import {getContext, onMount, onDestroy} from 'svelte';
+    import {createDate, setMidnight} from '@event-calendar/common';
 
-	let {slotDuration, slotHeight, theme} = getContext('state');
+    let {slotDuration, slotHeight, theme} = getContext('state');
 
-	let {_slotTimeLimits} = getContext('view-state');
+    let {_slotTimeLimits} = getContext('view-state');
 
-	let now;
-	let today;
-	let top = 0;
-	let intervalID;
+    let now;
+    let today;
+    let top = 0;
+    let intervalID;
 
-	timer();
+    timer();
 
-	$: {
-		// Style
-		let step = $slotDuration.seconds / 60;
-		let offset = $_slotTimeLimits.min.seconds / 60;
-		let start = (now - today) / 1000 / 60;
-		top = (start - offset) / step * $slotHeight;
-	}
+    $: {
+        // Style
+        let step = $slotDuration.seconds / 60;
+        let offset = $_slotTimeLimits.min.seconds / 60;
+        let start = (now - today) / 1000 / 60;
+        top = (start - offset) / step * $slotHeight;
+    }
 
-	onMount(() => setTimeout(() => {
-		intervalID = setInterval(timer, 60000);
-		timer();
-	}, (60 - now.getSeconds()) * 1000));
+    onMount(() => setTimeout(() => {
+        intervalID = setInterval(timer, 60000);
+        timer();
+    }, (60 - now.getSeconds()) * 1000));
 
-	onDestroy(() => clearInterval(intervalID));
+    onDestroy(() => clearInterval(intervalID));
 
-	function timer() {
-		now = createDate();
-		today = setMidnight(createDate());
-	}
+    function timer() {
+        now = createDate();
+        today = setMidnight(createDate());
+    }
 </script>
 
 <div
-	class="{$theme.nowIndicator}"
-	style="top:{top}px"
+    class="{$theme.nowIndicator}"
+    style="top:{top}px"
 ></div>
