@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.13.1
+October 14, 2022
+
+* Fixed issues with previous version
+
 ## 0.13.0
 October 14, 2022
 

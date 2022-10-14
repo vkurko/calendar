@@ -295,10 +295,6 @@
 
     function handlePointerMove(jsEvent) {
         if (action && jsEvent.isPrimary) {
-            if (timer) {
-                clearTimeout(timer);
-                timer = undefined;
-            }
             toX = jsEvent.clientX;
             toY = jsEvent.clientY;
             move(jsEvent);
@@ -362,7 +358,12 @@
             action = view = interacting = false;
             isAllDay = false;
             $_iClass = undefined;
-            _viewResources = timer = undefined;
+            _viewResources = undefined;
+
+            if (timer) {
+                clearTimeout(timer);
+                timer = undefined;
+            }
         }
     }
 
@@ -439,12 +440,14 @@
     }
 
     function handleTouchStart(jsEvent) {
-        let target = jsEvent.target;
-        let stops = [];
-        let stop = () => run_all(stops);
-        stops.push(listen(target, 'touchmove', createPreventDefaultHandler(() => interacting)));
-        stops.push(listen(target, 'touchend', stop));
-        stops.push(listen(target, 'touchcancel', stop));
+        if (action) {
+            let target = jsEvent.target;
+            let stops = [];
+            let stop = () => run_all(stops);
+            stops.push(listen(target, 'touchmove', createPreventDefaultHandler(() => interacting)));
+            stops.push(listen(target, 'touchend', stop));
+            stops.push(listen(target, 'touchcancel', stop));
+        }
     }
 
     function createPreventDefaultHandler(condition) {
