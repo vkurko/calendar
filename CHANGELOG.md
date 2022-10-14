@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.13.0
+October 14, 2022
+
+* Added `longPressDelay` and other options to improve touch support
+
 ## 0.12.0
 October 11, 2022
 

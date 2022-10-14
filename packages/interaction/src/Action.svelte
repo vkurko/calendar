@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {is_function} from 'svelte/internal';
+    import {is_function, listen, run_all} from 'svelte/internal';
     import {
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, createDuration, rect,
         toEventWithLocalDates, toISOString, toViewWithLocalDates
@@ -8,9 +8,9 @@
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
 
     let {_iEvents, _iClass, _events, _viewDates, _view, datesAboveResources, dragScroll, editable, eventStartEditable,
-        eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventResizeStart, eventResizeStop, eventResize,
-        select, selectBackgroundColor, selectMinDistance, slotDuration, slotHeight, hiddenDays, unselect, unselectAuto,
-        unselectCancel} = getContext('state');
+        eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay, eventResizeStart,
+        eventResizeStop, eventResize, longPressDelay, select, selectBackgroundColor, selectLongPressDelay, selectMinDistance,
+        slotDuration, slotHeight, hiddenDays, unselect: unselectFn, unselectAuto, unselectCancel} = getContext('state');
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE = 2;
@@ -19,7 +19,7 @@
     const VIEW_DAY_GRID = 2;
     let action;
     let view;
-    let moving;
+    let interacting;
     let event;
     let col, row;
     let offsetX, offsetY;
@@ -31,11 +31,20 @@
     let _viewResources;
     let resourceCol, newResourceCol;
     let isAllDay;
+    let iClass;
     let minEnd;  // minimum end time when resizing
     let selected;  // whether selection has been made
+    let timer;  // timer for long press delays
 
     export function dragTimeGrid(eventToDrag, el, jsEvent, resourcesStore, allDay, resize) {
         if (!action && jsEvent.isPrimary) {
+            action = resize ? ACTION_RESIZE : ACTION_DRAG;
+            view = VIEW_TIME_GRID;
+            event = eventToDrag;
+            _viewResources = resourcesStore;
+            isAllDay = allDay;
+            iClass = resize ? (allDay ? 'resizingX' : 'resizingY') : 'dragging';
+
             let dayEl = ancestor(el, 2);
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(dayEl, $datesAboveResources);
@@ -43,9 +52,7 @@
                 [colEl, bodyEl, col] = traverseTimeGrid(dayEl);
             }
 
-            start(jsEvent);
-
-            event = eventToDrag;
+            common(jsEvent);
 
             offsetY = floor((jsEvent.clientY - colRect.top) / $slotHeight);
             offsetX = 0;  // applicable for all-day slot
@@ -53,18 +60,8 @@
                 offsetX = floor((jsEvent.clientX - colRect.left) / colRect.width) - col - (resourceCol || 0) * $_viewDates.length;
             }
 
-            _viewResources = resourcesStore;
-
-            view = VIEW_TIME_GRID;
-            isAllDay = allDay;
-
             if (resize) {
-                action = ACTION_RESIZE;
                 minEnd = addDuration(cloneDate(event.start), $slotDuration);
-                $_iClass = 'resizingY';
-            } else {
-                action = ACTION_DRAG;
-                $_iClass = 'dragging';
             }
 
             move(jsEvent);
@@ -73,29 +70,25 @@
 
     export function dragDayGrid(eventToDrag, el, jsEvent, inPopup, resize) {
         if (!action && jsEvent.isPrimary) {
+            action = resize ? ACTION_RESIZE : ACTION_DRAG;
+            view = VIEW_DAY_GRID;
+            event = eventToDrag;
+            iClass = resize ? 'resizingX' : 'dragging';
+
             let dayEl = ancestor(el, inPopup ? 3 : 2);
             [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(dayEl);
 
-            start(jsEvent);
-
-            event = eventToDrag;
+            common(jsEvent);
 
             offsetX = inPopup ? 0 : floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
 
-            view = VIEW_DAY_GRID;
-
             if (resize) {
-                action = ACTION_RESIZE;
                 minEnd = cloneDate(event.start);
                 minEnd.setUTCHours(event.end.getUTCHours(), event.end.getUTCMinutes(), event.end.getUTCSeconds());
                 if (minEnd < event.start) {
                     addDay(minEnd);
                     // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
                 }
-                $_iClass = 'resizingX';
-            } else {
-                action = ACTION_DRAG;
-                $_iClass = 'dragging';
             }
 
             move(jsEvent);
@@ -104,21 +97,25 @@
 
     export function selectTimeGrid(colDate, dayEl, jsEvent, resourcesStore, _slotTimeLimits, allDay) {
         if (!action && jsEvent.isPrimary) {
+            action = ACTION_SELECT;
+            view = VIEW_TIME_GRID;
+            _viewResources = resourcesStore;
+            isAllDay = allDay;
+            iClass = 'selecting';
+
             if (resourcesStore) {
                 [colEl, bodyEl, col, resourceCol] = traverseResourceTimeGrid(dayEl, $datesAboveResources);
             } else {
                 [colEl, bodyEl, col] = traverseTimeGrid(dayEl);
             }
 
-            start(jsEvent);
+            common(jsEvent);
 
             offsetY = floor((jsEvent.clientY - colRect.top) / $slotHeight);
             offsetX = 0;  // applicable for all-day slot
             if (allDay && (!resourcesStore || !$datesAboveResources)) {
                 offsetX = floor((jsEvent.clientX - colRect.left) / colRect.width) - col - (resourceCol || 0) * $_viewDates.length;
             }
-
-            _viewResources = resourcesStore;
 
             // Create dummy source event
             let date = cloneDate(colDate);
@@ -136,21 +133,19 @@
                 resourceIds: _viewResources ? [$_viewResources[resourceCol].id] : []
             };
 
-            view = VIEW_TIME_GRID;
-            isAllDay = allDay;
-
-            action = ACTION_SELECT;
-            $_iClass = 'selecting';
-
             move(jsEvent);
         }
     }
 
     export function selectDayGrid(dayDate, dayEl, jsEvent) {
         if (!action && jsEvent.isPrimary) {
+            action = ACTION_SELECT;
+            view = VIEW_DAY_GRID;
+            iClass = 'selecting';
+
             [colEl, bodyEl, col, row, rowEls] = traverseDayGrid(dayEl);
 
-            start(jsEvent);
+            common(jsEvent);
 
             offsetX = floor((jsEvent.clientX - colRect.left) / colRect.width) - col;
 
@@ -163,16 +158,11 @@
                 resourceIds: []
             };
 
-            view = VIEW_DAY_GRID;
-
-            action = ACTION_SELECT;
-            $_iClass = 'selecting';
-
             move(jsEvent);
         }
     }
 
-	function start(jsEvent) {
+	function common(jsEvent) {
         window.getSelection().removeAllRanges();
 
         colRect = rect(colEl);
@@ -180,16 +170,29 @@
 
         fromX = toX = jsEvent.clientX;
         fromY = toY = jsEvent.clientY;
+
+        if (jsEvent.pointerType !== 'mouse') {
+            // For touch devices init long press delay
+            timer = setTimeout(() => {
+                if (action) {
+                    interacting = true;
+                    move(jsEvent);
+                }
+            }, (selecting() ? $selectLongPressDelay : $eventLongPressDelay) ?? $longPressDelay);
+        }
     }
 
     function move(jsEvent) {
         let rx = toX - colRect.left;
         let ry = toY - colRect.top;
 
-        if (moving || resizing() || distance() >= (selecting() ? $selectMinDistance : $eventDragMinDistance)) {
-            clearSelection(jsEvent);
-
-            moving = true;
+        if (
+            interacting ||
+            jsEvent && jsEvent.pointerType === 'mouse' && distance() >= (selecting() ? $selectMinDistance : $eventDragMinDistance)
+        ) {
+            interacting = true;
+            unselect(jsEvent);
+            $_iClass = iClass;
 
             let newCol = floor(rx / colRect.width);
 
@@ -292,6 +295,10 @@
 
     function handlePointerMove(jsEvent) {
         if (action && jsEvent.isPrimary) {
+            if (timer) {
+                clearTimeout(timer);
+                timer = undefined;
+            }
             toX = jsEvent.clientX;
             toY = jsEvent.clientY;
             move(jsEvent);
@@ -300,7 +307,7 @@
 
     function handlePointerUp(jsEvent) {
         if (action && jsEvent.isPrimary) {
-            if (moving) {
+            if (interacting) {
                 if (selecting()) {
                     if (is_function($select)) {
                         let {start, end} = toEventWithLocalDates($_iEvents[0]);
@@ -315,7 +322,7 @@
                             resource: resourceCol && $_viewResources[resourceCol]
                         });
                     }
-                    setTimeout(() => selected = true);
+                    setTimeout(() => selected = true, 5 /*add some delay for touch devices*/);
                 } else {
                     event.display = 'auto';
 
@@ -352,10 +359,10 @@
 
             colEl = rowEls = bodyEl = null;
             resourceCol = newResourceCol = undefined;
-            action = view = moving = false;
+            action = view = interacting = false;
             isAllDay = false;
             $_iClass = undefined;
-            _viewResources = undefined;
+            _viewResources = timer = undefined;
         }
     }
 
@@ -409,12 +416,12 @@
         return action === ACTION_SELECT;
     }
 
-    export function clearSelection(jsEvent) {
+    export function unselect(jsEvent) {
         if (selected) {
             selected = false;
             destroyIEvent();
-            if (is_function($unselect)) {
-                $unselect({
+            if (is_function($unselectFn)) {
+                $unselectFn({
                     jsEvent,
                     view: toViewWithLocalDates($_view)
                 });
@@ -423,25 +430,40 @@
     }
 
     // Clear selection on view params change
-    _view.subscribe(clearSelection);
+    _view.subscribe(unselect);
 
     function handleClick(jsEvent) {
         if (selected && !($unselectCancel && jsEvent.target.closest($unselectCancel))) {
-            clearSelection();
+            unselect();
         }
     }
 
-    function handleSelectStart(jsEvent) {
-        if (action) {
-            jsEvent.preventDefault();
-        }
+    function handleTouchStart(jsEvent) {
+        let target = jsEvent.target;
+        let stops = [];
+        let stop = () => run_all(stops);
+        stops.push(listen(target, 'touchmove', createPreventDefaultHandler(() => interacting)));
+        stops.push(listen(target, 'touchend', stop));
+        stops.push(listen(target, 'touchcancel', stop));
+    }
+
+    function createPreventDefaultHandler(condition) {
+        return jsEvent => {
+            if (condition()) {
+                jsEvent.preventDefault();
+            }
+        };
     }
 </script>
 
 <svelte:window
     on:pointermove={handlePointerMove}
     on:pointerup={handlePointerUp}
-    on:selectstart={handleSelectStart}
+    on:pointercancel={handlePointerUp}
     on:scroll={handleScroll}
     on:click={$unselectAuto ? handleClick : undefined}
+    on:selectstart={createPreventDefaultHandler(() => action)}
+    on:contextmenu={createPreventDefaultHandler(() => timer)}
+    on:touchstart={handleTouchStart}
+    on:touchmove|nonpassive
 />

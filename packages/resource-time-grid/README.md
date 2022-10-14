@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (52kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
+* Lightweight (54kb [br](https://en.wikipedia.org/wiki/Brotli) compressed `modern` version)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -42,10 +42,11 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
+  - [eventDrop](#eventdrop)
   </td><td>
 
-  - [eventDrop](#eventdrop)
   - [eventDurationEditable](#eventdurationeditable)
+  - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
   - [eventResize](#eventresize)
@@ -66,6 +67,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [listDaySideFormat](#listdaysideformat)
   - [loading](#loading)
   - [locale](#locale)
+  - [longPressDelay](#longpressdelay)
   - [monthMode](#monthmode)
   </td><td>
   
@@ -78,6 +80,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [select](#select)
   - [selectable](#selectable)
   - [selectBackgroundColor](#selectbackgroundcolor)
+  - [selectLongPressDelay](#selectlongpressdelay)
   - [selectMinDistance](#selectmindistance)
   - [scrollTime](#scrolltime)
   - [slotDuration](#slotduration)
@@ -822,6 +825,14 @@ The current [View](#view-object) object
 
 Determines whether calendar events can be resized.
 
+### eventLongPressDelay
+- Type `integer`
+- Default `undefined`
+
+For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the event becomes draggable/resizable.
+
+If not specified, it falls back to [longPressDelay](#longpressdelay).
+
 ### eventMouseEnter
 - Type `function`
 - Default `undefined`
@@ -1367,6 +1378,14 @@ function (isLoading) { }
 
 Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object that the Event Calendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
 
+### longPressDelay
+- Type `integer`
+- Default `1000`
+
+For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the event becomes draggable/resizable or the date becomes selectable.
+
+For a more granular configuration, see [eventLongPressDelay](#eventlongpressdelay) and [selectLongPressDelay](#selectlongpressdelay).
+
 ### monthMode
 - Type `boolean`
 - Default `false`
@@ -1561,6 +1580,14 @@ Determines whether the user is allowed to highlight multiple days or time slots 
 Sets the background color for the event indicating the current selection. See [selectable](#selectable).
 
 You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+
+### selectLongPressDelay
+- Type `integer`
+- Default `undefined`
+
+For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the date becomes selectable.
+
+If not specified, it falls back to [longPressDelay](#longpressdelay).
 
 ### selectMinDistance
 - Type `integer`

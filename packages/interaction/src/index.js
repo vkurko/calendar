@@ -10,13 +10,16 @@ export default {
 		options.eventDragStop = undefined;
 		options.eventDrop = undefined;
 		options.eventDurationEditable = true;
+		options.eventLongPressDelay = undefined;
 		options.eventResizeStart = undefined;
 		options.eventResizeStop = undefined;
 		options.eventResize = undefined;
 		options.dragScroll = true;
+		options.longPressDelay = 1000;
 		options.pointer = false;
 		options.select = undefined;
 		options.selectBackgroundColor = undefined;  // ec option
+		options.selectLongPressDelay = undefined;
 		options.selectMinDistance = 0;
 		options.unselect = undefined;
 		options.unselectAuto = true;

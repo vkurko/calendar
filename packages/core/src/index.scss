@@ -16,6 +16,7 @@
 .ec {
   display: flex;
   flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
 
   /* Scrollbar */
   ::-webkit-scrollbar {
@@ -443,13 +444,11 @@
 .ec-draggable {
   cursor: pointer;
   user-select: none;
-  touch-action: none;
 }
 
 .ec-ghost {
   opacity: .5;
   user-select: none;
-  touch-action: none;
 }
 
 .ec-bg-events {

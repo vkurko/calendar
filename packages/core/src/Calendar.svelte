@@ -81,7 +81,7 @@
 
     export function unselect() {
         if ($_interaction.action) {
-            $_interaction.action.clearSelection();
+            $_interaction.action.unselect();
         }
         return this;
     }
