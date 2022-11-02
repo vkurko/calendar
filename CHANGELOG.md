@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.13.2
+November 2, 2022
+
+* Fixed an issue with month view when it is the first day of the month ([#63](https://github.com/vkurko/calendar/issues/63))
+
 ## 0.13.1
 October 14, 2022
 

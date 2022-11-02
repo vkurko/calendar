@@ -65,7 +65,7 @@ export function currentRange(state) {
         ([$date, $duration, $monthMode, $firstDay]) => {
             let start = cloneDate($date), end;
             if ($monthMode) {
-                start.setDate(1);
+                start.setUTCDate(1);
             } else if ($duration.inWeeks) {
                 // First day of week
                 prevClosestDay(start, $firstDay);
