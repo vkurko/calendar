@@ -13,7 +13,7 @@
 
     let {date: currentDate, dateClick, dayMaxEvents, highlightedDates, moreLinkContent, theme,
         _view, _interaction, selectable} = getContext('state');
-    let {_hiddenEvents, _popup} = getContext('view-state');
+    let {_hiddenEvents, _popupDate, _popupChunks} = getContext('view-state');
 
     let el;
     let dayChunks;
@@ -58,7 +58,7 @@
         }
     }
 
-    $: if ($_popup.date && datesEqual(date, $_popup.date) && longChunks && dayChunks) {
+    $: if ($_popupDate && datesEqual(date, $_popupDate) && longChunks && dayChunks) {
         setPopupChunks();
     }
 
@@ -88,13 +88,13 @@
 
     function showMore() {
         setPopupChunks();
-        $_popup.date = date;
+        $_popupDate = date;
     }
 
     function setPopupChunks() {
         let nextDay = addDay(cloneDate(date));
         let chunks = dayChunks.concat((longChunks[date.getTime()] || []))
-        .map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}));
+            .map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}));
         if (chunks.length) {
             if (chunks[0].top) {
                 // top is available, sort now
@@ -102,12 +102,12 @@
             } else {
                 // sort later
                 tick().then(() => {
-                    sortChunks($_popup.chunks);
-                    $_popup = $_popup;
+                    sortChunks($_popupChunks);
+                    $_popupChunks = $_popupChunks;
                 });
             }
         }
-        $_popup.chunks = chunks;
+        $_popupChunks = chunks;
     }
 
     function sortChunks(chunks) {
@@ -147,12 +147,12 @@
             <Event {chunk} {longChunks}/>
         {/each}
     </div>
-    {#if $_popup.date && datesEqual(date, $_popup.date)}
+    {#if $_popupDate && datesEqual(date, $_popupDate)}
         <Popup/>
     {/if}
     <div class="{$theme.dayFoot}">
         {#if hiddenEvents.size}
-            <a on:click|stopPropagation={showMore} use:setContent={moreLink}></a>
+            <a on:click|stopPropagation={showMore} on:pointerdown|stopPropagation use:setContent={moreLink}></a>
         {/if}
     </div>
 </div>

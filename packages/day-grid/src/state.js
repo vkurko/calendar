@@ -5,9 +5,7 @@ export default class {
     constructor(state) {
         this._days = days(state);
         this._hiddenEvents = writable({});
-        this._popup = writable({
-            date: null,
-            chunks: []
-        });
+        this._popupDate = writable(null);
+        this._popupChunks = writable([]);
     }
 }

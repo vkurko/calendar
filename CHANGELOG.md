@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.13.3
+November 3, 2022
+
+* Fixed some minor issues in month and list views
+
 ## 0.13.2
 November 2, 2022
 

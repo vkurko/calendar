@@ -4,7 +4,7 @@
     import Event from './Event.svelte';
 
     let {theme, _intlDayPopover} = getContext('state');
-    let {_popup} = getContext('view-state');
+    let {_popupDate, _popupChunks} = getContext('view-state');
 
     let el;
     let style = '';
@@ -34,7 +34,7 @@
     });
 
     function close(e) {
-        $_popup.date = null;
+        $_popupDate = null;
     }
 
     function handleClickOutside(e) {
@@ -52,9 +52,9 @@
     on:pointerdown|stopPropagation
     on:clickoutside={handleClickOutside}
 >
-    <div class="{$theme.dayHead}">{$_intlDayPopover.format($_popup.date)} <a on:click|stopPropagation={close}>&times;</a></div>
+    <div class="{$theme.dayHead}">{$_intlDayPopover.format($_popupDate)} <a on:click|stopPropagation={close}>&times;</a></div>
     <div class="{$theme.events}">
-        {#each $_popup.chunks as chunk}
+        {#each $_popupChunks as chunk}
             <Event {chunk} inPopup />
         {/each}
     </div>

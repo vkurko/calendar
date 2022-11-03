@@ -190,7 +190,7 @@
   overflow-x: hidden;
   overflow-y: auto;
 
-  &:not(.ec-list) {
+  .ec:not(.ec-list) & {
     border-top: none;
   }
 }
