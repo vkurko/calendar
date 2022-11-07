@@ -1,8 +1,9 @@
-import {derived, writable} from 'svelte/store';
+import {derived, writable, readable} from 'svelte/store';
 import {is_function, noop, tick} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
     cloneDate,
+    createDate,
     addDuration,
     addDay,
     subtractDay,
@@ -203,4 +204,18 @@ export function events(state) {
     ).subscribe(_events.set);
 
     return _events;
+}
+
+export function now() {
+    return readable(createDate(), set => {
+        let interval = setInterval(() => {
+            set(createDate());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    });
+}
+
+export function today(state) {
+    return derived(state._now, $_now => setMidnight(cloneDate($_now)));
 }

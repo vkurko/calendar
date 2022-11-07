@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.13.4
+November 7, 2022
+
+* Fixed an issue when `nowIndicator` is not updated when a new day arrives ([#64](https://github.com/vkurko/calendar/issues/64))
+
 ## 0.13.3
 November 3, 2022
 

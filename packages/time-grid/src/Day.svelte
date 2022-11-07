@@ -2,10 +2,8 @@
     import {getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
-        createDate,
         cloneDate,
         addDuration,
-        setMidnight,
         toLocalDate,
         datesEqual,
         createEventChunk,
@@ -20,13 +18,13 @@
     export let date;
     export let resource = undefined;
 
-    let {_events, _iEvents, dateClick, highlightedDates, nowIndicator, slotDuration, slotHeight, _view, theme,
-        _interaction, selectable} = getContext('state');
+    let {_events, _iEvents, dateClick, highlightedDates, nowIndicator, slotDuration, slotHeight, selectable, theme,
+        _interaction, _today, _view} = getContext('state');
     let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
     let el;
     let chunks, bgChunks, iChunks = [];
-    let today = setMidnight(createDate()), isToday, highlight;
+    let isToday, highlight;
 
     let start, end;
 
@@ -54,10 +52,8 @@
         event => event && intersects(event) ? createEventChunk(event, start, end) : null
     );
 
-    $: {
-        isToday = datesEqual(date, today);
-        highlight = $highlightedDates.some(d => datesEqual(d, date));
-    }
+    $: isToday = datesEqual(date, $_today);
+    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
     function createClickHandler(fn) {
         return is_function(fn)

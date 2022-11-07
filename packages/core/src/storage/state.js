@@ -5,6 +5,8 @@ import {
     activeRange,
     currentRange,
     events,
+    now,
+    today,
     viewDates,
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
@@ -30,6 +32,8 @@ export default class {
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = events(this);
+        this._now = now();
+        this._today = today(this);
         this._intlEventTime = intl(this.locale, this.eventTimeFormat);
         this._intlSlotLabel = intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = intl(this.locale, this.dayHeaderFormat);
