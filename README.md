@@ -182,6 +182,10 @@ let ec = new Calendar({
     }
 });
 ```
+The CSS is located at `@event-calendar/core/index.css`. If your build tool supports CSS processing, you can import it like this:
+```js
+import '@event-calendar/core/index.css';
+```
 
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
