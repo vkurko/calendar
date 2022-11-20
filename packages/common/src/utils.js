@@ -21,3 +21,13 @@ export function ancestor(el, up) {
 export function height(el) {
     return el.offsetHeight;
 }
+
+export function maybeIgnore(fn) {
+    return jsEvent => {
+        if (!jsEvent.ecIgnore) {
+            fn && fn(jsEvent);
+            // Make upper listeners ignore the event
+            jsEvent.ecIgnore = true;
+        }
+    };
+}

@@ -13,7 +13,8 @@
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _viewClass, _interaction, _iClass, _events, events, eventSources, height, theme} = state;
+    let {_viewComponent, _viewClass, _ignoreClick, _interaction, _iClass, _events,
+        events, eventSources, height, theme} = state;
 
     // Reactively update options that did change
     $: for (let [name, value] of diff(options)) {
@@ -93,6 +94,13 @@
             $events = func($events);
         }
     }
+
+    function handleClick(jsEvent) {
+        if ($_ignoreClick) {
+            jsEvent.ecIgnore = true;
+            $_ignoreClick = false;
+        }
+    }
 </script>
 
 <div
@@ -103,3 +111,4 @@
     <svelte:component this={$_viewComponent}/>
     <svelte:component this={$_interaction.component}/>
 </div>
+<svelte:window on:click|capture={handleClick}/>

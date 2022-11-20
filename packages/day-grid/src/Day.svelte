@@ -2,7 +2,7 @@
     import {getContext, tick} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
-        createEventChunk, addDay, cloneDate, assign} from '@event-calendar/common';
+        createEventChunk, addDay, cloneDate, assign, maybeIgnore} from '@event-calendar/common';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -64,15 +64,13 @@
 
     function createClickHandler(fn) {
         return is_function(fn)
-            ? jsEvent => {
-                !jsEvent.ecClosingPopup && fn({
-                    date: toLocalDate(date),
-                    dateStr: toISOString(date),
-                    dayEl: el,
-                    jsEvent,
-                    view: toViewWithLocalDates($_view)
-                });
-            }
+            ? jsEvent => fn({
+                date: toLocalDate(date),
+                dateStr: toISOString(date),
+                dayEl: el,
+                jsEvent,
+                view: toViewWithLocalDates($_view)
+            })
             : undefined;
     }
 
@@ -92,22 +90,27 @@
     }
 
     function setPopupChunks() {
-        let nextDay = addDay(cloneDate(date));
-        let chunks = dayChunks.concat((longChunks[date.getTime()] || []))
-            .map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}));
+        let chunks = createPopupChunks();
         if (chunks.length) {
-            if (chunks[0].top) {
+            if (chunks[0].top) {  // @todo check for the presence of top in all chunks
                 // top is available, sort now
                 sortChunks(chunks);
             } else {
                 // sort later
                 tick().then(() => {
-                    sortChunks($_popupChunks);
-                    $_popupChunks = $_popupChunks;
+                    let chunks = createPopupChunks();
+                    sortChunks(chunks);
+                    $_popupChunks = chunks;
                 });
             }
         }
         $_popupChunks = chunks;
+    }
+
+    function createPopupChunks() {
+        let nextDay = addDay(cloneDate(date));
+        return dayChunks.concat(longChunks[date.getTime()] || [])
+            .map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}));
     }
 
     function sortChunks(chunks) {
@@ -124,7 +127,7 @@
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    on:click={createClickHandler($dateClick)}
+    on:click={maybeIgnore(createClickHandler($dateClick))}
     on:pointerenter={createPointerEnterHandler($_interaction)}
     on:pointerleave={createPointerLeaveHandler($_interaction)}
     on:pointerdown={createPointerDownHandler($_interaction, $selectable)}

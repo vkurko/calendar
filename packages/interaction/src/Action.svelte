@@ -7,10 +7,11 @@
     } from '@event-calendar/common';
     import {traverseTimeGrid, animate, traverseResourceTimeGrid, traverseDayGrid, limit, floor} from './utils';
 
-    let {_iEvents, _iClass, _events, _viewDates, _view, datesAboveResources, dragScroll, editable, eventStartEditable,
-        eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay, eventResizeStart,
-        eventResizeStop, eventResize, longPressDelay, select, selectBackgroundColor, selectLongPressDelay, selectMinDistance,
-        slotDuration, slotHeight, hiddenDays, unselect: unselectFn, unselectAuto, unselectCancel} = getContext('state');
+    let {_iEvents, _iClass, _ignoreClick, _events, _viewDates, _view, datesAboveResources, dragScroll, editable,
+        eventStartEditable, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
+        eventResizeStart, eventResizeStop, eventResize, longPressDelay, select, selectBackgroundColor,
+        selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, hiddenDays, unselect: unselectFn,
+        unselectAuto, unselectCancel} = getContext('state');
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE = 2;
@@ -30,7 +31,7 @@
     let colRect, bodyRect;
     let _viewResources;
     let resourceCol, newResourceCol;
-    let isAllDay;
+    let isAllDay = false;
     let iClass;
     let minEnd;  // minimum end time when resizing
     let selected;  // whether selection has been made
@@ -193,6 +194,7 @@
             interacting = true;
             unselect(jsEvent);
             $_iClass = iClass;
+            $_ignoreClick = true;
 
             let newCol = floor(rx / colRect.width);
 

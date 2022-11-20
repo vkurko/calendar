@@ -9,7 +9,8 @@
         createEventChunk,
         toViewWithLocalDates,
         rect,
-        toISOString
+        toISOString,
+        maybeIgnore
     } from '@event-calendar/common';
     import {groupEventChunks} from './utils';
     import Event from './Event.svelte';
@@ -101,7 +102,7 @@
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    on:click={createClickHandler($dateClick)}
+    on:click={maybeIgnore(createClickHandler($dateClick))}
     on:pointerenter={createPointerEnterHandler($_interaction)}
     on:pointerleave={createPointerLeaveHandler($_interaction)}
     on:pointerdown={createPointerDownHandler($_interaction, $selectable)}

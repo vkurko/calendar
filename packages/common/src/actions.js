@@ -19,22 +19,22 @@ export function setContent(node, content) {
     return actions;
 }
 
-/** Dispatch event on click outside of node */
-export function clickOutside(node) {
+/** Dispatch event occurred outside of node */
+export function outsideEvent(node, type) {
 
-    const handleClick = jsEvent => {
+    const handlePointerDown = jsEvent => {
         if (node && !node.contains(jsEvent.target)) {
             node.dispatchEvent(
-                new CustomEvent('clickoutside', {detail: {jsEvent}})
+                new CustomEvent(type + 'outside', {detail: {jsEvent}})
             );
         }
     };
 
-    document.addEventListener('click', handleClick, true);
+    document.addEventListener(type, handlePointerDown, true);
 
     return {
         destroy() {
-            document.removeEventListener('click', handleClick, true);
+            document.removeEventListener(type, handlePointerDown, true);
         }
     };
 }

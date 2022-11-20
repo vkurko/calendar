@@ -34,6 +34,7 @@ export default class {
         this._events = events(this);
         this._now = now();
         this._today = today(this);
+        this._ignoreClick = writable(false);
         this._intlEventTime = intl(this.locale, this.eventTimeFormat);
         this._intlSlotLabel = intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = intl(this.locale, this.dayHeaderFormat);

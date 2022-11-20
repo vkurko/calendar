@@ -8,7 +8,8 @@
         toEventWithLocalDates,
         toViewWithLocalDates,
         setContent,
-        cloneDate
+        cloneDate,
+        maybeIgnore
     } from '@event-calendar/common';
 
     export let chunk;
@@ -72,11 +73,6 @@
         return display !== 'preview' && is_function(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
             : undefined;
-    }
-
-    function createClickHandler(fn, display) {
-        let handler = createHandler(fn, display);
-        return handler ? jsEvent => !jsEvent.ecClosingPopup && handler(jsEvent) : handler;
     }
 
     function createDragHandler(resize) {
@@ -172,7 +168,7 @@
     bind:this={el}
     class="{classes}"
     {style}
-    on:click={createClickHandler($eventClick, display)}
+    on:click={maybeIgnore(createHandler($eventClick, display))}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
     on:pointerdown={display === 'auto' && $_draggable(event) ? createDragHandler() : undefined}

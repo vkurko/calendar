@@ -20,7 +20,7 @@ export default {
 		options.select = undefined;
 		options.selectBackgroundColor = undefined;  // ec option
 		options.selectLongPressDelay = undefined;
-		options.selectMinDistance = 0;
+		options.selectMinDistance = 5;
 		options.unselect = undefined;
 		options.unselectAuto = true;
 		options.unselectCancel = '';

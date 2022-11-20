@@ -1,9 +1,9 @@
 <script>
     import {getContext, onMount} from 'svelte';
-    import {ancestor, rect, clickOutside} from '@event-calendar/common';
+    import {ancestor, rect, outsideEvent} from '@event-calendar/common';
     import Event from './Event.svelte';
 
-    let {theme, _intlDayPopover} = getContext('state');
+    let {theme, _ignoreClick, _intlDayPopover} = getContext('state');
     let {_popupDate, _popupChunks} = getContext('view-state');
 
     let el;
@@ -37,9 +37,9 @@
         $_popupDate = null;
     }
 
-    function handleClickOutside(e) {
+    function handlePointerDownOutside(e) {
         close();
-        e.detail.jsEvent.ecClosingPopup = true;
+        $_ignoreClick = true;
     }
 </script>
 
@@ -47,10 +47,9 @@
     bind:this={el}
     class="{$theme.popup}"
     {style}
-    use:clickOutside
-    on:click|stopPropagation
+    use:outsideEvent={'pointerdown'}
     on:pointerdown|stopPropagation
-    on:clickoutside={handleClickOutside}
+    on:pointerdownoutside={handlePointerDownOutside}
 >
     <div class="{$theme.dayHead}">{$_intlDayPopover.format($_popupDate)} <a on:click|stopPropagation={close}>&times;</a></div>
     <div class="{$theme.events}">

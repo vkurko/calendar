@@ -1,7 +1,7 @@
 <script>
     import {getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '@event-calendar/common';
+    import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent, maybeIgnore} from '@event-calendar/common';
 
     export let date;
     export let chunk;
@@ -85,7 +85,7 @@
     bind:this={el}
     class="{classes}"
     {style}
-    on:click={createHandler($eventClick, display)}
+    on:click={maybeIgnore(createHandler($eventClick, display))}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
     on:pointerdown={display === 'auto' && $_draggable(event) ? createDragHandler() : undefined}

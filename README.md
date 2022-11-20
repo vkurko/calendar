@@ -1595,7 +1595,7 @@ If not specified, it falls back to [longPressDelay](#longpressdelay).
 
 ### selectMinDistance
 - Type `integer`
-- Default `0`
+- Default `5`
 
 Defines how many pixels the user’s mouse must move before the selection begins.
 
