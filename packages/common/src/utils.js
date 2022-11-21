@@ -31,3 +31,18 @@ export function maybeIgnore(fn) {
         }
     };
 }
+
+export function isObject(test) {
+    return typeof test === 'object' && test !== null;
+}
+
+export function createElement(tag, className, html, text) {
+    let el = document.createElement(tag);
+    el.className = className;
+    if (html) {
+        el.innerHTML = html;
+    } else if (text) {
+        el.innerText = text;
+    }
+    return el;
+}

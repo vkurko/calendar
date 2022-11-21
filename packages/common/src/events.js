@@ -1,5 +1,5 @@
 import {createDate, cloneDate, toLocalDate} from './date';
-import {assign} from './utils';
+import {assign, createElement} from './utils';
 import {toViewWithLocalDates} from './view';
 import {is_function} from 'svelte/internal';
 
@@ -16,6 +16,7 @@ export function createEvents(input) {
         start: createDate(event.start),
         end: createDate(event.end),
         title: event.title || '',
+        titleHTML: event.titleHTML || '',
         editable: event.editable,
         startEditable: event.startEditable,
         durationEditable: event.durationEditable,
@@ -68,23 +69,22 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
                 view: toViewWithLocalDates(_view)
             })
             : eventContent;
-        if (typeof content === 'string') {
-            content = {html: content};
-        }
     } else {
         switch (chunk.event.display) {
             case 'background':
-                content = {html: ''};
+                content = '';
                 break;
             case 'pointer':
                 content = {
-                    html: `<div class="${theme.eventTime}">${timeText}</div>`
+                    domNodes: [createElement('div', theme.eventTime, null, timeText)]
                 };
                 break;
             default:
                 content = {
-                    html: `<div class="${theme.eventTime}">${timeText}</div>` +
-                        `<div class="${theme.eventTitle}">${chunk.event.title}</div>`
+                    domNodes: [
+                        createElement('div', theme.eventTime, null, timeText),
+                        createElement('div', theme.eventTitle, chunk.event.titleHTML, chunk.event.title)
+                    ]
                 };
         }
     }

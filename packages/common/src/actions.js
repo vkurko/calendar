@@ -1,3 +1,4 @@
+import {isObject} from './utils.js';
 
 export function setContent(node, content) {
     let actions = {
@@ -5,7 +6,9 @@ export function setContent(node, content) {
             while (node.firstChild) {
                 node.removeChild(node.lastChild);
             }
-            if (content.domNodes) {
+            if (!isObject(content)) {
+                node.innerText = content;
+            } else if (content.domNodes) {
                 for (let child of content.domNodes) {
                     node.appendChild(child);
                 }

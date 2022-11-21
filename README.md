@@ -238,7 +238,7 @@ In Svelte, you can simply update the original `options` object.
 
 Defines the content that is displayed as a title of the `all-day` slot.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function (arg) {
@@ -567,7 +567,7 @@ This is currently an alias for the `eventBackgroundColor`.
 
 Defines the content that is rendered inside an event’s element.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function (info) {
@@ -1413,7 +1413,7 @@ Tells the calendar that visible dates should start from the [firstDay](#firstday
 
 Defines the text that is displayed instead of the default `+2 more` created by the [dayMaxEvents](#daymaxevents) option.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function (arg) {
@@ -1477,7 +1477,7 @@ The current [View](#view-object) object
 
 Defines the text that is displayed in list view when there are no events to display.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function () {
@@ -2100,6 +2100,16 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `string` The text that will appear on the event. Default `''`
+</td>
+</tr>
+<tr>
+<td>
+
+`titleHTML`
+</td>
+<td>
+
+`string` A version of the title to display HTML content instead of text content. Default `''`
 </td>
 </tr>
 <tr>
