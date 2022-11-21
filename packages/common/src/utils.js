@@ -22,12 +22,17 @@ export function height(el) {
     return el.offsetHeight;
 }
 
+let ignoreProp = Symbol('ec');
+export function ignore(jsEvent) {
+    jsEvent[ignoreProp] = true;
+}
+
 export function maybeIgnore(fn) {
     return jsEvent => {
-        if (!jsEvent.ecIgnore) {
+        if (!jsEvent[ignoreProp]) {
             fn && fn(jsEvent);
             // Make upper listeners ignore the event
-            jsEvent.ecIgnore = true;
+            ignore(jsEvent);
         }
     };
 }

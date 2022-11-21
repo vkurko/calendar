@@ -43,9 +43,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
+  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
-  - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -69,14 +69,16 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [locale](#locale)
   - [longPressDelay](#longpressdelay)
   - [monthMode](#monthmode)
-  </td><td>
-  
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
+  </td><td>
+
   - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
+  - [resourceLabelContent](#resourcelabelcontent)
+  - [resourceLabelDidMount](#resourcelabeldidmount)
   - [select](#select)
   - [selectable](#selectable)
   - [selectBackgroundColor](#selectbackgroundcolor)
@@ -182,6 +184,10 @@ let ec = new Calendar({
     }
 });
 ```
+The CSS is located at `@event-calendar/core/index.css`. If your build tool supports CSS processing, you can import it like this:
+```js
+import '@event-calendar/core/index.css';
+```
 
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
@@ -234,7 +240,7 @@ In Svelte, you can simply update the original `options` object.
 
 Defines the content that is displayed as a title of the `all-day` slot.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function (arg) {
@@ -284,9 +290,9 @@ This value can be either a JavaScript Date object, or an ISO8601 date string lik
 Callback function that is triggered when the user clicks on a date or a time.
 
 ```js
-function (dateClickInfo) {}
+function (info) {}
 ```
-`dateClickInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -301,6 +307,15 @@ function (dateClickInfo) {}
 `dateStr`
 </td>
 <td>ISO8601 string representation of the date</td>
+</tr>
+<tr>
+<td>
+
+`allDay`
+</td>
+<td>
+
+`true` or `false`. Determines if the click has occurred in the `all-day` slot. Clicks in month and list views are treated as all-day too</td>
 </tr>
 <tr>
 <td>
@@ -502,9 +517,9 @@ You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0
 Callback function that is triggered when the user clicks an event.
 
 ```js
-function (eventClickInfo) { }
+function (info) { }
 ```
-`eventClickInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -554,14 +569,14 @@ This is currently an alias for the `eventBackgroundColor`.
 
 Defines the content that is rendered inside an event’s element.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
-function (eventInfo) {
+function (info) {
     // return string or object
 }
 ```
-`eventInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -599,9 +614,9 @@ The current [View](#view-object) object
 Callback function that is triggered right after the element has been added to the DOM. If the event data changes, this is not called again.
 
 ```js
-function (mountInfo) { }
+function (info) { }
 ```
-`mountInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -840,9 +855,9 @@ If not specified, it falls back to [longPressDelay](#longpressdelay).
 Callback function that is triggered when the user hovers over an event with the cursor (mouse pointer).
 
 ```js
-function (mouseEnterInfo) { }
+function (info) { }
 ```
-`mouseEnterInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -887,9 +902,9 @@ The current [View](#view-object) object
 Callback function that is triggered when the cursor (mouse pointer) is moved out of an event.
 
 ```js
-function (mouseLeaveInfo) { }
+function (info) { }
 ```
-`mouseLeaveInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1400,7 +1415,7 @@ Tells the calendar that visible dates should start from the [firstDay](#firstday
 
 Defines the text that is displayed instead of the default `+2 more` created by the [dayMaxEvents](#daymaxevents) option.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function (arg) {
@@ -1435,9 +1450,9 @@ The default text like `+2 more`
 Callback function that is triggered when the user clicks _No events_ area in list view.
 
 ```js
-function (clickInfo) { }
+function (info) { }
 ```
-`clickInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1464,7 +1479,7 @@ The current [View](#view-object) object
 
 Defines the text that is displayed in list view when there are no events to display.
 
-This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
 function () {
@@ -1490,6 +1505,77 @@ Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` views.
 
 Array of plain objects that will be parsed into [Resource](#resource-object) objects for displaying in the resource view.
 
+### resourceLabelContent
+- Type `string`, `object`or `function`
+- Default `undefined`
+
+Defines the content that is rendered inside an element with a resource title.
+
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+
+```js
+function (info) {
+    // return string or object
+}
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+The associated [Resource](#resource-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`date`
+</td>
+<td>If it is a column that is within a specific date, this will be a Date object</td>
+</tr>
+</table>
+
+### resourceLabelDidMount
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered right after the element has been added to the DOM. If the resource data changes, this is not called again.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`el`
+</td>
+<td>The HTML element for the label</td>
+</tr>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+The associated [Resource](#resource-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`date`
+</td>
+<td>If it is a column that is within a specific date, this will be a Date object</td>
+</tr>
+</table>
+
 ### select
 - Type `function`
 - Default `undefined`
@@ -1497,9 +1583,9 @@ Array of plain objects that will be parsed into [Resource](#resource-object) obj
 Callback function that is triggered when a date/time selection is made.
 
 ```js
-function (selectInfo) { }
+function (info) { }
 ```
-`selectInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1536,7 +1622,7 @@ function (selectInfo) { }
 </td>
 <td>
 
-Boolean (`true` or `false`). Determines if the selection has occurred in the `all-day` slot</td>
+`true` or `false`. Determines if the selection has occurred in the `all-day` slot</td>
 </tr>
 <tr>
 <td>
@@ -1591,7 +1677,7 @@ If not specified, it falls back to [longPressDelay](#longpressdelay).
 
 ### selectMinDistance
 - Type `integer`
-- Default `0`
+- Default `5`
 
 Defines how many pixels the user’s mouse must move before the selection begins.
 
@@ -1779,9 +1865,9 @@ The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`
 Callback function that is triggered right after the view has been added to the DOM.
 
 ```js
-function (mountInfo) { }
+function (info) { }
 ```
-`mountInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1927,7 +2013,7 @@ Here are all properties that exist in Event object:
 </td>
 <td>
 
-Boolean (`true` or `false`). Determines if the event is shown in the `all-day` slot</td>
+`true` or `false`. Determines if the event is shown in the `all-day` slot</td>
 </tr>
 <tr>
 <td>
@@ -1953,11 +2039,18 @@ Boolean (`true` or `false`). Determines if the event is shown in the `all-day` s
 <tr>
 <td>
 
+`titleHTML`
+</td>
+<td>The HTML version of the title</td>
+</tr>
+<tr>
+<td>
+
 `editable`
 </td>
 <td>
 
-Boolean (`true` or `false`) or `undefined`. The value overriding the [editable](#editable) setting for this specific event
+`true`, `false` or `undefined`. The value overriding the [editable](#editable) setting for this specific event
 </td>
 </tr>
 <tr>
@@ -1967,7 +2060,7 @@ Boolean (`true` or `false`) or `undefined`. The value overriding the [editable](
 </td>
 <td>
 
-Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStartEditable](#eventstarteditable) setting for this specific event
+`true`, `false` or `undefined`. The value overriding the [eventStartEditable](#eventstarteditable) setting for this specific event
 </td>
 </tr>
 <tr>
@@ -1977,7 +2070,7 @@ Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStart
 </td>
 <td>
 
-Boolean (`true` or `false`) or `undefined`. The value overriding the [eventDurationEditable](#eventdurationeditable) setting for this specific event
+`true`, `false` or `undefined`. The value overriding the [eventDurationEditable](#eventdurationeditable) setting for this specific event
 </td>
 </tr>
 <tr>
@@ -2087,6 +2180,16 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `string` The text that will appear on the event. Default `''`
+</td>
+</tr>
+<tr>
+<td>
+
+`titleHTML`
+</td>
+<td>
+
+`string` The HTML version of the title to be displayed instead of the text version. Default `''`
 </td>
 </tr>
 <tr>
@@ -2220,6 +2323,13 @@ Here are all properties that exist in Resource object:
 </td>
 <td>The title of the resource</td>
 </tr>
+<tr>
+<td>
+
+`titleHTML`
+</td>
+<td>The HTML version of the title</td>
+</tr>
 </table>
 
 ### Parsing resource from a plain object
@@ -2245,6 +2355,16 @@ Here are all admissible fields for the resource’s input object:
 <td>
 
 `string` Text that will be displayed on the resource when it is rendered. Default `''`
+</td>
+</tr>
+<tr>
+<td>
+
+`titleHTML`
+</td>
+<td>
+
+`string` The HTML version of the title to be displayed instead of the text version. Default `''`
 </td>
 </tr>
 </table>

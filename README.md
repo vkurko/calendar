@@ -43,9 +43,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
+  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
-  - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -69,14 +69,16 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [locale](#locale)
   - [longPressDelay](#longpressdelay)
   - [monthMode](#monthmode)
-  </td><td>
-  
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
+  </td><td>
+
   - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
+  - [resourceLabelContent](#resourcelabelcontent)
+  - [resourceLabelDidMount](#resourcelabeldidmount)
   - [select](#select)
   - [selectable](#selectable)
   - [selectBackgroundColor](#selectbackgroundcolor)
@@ -1503,6 +1505,77 @@ Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` views.
 
 Array of plain objects that will be parsed into [Resource](#resource-object) objects for displaying in the resource view.
 
+### resourceLabelContent
+- Type `string`, `object`or `function`
+- Default `undefined`
+
+Defines the content that is rendered inside an element with a resource title.
+
+This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+
+```js
+function (info) {
+    // return string or object
+}
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+The associated [Resource](#resource-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`date`
+</td>
+<td>If it is a column that is within a specific date, this will be a Date object</td>
+</tr>
+</table>
+
+### resourceLabelDidMount
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered right after the element has been added to the DOM. If the resource data changes, this is not called again.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`el`
+</td>
+<td>The HTML element for the label</td>
+</tr>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+The associated [Resource](#resource-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`date`
+</td>
+<td>If it is a column that is within a specific date, this will be a Date object</td>
+</tr>
+</table>
+
 ### select
 - Type `function`
 - Default `undefined`
@@ -1966,6 +2039,13 @@ Here are all properties that exist in Event object:
 <tr>
 <td>
 
+`titleHTML`
+</td>
+<td>The HTML version of the title</td>
+</tr>
+<tr>
+<td>
+
 `editable`
 </td>
 <td>
@@ -2109,7 +2189,7 @@ Here are all admissible fields for the event’s input object:
 </td>
 <td>
 
-`string` A version of the title to display HTML content instead of text content. Default `''`
+`string` The HTML version of the title to be displayed instead of the text version. Default `''`
 </td>
 </tr>
 <tr>
@@ -2243,6 +2323,13 @@ Here are all properties that exist in Resource object:
 </td>
 <td>The title of the resource</td>
 </tr>
+<tr>
+<td>
+
+`titleHTML`
+</td>
+<td>The HTML version of the title</td>
+</tr>
 </table>
 
 ### Parsing resource from a plain object
@@ -2268,6 +2355,16 @@ Here are all admissible fields for the resource’s input object:
 <td>
 
 `string` Text that will be displayed on the resource when it is rendered. Default `''`
+</td>
+</tr>
+<tr>
+<td>
+
+`titleHTML`
+</td>
+<td>
+
+`string` The HTML version of the title to be displayed instead of the text version. Default `''`
 </td>
 </tr>
 </table>

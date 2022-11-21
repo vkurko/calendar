@@ -5,7 +5,7 @@
     import {diff} from './storage/options';
     import State from './storage/state';
     import Toolbar from './Toolbar.svelte';
-    import {assign, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
+    import {assign, toEventWithLocalDates, toViewWithLocalDates, ignore} from '@event-calendar/common';
 
     export let plugins = [];
     export let options = {};
@@ -97,7 +97,7 @@
 
     function handleClick(jsEvent) {
         if ($_ignoreClick) {
-            jsEvent.ecIgnore = true;
+            ignore(jsEvent);
             $_ignoreClick = false;
         }
     }

@@ -5,6 +5,8 @@ export default {
 		options.resources = [];
 		options.datesAboveResources = false;
 		options.filterResourcesWithEvents = false;
+		options.resourceLabelContent = undefined;
+		options.resourceLabelDidMount = undefined;
 		// Common options
 		options.buttonText.resourceTimeGridDay = 'day';
 		options.buttonText.resourceTimeGridWeek = 'week';
@@ -28,6 +30,7 @@ export default {
 function createResources(input) {
 	return input.map(resource => ({
 		id: String(resource.id),
-		title: resource.title || ''
+		title: resource.title || '',
+		titleHTML: resource.titleHTML || ''
 	}));
 }

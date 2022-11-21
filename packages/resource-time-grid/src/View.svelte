@@ -2,6 +2,7 @@
     import {getContext, setContext} from 'svelte';
     import State from './state';
     import {Header, Body, Day, Week} from '@event-calendar/time-grid';
+    import Label from './Label.svelte';
 
     let state = getContext('state');
     let {datesAboveResources, _viewDates, _intlDayHeader, _viewClass, allDaySlot, theme} = state;
@@ -13,25 +14,26 @@
 
     $_viewClass = 'week';
 
-    let loops, titles;
-    $: {
-        loops = [];
-        titles = [];
-        for (let i of $datesAboveResources ? [1, 0] : [0, 1]) {
-            loops.push(i ? $_viewDates : $_viewResources);
-            titles.push(i ? date => $_intlDayHeader.format(date) : resource => resource.title);
-        }
-    }
+    let loops;
+    $: loops = $datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates];
 </script>
 
 <Header>
     {#each loops[0] as item0}
         <div class="{$theme.resource}">
-            <div class="{$theme.day}">{titles[0](item0)}</div>
+            {#if $datesAboveResources}
+                <div class="{$theme.day}">{$_intlDayHeader.format(item0)}</div>
+            {:else}
+                <Label resource={item0} />
+            {/if}
             {#if loops[1].length > 1}
                 <div class="{$theme.days}">
                     {#each loops[1] as item1}
-                        <div class="{$theme.day}">{titles[1](item1)}</div>
+                        {#if $datesAboveResources}
+                            <Label resource={item1} date={item0} />
+                        {:else}
+                            <div class="{$theme.day}">{$_intlDayHeader.format(item1)}</div>
+                        {/if}
                     {/each}
                 </div>
             {/if}
