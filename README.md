@@ -288,9 +288,9 @@ This value can be either a JavaScript Date object, or an ISO8601 date string lik
 Callback function that is triggered when the user clicks on a date or a time.
 
 ```js
-function (dateClickInfo) {}
+function (info) {}
 ```
-`dateClickInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -305,6 +305,15 @@ function (dateClickInfo) {}
 `dateStr`
 </td>
 <td>ISO8601 string representation of the date</td>
+</tr>
+<tr>
+<td>
+
+`allDay`
+</td>
+<td>
+
+`true` or `false`. Determines if the click has occurred in the `all-day` slot. Clicks in month and list views are treated as all-day too</td>
 </tr>
 <tr>
 <td>
@@ -506,9 +515,9 @@ You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0
 Callback function that is triggered when the user clicks an event.
 
 ```js
-function (eventClickInfo) { }
+function (info) { }
 ```
-`eventClickInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -561,11 +570,11 @@ Defines the content that is rendered inside an event’s element.
 This value can be either a string containing HTML `'<p>...</p>'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
 
 ```js
-function (eventInfo) {
+function (info) {
     // return string or object
 }
 ```
-`eventInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -603,9 +612,9 @@ The current [View](#view-object) object
 Callback function that is triggered right after the element has been added to the DOM. If the event data changes, this is not called again.
 
 ```js
-function (mountInfo) { }
+function (info) { }
 ```
-`mountInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -844,9 +853,9 @@ If not specified, it falls back to [longPressDelay](#longpressdelay).
 Callback function that is triggered when the user hovers over an event with the cursor (mouse pointer).
 
 ```js
-function (mouseEnterInfo) { }
+function (info) { }
 ```
-`mouseEnterInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -891,9 +900,9 @@ The current [View](#view-object) object
 Callback function that is triggered when the cursor (mouse pointer) is moved out of an event.
 
 ```js
-function (mouseLeaveInfo) { }
+function (info) { }
 ```
-`mouseLeaveInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1439,9 +1448,9 @@ The default text like `+2 more`
 Callback function that is triggered when the user clicks _No events_ area in list view.
 
 ```js
-function (clickInfo) { }
+function (info) { }
 ```
-`clickInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1501,9 +1510,9 @@ Array of plain objects that will be parsed into [Resource](#resource-object) obj
 Callback function that is triggered when a date/time selection is made.
 
 ```js
-function (selectInfo) { }
+function (info) { }
 ```
-`selectInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1540,7 +1549,7 @@ function (selectInfo) { }
 </td>
 <td>
 
-Boolean (`true` or `false`). Determines if the selection has occurred in the `all-day` slot</td>
+`true` or `false`. Determines if the selection has occurred in the `all-day` slot</td>
 </tr>
 <tr>
 <td>
@@ -1783,9 +1792,9 @@ The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`
 Callback function that is triggered right after the view has been added to the DOM.
 
 ```js
-function (mountInfo) { }
+function (info) { }
 ```
-`mountInfo` is an object with the following properties:
+`info` is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1931,7 +1940,7 @@ Here are all properties that exist in Event object:
 </td>
 <td>
 
-Boolean (`true` or `false`). Determines if the event is shown in the `all-day` slot</td>
+`true` or `false`. Determines if the event is shown in the `all-day` slot</td>
 </tr>
 <tr>
 <td>
@@ -1961,7 +1970,7 @@ Boolean (`true` or `false`). Determines if the event is shown in the `all-day` s
 </td>
 <td>
 
-Boolean (`true` or `false`) or `undefined`. The value overriding the [editable](#editable) setting for this specific event
+`true`, `false` or `undefined`. The value overriding the [editable](#editable) setting for this specific event
 </td>
 </tr>
 <tr>
@@ -1971,7 +1980,7 @@ Boolean (`true` or `false`) or `undefined`. The value overriding the [editable](
 </td>
 <td>
 
-Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStartEditable](#eventstarteditable) setting for this specific event
+`true`, `false` or `undefined`. The value overriding the [eventStartEditable](#eventstarteditable) setting for this specific event
 </td>
 </tr>
 <tr>
@@ -1981,7 +1990,7 @@ Boolean (`true` or `false`) or `undefined`. The value overriding the [eventStart
 </td>
 <td>
 
-Boolean (`true` or `false`) or `undefined`. The value overriding the [eventDurationEditable](#eventdurationeditable) setting for this specific event
+`true`, `false` or `undefined`. The value overriding the [eventDurationEditable](#eventdurationeditable) setting for this specific event
 </td>
 </tr>
 <tr>

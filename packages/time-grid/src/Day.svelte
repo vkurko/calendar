@@ -67,6 +67,7 @@
                     Math.floor(y / $slotHeight + $_slotTimeLimits.min.seconds / $slotDuration.seconds)
                 );
                 fn({
+                    allDay: false,
                     date: toLocalDate(d),
                     dateStr: toISOString(d),
                     dayEl: el,

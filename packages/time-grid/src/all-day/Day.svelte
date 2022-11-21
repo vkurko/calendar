@@ -37,6 +37,7 @@
         return is_function(fn)
             ? jsEvent => {
                 fn({
+                    allDay: true,
                     date: toLocalDate(date),
                     dateStr: toISOString(date),
                     dayEl: el,
