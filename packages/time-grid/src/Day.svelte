@@ -109,7 +109,7 @@
     on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
 >
     <div class="{$theme.bgEvents}">
-        {#each bgChunks as chunk}
+        {#each bgChunks as chunk (chunk.event)}
             <Event {date} {chunk}/>
         {/each}
     </div>
@@ -118,7 +118,7 @@
         {#if iChunks[1]}
             <Event {date} chunk={iChunks[1]}/>
         {/if}
-        {#each chunks as chunk}
+        {#each chunks as chunk (chunk.event)}
             <Event {date} {chunk}/>
         {/each}
         <!-- Drag, Resize & Select -->

@@ -67,7 +67,7 @@
         {$_intlListDayFormat.format(date)}
         <span class="{$theme.daySide}">{$_intlListDaySideFormat.format(date)}</span>
     </div>
-    {#each chunks as chunk}
+    {#each chunks as chunk (chunk.event)}
         <Event {chunk}/>
     {/each}
 {/if}

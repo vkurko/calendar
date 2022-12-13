@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 0.14.1
+December 13, 2022
+
+* Now you should expect new DOM elements to be created for new events when the display period is changed ([#17](https://github.com/vkurko/calendar/issues/17))
+* Fixed date value when using `getOption('date')`
+
 ## 0.14.0
 November 21, 2022
 

@@ -5,7 +5,7 @@
     import {diff} from './storage/options';
     import State from './storage/state';
     import Toolbar from './Toolbar.svelte';
-    import {assign, toEventWithLocalDates, toViewWithLocalDates, ignore} from '@event-calendar/common';
+    import {assign, toEventWithLocalDates, toViewWithLocalDates, toLocalDate, ignore} from '@event-calendar/common';
 
     export let plugins = [];
     export let options = {};
@@ -32,7 +32,8 @@
     }
 
     export function getOption(name) {
-        return state.hasOwnProperty(name) ? get(state[name]) : undefined;
+        let value = state.hasOwnProperty(name) ? get(state[name]) : undefined;
+        return value instanceof Date ? toLocalDate(value) : value;
     }
 
     export function refetchEvents() {

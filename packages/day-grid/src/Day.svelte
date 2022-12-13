@@ -147,7 +147,7 @@
         </div>
     {/if}
     <div class="{$theme.events}">
-        {#each dayChunks as chunk}
+        {#each dayChunks as chunk (chunk.event)}
             <Event {chunk} {longChunks}/>
         {/each}
     </div>
