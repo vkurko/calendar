@@ -1,8 +1,6 @@
 import View from './View.svelte';
 import {intl} from '@event-calendar/common';
 
-export {prepareEventChunks} from './events.js';
-
 export default {
 	createOptions(options) {
 		options.dayMaxEvents = false;

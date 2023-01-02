@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 0.14.2
+January 2, 2023
+
+* Fixed library loading issue in SvelteKit v1.0.0 ([#72](https://github.com/vkurko/calendar/issues/72))
+* Removed dependency on `day-grid` in `time-grid` package ([#71](https://github.com/vkurko/calendar/issues/71))
+
 ## 0.14.1
 December 13, 2022
 
