@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount, afterUpdate, tick, createEventDispatcher} from 'svelte';
+    import {getContext, onMount, afterUpdate, tick} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         ancestor,
@@ -19,8 +19,6 @@
     let {dayMaxEvents, displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
         eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable} = getContext('state');
     let {_hiddenEvents} = getContext('view-state');
-
-    const dispatch = createEventDispatcher();
 
     let el;
     let event;
@@ -83,9 +81,10 @@
         if (!el || display === 'preview' || inPopup) {
             return;
         }
+        chunk.ready = false;
         chunk.top = 0;
         if (chunk.prev) {
-            if (chunk.prev.bottom === undefined) {
+            if (!chunk.prev.ready) {
                 // 'prev' is not ready yet, try again later
                 tick().then(reposition);
                 return;
@@ -97,7 +96,7 @@
         let key = chunk.date.getTime();
         if (longChunks[key]) {
             for (let longChunk of longChunks[key]) {
-                if (longChunk.bottom === undefined) {
+                if (!longChunk.ready) {
                     // 'longChunk' is not ready yet, try again later
                     tick().then(reposition);
                     return;
@@ -116,6 +115,7 @@
         } else {
             hidden = false;
         }
+        chunk.ready = true;
     }
 
     function hide() {

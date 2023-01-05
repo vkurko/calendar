@@ -1,8 +1,4 @@
 /* Grid */
-.ec-flex {
-  display: flex;
-}
-
 .ec-month .ec-body,
 .ec-days,
 .ec-day,
@@ -500,6 +496,8 @@
 .ec-popup {
   position: absolute;
   top: 0;
+  display: flex;
+  flex-direction: column;
   width: 110%;
   min-width: 180px;
   z-index: 1010;
@@ -523,6 +521,8 @@
 
   .ec-events {
     margin: 0;
+    min-height: 0;
+    overflow: auto;
   }
 }
 

@@ -23,6 +23,7 @@
     let highlight;
     let hiddenEvents = new Set();  // hidden events of this day
     let moreLink = '';
+    let showPopup;
 
     $: $_hiddenEvents[date.getTime()] = hiddenEvents;
 
@@ -58,7 +59,9 @@
         }
     }
 
-    $: if ($_popupDate && datesEqual(date, $_popupDate) && longChunks && dayChunks) {
+    $: showPopup = $_popupDate && datesEqual(date, $_popupDate);
+
+    $: if (showPopup && longChunks && dayChunks) {
         setPopupChunks();
     }
 
@@ -86,36 +89,19 @@
     }
 
     function showMore() {
-        setPopupChunks();
         $_popupDate = date;
     }
 
     function setPopupChunks() {
-        let chunks = createPopupChunks();
-        if (chunks.length) {
-            if (chunks[0].top) {  // @todo check for the presence of top in all chunks
-                // top is available, sort now
-                sortChunks(chunks);
-            } else {
-                // sort later
-                tick().then(() => {
-                    let chunks = createPopupChunks();
-                    sortChunks(chunks);
-                    $_popupChunks = chunks;
-                });
-            }
-        }
-        $_popupChunks = chunks;
-    }
-
-    function createPopupChunks() {
         let nextDay = addDay(cloneDate(date));
-        return dayChunks.concat(longChunks[date.getTime()] || [])
-            .map(c => assign({}, c, createEventChunk(c.event, date, nextDay), {days: 1, dates: [date]}));
-    }
-
-    function sortChunks(chunks) {
-        chunks.sort((a, b) => a.top - b.top);
+        let chunks = dayChunks.concat(longChunks[date.getTime()] || []);
+        if (chunks.every(chunk => chunk.ready)) {
+            $_popupChunks = chunks
+                .map(chunk => assign({}, chunk, createEventChunk(chunk.event, date, nextDay), {days: 1, dates: [date]}))
+                .sort((a, b) => a.top - b.top);
+        } else {
+            tick().then(setPopupChunks);
+        }
     }
 
     function createPointerDownHandler(interaction, selectable) {
@@ -151,7 +137,7 @@
             <Event {chunk} {longChunks}/>
         {/each}
     </div>
-    {#if $_popupDate && datesEqual(date, $_popupDate)}
+    {#if showPopup}
         <Popup/>
     {/if}
     <div class="{$theme.dayFoot}">

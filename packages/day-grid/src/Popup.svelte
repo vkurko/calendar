@@ -31,6 +31,11 @@
             top = bodyRect.bottom - popupRect.bottom;
         }
         style += `top:${top}px;`;
+
+        if (popupRect.top + top + popupRect.height > bodyRect.bottom) {
+            let bottom = popupRect.top + dayEl.offsetHeight - bodyRect.bottom;
+            style += `bottom:${bottom}px;`;
+        }
     });
 
     function close(e) {
@@ -53,7 +58,7 @@
 >
     <div class="{$theme.dayHead}">{$_intlDayPopover.format($_popupDate)} <a on:click|stopPropagation={close}>&times;</a></div>
     <div class="{$theme.events}">
-        {#each $_popupChunks as chunk}
+        {#each $_popupChunks as chunk (chunk.event)}
             <Event {chunk} inPopup />
         {/each}
     </div>

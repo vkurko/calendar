@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 0.14.3
+January 5, 2023
+
+* Added scrolling in the popup in month view when there are too many events in it
+* Fixed other minor bugs in the popup when dragging events
+
 ## 0.14.2
 January 2, 2023
 
