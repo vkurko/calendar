@@ -129,16 +129,12 @@ export default [
 			sass({
 				output: (styles, styleNodes) => {
 					writeFileSync('packages/core/index.css', styles);
-					writeFileSync(production ? 'packages/build/event-calendar-modern.min.css' : 'packages/build/event-calendar.min.css', styles);
-				},
-				outputStyle: 'compressed',
-				processor: css => postcss([autoprefixer({overrideBrowserslist: 'browserslist config and supports fetch'})]),
-				sass: require('sass')
+				}
 			}),
 		],
 	},
 	{
-		input: production ? 'packages/build/src/index.js' : 'packages/build/src/index-modern.js',
+		input: 'packages/build/src/index.js',
 		output: {
 			format: 'iife',
 			name: 'EventCalendar',
@@ -165,7 +161,6 @@ export default [
 				exclude: ['node_modules/@babel/**', 'node_modules/core-js-pure/**'],
 				presets: [
 					['@babel/preset-env', {
-						targets: production ? 'browserslist config' : 'browserslist config and supports fetch',
 						// modules: false,
 						// spec: true,
 						// forceAllTransforms: true,
@@ -182,13 +177,12 @@ export default [
 				]
 			}),
 
-			production && sass({
+			sass({
 				output: (styles, styleNodes) => {
 					writeFileSync('packages/build/event-calendar.min.css', styles);
 				},
 				outputStyle: 'compressed',
-				processor: css => postcss([autoprefixer]),
-				sass: require('sass')
+				processor: css => postcss([autoprefixer])
 			}),
 
 			// In dev mode, call `npm run start` once
@@ -206,56 +200,6 @@ export default [
 		watch: {
 			clearScreen: false
 		}
-	},
-	{
-		input: 'packages/build/src/index-modern.js',
-		output: {
-			format: 'iife',
-			name: 'EventCalendar',
-			file: 'packages/build/event-calendar-modern.min.js',
-			sourcemap: true,
-			banner: '/*!\nEventCalendar v' + version + '\nhttps://github.com/vkurko/calendar\n*/'
-		},
-		plugins: [
-			// If you have external dependencies installed from
-			// npm, you'll most likely need these plugins. In
-			// some cases you'll need additional configuration -
-			// consult the documentation for details:
-			// https://github.com/rollup/plugins/tree/master/packages/commonjs
-			resolve({
-				browser: true,
-				dedupe: ['svelte']
-			}),
-			commonjs(),
-
-			babel({
-				extensions: ['.js', '.mjs', '.html', '.svelte'],
-				babelHelpers: 'runtime',
-				// babelHelpers: 'bundled',
-				exclude: ['node_modules/@babel/**', 'node_modules/core-js-pure/**'],
-				presets: [
-					['@babel/preset-env', {
-						targets: 'browserslist config and supports fetch',
-						// modules: false,
-						// spec: true,
-						// forceAllTransforms: true,
-						// useBuiltIns: 'usage',
-						shippedProposals: true,
-						// corejs: '3.6.5'
-					}]
-				],
-				plugins: [
-					['@babel/plugin-transform-runtime', {
-						useESModules: true,
-						corejs: 3
-					}]
-				]
-			}),
-
-			// If we're building for production (npm run build
-			// instead of npm run dev), minify
-			production && terser()
-		]
 	}
 ];
 

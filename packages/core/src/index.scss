@@ -4,7 +4,7 @@
 .ec-day,
 .ec-day-title,
 .ec-resource {
-  flex: 1 1 0%; /* % for ie11 */
+  flex: 1 1 0;
   min-width: 0;
   max-width: 100%;
 }
@@ -219,7 +219,7 @@
 
   .ec-month & {
     flex-direction: column;
-    height: 100%; /* ie11 */
+    height: 100%;
   }
 
   .ec-month .ec-uniform & {
@@ -245,11 +245,11 @@
 
   .ec-month &,
   .ec-resource & {
-    flex: 1 0 auto; /* ie11 */
+    flex: 1 0 auto;
   }
 
   .ec-month .ec-uniform & {
-    flex: 1 1 0%;
+    flex: 1 1 0;
     min-height: 0;
   }
 }
@@ -283,7 +283,7 @@
   }
 
   .ec-list & {
-    flex: 1 0 auto; /* ie11 */
+    flex: 1 0 auto;
     background-color: #fff;
     border-style: solid none;
     padding: 8px 14px;

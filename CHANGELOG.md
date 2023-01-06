@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 0.15.0
+January 7, 2023
+
+* :warning: Dropped support for IE
+* :warning: The pre-built bundle no longer includes the `modern` version (use the main version instead)
+
 ## 0.14.3
 January 5, 2023
 
