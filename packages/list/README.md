@@ -1,10 +1,10 @@
 # Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![npm](https://img.shields.io/npm/dm/@event-calendar/core?color=red&label=npm&style=flat-square)](https://www.npmjs.com/package/@event-calendar/core) [![Sponsor](https://img.shields.io/badge/Sponsor-$10-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/vkurko/10usd)
 
-See [demo](https://vkurko.github.io/calendar/).
+See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (31kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (37kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -192,9 +192,21 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.15.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.15.1/event-calendar.min.js"></script>
 ```
+
+<details>
+  <summary>Note</summary>
+
+> Please note that the file paths contain an indication of a specific version of the library. You can remove this indication, then the latest version will be loaded:
+> ```html
+> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.css">
+> <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/event-calendar.min.js"></script>
+> ```
+> But it is recommended to always specify the version and explicitly update it if necessary, in order to avoid unpredictable problems when a new version of the library is released.
+
+</details>
 
 Then initialize the calendar with something like this:
 ```js

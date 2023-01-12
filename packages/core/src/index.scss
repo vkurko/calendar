@@ -1,5 +1,4 @@
 /* Grid */
-.ec-month .ec-body,
 .ec-days,
 .ec-day,
 .ec-day-title,
@@ -189,6 +188,10 @@
   .ec:not(.ec-list) & {
     border-top: none;
   }
+
+  .ec-month & {
+    flex: 1 1 auto;
+  }
 }
 
 .ec-sidebar {
@@ -222,10 +225,6 @@
     height: 100%;
   }
 
-  .ec-month .ec-uniform & {
-    overflow: hidden;
-  }
-
   .ec-list & {
     flex-direction: column;
   }
@@ -250,7 +249,7 @@
 
   .ec-month .ec-uniform & {
     flex: 1 1 0;
-    min-height: 0;
+    min-height: calc(5em + 1px);
   }
 }
 
@@ -268,10 +267,6 @@
   .ec-month .ec-body & {
     min-height: 5em;
     position: relative;
-  }
-
-  .ec-month .ec-uniform & {
-    min-height: 0;
   }
 
   .ec-month &:first-child {
