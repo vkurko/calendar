@@ -317,7 +317,7 @@
                             allDay: isAllDay,
                             jsEvent,
                             view: toViewWithLocalDates($_view),
-                            resource: resourceCol && $_viewResources[resourceCol]
+                            resource: resourceCol !== undefined ? $_viewResources[resourceCol] : undefined
                         });
                     }
                     setTimeout(() => selected = true, 5 /*add some delay for touch devices*/);

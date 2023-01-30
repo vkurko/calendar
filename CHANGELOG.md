@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.15.3
+January 30, 2023
+
+* Fixed a bug where `select` handler would provide an incorrect value for `resource` ([#81](https://github.com/vkurko/calendar/issues/81))
+
 ## 0.15.2
 January 30, 2023
 
