@@ -1,7 +1,15 @@
 <script>
     import {getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {createDate,	setMidnight, toLocalDate, datesEqual, toViewWithLocalDates,	toISOString} from '@event-calendar/common';
+    import {
+        createDate,
+        setMidnight,
+        toLocalDate,
+        datesEqual,
+        toViewWithLocalDates,
+        toISOString,
+        maybeIgnore
+    } from '@event-calendar/common';
     import Event from './Event.svelte';
 
     export let date;
@@ -59,7 +67,7 @@
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    on:click={createClickHandler($dateClick)}
+    on:click={maybeIgnore(createClickHandler($dateClick))}
     on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
 >
     <!-- Drag, Resize & Select -->

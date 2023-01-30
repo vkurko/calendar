@@ -1,6 +1,6 @@
 {
   "name": "event-calendar",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
@@ -9,30 +9,30 @@
     "publish": "node ./scripts/publish.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.7",
+    "@babel/core": "^7.20.12",
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
-    "@babel/runtime-corejs3": "^7.20.7",
-    "@event-calendar/build": "~0.15.1",
-    "@event-calendar/common": "~0.15.1",
-    "@event-calendar/core": "~0.15.1",
-    "@event-calendar/day-grid": "~0.15.1",
-    "@event-calendar/interaction": "~0.15.1",
-    "@event-calendar/list": "~0.15.1",
-    "@event-calendar/resource-time-grid": "~0.15.1",
-    "@event-calendar/time-grid": "~0.15.1",
+    "@babel/runtime-corejs3": "^7.20.13",
+    "@event-calendar/build": "~0.15.2",
+    "@event-calendar/common": "~0.15.2",
+    "@event-calendar/core": "~0.15.2",
+    "@event-calendar/day-grid": "~0.15.2",
+    "@event-calendar/interaction": "~0.15.2",
+    "@event-calendar/list": "~0.15.2",
+    "@event-calendar/resource-time-grid": "~0.15.2",
+    "@event-calendar/time-grid": "~0.15.2",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^23.0.7",
+    "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.1.0",
+    "@rollup/plugin-terser": "^0.4.0",
     "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.20",
+    "postcss": "^8.4.21",
     "rollup": "^2.79.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-scss": "^4.0.0",
     "rollup-plugin-svelte": "^7.1.0",
     "sass": "^1.57.1",
-    "svelte": "^3.55.0"
+    "svelte": "^3.55.1"
   },
   "dependencies": {
     "sirv-cli": "^2.0.2"

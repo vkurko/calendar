@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.15.2
+January 30, 2023
+
+* Fixed a bug with calling the `dateClick` handler when clicking on the all-day event ([#80](https://github.com/vkurko/calendar/issues/80))
+
 ## 0.15.1
 January 12, 2023
 

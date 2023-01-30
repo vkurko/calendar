@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/interaction",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "title": "Event Calendar Interaction plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -36,7 +36,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~0.15.1",
-    "svelte": "^3.55.0"
+    "@event-calendar/common": "~0.15.2",
+    "svelte": "^3.55.1"
   }
 }
