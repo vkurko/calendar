@@ -10,7 +10,8 @@
         toViewWithLocalDates,
         rect,
         toISOString,
-        maybeIgnore
+        maybeIgnore,
+        setFn
     } from '@event-calendar/common';
     import {groupEventChunks} from './utils';
     import Event from './Event.svelte';
@@ -56,16 +57,23 @@
     $: isToday = datesEqual(date, $_today);
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
+    function dateFromPoint(y) {
+        y -= rect(el).top;
+        return addDuration(
+            cloneDate(date),
+            $slotDuration,
+            Math.floor(y / $slotHeight + $_slotTimeLimits.min.seconds / $slotDuration.seconds)
+        );
+    }
+
+    $: if (el) {
+        setFn(el, dateFromPoint);
+    }
+
     function createClickHandler(fn) {
         return is_function(fn)
             ? jsEvent => {
-                let r = rect(el);
-                let y = jsEvent.clientY - r.top;
-                let d = addDuration(
-                    cloneDate(date),
-                    $slotDuration,
-                    Math.floor(y / $slotHeight + $_slotTimeLimits.min.seconds / $slotDuration.seconds)
-                );
+                let d = dateFromPoint(jsEvent.clientY);
                 fn({
                     allDay: false,
                     date: toLocalDate(d),

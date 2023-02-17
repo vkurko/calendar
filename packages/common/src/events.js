@@ -1,5 +1,6 @@
 import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate} from './date';
-import {assign, createElement} from './utils';
+import {createElement} from './dom';
+import {assign} from './utils';
 import {toViewWithLocalDates} from './view';
 import {is_function} from 'svelte/internal';
 

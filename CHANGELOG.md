@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.16.0
+February 17, 2023
+
+* Added `dateFromPoint` method ([#83](https://github.com/vkurko/calendar/issues/83))
+
 ## 0.15.3
 January 30, 2023
 
@@ -43,7 +48,7 @@ December 13, 2022
 November 21, 2022
 
 * Added `resourceLabelContent` and `resourceLabelDidMount` ([#62](https://github.com/vkurko/calendar/discussions/62))
-* Improved handling of mouse click events. Now [dateClick](https://github.com/vkurko/calendar#dateclick) will not be called on select, drag or click some event
+* Improved handling of mouse click events. Now [dateClick](https://github.com/vkurko/calendar#dateclick) will not be called on select, drag or click an event
 * :warning: The [Event](https://github.com/vkurko/calendar#event-object) object now has a separate `titleHTML` field to render the HTML version of the title, and the original `title` field will now be rendered as text
 * :warning: [eventContent](https://github.com/vkurko/calendar#eventcontent) and similar settings now render the string as plain text instead of HTML. To render HTML, you must pass it as `{html: '<p>...</p>'}`
 

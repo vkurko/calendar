@@ -5,7 +5,15 @@
     import {diff} from './storage/options';
     import State from './storage/state';
     import Toolbar from './Toolbar.svelte';
-    import {assign, toEventWithLocalDates, toViewWithLocalDates, toLocalDate, ignore} from '@event-calendar/common';
+    import {
+        assign,
+        toEventWithLocalDates,
+        toViewWithLocalDates,
+        toLocalDate,
+        ignore,
+        hasFn,
+        runFn
+    } from '@event-calendar/common';
 
     export let plugins = [];
     export let options = {};
@@ -86,6 +94,16 @@
             $_interaction.action.unselect();
         }
         return this;
+    }
+
+    export function dateFromPoint(x, y) {
+        for (let el of document.elementsFromPoint(x, y)) {
+            if (hasFn(el)) {
+                let date = runFn(el, y);
+                return date ? toLocalDate(date) : null;
+            }
+        }
+        return null;
     }
 
     function updateEvents(func) {

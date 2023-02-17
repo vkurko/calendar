@@ -2,7 +2,7 @@
     import {getContext, tick} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
-        createEventChunk, addDay, cloneDate, assign, maybeIgnore} from '@event-calendar/common';
+        createEventChunk, addDay, cloneDate, assign, maybeIgnore, setFn} from '@event-calendar/common';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -63,6 +63,11 @@
 
     $: if (showPopup && longChunks && dayChunks) {
         setPopupChunks();
+    }
+
+    // dateFromPoint
+    $: if (el) {
+        setFn(el, () => date);
     }
 
     function createClickHandler(fn) {

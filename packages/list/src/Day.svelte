@@ -1,5 +1,5 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         addDay,
@@ -11,7 +11,8 @@
         toLocalDate,
         sortEventChunks,
         toViewWithLocalDates,
-        toISOString
+        toISOString,
+        setFn
     } from '@event-calendar/common';
     import Event from './Event.svelte';
 
@@ -40,6 +41,11 @@
     $: {
         isToday = datesEqual(date, today);
         highlight = $highlightedDates.some(d => datesEqual(d, date));
+    }
+
+    // dateFromPoint
+    $: if (el) {
+        setFn(el, () => date);
     }
 
     function createClickHandler(fn) {

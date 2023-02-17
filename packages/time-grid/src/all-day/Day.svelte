@@ -8,7 +8,8 @@
         datesEqual,
         toViewWithLocalDates,
         toISOString,
-        maybeIgnore
+        maybeIgnore,
+        setFn
     } from '@event-calendar/common';
     import Event from './Event.svelte';
 
@@ -39,6 +40,11 @@
     $: {
         isToday = datesEqual(date, today);
         highlight = $highlightedDates.some(d => datesEqual(d, date));
+    }
+
+    // dateFromPoint
+    $: if (el) {
+        setFn(el, () => date);
     }
 
     function createClickHandler(fn) {
