@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount, afterUpdate, tick} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         ancestor,
@@ -8,8 +8,8 @@
         toEventWithLocalDates,
         toViewWithLocalDates,
         setContent,
-        cloneDate,
-        maybeIgnore
+        maybeIgnore,
+        repositionEvent
     } from '@event-calendar/common';
 
     export let chunk;
@@ -65,8 +65,6 @@
         }
     });
 
-    afterUpdate(reposition);
-
     function createHandler(fn, display) {
         return display !== 'preview' && is_function(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
@@ -77,55 +75,22 @@
         return jsEvent => $_interaction.action.dragDayGrid(event, el, jsEvent, inPopup, resize);
     }
 
-    function reposition() {
+    export function reposition() {
         if (!el || display === 'preview' || inPopup) {
             return;
         }
-        chunk.ready = false;
-        chunk.top = 0;
-        if (chunk.prev) {
-            if (!chunk.prev.ready) {
-                // 'prev' is not ready yet, try again later
-                tick().then(reposition);
-                return;
-            }
-            chunk.top = chunk.prev.bottom + 1;
-        }
-        chunk.bottom = chunk.top + height(el);
-        let m = 1;
-        let key = chunk.date.getTime();
-        if (longChunks[key]) {
-            for (let longChunk of longChunks[key]) {
-                if (!longChunk.ready) {
-                    // 'longChunk' is not ready yet, try again later
-                    tick().then(reposition);
-                    return;
-                }
-                if (chunk.top < longChunk.bottom && chunk.bottom > longChunk.top) {
-                    let offset = longChunk.bottom - chunk.top + 1;
-                    m += offset;
-                    chunk.top += offset;
-                    chunk.bottom += offset;
-                }
-            }
-        }
-        margin = m;
+        margin = repositionEvent(chunk, longChunks, height(el));
         if ($dayMaxEvents === true) {
             hide();
         } else {
             hidden = false;
         }
-        chunk.ready = true;
     }
 
     function hide() {
-        if (!el) {
-            return;
-        }
         let dayEl = ancestor(el, 2);
         let h = height(dayEl) - height(dayEl.firstElementChild) - footHeight(dayEl);
         hidden = chunk.bottom > h;
-        let date = cloneDate(chunk.date);
         let update = false;
         // Hide or show the event throughout all days
         for (let date of chunk.dates) {
@@ -158,10 +123,6 @@
         }
         return h;
     }
-
-    $: if ($_hiddenEvents) {
-        tick().then(reposition);
-    }
 </script>
 
 <div
@@ -180,5 +141,3 @@
         on:pointerdown={createDragHandler(true)}
     />
 </div>
-
-<svelte:window on:resize={reposition}/>

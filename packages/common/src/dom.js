@@ -27,7 +27,7 @@ export function ancestor(el, up) {
 }
 
 export function height(el) {
-    return el.offsetHeight;
+    return rect(el).height;
 }
 
 let fnProp = symbol();

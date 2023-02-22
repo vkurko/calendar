@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount, afterUpdate, tick, createEventDispatcher} from 'svelte';
+    import {getContext, onMount, createEventDispatcher} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         createEventContent,
@@ -7,7 +7,8 @@
         toEventWithLocalDates,
         toViewWithLocalDates,
         setContent,
-        maybeIgnore
+        maybeIgnore,
+        repositionEvent
     } from '@event-calendar/common';
 
     export let chunk;
@@ -61,8 +62,6 @@
         }
     });
 
-    afterUpdate(reposition);
-
     function createHandler(fn, display) {
         return display !== 'preview' && is_function(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
@@ -73,38 +72,11 @@
         return jsEvent => $_interaction.action.dragTimeGrid(event, el, jsEvent, _viewResources, true, resize);
     }
 
-    function reposition() {
+    export function reposition() {
         if (!el || display === 'preview') {
             return;
         }
-        chunk.top = 0;
-        if (chunk.prev) {
-            if (chunk.prev.bottom === undefined) {
-                // 'prev' is not ready yet, try again later
-                tick().then(reposition);
-                return;
-            }
-            chunk.top = chunk.prev.bottom + 1;
-        }
-        chunk.bottom = chunk.top + height(el);
-        let m = 1;
-        let key = chunk.date.getTime();
-        if (longChunks[key]) {
-            for (let longChunk of longChunks[key]) {
-                if (longChunk.bottom === undefined) {
-                    // 'longChunk' is not ready yet, try again later
-                    tick().then(reposition);
-                    return;
-                }
-                if (chunk.top < longChunk.bottom && chunk.bottom > longChunk.top) {
-                    let offset = longChunk.bottom - chunk.top + 1;
-                    m += offset;
-                    chunk.top += offset;
-                    chunk.bottom += offset;
-                }
-            }
-        }
-        margin = m;
+        margin = repositionEvent(chunk, longChunks, height(el));
     }
 </script>
 
@@ -124,5 +96,3 @@
         on:pointerdown={createDragHandler(true)}
     />
 </div>
-
-<svelte:window on:resize={reposition}/>

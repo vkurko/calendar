@@ -1,5 +1,5 @@
 <script>
-    import {getContext, tick} from 'svelte';
+    import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
         createEventChunk, addDay, cloneDate, assign, maybeIgnore, setFn} from '@event-calendar/common';
@@ -24,6 +24,7 @@
     let hiddenEvents = new Set();  // hidden events of this day
     let moreLink = '';
     let showPopup;
+    let refs = [];
 
     $: $_hiddenEvents[date.getTime()] = hiddenEvents;
 
@@ -62,7 +63,8 @@
     $: showPopup = $_popupDate && datesEqual(date, $_popupDate);
 
     $: if (showPopup && longChunks && dayChunks) {
-        setPopupChunks();
+        // Let chunks to reposition then set popup chunks
+        tick().then(setPopupChunks);
     }
 
     // dateFromPoint
@@ -99,20 +101,29 @@
 
     function setPopupChunks() {
         let nextDay = addDay(cloneDate(date));
-        let chunks = dayChunks.concat(longChunks[date.getTime()] || []);
-        if (chunks.every(chunk => chunk.ready)) {
-            $_popupChunks = chunks
-                .map(chunk => assign({}, chunk, createEventChunk(chunk.event, date, nextDay), {days: 1, dates: [date]}))
-                .sort((a, b) => a.top - b.top);
-        } else {
-            tick().then(setPopupChunks);
-        }
+        let chunks = dayChunks.concat(longChunks[date.getTime()]?.chunks || []);
+        $_popupChunks = chunks
+            .map(chunk => assign({}, chunk, createEventChunk(chunk.event, date, nextDay), {days: 1, dates: [date]}))
+            .sort((a, b) => a.top - b.top);
     }
 
     function createPointerDownHandler(interaction, selectable) {
         return selectable && interaction.action
             ? jsEvent => interaction.action.selectDayGrid(date, el, jsEvent)
             : undefined;
+    }
+
+    function reposition() {
+        refs.length = dayChunks.length;
+        for (let ref of refs) {
+            ref && ref.reposition && ref.reposition();
+        }
+    }
+
+    afterUpdate(reposition);
+
+    $: if ($_hiddenEvents) {
+        tick().then(reposition);
     }
 </script>
 
@@ -138,8 +149,8 @@
         </div>
     {/if}
     <div class="{$theme.events}">
-        {#each dayChunks as chunk (chunk.event)}
-            <Event {chunk} {longChunks}/>
+        {#each dayChunks as chunk, i (chunk.event)}
+            <Event {chunk} {longChunks} bind:this={refs[i]}/>
         {/each}
     </div>
     {#if showPopup}
@@ -151,3 +162,5 @@
         {/if}
     </div>
 </div>
+
+<svelte:window on:resize={reposition}/>

@@ -225,6 +225,11 @@
     height: 100%;
   }
 
+  .ec-month .ec-uniform & {
+    /* Remove scroll because of hidden events */
+    overflow: hidden;
+  }
+
   .ec-list & {
     flex-direction: column;
   }

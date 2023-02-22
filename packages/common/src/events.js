@@ -76,9 +76,12 @@ export function prepareEventChunks(chunks, hiddenDays) {
                     if (dates.length > 1) {
                         let key = date.getTime();
                         if (longChunks[key]) {
-                            longChunks[key].push(chunk);
+                            longChunks[key].chunks.push(chunk);
                         } else {
-                            longChunks[key] = [chunk];
+                            longChunks[key] = {
+                                sorted: false,
+                                chunks: [chunk]
+                            };
                         }
                     }
                 }
@@ -108,6 +111,32 @@ export function prepareEventChunks(chunks, hiddenDays) {
     }
 
     return longChunks;
+}
+
+export function repositionEvent(chunk, longChunks, height) {
+    chunk.top = 0;
+    if (chunk.prev) {
+        chunk.top = chunk.prev.bottom + 1;
+    }
+    chunk.bottom = chunk.top + height;
+    let margin = 1;
+    let key = chunk.date.getTime();
+    if (longChunks[key]) {
+        if (!longChunks[key].sorted) {
+            longChunks[key].chunks.sort((a, b) => a.top - b.top);
+            longChunks[key].sorted = true;
+        }
+        for (let longChunk of longChunks[key].chunks) {
+            if (chunk.top < longChunk.bottom && chunk.bottom > longChunk.top) {
+                let offset = longChunk.bottom - chunk.top + 1;
+                margin += offset;
+                chunk.top += offset;
+                chunk.bottom += offset;
+            }
+        }
+    }
+
+    return margin;
 }
 
 export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {

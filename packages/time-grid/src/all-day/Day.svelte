@@ -1,5 +1,5 @@
 <script>
-    import {getContext} from 'svelte';
+    import {afterUpdate, getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         createDate,
@@ -27,6 +27,7 @@
     let today = setMidnight(createDate());
     let isToday;
     let highlight;
+    let refs = [];
 
     $: {
         dayChunks = [];
@@ -68,6 +69,15 @@
             ? jsEvent => interaction.action.selectTimeGrid(date, el, jsEvent, _viewResources, $_slotTimeLimits, true)
             : undefined;
     }
+
+    function reposition() {
+        refs.length = dayChunks.length;
+        for (let ref of refs) {
+            ref && ref.reposition && ref.reposition();
+        }
+    }
+
+    afterUpdate(reposition);
 </script>
 
 <div
@@ -83,8 +93,10 @@
         </div>
     {/if}
     <div class="{$theme.events}">
-        {#each dayChunks as chunk}
-            <Event {chunk} {longChunks}/>
+        {#each dayChunks as chunk, i (chunk.event)}
+            <Event {chunk} {longChunks} bind:this={refs[i]}/>
         {/each}
     </div>
 </div>
+
+<svelte:window on:resize={reposition}/>

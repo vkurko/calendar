@@ -125,8 +125,7 @@ export function events(state) {
     let fetching = 0;
     derived(
         [state.events, state.eventSources, state._activeRange, state._fetchedRange, state.lazyFetching, state.loading],
-        (values, set) => tick().then(() => {
-            let [$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading] = values;
+        ([$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading], set) => {
             if (!$eventSources.length) {
                 set($events);
                 return;
@@ -199,7 +198,7 @@ export function events(state) {
                 $_fetchedRange.start = $_activeRange.start;
                 $_fetchedRange.end = $_activeRange.end;
             }
-        }),
+        },
         []
     ).subscribe(_events.set);
 

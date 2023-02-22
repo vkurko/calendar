@@ -191,8 +191,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.16.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.16.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.16.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.16.1/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1990,9 +1990,9 @@ Refetches events from all sources.
 ### dateFromPoint( x, y )
 - Return value `Date` or `null`
 
-Returns the date and time that would be determined if a click was made on the specified coordinates within the application's [viewport](https://developer.mozilla.org/en-US/docs/Glossary/Viewport).
+Returns the date and time as if the [dateClick](#dateclick) event had fired for that point.
 
-Using this method, you can get the date and time for any point inside the calendar, as if it was clicked. For example, you want to know, when you click on a multi-day event, which day the click happened on. To do this, inside [eventClick](#eventclick), pass the `jsEvent.clientX` and `jsEvent.clientY` coordinates to `dateFromPoint` and get the date that corresponds to the place in the calendar where the click was.
+Using this method, you can, for example, find out on which day a click occurred inside a multi-day event. To do this, inside [eventClick](#eventclick), pass the `jsEvent.clientX` and `jsEvent.clientY` coordinates to `dateFromPoint` and get the desired date.
 
 <details>
   <summary>Note</summary>
