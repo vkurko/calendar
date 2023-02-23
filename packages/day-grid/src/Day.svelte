@@ -2,7 +2,7 @@
     import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
-        createEventChunk, addDay, cloneDate, assign, maybeIgnore, setFn} from '@event-calendar/common';
+        createEventChunk, addDay, cloneDate, assign, maybeIgnore, setFn, debounce} from '@event-calendar/common';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -12,7 +12,7 @@
     export let iChunks = [];
 
     let {date: currentDate, dateClick, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _view, _interaction, selectable} = getContext('state');
+        _view, _interaction, selectable, _queue} = getContext('state');
     let {_hiddenEvents, _popupDate, _popupChunks} = getContext('view-state');
 
     let el;
@@ -122,8 +122,9 @@
 
     afterUpdate(reposition);
 
+    let debounceHandle = {};
     $: if ($_hiddenEvents) {
-        tick().then(reposition);
+        debounce(reposition, debounceHandle, _queue);
     }
 </script>
 

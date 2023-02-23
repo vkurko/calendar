@@ -1,6 +1,7 @@
 <script>
     import './index.scss';
-    import {setContext} from 'svelte';
+    import {setContext, beforeUpdate} from 'svelte';
+    import {destroy_component, get_current_component} from 'svelte/internal';
     import {get} from 'svelte/store';
     import {diff} from './storage/options';
     import State from './storage/state';
@@ -12,16 +13,19 @@
         toLocalDate,
         ignore,
         hasFn,
-        runFn
+        runFn,
+        flushDebounce
     } from '@event-calendar/common';
 
     export let plugins = [];
     export let options = {};
 
+    let component = get_current_component();
+
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _viewClass, _ignoreClick, _interaction, _iClass, _events,
+    let {_viewComponent, _viewClass, _ignoreClick, _interaction, _iClass, _events, _queue,
         events, eventSources, height, theme} = state;
 
     // Reactively update options that did change
@@ -50,11 +54,11 @@
     }
 
     export function getEvents() {
-        return get(state._events).map(toEventWithLocalDates);
+        return $_events.map(toEventWithLocalDates);
     }
 
     export function getEventById(id) {
-        for (let event of get(state._events)) {
+        for (let event of $_events) {
             if (event.id == id) {
                 return toEventWithLocalDates(event);
             }
@@ -106,6 +110,10 @@
         return null;
     }
 
+    export function destroy() {
+        destroy_component(component, true);
+    }
+
     function updateEvents(func) {
         if ($eventSources.length) {
             $_events = func($_events);
@@ -120,6 +128,10 @@
             $_ignoreClick = false;
         }
     }
+
+    beforeUpdate(() => {
+        flushDebounce($_queue);
+    });
 </script>
 
 <div

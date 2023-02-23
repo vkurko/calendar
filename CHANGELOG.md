@@ -1,9 +1,15 @@
 # Event Calendar changelog
 
+## 0.17.0
+February 27, 2023
+
+* Added `destroy` method
+* Fixed minor issues in month view
+
 ## 0.16.1
 February 22, 2023
 
-* Fixed positioning of events in month view ([85](https://github.com/vkurko/calendar/issues/85#issuecomment-1438242063))
+* Fixed positioning of events in month view ([#85](https://github.com/vkurko/calendar/issues/85#issuecomment-1438242063))
 * Improved positioning speed
 
 ## 0.16.0

@@ -1,5 +1,5 @@
 <script>
-    import {getContext, tick} from 'svelte';
+    import {getContext} from 'svelte';
     import {hasYScroll} from '@event-calendar/common';
 
     let {dayMaxEvents, _events, _scrollable, _scroll, theme} = getContext('state');
@@ -7,7 +7,7 @@
     let el;
 
     $: if (el && $_events) {
-        tick().then(recheckScrollable);
+        setTimeout(recheckScrollable);
     }
 
     function recheckScrollable() {

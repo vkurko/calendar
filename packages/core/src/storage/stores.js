@@ -1,5 +1,5 @@
 import {derived, writable, readable} from 'svelte/store';
-import {is_function, noop, tick} from 'svelte/internal';
+import {is_function, noop} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
     cloneDate,
@@ -11,7 +11,8 @@ import {
     nextClosestDay,
     prevClosestDay,
     setMidnight,
-    toLocalDate
+    toLocalDate,
+    debounce
 } from '@event-calendar/common';
 import {derived2} from '@event-calendar/common';
 import {createEvents} from '@event-calendar/common';
@@ -41,19 +42,19 @@ export function activeRange(state) {
         }
     );
 
-    let debounce = 0;
-    derived([_activeRange, state.datesSet], ([$_activeRange, $datesSet]) => {
-        if ($datesSet && !debounce) {
-            ++debounce;
-            tick().then(() => {
-                --debounce;
+    let debounceHandle = {};
+    derived([_activeRange, state.datesSet], values => {
+        let [, $datesSet] = values;
+        if ($datesSet) {
+            debounce(() => {
+                let [$_activeRange, $datesSet] = values;
                 $datesSet({
                     start: toLocalDate($_activeRange.start),
                     end: toLocalDate($_activeRange.end),
                     startStr: toISOString($_activeRange.start),
                     endStr: toISOString($_activeRange.end)
                 });
-            });
+            }, debounceHandle, state._queue);
         }
     }).subscribe(noop);
 
@@ -123,9 +124,11 @@ export function events(state) {
     let _events = writable([]);
     let abortController;
     let fetching = 0;
+    let debounceHandle = {};
     derived(
         [state.events, state.eventSources, state._activeRange, state._fetchedRange, state.lazyFetching, state.loading],
-        ([$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading], set) => {
+        (values, set) => debounce(() => {
+            let [$events, $eventSources, $_activeRange, $_fetchedRange, $lazyFetching, $loading] = values;
             if (!$eventSources.length) {
                 set($events);
                 return;
@@ -198,7 +201,7 @@ export function events(state) {
                 $_fetchedRange.start = $_activeRange.start;
                 $_fetchedRange.end = $_activeRange.end;
             }
-        },
+        }, debounceHandle, state._queue),
         []
     ).subscribe(_events.set);
 

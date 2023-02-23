@@ -226,8 +226,7 @@
   }
 
   .ec-month .ec-uniform & {
-    /* Remove scroll because of hidden events */
-    overflow: hidden;
+    overflow: hidden;  // remove scrolling due to hidden events
   }
 
   .ec-list & {
@@ -253,8 +252,8 @@
   }
 
   .ec-month .ec-uniform & {
-    flex: 1 1 0;
-    min-height: calc(5em + 1px);
+    flex: 1 1 0%;  // % is required to work properly for both auto and fixed calendar height
+    min-height: 0;
   }
 }
 
@@ -272,6 +271,10 @@
   .ec-month .ec-body & {
     min-height: 5em;
     position: relative;
+  }
+
+  .ec-month .ec-uniform & {
+    min-height: 0;
   }
 
   .ec-month &:first-child {

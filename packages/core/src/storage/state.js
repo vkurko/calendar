@@ -28,6 +28,7 @@ export default class {
         }
 
         // Private stores
+        this._queue = writable(new Map());  // debounce queue
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
@@ -83,6 +84,7 @@ export default class {
                     }
                 }
             });
+            // Process options
             for (let key of Object.keys(opts)) {
                 if (this.hasOwnProperty(key) && key[0] !== '_') {
                     let {set, _set, ...rest} = this[key];
