@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.17.1
+April 12, 2023
+
+* Fixed a bug when `unselect` method didn't work inside `select` callback ([#100](https://github.com/vkurko/calendar/issues/100))
+
 ## 0.17.0
 February 27, 2023
 

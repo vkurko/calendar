@@ -3,8 +3,8 @@ import Resizer from './Resizer.svelte';
 
 export default {
 	createOptions(options) {
+		options.dragScroll = true;
 		options.editable = false;
-		options.eventStartEditable = true;
 		options.eventDragMinDistance = 5;
 		options.eventDragStart = undefined;
 		options.eventDragStop = undefined;
@@ -14,7 +14,7 @@ export default {
 		options.eventResizeStart = undefined;
 		options.eventResizeStop = undefined;
 		options.eventResize = undefined;
-		options.dragScroll = true;
+		options.eventStartEditable = true;
 		options.longPressDelay = 1000;
 		options.pointer = false;
 		options.select = undefined;

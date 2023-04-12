@@ -1,4 +1,4 @@
-# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![npm](https://img.shields.io/npm/dm/@event-calendar/core?color=red&label=npm&style=flat-square)](https://www.npmjs.com/package/@event-calendar/core) [![Sponsor](https://img.shields.io/badge/Sponsor-$10-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/vkurko/10usd)
+# Event Calendar [![](https://data.jsdelivr.com/v1/package/npm/@event-calendar/build/badge)](https://www.jsdelivr.com/package/npm/@event-calendar/build) [![npm](https://img.shields.io/npm/dm/@event-calendar/core?color=red&label=npm&style=flat-square)](https://www.npmjs.com/package/@event-calendar/core)
 
 See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
@@ -6,7 +6,7 @@ Full-sized drag & drop JavaScript event calendar with resource view:
 
 * Lightweight (37kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
-* Used by [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
+* Used on over 60,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
 Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options.
 
@@ -192,8 +192,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.17.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.17.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.17.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.17.1/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -476,6 +476,7 @@ Determines whether to display an event’s end time.
 ### dragScroll
 - Type `boolean`
 - Default `true`
+- Requires `Interaction` plugin
 
 Determines whether the calendar should automatically scroll during the event drag-and-drop when the mouse crosses the edge.
 
@@ -500,6 +501,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 ### editable
 - Type `boolean`
 - Default `false`
+- Requires `Interaction` plugin
 
 Determines whether the events on the calendar can be dragged and resized (both at the same time).
 
@@ -668,12 +670,14 @@ The current [View](#view-object) object
 ### eventDragMinDistance
 - Type `integer`
 - Default `5`
+- Requires `Interaction` plugin
 
 Defines how many pixels the user’s mouse must move before the event dragging begins.
 
 ### eventDragStart
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when the event dragging begins.
 
@@ -714,6 +718,7 @@ The current [View](#view-object) object
 ### eventDragStop
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when the event dragging stops.
 
@@ -756,6 +761,7 @@ The current [View](#view-object) object
 ### eventDrop
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when dragging stops, and the event has moved to a different day/time.
 
@@ -848,12 +854,14 @@ The current [View](#view-object) object
 ### eventDurationEditable
 - Type `boolean`
 - Default `true`
+- Requires `Interaction` plugin
 
 Determines whether calendar events can be resized.
 
 ### eventLongPressDelay
 - Type `integer`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the event becomes draggable/resizable.
 
@@ -956,6 +964,7 @@ The current [View](#view-object) object
 ### eventResize
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when resizing stops, and the duration of the event has changed.
 
@@ -1028,6 +1037,7 @@ The current [View](#view-object) object
 ### eventResizeStart
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when the event resizing begins.
 
@@ -1068,6 +1078,7 @@ The current [View](#view-object) object
 ### eventResizeStop
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when the event resizing stops.
 
@@ -1209,6 +1220,7 @@ Instead of calling `successCallback` and `failureCallback`, you may return the r
 ### eventStartEditable
 - Type `boolean`
 - Default `true`
+- Requires `Interaction` plugin
 
 Determines whether the events on the calendar can be dragged.
 
@@ -1507,6 +1519,7 @@ Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` vi
 ### pointer
 - Type `boolean`
 - Default `false`
+- Requires `Interaction` plugin
 
 Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` views.
 
@@ -1590,6 +1603,7 @@ The associated [Resource](#resource-object) object
 ### select
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when a date/time selection is made.
 
@@ -1667,12 +1681,14 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 ### selectable
 - Type `boolean`
 - Default `false`
+- Requires `Interaction` plugin
 
 Determines whether the user is allowed to highlight multiple days or time slots by clicking and moving the pointer.
 
 ### selectBackgroundColor
 - Type `string`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Sets the background color for the event indicating the current selection. See [selectable](#selectable).
 
@@ -1681,6 +1697,7 @@ You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0
 ### selectLongPressDelay
 - Type `integer`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the date becomes selectable.
 
@@ -1689,6 +1706,7 @@ If not specified, it falls back to [longPressDelay](#longpressdelay).
 ### selectMinDistance
 - Type `integer`
 - Default `5`
+- Requires `Interaction` plugin
 
 Defines how many pixels the user’s mouse must move before the selection begins.
 
@@ -1811,6 +1829,7 @@ function (date) {
 ### unselect
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when the current selection is cleared.
 
@@ -1852,12 +1871,14 @@ The current [View](#view-object) object
 ### unselectAuto
 - Type `boolean`
 - Default `true`
+- Requires `Interaction` plugin
 
 Determines whether clicking elsewhere on the page will clear the current selection. See [selectable](#selectable).
 
 ### unselectCancel
 - Type `string`
 - Default `''`
+- Requires `Interaction` plugin
 
 A CSS selector that specifies elements that will ignore the [unselectAuto](#unselectauto) option.
 

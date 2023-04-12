@@ -304,9 +304,13 @@
     }
 
     function handlePointerUp(jsEvent) {
+        if (selected && $unselectAuto && !($unselectCancel && jsEvent.target.closest($unselectCancel))) {
+            unselect(jsEvent);
+        }
         if (action && jsEvent.isPrimary) {
             if (interacting) {
                 if (selecting()) {
+                    selected = true;
                     if (is_function($select)) {
                         let {start, end} = toEventWithLocalDates($_iEvents[0]);
                         $select({
@@ -320,7 +324,6 @@
                             resource: resourceCol !== undefined ? $_viewResources[resourceCol] : undefined
                         });
                     }
-                    setTimeout(() => selected = true, 5 /*add some delay for touch devices*/);
                 } else {
                     event.display = 'auto';
 
@@ -435,12 +438,6 @@
     // Clear selection on view params change
     _view.subscribe(unselect);
 
-    function handleClick(jsEvent) {
-        if (selected && !($unselectCancel && jsEvent.target.closest($unselectCancel))) {
-            unselect();
-        }
-    }
-
     function handleTouchStart(jsEvent) {
         if (action) {
             let target = jsEvent.target;
@@ -466,7 +463,6 @@
     on:pointerup={handlePointerUp}
     on:pointercancel={handlePointerUp}
     on:scroll={handleScroll}
-    on:click={$unselectAuto ? handleClick : undefined}
     on:selectstart={createPreventDefaultHandler(() => action)}
     on:contextmenu={createPreventDefaultHandler(() => timer)}
     on:touchstart={handleTouchStart}
