@@ -24,7 +24,7 @@
 
     $_scroll = () => {
         for (let component of Object.values($_interaction)) {
-            component?.handleScroll();
+            component?.handleScroll?.();
         }
     };
 </script>

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.18.1
+April 20, 2023
+
+* Fixed JS error `t?.handleScroll is not a function`
+
 ## 0.18.0
 April 20, 2023
 
