@@ -2,9 +2,12 @@
     import {getContext} from 'svelte';
     import Action from './Action.svelte';
     import Pointer from './Pointer.svelte';
+    import Resizer from './Resizer.svelte';
 
     let {theme, editable, eventStartEditable, eventDurationEditable, pointer,
         _interaction, _classes, _draggable, _resizable, _scroll} = getContext('state');
+
+    $_interaction.resizer = Resizer;
 
     $: $_classes = (className, event) => {
         switch (event.display) {
@@ -21,7 +24,7 @@
 
     $_scroll = () => {
         for (let component of Object.values($_interaction)) {
-            component && component.handleScroll && component.handleScroll();
+            component?.handleScroll();
         }
     };
 </script>

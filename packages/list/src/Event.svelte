@@ -7,16 +7,19 @@
     export let chunk;
 
     let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime} = getContext('state');
+        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor} = getContext('state');
 
     let el;
+    let event;
     let style;
     let content;
     let timeText;
 
+    $: event = chunk.event;
+
     $: {
         // Class & Style
-        let bgColor = chunk.event.backgroundColor || $eventBackgroundColor || $eventColor;
+        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         if (bgColor) {
             style = `background-color:${bgColor};`;
         }
@@ -30,7 +33,7 @@
     onMount(() => {
         if (is_function($eventDidMount)) {
             $eventDidMount({
-                event: toEventWithLocalDates(chunk.event),
+                event: toEventWithLocalDates(event),
                 timeText,
                 el,
                 view: toViewWithLocalDates($_view)
@@ -41,7 +44,7 @@
     function createHandler(fn) {
         return jsEvent => {
             if (is_function(fn)) {
-                fn({event: toEventWithLocalDates(chunk.event), el, jsEvent, view: toViewWithLocalDates($_view)});
+                fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)});
             }
         };
     }

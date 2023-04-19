@@ -1,4 +1,5 @@
 import View from './View.svelte';
+import Auxiliary from './Auxiliary.svelte';
 
 export default {
 	createOptions(options) {
@@ -22,8 +23,13 @@ export default {
 			duration: {weeks: 1}
 		};
 	},
+
 	createParsers(parsers, options) {
 		parsers.resources = createResources;
+	},
+
+	createStores(state) {
+		state._auxiliary.update($_auxiliary => [...$_auxiliary, Auxiliary]);
 	}
 }
 
@@ -31,6 +37,7 @@ function createResources(input) {
 	return input.map(resource => ({
 		id: String(resource.id),
 		title: resource.title || '',
-		titleHTML: resource.titleHTML || ''
+		titleHTML: resource.titleHTML || '',
+		eventBackgroundColor: resource.eventBackgroundColor,
 	}));
 }

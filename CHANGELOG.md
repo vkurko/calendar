@@ -1,5 +1,13 @@
 # Event Calendar changelog
 
+## 0.18.0
+April 20, 2023
+
+* Added `eventBackgroundColor` property to resource object ([#104](https://github.com/vkurko/calendar/issues/104))
+* Now events with dates specified without a time part are considered all-day events
+* Fixed `datesSet` callback to pass `view` object ([#102](https://github.com/vkurko/calendar/issues/102))
+* Fixed triggering of mouse events on background events ([#105](https://github.com/vkurko/calendar/issues/105))
+
 ## 0.17.1
 April 12, 2023
 

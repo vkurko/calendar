@@ -17,7 +17,7 @@
     export let inPopup = false;
 
     let {dayMaxEvents, displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable} = getContext('state');
+        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable, _resBgColor} = getContext('state');
     let {_hiddenEvents} = getContext('view-state');
 
     let el;
@@ -36,7 +36,7 @@
         display = event.display;
 
         // Class & Style
-        let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
+        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         style =
             `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
             `margin-top:${margin}px;`

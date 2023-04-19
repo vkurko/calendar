@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {cloneDate, addDay, datesEqual} from '@event-calendar/common';
+    import {cloneDate, addDay, eventIntersects} from '@event-calendar/common';
     import {createEventChunk, prepareEventChunks} from '@event-calendar/common';
     import Day from './Day.svelte';
 
@@ -21,7 +21,7 @@
     $: {
         chunks = [];
         for (let event of $_events) {
-            if (event.display !== 'background' && intersects(event)) {
+            if (event.display !== 'background' && eventIntersects(event, start, end)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }
@@ -31,7 +31,7 @@
 
     $: iChunks = $_iEvents.map(event => {
         let chunk;
-        if (event && intersects(event)) {
+        if (event && eventIntersects(event, start, end)) {
             chunk = createEventChunk(event, start, end);
             prepareEventChunks([chunk], $hiddenDays);
         } else {
@@ -39,10 +39,6 @@
         }
         return chunk;
     });
-
-    function intersects(event) {
-        return event.start < end && event.end > start || datesEqual(event.start, event.end, start);
-    }
 </script>
 
 <div class="{$theme.days}">

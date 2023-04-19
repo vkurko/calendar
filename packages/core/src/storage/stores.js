@@ -1,5 +1,5 @@
 import {derived, writable, readable} from 'svelte/store';
-import {is_function, noop} from 'svelte/internal';
+import {is_function} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
     cloneDate,
@@ -20,7 +20,7 @@ import {createView} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
 
 export function activeRange(state) {
-    let _activeRange = derived(
+    return derived(
         [state._currentRange, state.firstDay, state.monthMode, state.slotMinTime, state.slotMaxTime],
         ([$_currentRange, $firstDay, $monthMode, $slotMinTime, $slotMaxTime]) => {
             let start = cloneDate($_currentRange.start);
@@ -41,24 +41,6 @@ export function activeRange(state) {
             return {start, end};
         }
     );
-
-    let debounceHandle = {};
-    derived([_activeRange, state.datesSet], values => {
-        let [, $datesSet] = values;
-        if ($datesSet) {
-            debounce(() => {
-                let [$_activeRange, $datesSet] = values;
-                $datesSet({
-                    start: toLocalDate($_activeRange.start),
-                    end: toLocalDate($_activeRange.end),
-                    startStr: toISOString($_activeRange.start),
-                    endStr: toISOString($_activeRange.end)
-                });
-            }, debounceHandle, state._queue);
-        }
-    }).subscribe(noop);
-
-    return _activeRange;
 }
 
 export function currentRange(state) {

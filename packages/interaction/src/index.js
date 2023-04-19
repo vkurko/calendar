@@ -1,5 +1,4 @@
-import Interaction from './Interaction.svelte';
-import Resizer from './Resizer.svelte';
+import Auxiliary from './Auxiliary.svelte';
 
 export default {
 	createOptions(options) {
@@ -36,9 +35,6 @@ export default {
 	},
 
 	createStores(state) {
-		state._interaction.set({
-			component: Interaction,
-			resizer: Resizer
-		});
+		state._auxiliary.update($_auxiliary => [...$_auxiliary, Auxiliary]);
 	}
 }

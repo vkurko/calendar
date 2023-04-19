@@ -6,6 +6,7 @@
     import {diff} from './storage/options';
     import State from './storage/state';
     import Toolbar from './Toolbar.svelte';
+    import Auxiliary from './Auxiliary.svelte';
     import {
         assign,
         toEventWithLocalDates,
@@ -140,6 +141,6 @@
 >
     <Toolbar/>
     <svelte:component this={$_viewComponent}/>
-    <svelte:component this={$_interaction.component}/>
 </div>
 <svelte:window on:click|capture={handleClick}/>
+<Auxiliary/>

@@ -1,4 +1,4 @@
-import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate} from './date';
+import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, noTimePart} from './date';
 import {createElement} from './dom';
 import {assign} from './utils';
 import {toViewWithLocalDates} from './view';
@@ -13,7 +13,7 @@ export function createEvents(input) {
         resourceIds: Array.isArray(event.resourceIds)
             ? event.resourceIds.map(String)
             : ('resourceId' in event ? [String(event.resourceId)] : []),
-        allDay: event.allDay || false,
+        allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
         start: createDate(event.start),
         end: createDate(event.end),
         title: event.title || '',
@@ -189,4 +189,21 @@ function _cloneEvent(event, dateFn) {
     event.end = dateFn(event.end);
 
     return event;
+}
+
+/**
+ * Check whether the event intersects with the given date range and resource
+ * @param event
+ * @param start
+ * @param end
+ * @param [resource]
+ * @param [timeMode]  Zero-length events should be allowed (@see https://github.com/vkurko/calendar/issues/50), except in time mode
+ * @return boolean
+ */
+export function eventIntersects(event, start, end, resource, timeMode) {
+    return (
+        event.start < end && event.end > start || !timeMode && datesEqual(event.start, event.end, start)
+    ) && (
+        resource === undefined || event.resourceIds.includes(resource.id)
+    );
 }

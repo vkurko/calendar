@@ -8,7 +8,7 @@
 
     let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
         eventMouseEnter, eventMouseLeave, slotDuration, slotHeight, theme, _view, _intlEventTime,
-        _interaction, _classes, _draggable} = getContext('state');
+        _interaction, _classes, _draggable, _resBgColor} = getContext('state');
 
     let {_slotTimeLimits, _viewResources} = getContext('view-state');
 
@@ -34,7 +34,7 @@
         let top = (start - offset) / step * $slotHeight;
         let height = (end - start) / step * $slotHeight;
         let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
-        let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
+        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         style =
             `top:${top}px;` +
             `min-height:${height}px;` +

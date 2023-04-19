@@ -1,7 +1,7 @@
 <script>
     import {getContext} from 'svelte';
     import {cloneDate, addDay} from '@event-calendar/common';
-    import {createEventChunk, prepareEventChunks} from '@event-calendar/common';
+    import {createEventChunk, prepareEventChunks, eventIntersects} from '@event-calendar/common';
     import Day from './Day.svelte';
 
     export let dates;
@@ -22,7 +22,7 @@
     $: {
         chunks = [];
         for (let event of $_events) {
-            if (event.allDay && event.display !== 'background' && intersects(event)) {
+            if (event.allDay && event.display !== 'background' && eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }
@@ -32,7 +32,7 @@
 
     $: iChunks = $_iEvents.map(event => {
         let chunk;
-        if (event && event.allDay && intersects(event)) {
+        if (event && event.allDay && eventIntersects(event, start, end, resource)) {
             chunk = createEventChunk(event, start, end);
             prepareEventChunks([chunk], $hiddenDays);
         } else {
@@ -40,10 +40,6 @@
         }
         return chunk;
     });
-
-    function intersects(event) {
-        return event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(resource.id));
-    }
 </script>
 
 {#each dates as date}

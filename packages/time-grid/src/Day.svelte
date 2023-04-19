@@ -8,6 +8,7 @@
         datesEqual,
         createEventChunk,
         toViewWithLocalDates,
+        eventIntersects,
         rect,
         toISOString,
         maybeIgnore,
@@ -39,7 +40,7 @@
         chunks = [];
         bgChunks = [];
         for (let event of $_events) {
-            if (!event.allDay && intersects(event)) {
+            if (!event.allDay && eventIntersects(event, start, end, resource, true)) {
                 let chunk = createEventChunk(event, start, end);
                 switch (event.display) {
                     case 'background': bgChunks.push(chunk); break;
@@ -51,7 +52,7 @@
     }
 
     $: iChunks = $_iEvents.map(
-        event => event && intersects(event) ? createEventChunk(event, start, end) : null
+        event => event && eventIntersects(event, start, end, resource, true) ? createEventChunk(event, start, end) : null
     );
 
     $: isToday = datesEqual(date, $_today);
@@ -101,10 +102,6 @@
         return selectable && interaction.action
             ? jsEvent => interaction.action.selectTimeGrid(date, el, jsEvent, _viewResources, $_slotTimeLimits, false)
             : undefined;
-    }
-
-    function intersects(event) {
-        return event.start < end && event.end > start && (resource === undefined || event.resourceIds.includes(resource.id));
     }
 </script>
 

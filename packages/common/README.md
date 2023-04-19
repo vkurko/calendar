@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (37kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (38kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 60,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -192,8 +192,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.17.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.17.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.18.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.18.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2200,7 +2200,7 @@ Here are all admissible fields for the event’s input object:
 </td>
 <td>
 
-`boolean` Determines if the event is shown in the all-day slot. Default `false`
+`boolean` Determines if the event is shown in the all-day slot. Defaults to `true` if `start` and `end` are both passed without a time part, `false` otherwise
 </td>
 </tr>
 <tr>
@@ -2381,6 +2381,13 @@ Here are all properties that exist in Resource object:
 </td>
 <td>The HTML version of the title</td>
 </tr>
+<tr>
+<td>
+
+`eventBackgroundColor`
+</td>
+<td>Default background color for this resource's events</td>
+</tr>
 </table>
 
 ### Parsing resource from a plain object
@@ -2416,6 +2423,16 @@ Here are all admissible fields for the resource’s input object:
 <td>
 
 `string` The HTML version of the title to be displayed instead of the text version. Default `''`
+</td>
+</tr>
+<tr>
+<td>
+
+`eventBackgroundColor`
+</td>
+<td>
+
+`string` Sets the default background color for this resource's events just like the calendar-wide [eventBackgroundColor](#eventbackgroundcolor) option. Default `undefined`
 </td>
 </tr>
 </table>

@@ -148,6 +148,13 @@ export function prevClosestDay(date, day) {
 }
 
 /**
+ * Check whether given date is string which contains no time part
+  */
+export function noTimePart(date) {
+    return typeof date === 'string' && date.length <= 10;
+}
+
+/**
  * Private functions
  */
 

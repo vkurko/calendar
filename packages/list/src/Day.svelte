@@ -10,6 +10,7 @@
         setMidnight,
         toLocalDate,
         sortEventChunks,
+        eventIntersects,
         toViewWithLocalDates,
         toISOString,
         setFn
@@ -30,7 +31,7 @@
         let start = date;
         let end = addDay(cloneDate(date));
         for (let event of $_events) {
-            if (event.display === 'auto' && event.start < end && event.end > start) {
+            if (event.display === 'auto' && eventIntersects(event, start, end)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }
