@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 0.19.0
+April 28, 2023
+
+* Added `slotEventOverlap` option ([#112](https://github.com/vkurko/calendar/pull/112))
+
 ## 0.18.1
 April 20, 2023
 

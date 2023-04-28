@@ -50,6 +50,7 @@ export function createOptions(plugins) {
         selectable: false,
         scrollTime: '06:00:00',
         slotDuration: '00:30:00',
+        slotEventOverlap: true,
         slotHeight: 24,  // ec option
         slotLabelFormat: {
             hour: 'numeric',

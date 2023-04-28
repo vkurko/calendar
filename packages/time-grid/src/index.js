@@ -11,6 +11,7 @@ export default {
 		// Common options
 		options.buttonText.timeGridDay = 'day';
 		options.buttonText.timeGridWeek = 'week';
+		options.slotEventOverlap = true;
 		options.view = 'timeGridWeek';
 		options.views.timeGridDay = {
 			component: View,

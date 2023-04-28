@@ -7,7 +7,7 @@
     export let chunk;
 
     let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-        eventMouseEnter, eventMouseLeave, slotDuration, slotHeight, theme, _view, _intlEventTime,
+        eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme, _view, _intlEventTime,
         _interaction, _classes, _draggable, _resBgColor} = getContext('state');
 
     let {_slotTimeLimits, _viewResources} = getContext('view-state');
@@ -48,7 +48,7 @@
             style +=
                 `z-index:${chunk.column + 1};` +
                 `left:${100 / chunk.group.columns.length * chunk.column}%;` +
-                `width:${100 / chunk.group.columns.length * 0.5 * (1 + chunk.group.columns.length - chunk.column)}%;`
+                `width:${100 / chunk.group.columns.length * ($slotEventOverlap ? 0.5 * (1 + chunk.group.columns.length - chunk.column) : 1)}%;`
             ;
         }
 

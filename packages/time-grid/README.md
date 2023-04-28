@@ -86,6 +86,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [selectMinDistance](#selectmindistance)
   - [scrollTime](#scrolltime)
   - [slotDuration](#slotduration)
+  - [slotEventOverlap](#sloteventoverlap)
   - [slotHeight](#slotheight)
   - [slotLabelFormat](#slotlabelformat)
   - [slotMaxTime](#slotmaxtime)
@@ -192,8 +193,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.18.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.18.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.19.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.19.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1725,6 +1726,14 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 Defines the frequency for displaying time slots.
 
 This should be a value that can be parsed into a [Duration](#duration-object) object.
+
+### slotEventOverlap
+- Type `boolean`
+- Default `true`
+
+Determines whether events in the `timeGrid`/`resourceTimeGrid` views should visually overlap when they intersect in time.
+
+If set to `false`, then intersecting events will be placed next to each other.
 
 ### slotHeight
 - Type `integer`
