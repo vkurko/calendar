@@ -6,8 +6,8 @@
 
     export let chunk;
 
-    let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor} = getContext('state');
+    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick, eventDidMount,
+        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor, _resTxtColor} = getContext('state');
 
     let el;
     let event;
@@ -19,9 +19,15 @@
 
     $: {
         // Class & Style
+        style = '';
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         if (bgColor) {
             style = `background-color:${bgColor};`;
+        }
+
+        let txtColor = evet.textColor || $_resTxtColor(event) || $eventTextColor;
+        if (txtColor) {
+            style += `color:${txtColor};`;
         }
     }
 
