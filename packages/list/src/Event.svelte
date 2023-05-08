@@ -6,12 +6,13 @@
 
     export let chunk;
 
-    let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor} = getContext('state');
+    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick, eventDidMount,
+        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor, _resTxtColor} = getContext('state');
 
     let el;
     let event;
     let style;
+    let classes;
     let content;
     let timeText;
 
@@ -19,9 +20,21 @@
 
     $: {
         // Class & Style
+        style = '';
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         if (bgColor) {
             style = `background-color:${bgColor};`;
+        }
+
+        let txtColor = evet.textColor || $_resTxtColor(event) || $eventTextColor;
+        if (txtColor) {
+            style += `color:${txtColor};`;
+        }
+
+        classes = '';
+
+        if (event.className) {
+            classes += ` ${event.className}`;
         }
     }
 
@@ -52,7 +65,7 @@
 
 <div
     bind:this={el}
-    class="{$theme.event}"
+    class="{$theme.event} {classes}"
     on:click={createHandler($eventClick)}
     on:mouseenter={createHandler($eventMouseEnter)}
     on:mouseleave={createHandler($eventMouseLeave)}

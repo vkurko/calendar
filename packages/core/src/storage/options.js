@@ -21,6 +21,7 @@ export function createOptions(plugins) {
         duration: {weeks: 1},
         events: [],
         eventBackgroundColor: undefined,
+        eventTextColor: undefined,
         eventClick: undefined,
         eventColor: undefined,
         eventContent: undefined,

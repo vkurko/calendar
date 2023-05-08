@@ -14,7 +14,7 @@
     export let chunk;
     export let longChunks = {};
 
-    let {displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
+    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventDidMount,
         eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable} = getContext('state');
     let {_viewResources} = getContext('view-state');
 
@@ -37,6 +37,7 @@
 
         // Class & Style
         let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || $eventTextColor;
         style =
             `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
             `margin-top:${margin}px;`
@@ -44,8 +45,15 @@
         if (bgColor) {
             style += `background-color:${bgColor};`;
         }
+        if (txtColor) {
+            style += `color:${txtColor};`;
+        }
 
         classes = $_classes($theme.event, event);
+
+        if (event.className) {
+            classes += ` ${event.className}`;
+        }
     }
 
     // Content
