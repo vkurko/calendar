@@ -12,6 +12,7 @@
     let el;
     let event;
     let style;
+    let classes;
     let content;
     let timeText;
 
@@ -28,6 +29,12 @@
         let txtColor = evet.textColor || $_resTxtColor(event) || $eventTextColor;
         if (txtColor) {
             style += `color:${txtColor};`;
+        }
+
+        classes = '';
+
+        if (event.className) {
+            classes += ` ${event.className}`;
         }
     }
 
@@ -58,7 +65,7 @@
 
 <div
     bind:this={el}
-    class="{$theme.event}"
+    class="{$theme.event} {classes}"
     on:click={createHandler($eventClick)}
     on:mouseenter={createHandler($eventMouseEnter)}
     on:mouseleave={createHandler($eventMouseLeave)}
