@@ -1,15 +1,10 @@
 <script>
     import {afterUpdate, getContext} from 'svelte';
-    import {is_function} from 'svelte/internal';
     import {
         createDate,
         setMidnight,
-        toLocalDate,
         datesEqual,
-        toViewWithLocalDates,
-        toISOString,
-        maybeIgnore,
-        setFn
+        setPayload
     } from '@event-calendar/common';
     import Event from './Event.svelte';
 
@@ -19,8 +14,7 @@
     export let iChunks = [];
     export let resource = undefined;
 
-    let {date: currentDate, dateClick, highlightedDates, theme, _view, _interaction, selectable} = getContext('state');
-    let {_slotTimeLimits, _viewResources} = getContext('view-state');
+    let {highlightedDates, theme, _interaction, selectable} = getContext('state');
 
     let el;
     let dayChunks;
@@ -45,28 +39,12 @@
 
     // dateFromPoint
     $: if (el) {
-        setFn(el, () => date);
-    }
-
-    function createClickHandler(fn) {
-        return is_function(fn)
-            ? jsEvent => {
-                fn({
-                    allDay: true,
-                    date: toLocalDate(date),
-                    dateStr: toISOString(date),
-                    dayEl: el,
-                    jsEvent,
-                    view: toViewWithLocalDates($_view),
-                    resource
-                });
-            }
-            : undefined;
+        setPayload(el, () => ({allDay: true, date, resource, dayEl: el}));
     }
 
     function createPointerDownHandler(interaction, selectable) {
         return selectable && interaction.action
-            ? jsEvent => interaction.action.selectTimeGrid(date, el, jsEvent, _viewResources, $_slotTimeLimits, true)
+            ? interaction.action.select
             : undefined;
     }
 
@@ -83,7 +61,6 @@
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    on:click={maybeIgnore(createClickHandler($dateClick))}
     on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
 >
     <!-- Drag, Resize & Select -->

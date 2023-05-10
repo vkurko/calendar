@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount} from 'svelte';
+    import {getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         addDay,
@@ -13,7 +13,8 @@
         eventIntersects,
         toViewWithLocalDates,
         toISOString,
-        setFn
+        setPayload,
+        bgEvent
     } from '@event-calendar/common';
     import Event from './Event.svelte';
 
@@ -31,7 +32,7 @@
         let start = date;
         let end = addDay(cloneDate(date));
         for (let event of $_events) {
-            if (event.display === 'auto' && eventIntersects(event, start, end)) {
+            if (!bgEvent(event.display) && eventIntersects(event, start, end)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }
@@ -46,7 +47,7 @@
 
     // dateFromPoint
     $: if (el) {
-        setFn(el, () => date);
+        setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el}));
     }
 
     function createClickHandler(fn) {

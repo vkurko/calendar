@@ -1,7 +1,7 @@
 import View from './View.svelte';
 
 export {default as State} from './state';
-export {default as Header} from './Header.svelte';
+export {default as Section} from './Section.svelte';
 export {default as Body} from './Body.svelte';
 export {default as Day} from './Day.svelte';
 export {default as Week} from './all-day/Week.svelte';
@@ -11,7 +11,6 @@ export default {
 		// Common options
 		options.buttonText.timeGridDay = 'day';
 		options.buttonText.timeGridWeek = 'week';
-		options.slotEventOverlap = true;
 		options.view = 'timeGridWeek';
 		options.views.timeGridDay = {
 			component: View,

@@ -19,14 +19,18 @@ import {createEvents} from '@event-calendar/common';
 import {createView} from '@event-calendar/common';
 import {assign} from '@event-calendar/common';
 
+export function monthMode(state) {
+    return derived(state._viewClass, $_viewClass => $_viewClass === 'month');
+}
+
 export function activeRange(state) {
     return derived(
-        [state._currentRange, state.firstDay, state.monthMode, state.slotMinTime, state.slotMaxTime],
-        ([$_currentRange, $firstDay, $monthMode, $slotMinTime, $slotMaxTime]) => {
+        [state._currentRange, state.firstDay, state.slotMaxTime, state._monthMode],
+        ([$_currentRange, $firstDay, $slotMaxTime, $_monthMode]) => {
             let start = cloneDate($_currentRange.start);
             let end = cloneDate($_currentRange.end);
 
-            if ($monthMode) {
+            if ($_monthMode) {
                 // First day of week
                 prevClosestDay(start, $firstDay);
                 nextClosestDay(end, $firstDay);
@@ -45,10 +49,10 @@ export function activeRange(state) {
 
 export function currentRange(state) {
     return derived(
-        [state.date, state.duration, state.monthMode, state.firstDay],
-        ([$date, $duration, $monthMode, $firstDay]) => {
+        [state.date, state.duration, state.firstDay, state._monthMode],
+        ([$date, $duration, $firstDay, $_monthMode]) => {
             let start = cloneDate($date), end;
-            if ($monthMode) {
+            if ($_monthMode) {
                 start.setUTCDate(1);
             } else if ($duration.inWeeks) {
                 // First day of week
@@ -89,9 +93,9 @@ export function viewDates(state) {
 
 export function viewTitle(state) {
     return derived(
-        [state.date, state._activeRange, state._titleIntlRange, state.monthMode],
-        ([$date, $_activeRange, $_titleIntlRange, $monthMode]) => {
-            return $monthMode
+        [state.date, state._activeRange, state._titleIntlRange, state._monthMode],
+        ([$date, $_activeRange, $_titleIntlRange, $_monthMode]) => {
+            return $_monthMode
                 ? $_titleIntlRange.format($date, $date)
                 : $_titleIntlRange.format($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
         }

@@ -1,45 +1,4 @@
-import {ancestor} from '@event-calendar/common';
-
-export function traverseTimeGrid(dayEl) {
-    let colEl = child(ancestor(dayEl, 1), 1);
-    let bodyEl = ancestor(dayEl, 3);
-    let col = pos(dayEl) - 1;
-
-    return [colEl, bodyEl, col];
-}
-
-export function traverseResourceTimeGrid(dayEl, datesAboveResources) {
-    let colEl = child(child(ancestor(dayEl, 2), 1), 0);
-    let resourceEl = ancestor(dayEl, 1);
-    let bodyEl = ancestor(resourceEl, 3);
-    let col = pos(dayEl);
-    let resourceCol = pos(resourceEl) - 1;
-
-    return datesAboveResources ? [colEl, bodyEl, resourceCol, col] : [colEl, bodyEl, col, resourceCol];
-}
-
-export function traverseDayGrid(dayEl) {
-    let daysEl = ancestor(dayEl, 1);
-    let contentEl = ancestor(daysEl, 1);
-    let colEl = child(child(contentEl, 0), 0);
-    let bodyEl = ancestor(contentEl, 1);
-    let col = pos(dayEl);
-    let row = pos(daysEl);
-
-    return [colEl, bodyEl, col, row, contentEl.children];
-}
-
-function child(el, pos) {
-    return el.children[pos];
-}
-
-function pos(el) {
-    let result = 0;
-    while ((el = el.previousElementSibling)) {
-        ++result;
-    }
-    return result;
-}
+import {min, max} from '@event-calendar/common';
 
 let busy = false;
 export function animate(fn) {
@@ -52,10 +11,6 @@ export function animate(fn) {
     }
 }
 
-export function limit(value, max) {
-    return Math.max(0, Math.min(max, value));
-}
-
-export function floor(value) {
-    return Math.floor(value);
+export function limit(value, minLimit, maxLimit) {
+    return max(minLimit, min(maxLimit, value));
 }

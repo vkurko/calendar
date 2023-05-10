@@ -1,16 +1,16 @@
 <script>
-    import {getContext} from 'svelte';
-    import {hasYScroll, setContent} from '@event-calendar/common';
-    import {createAllDayContent} from './utils.js';
+    import {getContext, onMount} from 'svelte';
+    import Section from './Section.svelte';
 
-    let {_intlSlotLabel, _viewDates, scrollTime, _scrollable, _scroll,
-        allDayContent, slotDuration, slotHeight, theme} = getContext('state');
+    let {_bodyEl, _viewDates, scrollTime, slotDuration, slotHeight, theme} = getContext('state');
     let {_slotTimeLimits, _times} = getContext('view-state');
 
     let el;
     let compact;
     let lines = [];
     let timeLimitMin;
+
+    $: $_bodyEl = el;
 
     $: {
         compact = $slotDuration.seconds >= 3600;
@@ -19,43 +19,27 @@
         timeLimitMin = $_slotTimeLimits.min.seconds;
     }
 
-    let allDayText;
-    $: allDayText = createAllDayContent($allDayContent);
-
     $: if (el && $_viewDates) {
+        scrollToTime()
+    }
+
+    function scrollToTime() {
         el.scrollTop = (($scrollTime.seconds - timeLimitMin) / $slotDuration.seconds - 0.5) * $slotHeight;
-    }
-
-    $: if (el && $_times && $slotDuration) {
-        setTimeout(recheckScrollable);
-    }
-
-    function recheckScrollable() {
-        $_scrollable = hasYScroll(el);
     }
 </script>
 
 <div
     bind:this={el}
     class="{$theme.body}{compact ? ' ' + $theme.compact : ''}"
-    on:scroll={$_scroll}
 >
     <div class="{$theme.content}">
-        <div class="{$theme.sidebar}">
-            <div class="{$theme.sidebarTitle}" use:setContent={allDayText}></div>
-            {#each $_times as time}
-                <div class="{$theme.time}">{time}</div>
-            {/each}
-        </div>
-        <div class="{$theme.days}">
-            <div class="{$theme.lines}">
+        <Section>
+            <svelte:fragment slot="lines">
                 {#each lines as line}
                     <div class="{$theme.line}"></div>
                 {/each}
-            </div>
+            </svelte:fragment>
             <slot></slot>
-        </div>
+        </Section>
     </div>
 </div>
-
-<svelte:window on:resize={recheckScrollable}/>

@@ -5,6 +5,7 @@ import {
     activeRange,
     currentRange,
     events,
+    monthMode,
     now,
     today,
     viewDates,
@@ -30,23 +31,24 @@ export default class {
         // Private stores
         this._queue = writable(new Map());  // debounce queue
         this._auxiliary = writable([]);  // auxiliary components
+        this._viewClass = writable(undefined);
+        this._monthMode = monthMode(this);
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = events(this);
         this._now = now();
         this._today = today(this);
-        this._ignoreClick = writable(false);
         this._intlEventTime = intl(this.locale, this.eventTimeFormat);
         this._intlSlotLabel = intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = intl(this.locale, this.dayHeaderFormat);
         this._titleIntlRange = intlRange(this.locale, this.titleFormat);
+        this._bodyEl = writable(undefined);
         this._scrollable = writable(false);
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
         this._view = view2(this);
         this._viewComponent = writable(undefined);
-        this._viewClass = writable(undefined);
         // Resources
         this._resBgColor = writable(noop);
         // Interaction
@@ -56,7 +58,6 @@ export default class {
         this._resizable = writable(noop);
         this._classes = writable(identity);
         this._iClass = writable(undefined);
-        this._scroll = writable(undefined);
 
         // Let plugins create their private stores
         for (let plugin of plugins) {

@@ -18,7 +18,6 @@ export default {
 			dayHeaderFormat: {weekday: 'short'},
 			displayEventEnd: false,
 			duration: {months: 1},
-			monthMode: true,
 			titleFormat: {year: 'numeric', month: 'long'}
 		};
 	},

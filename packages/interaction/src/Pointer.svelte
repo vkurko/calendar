@@ -1,7 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDuration, cloneDate, rect} from '@event-calendar/common';
-    import {floor} from './utils';
+    import {addDuration, cloneDate, floor, rect} from '@event-calendar/common';
 
     let {_iEvents, _events, _viewDates, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
         theme} = getContext('state');

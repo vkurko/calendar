@@ -12,10 +12,10 @@
         toEventWithLocalDates,
         toViewWithLocalDates,
         toLocalDate,
-        ignore,
-        hasFn,
-        runFn,
-        flushDebounce
+        getElementWithPayload,
+        getPayload,
+        flushDebounce,
+        hasYScroll
     } from '@event-calendar/common';
 
     export let plugins = [];
@@ -26,7 +26,7 @@
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _viewClass, _ignoreClick, _interaction, _iClass, _events, _queue,
+    let {_viewComponent, _viewClass, _bodyEl, _interaction, _iClass, _events, _queue, _scrollable,
         events, eventSources, height, theme} = state;
 
     // Reactively update options that did change
@@ -102,13 +102,8 @@
     }
 
     export function dateFromPoint(x, y) {
-        for (let el of document.elementsFromPoint(x, y)) {
-            if (hasFn(el)) {
-                let date = runFn(el, y);
-                return date ? toLocalDate(date) : null;
-            }
-        }
-        return null;
+        let dayEl = getElementWithPayload(x, y);
+        return dayEl ? getPayload(dayEl)(y) : null;
     }
 
     export function destroy() {
@@ -123,24 +118,25 @@
         }
     }
 
-    function handleClick(jsEvent) {
-        if ($_ignoreClick) {
-            ignore(jsEvent);
-            $_ignoreClick = false;
-        }
-    }
-
     beforeUpdate(() => {
         flushDebounce($_queue);
+        setTimeout(recheckScrollable)
     });
+
+    function recheckScrollable() {
+        if ($_bodyEl) {
+            $_scrollable = hasYScroll($_bodyEl);
+        }
+    }
 </script>
 
 <div
-    class="{$theme.calendar}{$_viewClass ? ' ' + $theme[$_viewClass] : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
+    class="{$theme.calendar}{$_viewClass ? ' ' + $theme[$_viewClass] : ''}{$_scrollable ? ' ' + $theme.withScroll : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
     style="height: {$height}"
 >
     <Toolbar/>
     <svelte:component this={$_viewComponent}/>
 </div>
-<svelte:window on:click|capture={handleClick}/>
 <Auxiliary/>
+
+<svelte:window on:resize={recheckScrollable}/>

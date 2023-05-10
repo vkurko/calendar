@@ -3,7 +3,7 @@
     import {ancestor, rect, outsideEvent} from '@event-calendar/common';
     import Event from './Event.svelte';
 
-    let {theme, _ignoreClick, _intlDayPopover} = getContext('state');
+    let {theme, _interaction, _intlDayPopover} = getContext('state');
     let {_popupDate, _popupChunks} = getContext('view-state');
 
     let el;
@@ -67,7 +67,7 @@
 
     function handlePointerDownOutside(e) {
         close();
-        $_ignoreClick = true;
+        $_interaction.action?.noClick();
     }
 </script>
 

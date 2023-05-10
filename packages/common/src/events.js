@@ -4,8 +4,6 @@ import {assign} from './utils';
 import {toViewWithLocalDates} from './view';
 import {is_function} from 'svelte/internal';
 
-const display = ['background'];
-
 let eventId = 1;
 export function createEvents(input) {
     return input.map(event => ({
@@ -21,7 +19,7 @@ export function createEvents(input) {
         editable: event.editable,
         startEditable: event.startEditable,
         durationEditable: event.durationEditable,
-        display: display.includes(event.display) ? event.display : 'auto',
+        display: event.display || 'auto',
         extendedProps: event.extendedProps || {},
         backgroundColor: event.backgroundColor || event.color
     }));
@@ -206,4 +204,20 @@ export function eventIntersects(event, start, end, resource, timeMode) {
     ) && (
         resource === undefined || event.resourceIds.includes(resource.id)
     );
+}
+
+export function helperEvent(display) {
+    return display === 'preview' || display === 'ghost' || display === 'pointer';
+}
+
+export function bgEvent(display) {
+    return display === 'background';
+}
+
+export function previewEvent(display) {
+    return display === 'preview';
+}
+
+export function ghostEvent(display) {
+    return display === 'ghost';
 }

@@ -1,5 +1,13 @@
 # Event Calendar changelog
 
+## 1.0.0
+May 10, 2023
+
+* Reduced code size by 15% due to refactoring of the `Interaction` plugin
+* Fixed `dateClick` on background events ([#118](https://github.com/vkurko/calendar/pull/118))
+* :warning: `dateFromPoint` method changed return data type
+* :warning: `dateClick` now requires `Interaction` plugin
+
 ## 0.19.0
 April 28, 2023
 

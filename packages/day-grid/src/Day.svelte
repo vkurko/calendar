@@ -1,8 +1,8 @@
 <script>
     import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {createDate,	setMidnight, toLocalDate, datesEqual, setContent, toViewWithLocalDates,	toISOString,
-        createEventChunk, addDay, cloneDate, assign, maybeIgnore, setFn, debounce} from '@event-calendar/common';
+    import {createDate,	setMidnight, datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload,
+        debounce} from '@event-calendar/common';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -11,8 +11,8 @@
     export let longChunks;
     export let iChunks = [];
 
-    let {date: currentDate, dateClick, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _view, _interaction, selectable, _queue} = getContext('state');
+    let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
+        _interaction, selectable, _queue} = getContext('state');
     let {_hiddenEvents, _popupDate, _popupChunks} = getContext('view-state');
 
     let el;
@@ -69,20 +69,7 @@
 
     // dateFromPoint
     $: if (el) {
-        setFn(el, () => date);
-    }
-
-    function createClickHandler(fn) {
-        return is_function(fn)
-            ? jsEvent => fn({
-                allDay: true,
-                date: toLocalDate(date),
-                dateStr: toISOString(date),
-                dayEl: el,
-                jsEvent,
-                view: toViewWithLocalDates($_view)
-            })
-            : undefined;
+        setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el}));
     }
 
     function createPointerEnterHandler(interaction) {
@@ -109,7 +96,7 @@
 
     function createPointerDownHandler(interaction, selectable) {
         return selectable && interaction.action
-            ? jsEvent => interaction.action.selectDayGrid(date, el, jsEvent)
+            ? interaction.action.select
             : undefined;
     }
 
@@ -131,7 +118,6 @@
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    on:click={maybeIgnore(createClickHandler($dateClick))}
     on:pointerenter={createPointerEnterHandler($_interaction)}
     on:pointerleave={createPointerLeaveHandler($_interaction)}
     on:pointerdown={createPointerDownHandler($_interaction, $selectable)}

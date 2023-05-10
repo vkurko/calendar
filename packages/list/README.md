@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (38kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (28kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 60,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -68,12 +68,11 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [loading](#loading)
   - [locale](#locale)
   - [longPressDelay](#longpressdelay)
-  - [monthMode](#monthmode)
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
+  - [noEventsContent](#noeventscontent)
   </td><td>
 
-  - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
@@ -193,8 +192,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.19.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@0.19.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.0.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.0.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -298,6 +297,7 @@ This value can be either a JavaScript Date object, or an ISO8601 date string lik
 ### dateClick
 - Type `function`
 - Default `undefined`
+- Requires `Interaction` plugin
 
 Callback function that is triggered when the user clicks on a date or a time.
 
@@ -327,7 +327,7 @@ function (info) {}
 </td>
 <td>
 
-`true` or `false`. Determines if the click has occurred in the `all-day` slot. Clicks in month and list views are treated as all-day too</td>
+`true` or `false`. Determines if the click has occurred in the `all-day` slot. Month and list views are also considered as all-day slots</td>
 </tr>
 <tr>
 <td>
@@ -1425,14 +1425,6 @@ For touch devices, the amount of time (in milliseconds) the user must hold down 
 
 For a more granular configuration, see [eventLongPressDelay](#eventlongpressdelay) and [selectLongPressDelay](#selectlongpressdelay).
 
-### monthMode
-- Type `boolean`
-- Default `false`
-> Views override the default value as follows:
-> - dayGridMonth `true`
-
-Tells the calendar that visible dates should start from the [firstDay](#firstday) of the week, even if it will display days outside the current range (this is a common case for a month calendar when you can see days from adjacent months).
-
 ### moreLinkContent
 - Type `string`, `object`or `function`
 - Default `undefined`
@@ -1788,7 +1780,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### theme
 - Type `object` or `function`
-- Default `{active: 'ec-active', allDay: 'ec-all-day', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayFoot: 'ec-day-foot', dayHead: 'ec-day-head', daySide: 'ec-day-side', days: 'ec-days', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', hiddenTimes: 'ec-hidden-times', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', list: 'ec-list', month: 'ec-month', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', resourceTitle: 'ec-resource-title', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', time: 'ec-time', title: 'ec-title', today: 'ec-today', toolbar: 'ec-toolbar', uniform: 'ec-uniform', week: 'ec-week', withScroll: 'ec-with-scroll'}`
+- Default `{active: 'ec-active', allDay: 'ec-all-day', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayFoot: 'ec-day-foot', dayHead: 'ec-day-head', daySide: 'ec-day-side', days: 'ec-days', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', list: 'ec-list', month: 'ec-month', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', resourceTitle: 'ec-resource-title', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', time: 'ec-time', title: 'ec-title', today: 'ec-today', toolbar: 'ec-toolbar', uniform: 'ec-uniform', week: 'ec-week', withScroll: 'ec-with-scroll'}`
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 
@@ -2019,9 +2011,46 @@ Updates a single event with the matching `event`.`id`.
 Refetches events from all sources.
 
 ### dateFromPoint( x, y )
-- Return value `Date` or `null`
+- Return value `object` or `null`
 
-Returns the date and time as if the [dateClick](#dateclick) event had fired for that point.
+Returns an `info` object with data as if the [dateClick](#dateclick) event had fired for that point.
+
+`info` object contains the following properties:
+<table>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object for the date and time</td>
+</tr>
+<tr>
+<td>
+
+`allDay`
+</td>
+<td>
+
+`true` or `false`. Determines if the point is in the `all-day` slot. Month and list views are also considered as all-day slots</td>
+</tr>
+<tr>
+<td>
+
+`dayEl`
+</td>
+<td>HTML element that represents the whole-day that contains the point</td>
+</tr>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+If the current view is a resource view, the [Resource](#resource-object) object that owns this date
+</td>
+</tr>
+</table>
 
 Using this method, you can, for example, find out on which day a click occurred inside a multi-day event. To do this, inside [eventClick](#eventclick), pass the `jsEvent.clientX` and `jsEvent.clientY` coordinates to `dateFromPoint` and get the desired date.
 

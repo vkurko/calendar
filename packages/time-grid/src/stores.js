@@ -4,7 +4,8 @@ import {
     createDate,
     cloneDate,
     addDuration,
-    createDuration
+    createDuration,
+    min as minFn, max as maxFn
 } from '@event-calendar/common';
 
 export function times(state, localState) {
@@ -37,8 +38,8 @@ export function slotTimeLimits(state) {
             let max = createDuration($slotMaxTime);
 
             if ($flexibleSlotTimeLimits) {
-                let minMin = createDuration(Math.min(min.seconds, Math.max(0, max.seconds - DAY_IN_SECONDS)));
-                let maxMax = createDuration(Math.max(max.seconds, minMin.seconds + DAY_IN_SECONDS));
+                let minMin = createDuration(minFn(min.seconds, maxFn(0, max.seconds - DAY_IN_SECONDS)));
+                let maxMax = createDuration(maxFn(max.seconds, minMin.seconds + DAY_IN_SECONDS));
                 loop: for (let date of $_viewDates) {
                     let start = addDuration(cloneDate(date), min);
                     let end = addDuration(cloneDate(date), max);
@@ -47,13 +48,13 @@ export function slotTimeLimits(state) {
                     for (let event of $_events) {
                         if (event.display === 'auto' && event.start < maxEnd && event.end > minStart) {
                             if (event.start < start) {
-                                let seconds = Math.max((event.start - date) / 1000, minMin.seconds);
+                                let seconds = maxFn((event.start - date) / 1000, minMin.seconds);
                                 if (seconds < min.seconds) {
                                     min.seconds = seconds;
                                 }
                             }
                             if (event.end > end) {
-                                let seconds = Math.min((event.end - date) / 1000, maxMax.seconds);
+                                let seconds = minFn((event.end - date) / 1000, maxMax.seconds);
                                 if (seconds > max.seconds) {
                                     max.seconds = seconds;
                                 }

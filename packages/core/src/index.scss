@@ -162,7 +162,6 @@
 
 /* All Day */
 .ec-all-day {
-  display: flex;
   flex-shrink: 0;
   border-top: none;
 
@@ -462,12 +461,6 @@
   z-index: 1;
 }
 
-.ec-hidden-times {
-  visibility: hidden;
-  overflow-y: hidden;
-  height: 0;
-}
-
 .ec-time,
 .ec-line {
   height: 24px;
@@ -479,6 +472,13 @@
   top: -12px;
   text-align: right;
   white-space: nowrap;
+
+  .ec-header &,
+  .ec-all-day & {
+    visibility: hidden;
+    overflow-y: hidden;
+    height: 0;
+  }
 }
 
 .ec-lines {

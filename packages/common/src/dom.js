@@ -30,15 +30,24 @@ export function height(el) {
     return rect(el).height;
 }
 
-let fnProp = symbol();
-export function setFn(el, fn) {
-    el[fnProp] = fn;
+let payloadProp = symbol();
+export function setPayload(el, payload) {
+    el[payloadProp] = payload;
 }
 
-export function hasFn(el) {
-    return !!el[fnProp];
+export function hasPayload(el) {
+    return !!el?.[payloadProp];
 }
 
-export function runFn(el, ...args) {
-    return el[fnProp](...args);
+export function getPayload(el) {
+    return el[payloadProp];
+}
+
+export function getElementWithPayload(x, y) {
+    for (let el of document.elementsFromPoint(x, y)) {
+        if (hasPayload(el)) {
+            return el;
+        }
+    }
+    return null;
 }

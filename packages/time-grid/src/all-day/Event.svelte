@@ -7,8 +7,9 @@
         toEventWithLocalDates,
         toViewWithLocalDates,
         setContent,
-        maybeIgnore,
-        repositionEvent
+        repositionEvent,
+        helperEvent,
+        previewEvent
     } from '@event-calendar/common';
 
     export let chunk;
@@ -16,7 +17,6 @@
 
     let {displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
         eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable} = getContext('state');
-    let {_viewResources} = getContext('view-state');
 
     const dispatch = createEventDispatcher();
 
@@ -63,17 +63,17 @@
     });
 
     function createHandler(fn, display) {
-        return display !== 'preview' && is_function(fn)
+        return !helperEvent(display) && is_function(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
             : undefined;
     }
 
     function createDragHandler(resize) {
-        return jsEvent => $_interaction.action.dragTimeGrid(event, el, jsEvent, _viewResources, true, resize);
+        return jsEvent => $_interaction.action.drag(event, jsEvent, resize);
     }
 
     export function reposition() {
-        if (!el || display === 'preview') {
+        if (!el || previewEvent(display)) {
             return;
         }
         margin = repositionEvent(chunk, longChunks, height(el));
@@ -84,10 +84,10 @@
     bind:this={el}
     class="{classes}"
     {style}
-    on:click={maybeIgnore(createHandler($eventClick, display))}
+    on:click={createHandler($eventClick, display)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={display === 'auto' && $_draggable(event) ? createDragHandler() : undefined}
+    on:pointerdown={!helperEvent(display) && $_draggable(event) && createDragHandler()}
 >
     <div class="{$theme.eventBody}" use:setContent={content}></div>
     <svelte:component

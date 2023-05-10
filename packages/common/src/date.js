@@ -1,6 +1,6 @@
 export const DAY_IN_SECONDS = 86400;
 
-export function createDate(input) {
+export function createDate(input = undefined) {
     if (input !== undefined) {
         return input instanceof Date ? _fromLocalDate(input) : _fromISOString(input);
     }
@@ -39,10 +39,7 @@ export function cloneDate(date) {
     return new Date(date.getTime());
 }
 
-export function addDuration(date, duration, x) {
-    if (x === undefined) {
-        x = 1;
-    }
+export function addDuration(date, duration, x = 1) {
     date.setUTCFullYear(date.getUTCFullYear() + x * duration.years);
     let month = date.getUTCMonth() + x * duration.months;
     date.setUTCMonth(month);
@@ -59,18 +56,18 @@ export function addDuration(date, duration, x) {
     return date;
 }
 
-export function subtractDuration(date, duration, x) {
-    return addDuration(date, duration, x === undefined ? -1 : -x);
+export function subtractDuration(date, duration, x = 1) {
+    return addDuration(date, duration, -x);
 }
 
-export function addDay(date, x) {
-    date.setUTCDate(date.getUTCDate() + (x === undefined ? 1 : x));
+export function addDay(date, x = 1) {
+    date.setUTCDate(date.getUTCDate() + x);
 
     return date;
 }
 
-export function subtractDay(date, x) {
-    return addDay(date, x === undefined ? -1 : -x);
+export function subtractDay(date, x = 1) {
+    return addDay(date, -x);
 }
 
 export function setMidnight(date) {

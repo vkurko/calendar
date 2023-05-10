@@ -1,10 +1,10 @@
 <script>
     import {getContext} from 'svelte';
 
-    let {theme} = getContext('state');
+    let {_bodyEl, theme} = getContext('state');
 </script>
 
-<div class="{$theme.body}">
+<div bind:this={$_bodyEl} class="{$theme.body}">
     <div class="{$theme.content}">
         <slot></slot>
     </div>

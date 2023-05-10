@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {cloneDate, addDay, eventIntersects} from '@event-calendar/common';
+    import {cloneDate, addDay, eventIntersects, bgEvent} from '@event-calendar/common';
     import {createEventChunk, prepareEventChunks} from '@event-calendar/common';
     import Day from './Day.svelte';
 
@@ -21,7 +21,7 @@
     $: {
         chunks = [];
         for (let event of $_events) {
-            if (event.display !== 'background' && eventIntersects(event, start, end)) {
+            if (!bgEvent(event.display) && eventIntersects(event, start, end)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }
