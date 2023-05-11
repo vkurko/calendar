@@ -39,5 +39,6 @@ function createResources(input) {
 		title: resource.title || '',
 		titleHTML: resource.titleHTML || '',
 		eventBackgroundColor: resource.eventBackgroundColor,
+        eventTextColor: resource.eventTextColor
 	}));
 }
