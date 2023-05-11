@@ -58,10 +58,6 @@
 
         // Class
         classes = $_classes(display === 'background' ? $theme.bgEvent : $theme.event, event);
-
-        if (event.className) {
-            classes += ` ${event.className}`;
-        }
     }
 
     // Content
