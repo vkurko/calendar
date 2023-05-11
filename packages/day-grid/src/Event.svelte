@@ -18,8 +18,8 @@
     export let longChunks = {};
     export let inPopup = false;
 
-    let {dayMaxEvents, displayEventEnd, eventBackgroundColor, eventClick, eventColor, eventContent, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable, _resBgColor} = getContext('state');
+    let {dayMaxEvents, displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventDidMount,
+        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable, _resBgColor, _resTxtColor} = getContext('state');
     let {_hiddenEvents, _popupDate} = getContext('view-state');
 
     let el;
@@ -39,12 +39,16 @@
 
         // Class & Style
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
         style =
             `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
             `margin-top:${margin}px;`
         ;
         if (bgColor) {
             style += `background-color:${bgColor};`;
+        }
+        if (txtColor) {
+            style += `color:${txtColor};`;
         }
         if (hidden) {
             style += 'visibility:hidden;';

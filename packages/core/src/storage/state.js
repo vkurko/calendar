@@ -51,6 +51,7 @@ export default class {
         this._viewComponent = writable(undefined);
         // Resources
         this._resBgColor = writable(noop);
+        this._resTxtColor = writable(noop);
         // Interaction
         this._interaction = writable({});
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]

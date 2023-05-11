@@ -21,7 +21,8 @@ export function createEvents(input) {
         durationEditable: event.durationEditable,
         display: event.display || 'auto',
         extendedProps: event.extendedProps || {},
-        backgroundColor: event.backgroundColor || event.color
+        backgroundColor: event.backgroundColor || event.color,
+        textColor: event.textColor
     }));
 }
 

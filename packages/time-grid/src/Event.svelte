@@ -14,9 +14,9 @@
     export let date;
     export let chunk;
 
-    let {displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount,
+    let {displayEventEnd, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick, eventDidMount,
         eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme, _view, _intlEventTime,
-        _interaction, _classes, _draggable, _resBgColor} = getContext('state');
+        _interaction, _classes, _draggable, _resBgColor, _resTxtColor} = getContext('state');
 
     let {_slotTimeLimits} = getContext('view-state');
 
@@ -43,6 +43,7 @@
         let height = (end - start) / step * $slotHeight;
         let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
         style =
             `top:${top}px;` +
             `min-height:${height}px;` +
@@ -51,6 +52,9 @@
         ;
         if (bgColor) {
             style += `background-color:${bgColor};`;
+        }
+        if (txtColor) {
+            style += `color:${txtColor};`;
         }
         if (!bgEvent(display) && !helperEvent(display) || ghostEvent(display)) {
             style +=
