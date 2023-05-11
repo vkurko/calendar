@@ -50,6 +50,10 @@
         }
 
         classes = $_classes($theme.event, event);
+
+        if (event.className) {
+            classes += ` ${event.className}`;
+        }
     }
 
     // Content

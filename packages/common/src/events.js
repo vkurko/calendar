@@ -24,7 +24,8 @@ export function createEvents(input) {
         display: display.includes(event.display) ? event.display : 'auto',
         extendedProps: event.extendedProps || {},
         backgroundColor: event.backgroundColor || event.color,
-        textColor: event.textColor
+        textColor: event.textColor,
+        className:event.className
     }));
 }
 
