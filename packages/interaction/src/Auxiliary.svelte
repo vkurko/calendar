@@ -6,9 +6,11 @@
     import Resizer from './Resizer.svelte';
 
     let {theme, editable, eventStartEditable, eventDurationEditable, pointer, _bodyEl,
-        _interaction, _classes, _draggable, _resizable, _scroll} = getContext('state');
+        _interaction, _classes, _draggable, _scroll} = getContext('state');
 
     $_interaction.resizer = Resizer;
+
+    $: $_draggable = event => (event.startEditable ?? $eventStartEditable) || (event.editable ?? $editable);
 
     $: $_classes = (className, event) => {
         switch (event.display) {
@@ -18,9 +20,6 @@
             default: return className + ($_draggable(event) ? ' ' + $theme.draggable : '');
         }
     };
-
-    $: $_draggable = event => (event.startEditable ?? $eventStartEditable) || (event.editable ?? $editable);
-    $: $_resizable = event => (event.durationEditable ?? $eventDurationEditable) || (event.editable ?? $editable);
 
     $: if ($_bodyEl) {
         listen($_bodyEl, 'scroll', bodyScrollHandler);

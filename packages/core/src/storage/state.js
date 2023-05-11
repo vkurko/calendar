@@ -55,8 +55,6 @@ export default class {
         // Interaction
         this._interaction = writable({});
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]
-        this._draggable = writable(noop);
-        this._resizable = writable(noop);
         this._classes = writable(identity);
         this._iClass = writable(undefined);
 

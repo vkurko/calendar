@@ -12,7 +12,7 @@
     export let iChunks = [];
 
     let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _interaction, selectable, _queue} = getContext('state');
+        _interaction, _queue} = getContext('state');
     let {_hiddenEvents, _popupDate, _popupChunks} = getContext('view-state');
 
     let el;
@@ -78,10 +78,6 @@
             : undefined;
     }
 
-    function createPointerLeaveHandler(interaction) {
-        return interaction.pointer ? interaction.pointer.leave : undefined;
-    }
-
     function showMore() {
         $_popupDate = date;
     }
@@ -92,12 +88,6 @@
         $_popupChunks = chunks
             .map(chunk => assign({}, chunk, createEventChunk(chunk.event, date, nextDay), {days: 1, dates: [date]}))
             .sort((a, b) => a.top - b.top);
-    }
-
-    function createPointerDownHandler(interaction, selectable) {
-        return selectable && interaction.action
-            ? interaction.action.select
-            : undefined;
     }
 
     function reposition() {
@@ -119,8 +109,8 @@
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}"
     on:pointerenter={createPointerEnterHandler($_interaction)}
-    on:pointerleave={createPointerLeaveHandler($_interaction)}
-    on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
+    on:pointerleave={$_interaction.pointer?.leave}
+    on:pointerdown={$_interaction.action?.select}
 >
     <div class="{$theme.dayHead}">{date.getUTCDate()}</div>
     <!-- Pointer -->

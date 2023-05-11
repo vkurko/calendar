@@ -21,15 +21,17 @@
     } from '@event-calendar/common';
     import {animate, limit} from './utils';
 
-    let {_iEvents, _iClass, _events, _view, _monthMode, dragScroll,
+    let {_iEvents, _iClass, _events, _view, _monthMode, _draggable, _viewClass, dragScroll, datesAboveResources,
         eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
-        eventResizeStart, eventResizeStop, eventResize, longPressDelay, select: selectFn, selectBackgroundColor,
-        selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, unselect: unselectFn,
+        eventResizeStart, eventResizeStop, eventResize, longPressDelay, selectable, select: selectFn,
+        selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, unselect: unselectFn,
         unselectAuto, unselectCancel, dateClick} = getContext('state');
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE = 2;
     const ACTION_SELECT = 3;
+    const ACTION_CLICK = 4;
+    const ACTION_NO_ACTION = 5;
     let action;
     let interacting;
     let event;
@@ -38,7 +40,7 @@
     let resource, newResource;
     let fromX, fromY;
     let toX, toY;
-    let bodyEl, bodyRect, daysEl, daysRect;
+    let bodyEl, bodyRect, clipEl, clipRect;
     let delta;
     let allDay;
     let iClass;
@@ -51,54 +53,58 @@
 
     export function drag(eventToDrag, jsEvent, resize, forceDate) {
         if (!action && jsEvent.isPrimary) {
-            action = resize ? ACTION_RESIZE : ACTION_DRAG;
+            action = resize ? ACTION_RESIZE : ($_draggable(eventToDrag) ? ACTION_DRAG : ACTION_NO_ACTION);
             event = eventToDrag;
 
-            common(jsEvent);
+            if (complexAction()) {
+                common(jsEvent);
 
-            if (forceDate) {
-                // Force date in popup
-                date = forceDate;
-            }
-
-            iClass = resize ? (allDay ? 'resizingX' : 'resizingY') : 'dragging';
-
-            if (resize) {
-                minEnd = cloneDate(event.start);
-                if (allDay) {
-                    minEnd.setUTCHours(event.end.getUTCHours(), event.end.getUTCMinutes(), event.end.getUTCSeconds(), 0);
-                    if (minEnd < event.start) {
-                        addDay(minEnd);
-                        // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
-                    }
-                } else {
-                    addDuration(minEnd, $slotDuration);
+                if (forceDate) {
+                    // Force date in popup
+                    date = forceDate;
                 }
-            }
 
-            move(jsEvent);
+                iClass = resize ? (allDay ? 'resizingX' : 'resizingY') : 'dragging';
+
+                if (resize) {
+                    minEnd = cloneDate(event.start);
+                    if (allDay) {
+                        minEnd.setUTCHours(event.end.getUTCHours(), event.end.getUTCMinutes(), event.end.getUTCSeconds(), 0);
+                        if (minEnd < event.start) {
+                            addDay(minEnd);
+                            // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
+                        }
+                    } else {
+                        addDuration(minEnd, $slotDuration);
+                    }
+                }
+
+                move(jsEvent);
+            }
         }
     }
 
     export function select(jsEvent) {
         if (!action && jsEvent.isPrimary) {
-            action = ACTION_SELECT;
+            action = $selectable && $_viewClass !== 'list' ? ACTION_SELECT : ACTION_CLICK;
 
-            common(jsEvent);
+            if (complexAction()) {
+                common(jsEvent);
 
-            iClass = 'selecting';
+                iClass = 'selecting';
 
-            selectStep = allDay ? createDuration({day: 1}) : $slotDuration;
+                selectStep = allDay ? createDuration({day: 1}) : $slotDuration;
 
-            // Create dummy source event
-            event = {
-                allDay,
-                start: date,
-                end: addDuration(cloneDate(date), selectStep),
-                resourceIds: resource ? [resource.id] : []
-            };
+                // Create dummy source event
+                event = {
+                    allDay,
+                    start: date,
+                    end: addDuration(cloneDate(date), selectStep),
+                    resourceIds: resource ? [resource.id] : []
+                };
 
-            move(jsEvent);
+                move(jsEvent);
+            }
         }
     }
 
@@ -112,7 +118,7 @@
         ({allDay, date, resource} = getPayload(dayEl)(toY));
 
         bodyEl = ancestor(dayEl, resource ? 4 : 3);
-        daysEl = ancestor(dayEl, resource && dragging() ? 2 : 1);
+        clipEl = ancestor(dayEl, resource && (dragging() || $datesAboveResources) ? 2 : 1);
         calcViewport();
 
         if (jsEvent.pointerType !== 'mouse') {
@@ -198,14 +204,14 @@
     }
 
     export function handleScroll() {
-        if (action) {
+        if (complexAction()) {
             calcViewport();
             move();
         }
     }
 
     function handlePointerMove(jsEvent) {
-        if (action && jsEvent.isPrimary) {
+        if (complexAction() && jsEvent.isPrimary) {
             toX = jsEvent.clientX;
             toY = jsEvent.clientY;
             move(jsEvent);
@@ -271,9 +277,11 @@
                     }
                 }
             } else {
-                if (selecting()) {
+                if (clicking() || selecting()) {
                     // Perform date click
                     if (is_function($dateClick) && !noDateClick) {
+                        toX = jsEvent.clientX;
+                        toY = jsEvent.clientY;
                         let dayEl = getElementWithPayload(toX, toY);
                         if (dayEl) {
                             let {allDay, date, resource} = getPayload(dayEl)(toY);
@@ -294,7 +302,7 @@
             interacting = false;
             action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
                 allDay = $_iClass = minEnd = selectStep = undefined;
-            bodyEl = daysEl = bodyRect = daysRect = undefined;
+            bodyEl = clipEl = bodyRect = clipRect = undefined;
 
             if (timer) {
                 clearTimeout(timer);
@@ -315,10 +323,10 @@
 
     function calcViewport() {
         bodyRect = rect(bodyEl);
-        daysRect = rect(daysEl);
+        clipRect = rect(clipEl);
         viewport = [
-            max(0, daysRect.left + ($_monthMode ? 0 : 8)),  // left
-            min(document.documentElement.clientWidth, daysRect.right) - 2,  // right
+            max(0, clipRect.left + ($_monthMode ? 0 : 8)),  // left
+            min(document.documentElement.clientWidth, clipRect.right) - 2,  // right
             max(0, bodyRect.top ),  // top
             min(document.documentElement.clientHeight, bodyRect.bottom) - 2  // bottom
         ];
@@ -371,8 +379,16 @@
         return action === ACTION_RESIZE;
     }
 
+    function clicking() {
+        return action === ACTION_CLICK;
+    }
+
     function selecting() {
         return action === ACTION_SELECT;
+    }
+
+    function complexAction() {
+        return action && action < ACTION_CLICK;
     }
 
     export function unselect(jsEvent) {
@@ -396,7 +412,7 @@
     _view.subscribe(unselect);
 
     function handleTouchStart(jsEvent) {
-        if (action) {
+        if (complexAction()) {
             let target = jsEvent.target;
             let stops = [];
             let stop = () => run_all(stops);
@@ -420,7 +436,7 @@
     on:pointerup={handlePointerUp}
     on:pointercancel={handlePointerUp}
     on:scroll={handleScroll}
-    on:selectstart={createPreventDefaultHandler(() => action)}
+    on:selectstart={createPreventDefaultHandler(complexAction)}
     on:contextmenu={createPreventDefaultHandler(() => timer)}
     on:touchstart={handleTouchStart}
     on:touchmove|nonpassive

@@ -1,7 +1,10 @@
+import {writable} from 'svelte/store';
+import {noop} from 'svelte/internal';
 import Auxiliary from './Auxiliary.svelte';
 
 export default {
 	createOptions(options) {
+		options.dateClick = undefined;
 		options.dragScroll = true;
 		options.editable = false;
 		options.eventDragMinDistance = 5;
@@ -35,6 +38,7 @@ export default {
 	},
 
 	createStores(state) {
+		state._draggable = writable(noop);
 		state._auxiliary.update($_auxiliary => [...$_auxiliary, Auxiliary]);
 	}
 }

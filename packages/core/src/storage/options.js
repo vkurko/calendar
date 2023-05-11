@@ -10,7 +10,6 @@ export function createOptions(plugins) {
             today: 'today',
         },
         date: new Date(),
-        dateClick: undefined,
         datesSet: undefined,
         dayHeaderFormat: {
             weekday: 'short',

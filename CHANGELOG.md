@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 1.1.0
+May 11, 2023
+
+* Added `eventTextColor` option ([#116](https://github.com/vkurko/calendar/pull/116))
+* Fixed various issues in the `Interaction` plugin
+
 ## 1.0.0
 May 10, 2023
 

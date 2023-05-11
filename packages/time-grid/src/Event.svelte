@@ -16,7 +16,7 @@
 
     let {displayEventEnd, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick, eventDidMount,
         eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme, _view, _intlEventTime,
-        _interaction, _classes, _draggable, _resBgColor, _resTxtColor} = getContext('state');
+        _interaction, _classes, _resBgColor, _resTxtColor} = getContext('state');
 
     let {_slotTimeLimits} = getContext('view-state');
 
@@ -88,8 +88,10 @@
             : undefined;
     }
 
-    function createDragHandler(resize) {
-        return jsEvent => $_interaction.action.drag(event, jsEvent, resize);
+    function createDragHandler(interaction, resize) {
+        return interaction.action
+            ? jsEvent => interaction.action.drag(event, jsEvent, resize)
+            : undefined;
     }
 </script>
 
@@ -100,12 +102,12 @@
     on:click={!bgEvent(display) && createHandler($eventClick, display)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={!bgEvent(display) && !helperEvent(display) && $_draggable(event) && createDragHandler()}
+    on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
 >
     <div class="{$theme.eventBody}" use:setContent={content}></div>
     <svelte:component
         this={$_interaction.resizer}
         {event}
-        on:pointerdown={createDragHandler(true)}
+        on:pointerdown={createDragHandler($_interaction, true)}
     />
 </div>

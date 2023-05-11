@@ -17,7 +17,7 @@
     export let date;
     export let resource = undefined;
 
-    let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, selectable, theme,
+    let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, theme,
         _interaction, _today} = getContext('state');
     let {_slotTimeLimits} = getContext('view-state');
 
@@ -77,24 +77,14 @@
             ? jsEvent => interaction.pointer.enterTimeGrid(date, el, jsEvent, _slotTimeLimits, resource)
             : undefined;
     }
-
-    function createPointerLeaveHandler(interaction) {
-        return interaction.pointer ? interaction.pointer.leave : undefined;
-    }
-
-    function createPointerDownHandler(interaction, selectable) {
-        return selectable && interaction.action
-            ? interaction.action.select
-            : undefined;
-    }
 </script>
 
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
     on:pointerenter={createPointerEnterHandler($_interaction)}
-    on:pointerleave={createPointerLeaveHandler($_interaction)}
-    on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
+    on:pointerleave={$_interaction.pointer?.leave}
+    on:pointerdown={$_interaction.action?.select}
 >
     <div class="{$theme.bgEvents}">
         {#each bgChunks as chunk (chunk.event)}

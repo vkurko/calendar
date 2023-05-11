@@ -8,11 +8,8 @@
         createEventChunk,
         datesEqual,
         setMidnight,
-        toLocalDate,
         sortEventChunks,
         eventIntersects,
-        toViewWithLocalDates,
-        toISOString,
         setPayload,
         bgEvent
     } from '@event-calendar/common';
@@ -20,7 +17,7 @@
 
     export let date;
 
-    let {_events, _intlDayHeader, _view, date: currentDate, dateClick, highlightedDates, theme} = getContext('state');
+    let {_events, _interaction, highlightedDates, theme} = getContext('state');
     let {_intlListDayFormat, _intlListDaySideFormat} = getContext('view-state');
 
     let el;
@@ -49,28 +46,13 @@
     $: if (el) {
         setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el}));
     }
-
-    function createClickHandler(fn) {
-        return is_function(fn)
-            ? jsEvent => {
-                fn({
-                    allDay: true,
-                    date: toLocalDate(date),
-                    dateStr: toISOString(date),
-                    dayEl: el,
-                    jsEvent,
-                    view: toViewWithLocalDates($_view)
-                });
-            }
-            : undefined;
-    }
 </script>
 
 {#if chunks.length}
     <div
         bind:this={el}
         class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
-        on:click={createClickHandler($dateClick)}
+        on:pointerdown={$_interaction.action?.select}
     >
         {$_intlListDayFormat.format(date)}
         <span class="{$theme.daySide}">{$_intlListDaySideFormat.format(date)}</span>

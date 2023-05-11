@@ -16,7 +16,8 @@
     export let longChunks = {};
 
     let {displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable} = getContext('state');
+        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes,
+        _resBgColor, _resTxtColor} = getContext('state');
 
     const dispatch = createEventDispatcher();
 
@@ -36,8 +37,8 @@
         display = event.display;
 
         // Class & Style
-        let bgColor = event.backgroundColor || $eventBackgroundColor || $eventColor;
-        let txtColor = event.textColor || $eventTextColor;
+        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
         style =
             `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
             `margin-top:${margin}px;`
@@ -72,8 +73,10 @@
             : undefined;
     }
 
-    function createDragHandler(resize) {
-        return jsEvent => $_interaction.action.drag(event, jsEvent, resize);
+    function createDragHandler(interaction, resize) {
+        return interaction.action
+            ? jsEvent => interaction.action.drag(event, jsEvent, resize)
+            : undefined;
     }
 
     export function reposition() {
@@ -91,12 +94,12 @@
     on:click={createHandler($eventClick, display)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={!helperEvent(display) && $_draggable(event) && createDragHandler()}
+    on:pointerdown={!helperEvent(display) && createDragHandler($_interaction)}
 >
     <div class="{$theme.eventBody}" use:setContent={content}></div>
     <svelte:component
         this={$_interaction.resizer}
         {event}
-        on:pointerdown={createDragHandler(true)}
+        on:pointerdown={createDragHandler($_interaction, true)}
     />
 </div>

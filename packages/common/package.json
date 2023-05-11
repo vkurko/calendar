@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/common",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Event Calendar Common package",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [

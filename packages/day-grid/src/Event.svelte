@@ -77,8 +77,10 @@
             : undefined;
     }
 
-    function createDragHandler(resize) {
-        return jsEvent => $_interaction.action.drag(event, jsEvent, resize, inPopup ? $_popupDate : undefined);
+    function createDragHandler(interaction, resize) {
+        return interaction.action
+            ? jsEvent => $_interaction.action.drag(event, jsEvent, resize, inPopup ? $_popupDate : undefined)
+            : undefined;
     }
 
     export function reposition() {
@@ -138,12 +140,12 @@
     on:click={createHandler($eventClick, display)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={!helperEvent(display) && $_draggable(event) && createDragHandler()}
+    on:pointerdown={!helperEvent(display) && createDragHandler($_interaction)}
 >
     <div class="{$theme.eventBody}" use:setContent={content}></div>
     <svelte:component
         this={$_interaction.resizer}
         {event}
-        on:pointerdown={createDragHandler(true)}
+        on:pointerdown={createDragHandler($_interaction, true)}
     />
 </div>

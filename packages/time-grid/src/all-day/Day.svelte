@@ -14,7 +14,7 @@
     export let iChunks = [];
     export let resource = undefined;
 
-    let {highlightedDates, theme, _interaction, selectable} = getContext('state');
+    let {highlightedDates, theme, _interaction} = getContext('state');
 
     let el;
     let dayChunks;
@@ -61,7 +61,7 @@
 <div
     bind:this={el}
     class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    on:pointerdown={createPointerDownHandler($_interaction, $selectable)}
+    on:pointerdown={$_interaction.action?.select}
 >
     <!-- Drag, Resize & Select -->
     {#if iChunks[0] && datesEqual(iChunks[0].date, date)}

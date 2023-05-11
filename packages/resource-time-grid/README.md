@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (28kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (29kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 60,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -54,6 +54,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventResizeStop](#eventresizestop)
   - [eventSources](#eventsources)
   - [eventStartEditable](#eventstarteditable)
+  - [eventTextColor](#eventtextcolor)
   - [eventTimeFormat](#eventtimeformat)
   - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
@@ -192,8 +193,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.0.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.0.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.1.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.1.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1248,6 +1249,14 @@ function (time) {
 </tr>
 </table>
 
+### eventTextColor
+- Type `string`
+- Default `undefined`
+
+Sets the default text color for events on the calendar.
+
+You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+
 ### filterResourcesWithEvents
 - Type `boolean`
 - Default `false`
@@ -2187,6 +2196,16 @@ The [eventBackgroundColor](#eventbackgroundcolor) override for this specific eve
 <tr>
 <td>
 
+`textColor`
+</td>
+<td>
+
+The [eventTextColor](#eventtextcolor) override for this specific event
+</td>
+</tr>
+<tr>
+<td>
+
 `extendedProps`
 </td>
 <td>
@@ -2324,6 +2343,16 @@ Here are all admissible fields for the event’s input object:
 <tr>
 <td>
 
+`textColor`
+</td>
+<td>
+
+`string` Sets the event’s text color just like the calendar-wide [eventTextColor](#eventtextcolor) option. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
 `color`
 </td>
 <td>
@@ -2426,6 +2455,13 @@ Here are all properties that exist in Resource object:
 </td>
 <td>Default background color for this resource's events</td>
 </tr>
+<tr>
+<td>
+
+`eventTextColor`
+</td>
+<td>Default text color for this resource's events</td>
+</tr>
 </table>
 
 ### Parsing resource from a plain object
@@ -2471,6 +2507,16 @@ Here are all admissible fields for the resource’s input object:
 <td>
 
 `string` Sets the default background color for this resource's events just like the calendar-wide [eventBackgroundColor](#eventbackgroundcolor) option. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
+`eventTextColor`
+</td>
+<td>
+
+`string` Sets the default text color for this resource's events just like the calendar-wide [eventTextColor](#eventtextcolor) option. Default `undefined`
 </td>
 </tr>
 </table>
