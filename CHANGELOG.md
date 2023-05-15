@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 1.1.1
+May 15, 2023
+
+* Fixed a bug where `addEvent` did not immediately update the event store ([#124](https://github.com/vkurko/calendar/pull/124))
+
 ## 1.1.0
 May 11, 2023
 

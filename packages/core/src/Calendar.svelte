@@ -111,10 +111,9 @@
     }
 
     function updateEvents(func) {
-        if ($eventSources.length) {
-            $_events = func($_events);
-        } else {
-            $events = func($events);
+        $_events = func($_events);
+        if (!$eventSources.length) {
+            $events = $_events;
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/list",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Event Calendar List plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -15,16 +15,6 @@
     "url": "https://github.com/vkurko/calendar.git",
     "directory": "packages/list"
   },
-  "funding": [
-    {
-      "type": "paypal_$10",
-      "url": "https://paypal.me/vkurko/10usd"
-    },
-    {
-      "type": "paypal_$1",
-      "url": "https://paypal.me/vkurko/1usd"
-    }
-  ],
   "license": "MIT",
   "type": "module",
   "svelte": "src/index.js",
@@ -36,7 +26,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/common": "~1.1.0",
+    "@event-calendar/common": "~1.1.1",
     "svelte": "^3.55.1"
   }
 }
