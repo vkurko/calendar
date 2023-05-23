@@ -9,7 +9,7 @@
         floor,
         rect,
         setPayload
-    } from '@event-calendar/common';
+    } from '@event-calendar/core';
     import {groupEventChunks} from './utils';
     import Event from './Event.svelte';
     import NowIndicator from './NowIndicator.svelte';

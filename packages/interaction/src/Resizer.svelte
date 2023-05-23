@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {bgEvent, helperEvent} from '@event-calendar/common';
+    import {bgEvent, helperEvent} from '@event-calendar/core';
 
     export let event;
 

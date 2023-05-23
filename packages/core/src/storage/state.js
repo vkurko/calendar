@@ -12,8 +12,7 @@ import {
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
 } from './stores';
-import {writable2, intl, intlRange} from '@event-calendar/common';
-import {assign} from '@event-calendar/common';
+import {assign, writable2, intl, intlRange} from '../lib.js';
 
 export default class {
     constructor(plugins, input) {

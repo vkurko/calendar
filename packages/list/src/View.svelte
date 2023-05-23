@@ -4,7 +4,7 @@
     import Body from './Body.svelte';
     import Day from './Day.svelte';
     import State from './state';
-    import {addDay, cloneDate, toViewWithLocalDates, setContent} from '@event-calendar/common';
+    import {addDay, cloneDate, toViewWithLocalDates, setContent} from '@event-calendar/core';
 
     let {_events, _view, _viewDates, _viewClass, noEventsClick, noEventsContent, theme} = getContext('state');
 

@@ -1,6 +1,5 @@
 <script>
     import {getContext} from 'svelte';
-    import {is_function} from 'svelte/internal';
     import {
         addDay,
         cloneDate,
@@ -12,7 +11,7 @@
         eventIntersects,
         setPayload,
         bgEvent
-    } from '@event-calendar/common';
+    } from '@event-calendar/core';
     import Event from './Event.svelte';
 
     export let date;

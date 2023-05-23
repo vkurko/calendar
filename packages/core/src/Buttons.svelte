@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {createDate, cloneDate, subtractDay, addDuration, subtractDuration, setMidnight} from '@event-calendar/common';
+    import {createDate, cloneDate, subtractDay, addDuration, subtractDuration, setMidnight} from './lib.js';
 
     export let buttons;
 

@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount} from 'svelte';
+    import {getContext} from 'svelte';
     import Section from './Section.svelte';
 
     let {_bodyEl, _viewDates, scrollTime, slotDuration, slotHeight, theme} = getContext('state');

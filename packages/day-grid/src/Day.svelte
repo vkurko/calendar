@@ -2,7 +2,7 @@
     import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {createDate,	setMidnight, datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload,
-        debounce} from '@event-calendar/common';
+        debounce} from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 

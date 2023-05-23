@@ -1,7 +1,7 @@
 <script>
     import {getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {debounce, toISOString, toLocalDate, toViewWithLocalDates} from '@event-calendar/common';
+    import {debounce, toISOString, toLocalDate, toViewWithLocalDates} from './lib.js';
 
     let {datesSet, _auxiliary, _activeRange, _queue, _view} = getContext('state');
 

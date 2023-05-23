@@ -5,7 +5,7 @@
         setMidnight,
         datesEqual,
         setPayload
-    } from '@event-calendar/common';
+    } from '@event-calendar/core';
     import Event from './Event.svelte';
 
     export let date;

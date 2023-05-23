@@ -1,5 +1,5 @@
 import View from './View.svelte';
-import {intl} from '@event-calendar/common';
+import {intl} from '@event-calendar/core';
 
 export default {
 	createOptions(options) {

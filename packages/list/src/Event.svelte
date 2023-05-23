@@ -1,8 +1,7 @@
 <script>
     import {getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {createEventContent, toEventWithLocalDates, toViewWithLocalDates} from '@event-calendar/common';
-    import {setContent} from '@event-calendar/common';
+    import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '@event-calendar/core';
 
     export let chunk;
 

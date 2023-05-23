@@ -16,7 +16,7 @@
         getPayload,
         flushDebounce,
         hasYScroll
-    } from '@event-calendar/common';
+    } from './lib.js';
 
     export let plugins = [];
     export let options = {};

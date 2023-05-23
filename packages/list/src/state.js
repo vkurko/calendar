@@ -1,4 +1,4 @@
-import {intl} from '@event-calendar/common';
+import {intl} from '@event-calendar/core';
 
 export default class {
     constructor(state) {

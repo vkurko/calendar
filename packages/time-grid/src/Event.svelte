@@ -9,7 +9,7 @@
         bgEvent,
         helperEvent,
         ghostEvent
-    } from '@event-calendar/common';
+    } from '@event-calendar/core';
 
     export let date;
     export let chunk;

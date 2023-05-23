@@ -1,5 +1,4 @@
-import {assign, createDate, createDuration, setMidnight} from '@event-calendar/common';
-import {createEvents, createEventSources} from '@event-calendar/common';
+import {assign, createDate, createDuration, setMidnight, createEvents, createEventSources} from '../lib.js';
 import {is_function} from 'svelte/internal';
 
 export function createOptions(plugins) {

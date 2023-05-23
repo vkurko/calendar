@@ -6,7 +6,7 @@ import {
     addDuration,
     createDuration,
     min as minFn, max as maxFn
-} from '@event-calendar/common';
+} from '@event-calendar/core';
 
 export function times(state, localState) {
     return derived(

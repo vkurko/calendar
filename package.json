@@ -1,6 +1,6 @@
 {
   "name": "event-calendar",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
@@ -13,14 +13,13 @@
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
     "@babel/runtime-corejs3": "^7.20.13",
-    "@event-calendar/build": "~1.1.1",
-    "@event-calendar/common": "~1.1.1",
-    "@event-calendar/core": "~1.1.1",
-    "@event-calendar/day-grid": "~1.1.1",
-    "@event-calendar/interaction": "~1.1.1",
-    "@event-calendar/list": "~1.1.1",
-    "@event-calendar/resource-time-grid": "~1.1.1",
-    "@event-calendar/time-grid": "~1.1.1",
+    "@event-calendar/build": "~1.2.0",
+    "@event-calendar/core": "~1.2.0",
+    "@event-calendar/day-grid": "~1.2.0",
+    "@event-calendar/interaction": "~1.2.0",
+    "@event-calendar/list": "~1.2.0",
+    "@event-calendar/resource-time-grid": "~1.2.0",
+    "@event-calendar/time-grid": "~1.2.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.0.1",
     "@rollup/plugin-node-resolve": "^15.0.1",
@@ -32,7 +31,7 @@
     "rollup-plugin-scss": "^4.0.0",
     "rollup-plugin-svelte": "^7.1.0",
     "sass": "^1.57.1",
-    "svelte": "^3.55.1"
+    "svelte": "^3.59.1"
   },
   "dependencies": {
     "sirv-cli": "^2.0.2"

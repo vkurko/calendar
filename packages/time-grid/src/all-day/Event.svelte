@@ -10,7 +10,7 @@
         repositionEvent,
         helperEvent,
         previewEvent
-    } from '@event-calendar/common';
+    } from '@event-calendar/core';
 
     export let chunk;
     export let longChunks = {};

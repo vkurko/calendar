@@ -1,7 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {cloneDate, addDay} from '@event-calendar/common';
-    import {createEventChunk, prepareEventChunks, eventIntersects} from '@event-calendar/common';
+    import {cloneDate, addDay, createEventChunk, prepareEventChunks, eventIntersects} from '@event-calendar/core';
     import Day from './Day.svelte';
 
     export let dates;

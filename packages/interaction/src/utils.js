@@ -1,4 +1,4 @@
-import {min, max} from '@event-calendar/common';
+import {min, max} from '@event-calendar/core';
 
 let busy = false;
 export function animate(fn) {

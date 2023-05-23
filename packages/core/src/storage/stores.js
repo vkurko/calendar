@@ -2,10 +2,14 @@ import {derived, writable, readable} from 'svelte/store';
 import {is_function} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
+    assign,
     cloneDate,
     createDate,
+    createEvents,
+    createView,
     addDuration,
     addDay,
+    derived2,
     subtractDay,
     toISOString,
     nextClosestDay,
@@ -13,11 +17,7 @@ import {
     setMidnight,
     toLocalDate,
     debounce
-} from '@event-calendar/common';
-import {derived2} from '@event-calendar/common';
-import {createEvents} from '@event-calendar/common';
-import {createView} from '@event-calendar/common';
-import {assign} from '@event-calendar/common';
+} from '../lib.js';
 
 export function monthMode(state) {
     return derived(state._viewClass, $_viewClass => $_viewClass === 'month');

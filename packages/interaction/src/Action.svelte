@@ -18,7 +18,7 @@
         toISOString,
         toLocalDate,
         toViewWithLocalDates
-    } from '@event-calendar/common';
+    } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
     let {_iEvents, _iClass, _events, _view, _monthMode, _draggable, _viewClass, dragScroll, datesAboveResources,
@@ -52,11 +52,16 @@
     let viewport;
 
     export function drag(eventToDrag, jsEvent, resize, forceDate) {
-        if (!action && jsEvent.isPrimary) {
-            action = resize ? ACTION_RESIZE : ($_draggable(eventToDrag) ? ACTION_DRAG : ACTION_NO_ACTION);
-            event = eventToDrag;
+        if (!action) {
+            action = validJsEvent(jsEvent) ? (
+                resize ? ACTION_RESIZE : (
+                    $_draggable(eventToDrag) ? ACTION_DRAG : ACTION_NO_ACTION
+                )
+            ) : ACTION_NO_ACTION;
 
             if (complexAction()) {
+                event = eventToDrag;
+
                 common(jsEvent);
 
                 if (forceDate) {
@@ -85,8 +90,10 @@
     }
 
     export function select(jsEvent) {
-        if (!action && jsEvent.isPrimary) {
-            action = $selectable && $_viewClass !== 'list' ? ACTION_SELECT : ACTION_CLICK;
+        if (!action) {
+            action = validJsEvent(jsEvent) ? (
+                $selectable && $_viewClass !== 'list' ? ACTION_SELECT : ACTION_CLICK
+            ) : ACTION_NO_ACTION;
 
             if (complexAction()) {
                 common(jsEvent);
@@ -389,6 +396,10 @@
 
     function complexAction() {
         return action && action < ACTION_CLICK;
+    }
+
+    function validJsEvent(jsEvent) {
+        return jsEvent.isPrimary && (jsEvent.pointerType !== 'mouse' || jsEvent.buttons & 1);
     }
 
     export function unselect(jsEvent) {

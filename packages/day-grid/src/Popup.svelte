@@ -1,6 +1,6 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {ancestor, rect, outsideEvent} from '@event-calendar/common';
+    import {ancestor, rect, outsideEvent} from '@event-calendar/core';
     import Event from './Event.svelte';
 
     let {theme, _interaction, _intlDayPopover} = getContext('state');

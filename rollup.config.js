@@ -14,108 +14,12 @@ const production = !process.env.ROLLUP_WATCH;
 
 export default [
 	{
-		input: 'packages/common/src/index.js',
-		output: {
-			format: 'es',
-			file: 'packages/common/index.js'
-		},
-		external: ['svelte/internal', 'svelte/store'],
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: !production,
-					css: false
-				}
-			})
-		],
-	},
-	{
-		input: 'packages/interaction/src/index.js',
-		output: {
-			format: 'es',
-			file: 'packages/interaction/index.js'
-		},
-		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: !production,
-					css: false
-				}
-			})
-		],
-	},
-	{
-		input: 'packages/day-grid/src/index.js',
-		output: {
-			format: 'es',
-			file: 'packages/day-grid/index.js'
-		},
-		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: !production,
-					css: false
-				}
-			})
-		],
-	},
-	{
-		input: 'packages/list/src/index.js',
-		output: {
-			format: 'es',
-			file: 'packages/list/index.js'
-		},
-		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: !production,
-					css: false
-				}
-			})
-		],
-	},
-	{
-		input: 'packages/time-grid/src/index.js',
-		output: {
-			format: 'es',
-			file: 'packages/time-grid/index.js'
-		},
-		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: !production,
-					css: false
-				}
-			})
-		],
-	},
-	{
-		input: 'packages/resource-time-grid/src/index.js',
-		output: {
-			format: 'es',
-			file: 'packages/resource-time-grid/index.js'
-		},
-		external: ['@event-calendar/time-grid', 'svelte', 'svelte/internal', 'svelte/store'],
-		plugins: [
-			svelte({
-				compilerOptions: {
-					dev: !production,
-					css: false
-				}
-			})
-		],
-	},
-	{
 		input: 'packages/core/src/index.js',
 		output: {
 			format: 'es',
 			file: 'packages/core/index.js'
 		},
-		external: ['@event-calendar/common', 'svelte', 'svelte/internal', 'svelte/store'],
+		external: ['svelte', 'svelte/internal', 'svelte/store'],
 		plugins: [
 			svelte({
 				compilerOptions: {
@@ -131,6 +35,86 @@ export default [
 					writeFileSync('packages/core/index.css', styles);
 				}
 			}),
+		],
+	},
+	{
+		input: 'packages/interaction/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/interaction/index.js'
+		},
+		external: ['@event-calendar/core', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
+			})
+		],
+	},
+	{
+		input: 'packages/day-grid/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/day-grid/index.js'
+		},
+		external: ['@event-calendar/core', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
+			})
+		],
+	},
+	{
+		input: 'packages/list/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/list/index.js'
+		},
+		external: ['@event-calendar/core', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
+			})
+		],
+	},
+	{
+		input: 'packages/time-grid/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/time-grid/index.js'
+		},
+		external: ['@event-calendar/core', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
+			})
+		],
+	},
+	{
+		input: 'packages/resource-time-grid/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/resource-time-grid/index.js'
+		},
+		external: ['@event-calendar/core', '@event-calendar/time-grid', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					css: false
+				}
+			})
 		],
 	},
 	{

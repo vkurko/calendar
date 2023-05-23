@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 1.2.0
+May 23, 2023
+
+* :warning: The `@event-calendar/common` package has been deprecated. Its content has been moved to the `@event-calendar/core` package ([132](https://github.com/vkurko/calendar/issues/132))
+* Now drag&drop doesn't start on right click ([#131](https://github.com/vkurko/calendar/issues/131))
+
 ## 1.1.1
 May 15, 2023
 
@@ -232,7 +238,7 @@ August 26, 2021
 ## 0.3.1
 August 26, 2021
 
-* Drag&Drop optimization (switched to [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events))
+* Drag&drop optimization (switched to [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events))
 
 ## 0.3.0
 August 19, 2021
