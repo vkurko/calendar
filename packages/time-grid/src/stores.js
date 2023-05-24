@@ -1,4 +1,4 @@
-import {derived} from 'svelte/store';
+import { derived } from 'svelte/store';
 import {
     DAY_IN_SECONDS,
     createDate,
@@ -32,8 +32,8 @@ export function times(state, localState) {
 
 export function slotTimeLimits(state) {
     return derived(
-        [state._events, state._viewDates, state.flexibleSlotTimeLimits, state.slotMinTime, state.slotMaxTime],
-        ([$_events, $_viewDates, $flexibleSlotTimeLimits, $slotMinTime, $slotMaxTime]) => {
+        [state._events, state._viewDates, state.flexibleSlotTimeLimits, state.flexibleSlotsForBackgroundEvents state.slotMinTime, state.slotMaxTime],
+        ([$_events, $_viewDates, $flexibleSlotTimeLimits, $flexibleSlotsForBackgroundEvents, $slotMinTime, $slotMaxTime]) => {
             let min = createDuration($slotMinTime);
             let max = createDuration($slotMaxTime);
 
@@ -46,7 +46,7 @@ export function slotTimeLimits(state) {
                     let minStart = addDuration(cloneDate(date), minMin);
                     let maxEnd = addDuration(cloneDate(date), maxMax);
                     for (let event of $_events) {
-                        if (event.display === 'auto' && event.start < maxEnd && event.end > minStart) {
+                        if (($flexibleSlotsForBackgroundEvents || event.display === 'auto') && event.start < maxEnd && event.end > minStart) {
                             if (event.start < start) {
                                 let seconds = maxFn((event.start - date) / 1000, minMin.seconds);
                                 if (seconds < min.seconds) {
@@ -67,7 +67,7 @@ export function slotTimeLimits(state) {
                 }
             }
 
-            return {min, max};
+            return { min, max };
         }
     );
 }

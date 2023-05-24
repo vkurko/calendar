@@ -59,6 +59,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
   - [flexibleSlotTimeLimits](#flexibleslottimelimits)
+  - [flexibleSlotsForBackgroundEvents](#flexibleslotsforbackgroundevents)
   - [headerToolbar](#headertoolbar)
   - [height](#height)
   - [hiddenDays](#hiddendays)
@@ -1274,6 +1275,12 @@ The day that each week begins at, where Sunday is `0`, Monday is `1`, etc. Satur
 - Default `false`
 
 Determines whether [slotMinTime](#slotmintime) and [slotMaxTime](#slotmaxtime) should automatically expand when an event goes out of bounds.
+
+### flexibleSlotsForBackgroundEvents
+- Type `boolean`
+- Default `false`
+
+Determines whether [flexibleSlotTimeLimits](#flexibleslottimelimits) should also apply on background events when `true`.
 
 ### headerToolbar
 - Type `object`

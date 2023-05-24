@@ -1,5 +1,5 @@
-import {assign, createDate, createDuration, setMidnight, createEvents, createEventSources} from '../lib.js';
-import {is_function} from 'svelte/internal';
+import { assign, createDate, createDuration, setMidnight, createEvents, createEventSources } from '../lib.js';
+import { is_function } from 'svelte/internal';
 
 export function createOptions(plugins) {
     let options = {
@@ -16,7 +16,7 @@ export function createOptions(plugins) {
             day: 'numeric'
         },
         displayEventEnd: true,
-        duration: {weeks: 1},
+        duration: { weeks: 1 },
         events: [],
         eventBackgroundColor: undefined,
         eventTextColor: undefined,
@@ -33,6 +33,7 @@ export function createOptions(plugins) {
         },
         firstDay: 0,
         flexibleSlotTimeLimits: false,  // ec option
+        flexibleSlotsForBackgroundEvents: false,
         headerToolbar: {
             start: 'title',
             center: '',
