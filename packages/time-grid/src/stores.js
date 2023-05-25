@@ -1,11 +1,13 @@
 import {derived} from 'svelte/store';
+import {is_function} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
     createDate,
     cloneDate,
     addDuration,
     createDuration,
-    min as minFn, max as maxFn
+    min as minFn, max as maxFn,
+    bgEvent
 } from '@event-calendar/core';
 
 export function times(state, localState) {
@@ -40,13 +42,16 @@ export function slotTimeLimits(state) {
             if ($flexibleSlotTimeLimits) {
                 let minMin = createDuration(minFn(min.seconds, maxFn(0, max.seconds - DAY_IN_SECONDS)));
                 let maxMax = createDuration(maxFn(max.seconds, minMin.seconds + DAY_IN_SECONDS));
+                let filter = is_function($flexibleSlotTimeLimits?.eventFilter)
+                    ? $flexibleSlotTimeLimits.eventFilter
+                    : event => !bgEvent(event.display);
                 loop: for (let date of $_viewDates) {
                     let start = addDuration(cloneDate(date), min);
                     let end = addDuration(cloneDate(date), max);
                     let minStart = addDuration(cloneDate(date), minMin);
                     let maxEnd = addDuration(cloneDate(date), maxMax);
                     for (let event of $_events) {
-                        if (event.display === 'auto' && event.start < maxEnd && event.end > minStart) {
+                        if (!event.allDay && filter(event) && event.start < maxEnd && event.end > minStart) {
                             if (event.start < start) {
                                 let seconds = maxFn((event.start - date) / 1000, minMin.seconds);
                                 if (seconds < min.seconds) {

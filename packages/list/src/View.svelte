@@ -4,7 +4,7 @@
     import Body from './Body.svelte';
     import Day from './Day.svelte';
     import State from './state';
-    import {addDay, cloneDate, toViewWithLocalDates, setContent} from '@event-calendar/core';
+    import {addDay, cloneDate, toViewWithLocalDates, setContent, bgEvent} from '@event-calendar/core';
 
     let {_events, _view, _viewDates, _viewClass, noEventsClick, noEventsContent, theme} = getContext('state');
 
@@ -21,7 +21,7 @@
             let start = $_viewDates[0];
             let end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
             for (let event of $_events) {
-                if (event.display === 'auto' && event.start < end && event.end > start) {
+                if (!bgEvent(event.display) && event.start < end && event.end > start) {
                     noEvents = false;
                     break;
                 }

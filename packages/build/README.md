@@ -193,8 +193,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.2.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.2.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.3.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.3.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -282,10 +282,27 @@ Determines whether the `all-day` slot is displayed at the top of the calendar.
 When hidden with `false`, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
 
 ### buttonText
-- Type `object`
+- Type `object` or `function`
 - Default `{today: 'today', dayGridMonth: 'month', listDay: 'list', listWeek: 'list', listMonth: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week'}`
 
 Text that is displayed in buttons of the header toolbar.
+
+This value can be either a plain object with all necessary properties, or a callback function that receives default button texts object and should return a new one:
+
+```js
+function (texts) {
+  // return new button texts object
+}
+```
+<table>
+<tr>
+<td>
+
+`texts`
+</td>
+<td>An object with default button texts</td>
+</tr>
+</table>
 
 ### date
 - Type `Date` or `string`
@@ -1270,10 +1287,48 @@ Determines whether resources with no events for the current range should be hidd
 The day that each week begins at, where Sunday is `0`, Monday is `1`, etc. Saturday is `6`.
 
 ### flexibleSlotTimeLimits
-- Type `boolean`
+- Type `boolean` or `object`
 - Default `false`
 
 Determines whether [slotMinTime](#slotmintime) and [slotMaxTime](#slotmaxtime) should automatically expand when an event goes out of bounds.
+
+If set to `true`, then the decision on whether to expand the limits will be made based on the analysis of currently displayed events, but excluding background events.
+
+If you want background events not to be ignored, then instead of `true` you can pass an object with the following properties:
+
+<table>
+<tr>
+<td>
+
+`eventFilter`
+</td>
+<td>
+
+A function to determine whether a given event should be taken into account or not.
+
+```js
+function(event) {
+    // return true or false
+}
+```
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+[Event](#event-object) object to be analyzed.
+
+The function must return `true` to have this event counted, or `false` to ignore it
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
 
 ### headerToolbar
 - Type `object`
@@ -1793,7 +1848,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 
-This value can be either a plain object with all necessary properties, or a callback function that receives default theme object and should return an actual one:
+This value can be either a plain object with all necessary properties, or a callback function that receives default theme object and should return a new one:
 
 ```js
 function (theme) {

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 1.3.0
+May 25, 2023
+
+* Added the ability to set an event filter for `flexibleSlotTimeLimits` ([133](https://github.com/vkurko/calendar/issues/133))
+
 ## 1.2.0
 May 23, 2023
 
