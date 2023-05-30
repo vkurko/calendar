@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 1.3.1
+May 30, 2023
+
+* Fixed an issue with incorrect `dateClick` information when using specific `slotMinTime` settings ([135](https://github.com/vkurko/calendar/issues/135))
+
 ## 1.3.0
 May 25, 2023
 

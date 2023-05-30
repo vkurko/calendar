@@ -59,9 +59,9 @@
         return {
             allDay: false,
             date: addDuration(
-                cloneDate(date),
+                addDuration(cloneDate(date), $_slotTimeLimits.min),
                 $slotDuration,
-                floor(y / $slotHeight + $_slotTimeLimits.min.seconds / $slotDuration.seconds)
+                floor(y / $slotHeight)
             ),
             resource,
             dayEl: el

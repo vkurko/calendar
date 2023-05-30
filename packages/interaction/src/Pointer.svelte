@@ -56,9 +56,9 @@
             // timeGrid
             let ry = y - colRect.top;
             date = addDuration(
-                cloneDate(colDate),
+                addDuration(cloneDate(colDate), $_slotTimeLimits.min),
                 $slotDuration,
-                floor(ry / $slotHeight + $_slotTimeLimits.min.seconds / $slotDuration.seconds)
+                floor(ry / $slotHeight)
             );
         } else {
             // dayGrid
