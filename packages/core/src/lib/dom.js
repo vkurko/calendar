@@ -43,10 +43,17 @@ export function getPayload(el) {
     return el[payloadProp];
 }
 
-export function getElementWithPayload(x, y) {
-    for (let el of document.elementsFromPoint(x, y)) {
+export function getElementWithPayload(x, y, root = document) {
+    for (let el of root.elementsFromPoint(x, y)) {
         if (hasPayload(el)) {
             return el;
+        }
+        /** @see https://github.com/vkurko/calendar/issues/142 */
+        if (el.shadowRoot) {
+            let shadowEl = getElementWithPayload(x, y, el.shadowRoot);
+            if (shadowEl) {
+                return shadowEl;
+            }
         }
     }
     return null;

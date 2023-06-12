@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 1.4.0
+June 12, 2023
+
+* Now time is not rendered inside `allDay` events ([143](https://github.com/vkurko/calendar/issues/143))
+* Fixed interaction functions inside the shadow root ([142](https://github.com/vkurko/calendar/issues/142))
+
 ## 1.3.1
 May 30, 2023
 

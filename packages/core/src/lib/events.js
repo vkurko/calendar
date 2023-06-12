@@ -44,16 +44,8 @@ export function createEventChunk(event, start, end) {
 }
 
 export function sortEventChunks(chunks) {
-    // Sort by start date
-    chunks.sort((a, b) => {
-        if (a.start < b.start) {
-            return -1;
-        }
-        if (a.start > b.start) {
-            return 1;
-        }
-        return 0;
-    });
+    // Sort by start date (all-day events always on top)
+    chunks.sort((a, b) => a.start - b.start || b.event.allDay - a.event.allDay);
 }
 
 /**
@@ -120,7 +112,7 @@ export function repositionEvent(chunk, longChunks, height) {
     chunk.bottom = chunk.top + height;
     let margin = 1;
     let key = chunk.date.getTime();
-    if (longChunks[key]) {
+    if (longChunks[key]?.sorted || longChunks[key]?.chunks.every(chunk => 'top' in chunk)) {
         if (!longChunks[key].sorted) {
             longChunks[key].chunks.sort((a, b) => a.top - b.top);
             longChunks[key].sorted = true;
@@ -164,7 +156,7 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
             default:
                 content = {
                     domNodes: [
-                        createElement('div', theme.eventTime, null, timeText),
+                        ...chunk.event.allDay ? [] : [createElement('div', theme.eventTime, null, timeText)],
                         createElement('div', theme.eventTitle, chunk.event.titleHTML, chunk.event.title)
                     ]
                 };

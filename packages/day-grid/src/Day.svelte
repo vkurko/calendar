@@ -93,7 +93,7 @@
     function reposition() {
         refs.length = dayChunks.length;
         for (let ref of refs) {
-            ref && ref.reposition && ref.reposition();
+            ref?.reposition?.();
         }
     }
 
