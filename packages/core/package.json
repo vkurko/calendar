@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/core",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Event Calendar Core package",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [

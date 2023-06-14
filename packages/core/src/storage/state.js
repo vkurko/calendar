@@ -30,7 +30,6 @@ export default class {
         // Private stores
         this._queue = writable(new Map());  // debounce queue
         this._auxiliary = writable([]);  // auxiliary components
-        this._viewClass = writable(undefined);
         this._monthMode = monthMode(this);
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
@@ -47,6 +46,7 @@ export default class {
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
         this._view = view2(this);
+        this._viewClass = writable(undefined);
         this._viewComponent = writable(undefined);
         // Resources
         this._resBgColor = writable(noop);

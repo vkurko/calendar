@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/build",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Event Calendar",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -18,10 +18,10 @@
   "license": "MIT",
   "jsdelivr": "event-calendar.min.js",
   "devDependencies": {
-    "@event-calendar/day-grid": "~1.4.0",
-    "@event-calendar/interaction": "~1.4.0",
-    "@event-calendar/list": "~1.4.0",
-    "@event-calendar/time-grid": "~1.4.0",
-    "@event-calendar/resource-time-grid": "~1.4.0"
+    "@event-calendar/day-grid": "~1.4.1",
+    "@event-calendar/interaction": "~1.4.1",
+    "@event-calendar/list": "~1.4.1",
+    "@event-calendar/time-grid": "~1.4.1",
+    "@event-calendar/resource-time-grid": "~1.4.1"
   }
 }

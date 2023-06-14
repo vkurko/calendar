@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 1.4.1
+June 14, 2023
+
+* Fixed a bug with duplicate `eventSources.events` call ([146](https://github.com/vkurko/calendar/issues/146))
+
 ## 1.4.0
 June 12, 2023
 
