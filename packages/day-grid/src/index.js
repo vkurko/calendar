@@ -1,5 +1,7 @@
-import View from './View.svelte';
+import {writable} from 'svelte/store';
 import {intl} from '@event-calendar/core';
+import {days} from './stores.js';
+import View from './View.svelte';
 
 export default {
 	createOptions(options) {
@@ -23,6 +25,10 @@ export default {
 	},
 
 	createStores(state) {
+		state._days = days(state);
 		state._intlDayPopover = intl(state.locale, state.dayPopoverFormat);
+		state._hiddenEvents = writable({});
+		state._popupDate = writable(null);
+		state._popupChunks = writable([]);
 	}
 }

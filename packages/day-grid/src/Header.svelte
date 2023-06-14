@@ -1,8 +1,7 @@
 <script>
     import {getContext} from 'svelte';
 
-    let {theme, _intlDayHeader} = getContext('state');
-    let {_days} = getContext('view-state');
+    let {theme, _intlDayHeader, _days} = getContext('state');
 </script>
 
 <div class="{$theme.header}">

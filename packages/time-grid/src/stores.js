@@ -10,9 +10,9 @@ import {
     bgEvent
 } from '@event-calendar/core';
 
-export function times(state, localState) {
+export function times(state) {
     return derived(
-        [localState._slotTimeLimits, state._intlSlotLabel, state.slotDuration],
+        [state._slotTimeLimits, state._intlSlotLabel, state.slotDuration],
         ([$_slotTimeLimits, $_intlSlotLabel, $slotDuration]) => {
             let compact = $slotDuration.seconds >= 3600;
             let times = [];

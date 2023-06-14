@@ -2,6 +2,7 @@
     import {getContext, onMount, createEventDispatcher} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
+        createEventClasses,
         createEventContent,
         height,
         toEventWithLocalDates,
@@ -15,8 +16,8 @@
     export let chunk;
     export let longChunks = {};
 
-    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes,
+    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventClassNames,
+        eventDidMount, eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _iClasses,
         _resBgColor, _resTxtColor} = getContext('state');
 
     const dispatch = createEventDispatcher();
@@ -50,7 +51,11 @@
             style += `color:${txtColor};`;
         }
 
-        classes = $_classes($theme.event, event);
+        classes = [
+            $theme.event,
+            ...$_iClasses([], event),
+            ...createEventClasses($eventClassNames, event, $_view)
+        ].join(' ');
     }
 
     // Content

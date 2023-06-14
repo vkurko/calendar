@@ -2,8 +2,7 @@
     import {getContext} from 'svelte';
     import Section from './Section.svelte';
 
-    let {_bodyEl, _viewDates, scrollTime, slotDuration, slotHeight, theme} = getContext('state');
-    let {_slotTimeLimits, _times} = getContext('view-state');
+    let {_bodyEl, _viewDates, _slotTimeLimits, _times, scrollTime, slotDuration, slotHeight, theme} = getContext('state');
 
     let el;
     let compact;

@@ -1,16 +1,9 @@
 <script>
-    import {getContext, setContext} from 'svelte';
+    import {getContext} from 'svelte';
     import {Section, Body, Day, Week} from '@event-calendar/time-grid';
-    import State from './state';
     import Label from './Label.svelte';
 
-    let state = getContext('state');
-    let {datesAboveResources, _viewDates, _intlDayHeader, _viewClass, allDaySlot, theme} = state;
-
-    let viewState = new State(state);
-    setContext('view-state', viewState);
-
-    let {_viewResources} = viewState;
+    let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _viewClass, allDaySlot, theme} = getContext('state');
 
     $_viewClass = 'week';
 

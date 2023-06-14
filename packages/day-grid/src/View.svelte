@@ -1,16 +1,10 @@
 <script>
-    import {getContext, setContext} from 'svelte';
-    import State from './state';
+    import {getContext} from 'svelte';
     import Header from './Header.svelte';
     import Body from './Body.svelte';
     import Week from './Week.svelte';
 
-    let {_viewDates, _viewClass, dayMaxEvents, hiddenDays, theme} = getContext('state');
-
-    let viewState = new State(getContext('state'));
-    setContext('view-state', viewState);
-
-    let {_hiddenEvents} = viewState;
+    let {_viewDates, _viewClass, _hiddenEvents, dayMaxEvents, hiddenDays, theme} = getContext('state');
 
     $_viewClass = 'month';
 

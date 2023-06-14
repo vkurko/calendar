@@ -20,6 +20,7 @@ export function createOptions(plugins) {
         events: [],
         eventBackgroundColor: undefined,
         eventTextColor: undefined,
+        eventClassNames: undefined,
         eventClick: undefined,
         eventColor: undefined,
         eventContent: undefined,
@@ -105,9 +106,7 @@ export function createOptions(plugins) {
     };
 
     for (let plugin of plugins) {
-        if ('createOptions' in plugin) {
-            plugin.createOptions(options);
-        }
+        plugin.createOptions?.(options);
     }
 
     return options;
@@ -130,9 +129,7 @@ export function createParsers(options, plugins) {
     };
 
     for (let plugin of plugins) {
-        if ('createParsers' in plugin) {
-            plugin.createParsers(parsers, options);
-        }
+        plugin.createParsers?.(parsers, options);
     }
 
     return parsers;

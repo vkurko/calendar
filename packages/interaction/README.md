@@ -35,6 +35,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [editable](#editable)
   - [events](#events)
   - [eventBackgroundColor](#eventbackgroundcolor)
+  - [eventClassNames](#eventclassnames)
   - [eventClick](#eventclick)
   - [eventColor](#eventcolor)
   - [eventContent](#eventcontent)
@@ -193,8 +194,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.4.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.4.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -542,6 +543,43 @@ Sets the default background color for events on the calendar.
 
 You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
 
+### eventClassNames
+- Type `string`, `array` or `function`
+- Default `undefined`
+
+Sets additional CSS classes for events.
+
+This value can be either a string containing class names `'class-1 class-2 ...'`, an array of strings `['class-1', 'class-2', ...]` or a function that returns any of the above formats:
+
+```js
+function (info) {
+    // return string or array
+}
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The associated [Event](#event-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
 ### eventClick
 - Type `function`
 - Default `undefined`
@@ -596,7 +634,7 @@ The current [View](#view-object) object
 This is currently an alias for the `eventBackgroundColor`.
 
 ### eventContent
-- Type `string`, `object`or `function`
+- Type `string`, `object` or `function`
 - Default `undefined`
 
 Defines the content that is rendered inside an event’s element.

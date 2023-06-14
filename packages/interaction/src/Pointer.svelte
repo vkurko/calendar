@@ -2,7 +2,7 @@
     import {getContext} from 'svelte';
     import {addDuration, cloneDate, floor, rect} from '@event-calendar/core';
 
-    let {_iEvents, _events, _viewDates, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
+    let {_iEvents, _events, _viewDates, _slotTimeLimits, slotDuration, slotHeight, hiddenDays, _view, datesAboveResources,
         theme} = getContext('state');
 
     let y;
@@ -11,15 +11,13 @@
     let colRect;
     let resource;
 
-    let _slotTimeLimits;
-
     let date;
 
     $: if ($_iEvents[0]) {
         removePointerEvent();
     }
 
-    export function enterTimeGrid(date, el, jsEvent, slotTimeLimitsStore, resourceObj) {
+    export function enterTimeGrid(date, el, jsEvent, resourceObj) {
         if (validEvent(jsEvent)) {
             colDate = date;
             colEl = el;
@@ -27,7 +25,6 @@
 
             y = jsEvent.clientY;
 
-            _slotTimeLimits = slotTimeLimitsStore;
             resource = resourceObj;
         }
     }
@@ -37,7 +34,7 @@
             colDate = date;
             colEl = null;
 
-            y = _slotTimeLimits = resource = undefined;
+            y = resource = undefined;
         }
     }
 

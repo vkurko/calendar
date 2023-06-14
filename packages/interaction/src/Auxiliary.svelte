@@ -1,24 +1,21 @@
 <script>
     import {getContext} from 'svelte';
     import {listen} from 'svelte/internal';
+    import {bgEvent, helperEvent} from '@event-calendar/core';
     import Action from './Action.svelte';
     import Pointer from './Pointer.svelte';
     import Resizer from './Resizer.svelte';
 
     let {theme, editable, eventStartEditable, eventDurationEditable, pointer, _bodyEl,
-        _interaction, _classes, _draggable, _scroll} = getContext('state');
+        _interaction, _iClasses, _draggable} = getContext('state');
 
     $_interaction.resizer = Resizer;
 
     $: $_draggable = event => (event.startEditable ?? $eventStartEditable) || (event.editable ?? $editable);
 
-    $: $_classes = (className, event) => {
-        switch (event.display) {
-            case 'ghost': return `${$theme.event} ${$theme.ghost}`;
-            case 'preview': return `${$theme.event} ${$theme.preview}`;
-            case 'pointer': return `${$theme.event} ${$theme.pointer}`;
-            default: return className + ($_draggable(event) ? ' ' + $theme.draggable : '');
-        }
+    $: $_iClasses = (className, event) => {
+        let {display} = event;
+        return helperEvent(display) ? [$theme[display]] : (!bgEvent(display) && $_draggable(event) ? [$theme.draggable] : []);
     };
 
     $: if ($_bodyEl) {

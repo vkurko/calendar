@@ -16,8 +16,7 @@
 
     export let date;
 
-    let {_events, _interaction, highlightedDates, theme} = getContext('state');
-    let {_intlListDayFormat, _intlListDaySideFormat} = getContext('view-state');
+    let {_events, _interaction, _intlListDayFormat, _intlListDaySideFormat, highlightedDates, theme} = getContext('state');
 
     let el;
     let chunks;

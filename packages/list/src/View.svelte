@@ -1,15 +1,11 @@
 <script>
-    import {getContext, setContext} from 'svelte';
+    import {getContext} from 'svelte';
     import {is_function} from 'svelte/internal';
     import Body from './Body.svelte';
     import Day from './Day.svelte';
-    import State from './state';
     import {addDay, cloneDate, toViewWithLocalDates, setContent, bgEvent} from '@event-calendar/core';
 
     let {_events, _view, _viewDates, _viewClass, noEventsClick, noEventsContent, theme} = getContext('state');
-
-    let state = new State(getContext('state'));
-    setContext('view-state', state);
 
     $_viewClass = 'list';
 

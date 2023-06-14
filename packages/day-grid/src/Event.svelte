@@ -3,6 +3,7 @@
     import {is_function} from 'svelte/internal';
     import {
         ancestor,
+        createEventClasses,
         createEventContent,
         height,
         max,
@@ -18,9 +19,9 @@
     export let longChunks = {};
     export let inPopup = false;
 
-    let {dayMaxEvents, displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _classes, _draggable, _resBgColor, _resTxtColor} = getContext('state');
-    let {_hiddenEvents, _popupDate} = getContext('view-state');
+    let {dayMaxEvents, displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent,
+        eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _hiddenEvents, _popupDate} = getContext('state');
 
     let el;
     let event;
@@ -54,7 +55,11 @@
             style += 'visibility:hidden;';
         }
 
-        classes = $_classes($theme.event, event);
+        classes = [
+            $theme.event,
+            ...$_iClasses([], event),
+            ...createEventClasses($eventClassNames, event, $_view)
+        ].join(' ');
     }
 
     // Content

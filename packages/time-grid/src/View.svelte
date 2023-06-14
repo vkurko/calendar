@@ -1,15 +1,11 @@
 <script>
-    import {getContext, setContext} from 'svelte';
-    import State from './state';
+    import {getContext} from 'svelte';
     import Section from './Section.svelte';
     import Body from './Body.svelte';
     import Day from './Day.svelte';
     import Week from './all-day/Week.svelte';
 
-    let state = getContext('state');
-    let {_viewDates, _intlDayHeader, _viewClass, _scrollable, allDaySlot, theme} = state;
-
-    setContext('view-state', new State(state));
+    let {_viewDates, _intlDayHeader, _viewClass, _scrollable, allDaySlot, theme} = getContext('state');
 
     $_viewClass = 'week';
 </script>

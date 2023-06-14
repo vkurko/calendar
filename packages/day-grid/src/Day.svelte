@@ -12,8 +12,7 @@
     export let iChunks = [];
 
     let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _interaction, _queue} = getContext('state');
-    let {_hiddenEvents, _popupDate, _popupChunks} = getContext('view-state');
+        _hiddenEvents, _popupDate, _popupChunks, _interaction, _queue} = getContext('state');
 
     let el;
     let dayChunks;

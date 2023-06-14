@@ -54,14 +54,12 @@ export default class {
         // Interaction
         this._interaction = writable({});
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]
-        this._classes = writable(identity);
-        this._iClass = writable(undefined);
+        this._iClasses = writable(identity);  // interaction event css classes
+        this._iClass = writable(undefined);  // interaction css class for entire calendar
 
         // Let plugins create their private stores
         for (let plugin of plugins) {
-            if ('createStores' in plugin) {
-                plugin.createStores(this);
-            }
+            plugin.createStores?.(this);
         }
 
         if (input.view) {

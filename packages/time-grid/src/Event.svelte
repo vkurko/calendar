@@ -8,17 +8,15 @@
         setContent,
         bgEvent,
         helperEvent,
-        ghostEvent
+        ghostEvent, createEventClasses
     } from '@event-calendar/core';
 
     export let date;
     export let chunk;
 
     let {displayEventEnd, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick, eventDidMount,
-        eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme, _view, _intlEventTime,
-        _interaction, _classes, _resBgColor, _resTxtColor} = getContext('state');
-
-    let {_slotTimeLimits} = getContext('view-state');
+        eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _slotTimeLimits} = getContext('state');
 
     let el;
     let event;
@@ -65,7 +63,11 @@
         }
 
         // Class
-        classes = $_classes(bgEvent(display) ? $theme.bgEvent : $theme.event, event);
+        classes = [
+            bgEvent(display) ? $theme.bgEvent : $theme.event,
+            ...$_iClasses([], event),
+            ...createEventClasses($eventClassNames, event, $_view)
+        ].join(' ');
     }
 
     // Content

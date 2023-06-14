@@ -1,15 +1,22 @@
 <script>
     import {getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {createEventContent, toEventWithLocalDates, toViewWithLocalDates, setContent} from '@event-calendar/core';
+    import {
+        createEventContent,
+        toEventWithLocalDates,
+        toViewWithLocalDates,
+        setContent,
+        createEventClasses
+    } from '@event-calendar/core';
 
     export let chunk;
 
-    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick, eventDidMount,
-        eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor, _resTxtColor} = getContext('state');
+    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClassNames, eventClick,
+        eventDidMount, eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor, _resTxtColor} = getContext('state');
 
     let el;
     let event;
+    let classes;
     let style;
     let content;
     let timeText;
@@ -27,6 +34,11 @@
         if (txtColor) {
             style += `color:${txtColor};`;
         }
+
+        classes = [
+            $theme.event,
+            ...createEventClasses($eventClassNames, event, $_view)
+        ].join(' ');
     }
 
     $: {
@@ -56,7 +68,7 @@
 
 <div
     bind:this={el}
-    class="{$theme.event}"
+    class="{classes}"
     on:click={createHandler($eventClick)}
     on:mouseenter={createHandler($eventMouseEnter)}
     on:mouseleave={createHandler($eventMouseLeave)}

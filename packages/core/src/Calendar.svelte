@@ -119,7 +119,7 @@
 
     beforeUpdate(() => {
         flushDebounce($_queue);
-        setTimeout(recheckScrollable)
+        setTimeout(recheckScrollable);
     });
 
     function recheckScrollable() {

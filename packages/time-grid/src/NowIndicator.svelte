@@ -1,9 +1,7 @@
 <script>
     import {getContext} from 'svelte';
 
-    let {slotDuration, slotHeight, theme, _now, _today} = getContext('state');
-
-    let {_slotTimeLimits} = getContext('view-state');
+    let {slotDuration, slotHeight, theme, _now, _today, _slotTimeLimits} = getContext('state');
 
     let start;
     let top = 0;

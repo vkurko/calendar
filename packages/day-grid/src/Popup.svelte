@@ -3,8 +3,7 @@
     import {ancestor, rect, outsideEvent} from '@event-calendar/core';
     import Event from './Event.svelte';
 
-    let {theme, _interaction, _intlDayPopover} = getContext('state');
-    let {_popupDate, _popupChunks} = getContext('view-state');
+    let {theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
 
     let el;
     let style = '';

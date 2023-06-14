@@ -1,3 +1,4 @@
+import {intl} from '@event-calendar/core';
 import View from './View.svelte';
 
 export default {
@@ -32,5 +33,10 @@ export default {
 			component: View,
 			duration: {years: 1}
 		};
+	},
+
+	createStores(state) {
+		state._intlListDayFormat = intl(state.locale, state.listDayFormat);
+		state._intlListDaySideFormat = intl(state.locale, state.listDaySideFormat);
 	}
 }

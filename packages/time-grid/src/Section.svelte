@@ -3,8 +3,7 @@
     import {setContent} from '@event-calendar/core';
     import {createAllDayContent} from './utils.js';
 
-    let {allDayContent, theme} = getContext('state');
-    let {_times} = getContext('view-state');
+    let {allDayContent, theme, _times} = getContext('state');
 
     let allDayText;
     $: allDayText = createAllDayContent($allDayContent);

@@ -1,3 +1,5 @@
+import TimeGrid from '@event-calendar/time-grid';
+import {viewResources} from './stores.js';
 import View from './View.svelte';
 import Auxiliary from './Auxiliary.svelte';
 
@@ -29,7 +31,11 @@ export default {
 	},
 
 	createStores(state) {
+		if (!('_times' in state)) {
+			TimeGrid.createStores(state);
+		}
 		state._auxiliary.update($_auxiliary => [...$_auxiliary, Auxiliary]);
+		state._viewResources = viewResources(state);
 	}
 }
 

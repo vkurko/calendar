@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 1.5.0
+June 14, 2023
+
+* Added `eventClassNames` option ([106](https://github.com/vkurko/calendar/issues/106))
+
 ## 1.4.1
 June 14, 2023
 

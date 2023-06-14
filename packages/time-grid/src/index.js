@@ -1,6 +1,6 @@
+import {slotTimeLimits, times} from './stores.js';
 import View from './View.svelte';
 
-export {default as State} from './state';
 export {default as Section} from './Section.svelte';
 export {default as Body} from './Body.svelte';
 export {default as Day} from './Day.svelte';
@@ -22,5 +22,10 @@ export default {
 			component: View,
 			duration: {weeks: 1}
 		};
+	},
+
+	createStores(state) {
+		state._slotTimeLimits = slotTimeLimits(state);  // flexible limits
+		state._times = times(state);
 	}
 }

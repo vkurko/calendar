@@ -166,6 +166,19 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
     return [timeText, content];
 }
 
+export function createEventClasses(eventClassNames, event, _view) {
+    if (eventClassNames) {
+        if (is_function(eventClassNames)) {
+            eventClassNames = eventClassNames({
+                event: toEventWithLocalDates(event),
+                view: toViewWithLocalDates(_view)
+            });
+        }
+        return Array.isArray(eventClassNames) ? eventClassNames : [eventClassNames];
+    }
+    return [];
+}
+
 export function toEventWithLocalDates(event) {
     return _cloneEvent(event, toLocalDate);
 }
@@ -200,7 +213,7 @@ export function eventIntersects(event, start, end, resource, timeMode) {
 }
 
 export function helperEvent(display) {
-    return display === 'preview' || display === 'ghost' || display === 'pointer';
+    return previewEvent(display) || ghostEvent(display) || pointerEvent(display);
 }
 
 export function bgEvent(display) {
@@ -213,4 +226,8 @@ export function previewEvent(display) {
 
 export function ghostEvent(display) {
     return display === 'ghost';
+}
+
+export function pointerEvent(display) {
+    return display === 'pointer';
 }

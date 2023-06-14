@@ -18,8 +18,7 @@
     export let resource = undefined;
 
     let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, theme,
-        _interaction, _today} = getContext('state');
-    let {_slotTimeLimits} = getContext('view-state');
+        _interaction, _today, _slotTimeLimits} = getContext('state');
 
     let el;
     let chunks, bgChunks, iChunks = [];
@@ -74,7 +73,7 @@
 
     function createPointerEnterHandler(interaction) {
         return interaction.pointer
-            ? jsEvent => interaction.pointer.enterTimeGrid(date, el, jsEvent, _slotTimeLimits, resource)
+            ? jsEvent => interaction.pointer.enterTimeGrid(date, el, jsEvent, resource)
             : undefined;
     }
 </script>
