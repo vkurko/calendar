@@ -25,6 +25,7 @@ export default [
 				compilerOptions: {
 					// enable run-time checks when not in production
 					dev: !production,
+					discloseVersion: false,
 					css: false
 				},
 			}),
@@ -48,6 +49,7 @@ export default [
 			svelte({
 				compilerOptions: {
 					dev: !production,
+					discloseVersion: false,
 					css: false
 				}
 			})
@@ -64,6 +66,7 @@ export default [
 			svelte({
 				compilerOptions: {
 					dev: !production,
+					discloseVersion: false,
 					css: false
 				}
 			})
@@ -80,6 +83,7 @@ export default [
 			svelte({
 				compilerOptions: {
 					dev: !production,
+					discloseVersion: false,
 					css: false
 				}
 			})
@@ -96,6 +100,7 @@ export default [
 			svelte({
 				compilerOptions: {
 					dev: !production,
+					discloseVersion: false,
 					css: false
 				}
 			})
@@ -112,6 +117,7 @@ export default [
 			svelte({
 				compilerOptions: {
 					dev: !production,
+					discloseVersion: false,
 					css: false
 				}
 			})
