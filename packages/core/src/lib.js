@@ -1,3 +1,4 @@
+export * from './lib/a11y.js';
 export * from './lib/actions';
 export * from './lib/date';
 export * from './lib/debounce';

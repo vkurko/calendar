@@ -72,7 +72,7 @@ export default class {
         parseOpts(commonOpts, this);
         let views = new Set([...Object.keys(options.views), ...Object.keys(input.views || {})]);
         for (let view of views) {
-            let viewOpts = assign({}, options.views[view] || {}, input.views && input.views[view] || {});
+            let viewOpts = assign({}, options.views[view] ?? {}, input.views?.[view] ?? {});
             parseOpts(viewOpts, this);
             let opts = assign({}, commonOpts, viewOpts);
             // Change view component when view changes

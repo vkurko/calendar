@@ -194,8 +194,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.1/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -284,24 +284,35 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 
 ### buttonText
 - Type `object` or `function`
-- Default `{today: 'today', dayGridMonth: 'month', listDay: 'list', listWeek: 'list', listMonth: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week'}`
+- Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
+> Views override the default value as follows:
+> - dayGridMonth `function (text) { return {...text, next: 'Next month', prev: 'Previous month'}; }`
+> - listDay `function (text) { return {...text, next: 'Next day', prev: 'Previous day'}; }`
+> - listMonth `function (text) { return {...text, next: 'Next month', prev: 'Previous month'}; }`
+> - listWeek `function (text) { return {...text, next: 'Next week', prev: 'Previous week'}; }`
+> - listYear `function (text) { return {...text, next: 'Next year', prev: 'Previous year'}; }`
+> - resourceTimeGridDay `function (text) { return {...text, next: 'Next day', prev: 'Previous day'}; }`
+> - resourceTimeGridWeek `function (text) { return {...text, next: 'Next week', prev: 'Previous week'}; }`
+> - timeGridDay `function (text) { return {...text, next: 'Next day', prev: 'Previous day'}; }`
+> - timeGridWeek `function (text) { return {...text, next: 'Next week', prev: 'Previous week'}; }`
+
 
 Text that is displayed in buttons of the header toolbar.
 
-This value can be either a plain object with all necessary properties, or a callback function that receives default button texts object and should return a new one:
+This value can be either a plain object with all necessary properties, or a callback function that receives default button text object and should return a new one:
 
 ```js
-function (texts) {
-  // return new button texts object
+function (text) {
+  // return new button text object
 }
 ```
 <table>
 <tr>
 <td>
 
-`texts`
+`text`
 </td>
-<td>An object with default button texts</td>
+<td>An object with default button text</td>
 </tr>
 </table>
 

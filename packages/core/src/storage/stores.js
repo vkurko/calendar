@@ -20,7 +20,7 @@ import {
 } from '../lib.js';
 
 export function monthMode(state) {
-    return derived(state.view, $view => $view.startsWith?.('dayGrid'));
+    return derived(state.view, $view => $view?.startsWith('dayGrid'));
 }
 
 export function activeRange(state) {

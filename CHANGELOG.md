@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 1.5.1
+July 26, 2023
+
+* Fixed A11y warnings after updating to Svelte 4.x ([160](https://github.com/vkurko/calendar/issues/160))
+
 ## 1.5.0
 June 14, 2023
 

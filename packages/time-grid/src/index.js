@@ -1,3 +1,4 @@
+import {btnTextDay, btnTextWeek} from '@event-calendar/core';
 import {slotTimeLimits, times} from './stores.js';
 import View from './View.svelte';
 
@@ -13,12 +14,14 @@ export default {
 		options.buttonText.timeGridWeek = 'week';
 		options.view = 'timeGridWeek';
 		options.views.timeGridDay = {
+			buttonText: btnTextDay,
 			component: View,
 			dayHeaderFormat: {weekday: 'long'},
 			duration: {days: 1},
 			titleFormat: {year: 'numeric', month: 'long', day: 'numeric'}
 		};
 		options.views.timeGridWeek = {
+			buttonText: btnTextWeek,
 			component: View,
 			duration: {weeks: 1}
 		};

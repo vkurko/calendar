@@ -1,3 +1,4 @@
+import {btnTextDay, btnTextWeek} from '@event-calendar/core';
 import TimeGrid from '@event-calendar/time-grid';
 import {viewResources} from './stores.js';
 import View from './View.svelte';
@@ -17,10 +18,12 @@ export default {
 		options.theme.resourceTitle = 'ec-resource-title';
 		options.view = 'resourceTimeGridWeek';
 		options.views.resourceTimeGridDay = {
+			buttonText: btnTextDay,
 			component: View,
 			duration: {days: 1}
 		};
 		options.views.resourceTimeGridWeek = {
+			buttonText: btnTextWeek,
 			component: View,
 			duration: {weeks: 1}
 		};

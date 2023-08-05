@@ -2,7 +2,7 @@
     import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {createDate,	setMidnight, datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload,
-        debounce} from '@event-calendar/core';
+        debounce, keyEnter} from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -134,7 +134,17 @@
     {/if}
     <div class="{$theme.dayFoot}">
         {#if hiddenEvents.size}
-            <a on:click|stopPropagation={showMore} on:pointerdown|stopPropagation use:setContent={moreLink}></a>
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <!-- svelte-ignore a11y-missing-content -->
+            <a
+                role="button"
+                tabindex="0"
+                aria-haspopup="true"
+                on:click|stopPropagation={showMore}
+                on:keydown={keyEnter(showMore)}
+                on:pointerdown|stopPropagation
+                use:setContent={moreLink}
+            ></a>
         {/if}
     </div>
 </div>

@@ -41,6 +41,8 @@
 
 <Body>
 {#if noEvents}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div use:setContent={content} class="{$theme.noEvents}" on:click={handleClick}></div>
 {:else}
     {#each $_viewDates as date}

@@ -1,9 +1,9 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {ancestor, rect, outsideEvent} from '@event-calendar/core';
+    import {ancestor, rect, outsideEvent, keyEnter} from '@event-calendar/core';
     import Event from './Event.svelte';
 
-    let {theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
+    let {buttonText, theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
 
     let el;
     let style = '';
@@ -78,7 +78,17 @@
     on:pointerdown|stopPropagation
     on:pointerdownoutside={handlePointerDownOutside}
 >
-    <div class="{$theme.dayHead}">{$_intlDayPopover.format($_popupDate)} <a on:click|stopPropagation={close}>&times;</a></div>
+    <div class="{$theme.dayHead}">
+        {$_intlDayPopover.format($_popupDate)}
+        <!-- svelte-ignore a11y-missing-attribute -->
+        <a
+            role="button"
+            tabindex="0"
+            aria-label={$buttonText.close}
+            on:click|stopPropagation={close}
+            on:keydown={keyEnter(close)}
+        >&times;</a>
+    </div>
     <div class="{$theme.events}">
         {#each $_popupChunks as chunk (chunk.event)}
             <Event {chunk} inPopup />

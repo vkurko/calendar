@@ -1,4 +1,4 @@
-import {intl} from '@event-calendar/core';
+import {btnTextDay, btnTextWeek, btnTextMonth, btnTextYear, intl} from '@event-calendar/core';
 import View from './View.svelte';
 
 export default {
@@ -18,18 +18,22 @@ export default {
 		options.theme.noEvents = 'ec-no-events';
 		options.view = 'listWeek';
 		options.views.listDay = {
+			buttonText: btnTextDay,
 			component: View,
 			duration: {days: 1}
 		};
 		options.views.listWeek = {
+			buttonText: btnTextWeek,
 			component: View,
 			duration: {weeks: 1}
 		};
 		options.views.listMonth = {
+			buttonText: btnTextMonth,
 			component: View,
 			duration: {months: 1}
 		};
 		options.views.listYear = {
+			buttonText: btnTextYear,
 			component: View,
 			duration: {years: 1}
 		};
