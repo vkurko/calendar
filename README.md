@@ -60,6 +60,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
   - [flexibleSlotTimeLimits](#flexibleslottimelimits)
+  - [gridDayFormat](#griddayformat)
   - [headerToolbar](#headertoolbar)
   - [height](#height)
   - [hiddenDays](#hiddendays)
@@ -1376,6 +1377,29 @@ The function must return `true` to have this event counted, or `false` to ignore
 </table>
 
 </td>
+</tr>
+</table>
+
+### gridDayFormat
+- Type `object` or `function`
+- Default `{day: 'numeric'}`
+
+Defines the day-text that is displayed on the grid view.
+
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+
+```js
+function (date) {
+  // return formatted date string
+}
+```
+<table>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object that needs to be formatted</td>
 </tr>
 </table>
 

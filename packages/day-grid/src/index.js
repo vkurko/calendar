@@ -11,6 +11,7 @@ export default {
 		// Common options
 		options.buttonText.dayGridMonth = 'month';
 		options.buttonText.close = 'Close';
+		options.gridDayFormat = {day: 'numeric'};
 		options.theme.uniform = 'ec-uniform';
 		options.theme.dayFoot = 'ec-day-foot';
 		options.theme.month = 'ec-month';
@@ -29,6 +30,7 @@ export default {
 	createStores(state) {
 		state._days = days(state);
 		state._intlDayPopover = intl(state.locale, state.dayPopoverFormat);
+		state._intlGridDayFormat = intl(state.locale, state.gridDayFormat);
 		state._hiddenEvents = writable({});
 		state._popupDate = writable(null);
 		state._popupChunks = writable([]);
