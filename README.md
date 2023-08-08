@@ -1940,6 +1940,16 @@ function (date) {
 </tr>
 </table>
 
+The callback function can return HTML markup. If you want to use HTML entities in the title, you must use the callback function:
+
+```js
+function (date) {
+  let month = date.toLocaleDateString('en-US', { month: 'long' })
+  let year = date.toLocaleDateString('en-US', { year: 'numeric' })
+  return `<span class="month">${month}</span> <span class="year">${year}</span>`
+}
+```
+
 ### unselect
 - Type `function`
 - Default `undefined`

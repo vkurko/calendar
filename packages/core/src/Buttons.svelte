@@ -27,7 +27,7 @@
 
 {#each buttons as button}
     {#if button == 'title'}
-        <h2 class="{$theme.title}">{$_viewTitle}</h2>
+        <h2 class="{$theme.title}">{@html $_viewTitle}</h2>
     {:else if button == 'prev'}
         <button class="{$theme.button} ec-{button}" aria-label={$buttonText.prev} on:click={prev}><i class="{$theme.icon} ec-{button}"></i></button>
     {:else if button == 'next'}
