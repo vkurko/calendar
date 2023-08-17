@@ -1,5 +1,13 @@
 # Event Calendar changelog
 
+## 2.0.0
+August 17, 2023
+
+* :warning: To pass an HTML version of the title for an event, you now need to use the appropriate [Content](https://github.com/vkurko/calendar#content) value in the `title` field
+* :warning: The [eventTimeFormat](https://github.com/vkurko/calendar#eventtimeformat) given as a function now takes 2 input parameters ([149](https://github.com/vkurko/calendar/issues/149))
+* :warning: Formatting time intervals is now done using [Intl.DateTimeFormat.formatRange()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRange)
+* In all date and time formatting options that are set as a function, it is now allowed to return an HTML version of the content ([170](https://github.com/vkurko/calendar/pull/170))
+
 ## 1.5.1
 July 26, 2023
 

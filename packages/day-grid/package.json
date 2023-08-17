@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/day-grid",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "title": "Event Calendar DayGrid plugin",
   "description": "Full-sized drag & drop event calendar with resource view",
   "keywords": [
@@ -26,7 +26,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/core": "~1.5.1",
+    "@event-calendar/core": "~2.0.0",
     "svelte": "^4.1.1"
   }
 }

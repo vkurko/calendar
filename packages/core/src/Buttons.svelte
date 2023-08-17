@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {createDate, cloneDate, subtractDay, addDuration, subtractDuration, setMidnight} from './lib.js';
+    import {createDate, cloneDate, subtractDay, addDuration, setContent, subtractDuration, setMidnight} from './lib.js';
 
     export let buttons;
 
@@ -27,7 +27,8 @@
 
 {#each buttons as button}
     {#if button == 'title'}
-        <h2 class="{$theme.title}">{$_viewTitle}</h2>
+        <!-- svelte-ignore a11y-missing-content -->
+        <h2 class="{$theme.title}" use:setContent={$_viewTitle}></h2>
     {:else if button == 'prev'}
         <button class="{$theme.button} ec-{button}" aria-label={$buttonText.prev} on:click={prev}><i class="{$theme.icon} ec-{button}"></i></button>
     {:else if button == 'next'}

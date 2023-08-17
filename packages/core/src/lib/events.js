@@ -1,4 +1,4 @@
-import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, noTimePart} from './date';
+import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, noTimePart, copyTime} from './date';
 import {createElement} from './dom';
 import {assign} from './utils';
 import {toViewWithLocalDates} from './view';
@@ -131,10 +131,14 @@ export function repositionEvent(chunk, longChunks, height) {
 }
 
 export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
-    let timeText = _intlEventTime.format(chunk.start), content;
-    if (displayEventEnd && chunk.event.display !== 'pointer') {
-        timeText += ` - ${_intlEventTime.format(chunk.end)}`;
-    }
+    let timeText = _intlEventTime.formatRange(
+        chunk.start,
+        displayEventEnd && chunk.event.display !== 'pointer'
+            ? copyTime(cloneDate(chunk.start), chunk.end)  // make Intl.formatRange output only the time part
+            : chunk.start
+    );
+    let content;
+
     if (eventContent) {
         content = is_function(eventContent)
             ? eventContent({
@@ -150,14 +154,14 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
                 break;
             case 'pointer':
                 content = {
-                    domNodes: [createElement('div', theme.eventTime, null, timeText)]
+                    domNodes: [createElement('div', theme.eventTime, timeText)]
                 };
                 break;
             default:
                 content = {
                     domNodes: [
-                        ...chunk.event.allDay ? [] : [createElement('div', theme.eventTime, null, timeText)],
-                        createElement('div', theme.eventTitle, chunk.event.titleHTML, chunk.event.title)
+                        ...chunk.event.allDay ? [] : [createElement('div', theme.eventTime, timeText)],
+                        createElement('div', theme.eventTitle, chunk.event.title)
                     ]
                 };
         }

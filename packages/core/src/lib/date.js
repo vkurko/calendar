@@ -91,43 +91,6 @@ export function toISOString(date) {
     return date.toISOString().substring(0, 19);
 }
 
-export function formatRange(start, end, intl) {
-    if (start.getFullYear() !== end.getFullYear()) {
-        return intl.format(start) + ' - ' + intl.format(end);
-    }
-
-    let diff = [];
-    if (start.getMonth() !== end.getMonth()) {
-        diff.push('month');
-    }
-    if (start.getDate() !== end.getDate()) {
-        diff.push('day');
-    }
-
-    if (!diff.length) {
-        return intl.format(start);
-    }
-
-    let opts1 = intl.resolvedOptions();
-    let opts2 = {};
-    for (let key of diff) {
-        opts2[key] = opts1[key];
-    }
-    let intl2 = new Intl.DateTimeFormat(opts1.locale, opts2);
-
-    let full1 = intl.format(start);
-    let full2 = intl.format(end);
-    let part1 = intl2.format(start);
-    let part2 = intl2.format(end);
-
-    let common = _commonChunks(full1, part1, full2, part2);
-    if (common) {
-        return common.head + part1 + ' - ' + part2 + common.tail;
-    }
-
-    return full1 + ' - ' + full2;
-}
-
 export function datesEqual(date1, ...dates2) {
     return dates2.every(date2 => date1.getTime() === date2.getTime());
 }
@@ -149,6 +112,15 @@ export function prevClosestDay(date, day) {
   */
 export function noTimePart(date) {
     return typeof date === 'string' && date.length <= 10;
+}
+
+/**
+ * Copy time from one date to another
+ */
+export function copyTime(toDate, fromDate) {
+    toDate.setUTCHours(fromDate.getUTCHours(), fromDate.getUTCMinutes(), fromDate.getUTCSeconds(), 0);
+
+    return toDate;
 }
 
 /**
@@ -176,44 +148,4 @@ function _fromISOString(str) {
         Number(parts[4] || 0),
         Number(parts[5] || 0)
     ));
-}
-
-function _commonChunks(str1, substr1, str2, substr2) {
-    let i = 0;
-    while (i < str1.length) {
-        let res1;
-        [i, res1] = _cut(str1, substr1, i);
-        if (!res1) {
-            break;
-        }
-
-        let j = 0;
-        while (j < str2.length) {
-            let res2;
-            [j, res2] = _cut(str2, substr2, j);
-            if (!res2) {
-                break;
-            }
-
-            if (res1.head === res2.head && res1.tail === res2.tail) {
-                return res1;
-            }
-        }
-    }
-
-    return null
-}
-
-function _cut(str, substr, from) {
-    let start = str.indexOf(substr, from);
-    if (start >= 0) {
-        let end = start + substr.length;
-
-        return [end, {
-            head: str.substr(0, start),
-            tail: str.substr(end)
-        }];
-    }
-
-    return [-1, null];
 }

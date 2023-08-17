@@ -40,7 +40,7 @@ export default {
 	},
 
 	createStores(state) {
-		state._intlListDayFormat = intl(state.locale, state.listDayFormat);
-		state._intlListDaySideFormat = intl(state.locale, state.listDaySideFormat);
+		state._intlListDay = intl(state.locale, state.listDayFormat);
+		state._intlListDaySide = intl(state.locale, state.listDaySideFormat);
 	}
 }

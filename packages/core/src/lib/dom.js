@@ -1,12 +1,14 @@
 import {symbol} from './utils.js';
 
-export function createElement(tag, className, html, text) {
+export function createElement(tag, className, content) {
     let el = document.createElement(tag);
     el.className = className;
-    if (html) {
-        el.innerHTML = html;
-    } else if (text) {
-        el.innerText = text;
+    if (typeof content == 'string') {
+        el.innerText = content;
+    } else if (content.domNodes) {
+        el.replaceChildren(...content.domNodes);
+    } else if (content.html) {
+        el.innerHTML = content.html;
     }
     return el;
 }

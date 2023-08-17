@@ -1,5 +1,6 @@
 <script>
     import {getContext} from 'svelte';
+    import {setContent} from '@event-calendar/core';
     import Section from './Section.svelte';
     import Body from './Body.svelte';
     import Day from './Day.svelte';
@@ -13,7 +14,7 @@
 <div class="{$theme.header}">
     <Section>
         {#each $_viewDates as date}
-            <div class="{$theme.day}">{$_intlDayHeader.format(date)}</div>
+            <div class="{$theme.day}" use:setContent={$_intlDayHeader.format(date)}></div>
         {/each}
     </Section>
     <div class="{$theme.hiddenScroll}"></div>

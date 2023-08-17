@@ -12,15 +12,19 @@ import {
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
 } from './stores';
-import {assign, writable2, intl, intlRange} from '../lib.js';
+import {assign, keys, writable2, intl, intlRange} from '../lib.js';
 
 export default class {
     constructor(plugins, input) {
         plugins = plugins || [];
 
         // Create options
-        let options = createOptions(plugins);
+        let options= createOptions(plugins);
         let parsers = createParsers(options, plugins);
+
+        // Parse options
+        options = parseOpts(options, parsers);
+        input = parseOpts(input, parsers);
 
         // Create stores for options
         for (let [option, value] of Object.entries(options)) {
@@ -37,10 +41,10 @@ export default class {
         this._events = events(this);
         this._now = now();
         this._today = today(this);
-        this._intlEventTime = intl(this.locale, this.eventTimeFormat);
+        this._intlEventTime = intlRange(this.locale, this.eventTimeFormat);
         this._intlSlotLabel = intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = intl(this.locale, this.dayHeaderFormat);
-        this._titleIntlRange = intlRange(this.locale, this.titleFormat);
+        this._intlTitle = intlRange(this.locale, this.titleFormat);
         this._bodyEl = writable(undefined);
         this._scrollable = writable(false);
         this._viewTitle = viewTitle(this);
@@ -68,13 +72,9 @@ export default class {
         }
 
         // Set options for each view
-        let commonOpts = assign({}, options, input);
-        parseOpts(commonOpts, this);
-        let views = new Set([...Object.keys(options.views), ...Object.keys(input.views || {})]);
+        let views = new Set([...keys(options.views), ...keys(input.views ?? {})]);
         for (let view of views) {
-            let viewOpts = assign({}, options.views[view] ?? {}, input.views?.[view] ?? {});
-            parseOpts(viewOpts, this);
-            let opts = assign({}, commonOpts, viewOpts);
+            let opts = assign({}, options, options.views[view] ?? {}, input, input.views?.[view] ?? {});
             // Change view component when view changes
             this.view.subscribe(newView => {
                 if (newView === view) {
@@ -85,7 +85,7 @@ export default class {
                 }
             });
             // Process options
-            for (let key of Object.keys(opts)) {
+            for (let key of keys(opts)) {
                 if (this.hasOwnProperty(key) && key[0] !== '_') {
                     let {set, _set, ...rest} = this[key];
 
@@ -113,12 +113,15 @@ export default class {
     }
 }
 
-function parseOpts(opts, state) {
-    for (let key of Object.keys(opts)) {
-        if (state.hasOwnProperty(key) && key[0] !== '_') {
-            if (state[key].parse) {
-                opts[key] = state[key].parse(opts[key]);
-            }
+function parseOpts(opts, parsers) {
+    let result = {};
+    for (let key of keys(opts)) {
+        result[key] = parsers[key] ? parsers[key](opts[key]) : opts[key];
+    }
+    if (opts.views) {
+        for (let view of keys(opts.views)) {
+            result.views[view] = parseOpts(opts.views[view], parsers);
         }
     }
+    return result;
 }

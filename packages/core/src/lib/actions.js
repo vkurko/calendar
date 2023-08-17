@@ -1,18 +1,12 @@
-import {isObject} from './utils.js';
 
 export function setContent(node, content) {
     let actions = {
         update(content) {
-            while (node.firstChild) {
-                node.removeChild(node.lastChild);
-            }
-            if (!isObject(content)) {
+            if (typeof content == 'string') {
                 node.innerText = content;
-            } else if (content.domNodes) {
-                for (let child of content.domNodes) {
-                    node.appendChild(child);
-                }
-            } else if (content.html) {
+            } else if (content?.domNodes) {
+                node.replaceChildren(...content.domNodes);
+            } else if (content?.html) {
                 node.innerHTML = content.html;
             }
         }
