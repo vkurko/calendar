@@ -4,23 +4,23 @@ import {createOptions, createParsers} from './options';
 import {
     activeRange,
     currentRange,
+    dayGrid,
     events,
-    monthMode,
     now,
     today,
     viewDates,
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
 } from './stores';
-import {assign, keys, writable2, intl, intlRange} from '../lib.js';
+import {keys, writable2, intl, intlRange} from '../lib.js';
 
 export default class {
     constructor(plugins, input) {
         plugins = plugins || [];
 
         // Create options
-        let options= createOptions(plugins);
-        let parsers = createParsers(options, plugins);
+        let options = createOptions(plugins);
+        let parsers = createParsers(plugins);
 
         // Parse options
         options = parseOpts(options, parsers);
@@ -34,7 +34,7 @@ export default class {
         // Private stores
         this._queue = writable(new Map());  // debounce queue
         this._auxiliary = writable([]);  // auxiliary components
-        this._monthMode = monthMode(this);
+        this._dayGrid = dayGrid(this);
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
@@ -50,7 +50,6 @@ export default class {
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
         this._view = view2(this);
-        this._viewClass = writable(undefined);
         this._viewComponent = writable(undefined);
         // Resources
         this._resBgColor = writable(noop);
@@ -74,7 +73,7 @@ export default class {
         // Set options for each view
         let views = new Set([...keys(options.views), ...keys(input.views ?? {})]);
         for (let view of views) {
-            let opts = assign({}, options, options.views[view] ?? {}, input, input.views?.[view] ?? {});
+            let opts = mergeOpts(options, options.views[view] ?? {}, input, input.views?.[view] ?? {});
             // Change view component when view changes
             this.view.subscribe(newView => {
                 if (newView === view) {
@@ -121,6 +120,17 @@ function parseOpts(opts, parsers) {
     if (opts.views) {
         for (let view of keys(opts.views)) {
             result.views[view] = parseOpts(opts.views[view], parsers);
+        }
+    }
+    return result;
+}
+
+function mergeOpts(...args) {
+    let mergable = ['buttonText', 'theme'];
+    let result = {};
+    for (let opts of args) {
+        for (let key of keys(opts)) {
+            result[key] = mergable.includes(key) && is_function(opts[key]) ? opts[key](result[key]) : opts[key];
         }
     }
     return result;

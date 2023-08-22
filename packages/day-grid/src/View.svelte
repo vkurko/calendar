@@ -4,9 +4,7 @@
     import Body from './Body.svelte';
     import Week from './Week.svelte';
 
-    let {_viewDates, _viewClass, _hiddenEvents, dayMaxEvents, hiddenDays, theme} = getContext('state');
-
-    $_viewClass = 'month';
+    let {_viewDates, _hiddenEvents, dayMaxEvents, hiddenDays} = getContext('state');
 
     let weeks;
     let days;

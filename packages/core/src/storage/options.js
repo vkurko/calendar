@@ -1,5 +1,4 @@
 import {assign, createDate, createDuration, setMidnight, createEvents, createEventSources} from '../lib.js';
-import {is_function} from 'svelte/internal';
 
 export function createOptions(plugins) {
     let options = {
@@ -92,7 +91,7 @@ export function createOptions(plugins) {
             time: 'ec-time',
             title: 'ec-title',
             toolbar: 'ec-toolbar',
-            week: 'ec-week',
+            view: '',
             withScroll: 'ec-with-scroll'
         },
         titleFormat: {
@@ -112,9 +111,8 @@ export function createOptions(plugins) {
     return options;
 }
 
-export function createParsers(options, plugins) {
+export function createParsers(plugins) {
     let parsers = {
-        buttonText: input => is_function(input) ? input(options.buttonText) : input,
         date: date => setMidnight(createDate(date)),
         duration: createDuration,
         events: createEvents,
@@ -124,12 +122,11 @@ export function createParsers(options, plugins) {
         scrollTime: createDuration,
         slotDuration: createDuration,
         slotMaxTime: createDuration,
-        slotMinTime: createDuration,
-        theme: input => is_function(input) ? input(options.theme) : input
+        slotMinTime: createDuration
     };
 
     for (let plugin of plugins) {
-        plugin.createParsers?.(parsers, options);
+        plugin.createParsers?.(parsers);
     }
 
     return parsers;

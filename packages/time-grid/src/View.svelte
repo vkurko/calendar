@@ -6,9 +6,7 @@
     import Day from './Day.svelte';
     import Week from './all-day/Week.svelte';
 
-    let {_viewDates, _intlDayHeader, _viewClass, _scrollable, allDaySlot, theme} = getContext('state');
-
-    $_viewClass = 'week';
+    let {_viewDates, _intlDayHeader, allDaySlot, theme} = getContext('state');
 </script>
 
 <div class="{$theme.header}">

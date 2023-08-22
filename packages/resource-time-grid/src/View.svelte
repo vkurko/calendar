@@ -4,9 +4,7 @@
     import {Section, Body, Day, Week} from '@event-calendar/time-grid';
     import Label from './Label.svelte';
 
-    let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _viewClass, allDaySlot, theme} = getContext('state');
-
-    $_viewClass = 'week';
+    let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, allDaySlot, theme} = getContext('state');
 
     let loops;
     $: loops = $datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates];

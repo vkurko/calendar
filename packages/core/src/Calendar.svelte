@@ -26,7 +26,7 @@
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _viewClass, _bodyEl, _interaction, _iClass, _events, _queue, _scrollable,
+    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _scrollable,
         events, eventSources, height, theme} = state;
 
     // Reactively update options that did change
@@ -130,7 +130,7 @@
 </script>
 
 <div
-    class="{$theme.calendar}{$_viewClass ? ' ' + $theme[$_viewClass] : ''}{$_scrollable ? ' ' + $theme.withScroll : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
+    class="{$theme.calendar} {$theme.view}{$_scrollable ? ' ' + $theme.withScroll : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
     style="height: {$height}"
 >
     <Toolbar/>
