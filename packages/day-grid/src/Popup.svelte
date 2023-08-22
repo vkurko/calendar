@@ -1,6 +1,6 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {ancestor, rect, outsideEvent, keyEnter} from '@event-calendar/core';
+    import {ancestor, rect, setContent, outsideEvent, keyEnter} from '@event-calendar/core';
     import Event from './Event.svelte';
 
     let {buttonText, theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
@@ -79,7 +79,7 @@
     on:pointerdownoutside={handlePointerDownOutside}
 >
     <div class="{$theme.dayHead}">
-        {$_intlDayPopover.format($_popupDate)}
+        <span use:setContent={$_intlDayPopover.format($_popupDate)}></span>
         <!-- svelte-ignore a11y-missing-attribute -->
         <a
             role="button"

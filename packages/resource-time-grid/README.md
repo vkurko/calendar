@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (28kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (31kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -124,6 +124,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [unselect](#unselect-1)
   </td></tr>
   </table>
+- [Content](#content)
 - [Event object](#event-object)
   - [Parsing event from a plain object](#parsing-event-from-a-plain-object)
 - [Duration object](#duration-object)
@@ -194,8 +195,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@1.5.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.0.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.0.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -248,16 +249,16 @@ In Svelte, you can simply update the original `options` object.
 ## Options
 
 ### allDayContent
-- Type `string`, `object`or `function`
+- Type `Content` or `function`
 - Default `'all-day'`
 
 Defines the content that is displayed as a title of the `all-day` slot.
 
-This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a [Content](#content) or a function that returns content:
 
 ```js
 function (arg) {
-    // return string or object
+    // return Content
 }
 ```
 `arg` is an object with the following properties:
@@ -461,11 +462,11 @@ The current [View](#view-object) object
 
 Defines the text that is displayed on the calendar’s column headings.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
 ```js
 function (date) {
-    // return formatted date string
+    // return Content with the formatted date string
 }
 ```
 <table>
@@ -494,8 +495,13 @@ Currently, only the value `true` is supported, which limits the number of events
 
 Defines the date format of title of the popover created by the [dayMaxEvents](#daymaxevents) option.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
+```js
+function (date) {
+    // return Content with the formatted date string
+}
+```
 ### displayEventEnd
 - Type `boolean`
 - Default `true`
@@ -645,16 +651,16 @@ The current [View](#view-object) object
 This is currently an alias for the `eventBackgroundColor`.
 
 ### eventContent
-- Type `string`, `object` or `function`
+- Type `Content` or `function`
 - Default `undefined`
 
 Defines the content that is rendered inside an event’s element.
 
-This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a [Content](#content) or a function that returns content:
 
 ```js
 function (info) {
-    // return string or object
+    // return Content
 }
 ```
 `info` is an object with the following properties:
@@ -1298,20 +1304,27 @@ Determines whether the events on the calendar can be dragged.
 
 Defines the time-text that is displayed on each event.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with formatted string:
 
 ```js
-function (time) {
-    // return formatted time string
+function (start, end) {
+    // return Content with the formatted time string
 }
 ```
 <table>
 <tr>
 <td>
 
-`time`
+`start`
 </td>
-<td>JavaScript Date object that needs to be formatted</td>
+<td>JavaScript Date object containing the beginning of the time span to be formatted</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object containing the end of the time span to be formatted</td>
 </tr>
 </table>
 
@@ -1462,11 +1475,11 @@ When set to `false`, the calendar will fetch events any time the view is switche
 
 Defines the text on the left side of the day headings in list view.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
 ```js
 function (date) {
-  // return formatted date string
+  // return Content with the formatted date string
 }
 ```
 <table>
@@ -1485,11 +1498,11 @@ function (date) {
 
 Defines the text on the right side of the day headings in list view.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
 ```js
 function (date) {
-  // return formatted date string
+  // return Content with the formatted date string
 }
 ```
 <table>
@@ -1539,16 +1552,16 @@ For touch devices, the amount of time (in milliseconds) the user must hold down 
 For a more granular configuration, see [eventLongPressDelay](#eventlongpressdelay) and [selectLongPressDelay](#selectlongpressdelay).
 
 ### moreLinkContent
-- Type `string`, `object`or `function`
+- Type `Content` or `function`
 - Default `undefined`
 
 Defines the text that is displayed instead of the default `+2 more` created by the [dayMaxEvents](#daymaxevents) option.
 
-This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a [Content](#content) or a function that returns content:
 
 ```js
 function (arg) {
-  // return string or object
+  // return Content
 }
 ```
 `arg` is an object with the following properties:
@@ -1603,16 +1616,16 @@ The current [View](#view-object) object
 </table>
 
 ### noEventsContent
-- Type `string`, `object`or `function`
+- Type `Content` or `function`
 - Default `'No events'`
 
 Defines the text that is displayed in list view when there are no events to display.
 
-This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a [Content](#content) or a function that returns content:
 
 ```js
 function () {
-  // return string or object
+  // return Content
 }
 ```
 
@@ -1641,11 +1654,11 @@ Array of plain objects that will be parsed into [Resource](#resource-object) obj
 
 Defines the content that is rendered inside an element with a resource title.
 
-This value can be either a string containing text `'...'`, an object containing the HTML string `{html: '<p>...</p>'}`, an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}` or a function that returns any of the above formats:
+This value can be either a [Content](#content) or a function that returns content:
 
 ```js
 function (info) {
-    // return string or object
+    // return Content
 }
 ```
 `info` is an object with the following properties:
@@ -1858,11 +1871,11 @@ Defines the time slot height in pixels. When changing the setting, you must addi
 
 Defines the text that will be displayed within a time slot.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
 ```js
 function (time) {
-  // return formatted time string
+  // return Content with the formatted time string
 }
 ```
 <table>
@@ -1923,20 +1936,27 @@ function (theme) {
 
 Defines the text that is displayed in the header toolbar’s title.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
 ```js
-function (date) {
-  // return formatted date string
+function (start, end) {
+  // return Content with the formatted date string
 }
 ```
 <table>
 <tr>
 <td>
 
-`date`
+`start`
 </td>
-<td>JavaScript Date object that needs to be formatted</td>
+<td>JavaScript Date object containing the beginning of the time span to be formatted</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object containing the end of the time span to be formatted</td>
 </tr>
 </table>
 
@@ -2189,6 +2209,13 @@ Returns the [View](#view-object) object for the current view.
 
 Clears the current selection. See [selectable](#selectable).
 
+## Content
+The content can be presented in the following forms:
+
+* a string containing text `'some text'`
+* an object containing the HTML string `{html: '<p>some HTML</p>'}`
+* an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}`
+
 ## Event object
 This is a JavaScript object that the Event Calendar uses to store information about a calendar event.
 
@@ -2236,14 +2263,9 @@ Here are all properties that exist in Event object:
 
 `title`
 </td>
-<td>The text appearing on the event</td>
-</tr>
-<tr>
 <td>
 
-`titleHTML`
-</td>
-<td>The HTML version of the title</td>
+The text appearing on the event. See [Content](#content)</td>
 </tr>
 <tr>
 <td>
@@ -2391,17 +2413,7 @@ Here are all admissible fields for the event’s input object:
 </td>
 <td>
 
-`string` The text that will appear on the event. Default `''`
-</td>
-</tr>
-<tr>
-<td>
-
-`titleHTML`
-</td>
-<td>
-
-`string` The HTML version of the title to be displayed instead of the text version. Default `''`
+`Content` The text that will appear on the event. See [Content](#content). Default `''`
 </td>
 </tr>
 <tr>

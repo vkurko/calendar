@@ -12,7 +12,7 @@
 <div class="{$theme.sidebar}">
     <div class="{$theme.sidebarTitle}" use:setContent={allDayText}></div>
     {#each $_times as time}
-        <div class="{$theme.time}">{time}</div>
+        <div class="{$theme.time}" use:setContent={time}></div>
     {/each}
 </div>
 <div class="{$theme.days}">

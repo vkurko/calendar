@@ -7,7 +7,7 @@ import {
     addDuration,
     createDuration,
     min as minFn, max as maxFn,
-    bgEvent
+    bgEvent, setMidnight
 } from '@event-calendar/core';
 
 export function times(state) {
@@ -16,7 +16,7 @@ export function times(state) {
         ([$_slotTimeLimits, $_intlSlotLabel, $slotDuration]) => {
             let compact = $slotDuration.seconds >= 3600;
             let times = [];
-            let date = createDate('2020-01-01');
+            let date = setMidnight(createDate());
             let end = cloneDate(date);
             let i = 1;
             addDuration(date, $_slotTimeLimits.min);

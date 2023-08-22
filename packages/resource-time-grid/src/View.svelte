@@ -1,5 +1,6 @@
 <script>
     import {getContext} from 'svelte';
+    import {setContent} from '@event-calendar/core';
     import {Section, Body, Day, Week} from '@event-calendar/time-grid';
     import Label from './Label.svelte';
 
@@ -16,7 +17,7 @@
         {#each loops[0] as item0}
             <div class="{$theme.resource}">
                 {#if $datesAboveResources}
-                    <div class="{$theme.day}">{$_intlDayHeader.format(item0)}</div>
+                    <div class="{$theme.day}" use:setContent={$_intlDayHeader.format(item0)}></div>
                 {:else}
                     <Label resource={item0} />
                 {/if}
@@ -26,7 +27,7 @@
                             {#if $datesAboveResources}
                                 <Label resource={item1} date={item0} />
                             {:else}
-                                <div class="{$theme.day}">{$_intlDayHeader.format(item1)}</div>
+                                <div class="{$theme.day}" use:setContent={$_intlDayHeader.format(item1)}></div>
                             {/if}
                         {/each}
                     </div>

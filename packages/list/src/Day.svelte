@@ -9,6 +9,7 @@
         setMidnight,
         sortEventChunks,
         eventIntersects,
+        setContent,
         setPayload,
         bgEvent
     } from '@event-calendar/core';
@@ -16,7 +17,7 @@
 
     export let date;
 
-    let {_events, _interaction, _intlListDayFormat, _intlListDaySideFormat, highlightedDates, theme} = getContext('state');
+    let {_events, _interaction, _intlListDay, _intlListDaySide, highlightedDates, theme} = getContext('state');
 
     let el;
     let chunks;
@@ -52,8 +53,8 @@
         class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
         on:pointerdown={$_interaction.action?.select}
     >
-        {$_intlListDayFormat.format(date)}
-        <span class="{$theme.daySide}">{$_intlListDaySideFormat.format(date)}</span>
+        <span use:setContent={$_intlListDay.format(date)}></span>
+        <span class="{$theme.daySide}" use:setContent={$_intlListDaySide.format(date)}></span>
     </div>
     {#each chunks as chunk (chunk.event)}
         <Event {chunk}/>

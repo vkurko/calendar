@@ -93,11 +93,11 @@ export function viewDates(state) {
 
 export function viewTitle(state) {
     return derived(
-        [state.date, state._activeRange, state._titleIntlRange, state._monthMode],
-        ([$date, $_activeRange, $_titleIntlRange, $_monthMode]) => {
+        [state.date, state._activeRange, state._intlTitle, state._monthMode],
+        ([$date, $_activeRange, $_intlTitle, $_monthMode]) => {
             return $_monthMode
-                ? $_titleIntlRange.format($date, $date)
-                : $_titleIntlRange.format($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
+                ? $_intlTitle.formatRange($date, $date)
+                : $_intlTitle.formatRange($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
         }
     );
 }
