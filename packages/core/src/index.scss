@@ -1,8 +1,8 @@
 @use "theme";
 
 body {
-  color: var(--theme-fg);
-  background-color: var(--theme-bg);
+  color: var(--ec-theme-fg);
+  background-color: var(--ec-theme-bg);
 }
 
 /* Grid */
@@ -22,19 +22,19 @@ body {
 
   /* Scrollbar */
   ::-webkit-scrollbar {
-    background-color: var(--theme-bg);
+    background-color: var(--ec-theme-bg);
   }
 
   ::-webkit-scrollbar-thumb {
-    border: 4px solid var(--theme-border);
+    border: 4px solid var(--ec-theme-border);
     box-shadow: none;
-    background-color: var(--theme-bg);
+    background-color: var(--ec-theme-bg);
     border-radius: 8px;
     min-height: 40px;
   }
 
   :hover::-webkit-scrollbar-thumb {
-    background-color: var(--theme-focus);
+    background-color: var(--ec-theme-focus);
   }
 }
 
@@ -75,23 +75,23 @@ body {
 }
 
 .ec-button {
-  background-color: var(--theme-bg);
-  border: 1px solid var(--theme-border);
+  background-color: var(--ec-theme-bg);
+  border: 1px solid var(--ec-theme-border);
   padding: .375rem .75rem;
   font-size: 1rem;
   line-height: 1.5;
   border-radius: .25rem;
 
   &:not(:disabled) {
-    color: var(--theme-fg);
+    color: var(--ec-theme-fg);
     cursor: pointer;
   }
 
   &:not(:disabled):hover,
   &.ec-active {
     z-index: 1;
-    background-color: var(--theme-bg-alt);
-    border-color: var(--theme-border);
+    background-color: var(--ec-theme-bg-alt);
+    border-color: var(--ec-theme-border);
   }
 }
 
@@ -120,8 +120,8 @@ body {
     position: relative;
     width: .5em;
     height: .5em;
-    border-top: 2px solid var(--theme-fg);
-    border-right: 2px solid var(--theme-fg);
+    border-top: 2px solid var(--ec-theme-fg);
+    border-right: 2px solid var(--ec-theme-fg);
     display: inline-block;
   }
 
@@ -140,7 +140,7 @@ body {
 .ec-body,
 .ec-days,
 .ec-day {
-  border: 1px solid var(--theme-border);
+  border: 1px solid var(--ec-theme-border);
 }
 
 .ec-header {
@@ -290,7 +290,7 @@ body {
 
   .ec-list & {
     flex: 1 0 auto;
-    background-color: var(--theme-bg-alt);
+    background-color: var(--ec-theme-bg-alt);
     border-style: solid none;
     padding: 8px 14px;
     font-weight: bold;
@@ -345,10 +345,10 @@ body {
 .ec-event {
   display: flex;
   padding: 2px;
-  color: var(--theme-fg);
+  color: var(--ec-theme-fg);
   box-sizing: border-box;
-  box-shadow: 0 0 1px 0 var(--theme-focus);
-  background-color: var(--theme-control);
+  box-shadow: 0 0 1px 0 var(--ec-theme-focus);
+  background-color: var(--ec-theme-control);
   border-radius: 3px;
   font-size: .85em;
   line-height: 1.5;
@@ -459,7 +459,7 @@ body {
 
 .ec-bg-event {
   position: absolute;
-  background-color: var(--theme-bg-alt);
+  background-color: var(--ec-theme-bg-alt);
   opacity: 0.3;
   width: 100%;
   z-index: 1;
@@ -493,7 +493,7 @@ body {
   content: '';
   position: absolute;
   width: 100%;
-  border-bottom: 1px solid var(--theme-border);
+  border-bottom: 1px solid var(--ec-theme-border);
   pointer-events: none;
 }
 
@@ -510,10 +510,10 @@ body {
   min-width: 180px;
   z-index: 1010;
   padding: 8px 10px 14px;
-  background-color: var(--theme-bg-alt);
+  background-color: var(--ec-theme-bg-alt);
   border-radius: 6px;
   outline: 1px solid transparent;
-  box-shadow: 0 1px 3px 0 hsla(var(--hs-primary), 50%, .15), 0 4px 8px 3px hsla(var(--hs-primary), 50%, .15);
+  box-shadow: 0 1px 3px 0 hsla(var(--ec-hs-primary), 50%, .15), 0 4px 8px 3px hsla(var(--ec-hs-primary), 50%, .15);
 
   .ec-day-head {
     text-align: left;
