@@ -131,7 +131,7 @@
 
 <div
     class="{$theme.calendar} {$theme.view}{$_scrollable ? ' ' + $theme.withScroll : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
-    style="height: {$height}"
+    style:height={$height}
 >
     <Toolbar/>
     <svelte:component this={$_viewComponent}/>

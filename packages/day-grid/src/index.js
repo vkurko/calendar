@@ -6,6 +6,7 @@ import View from './View.svelte';
 export default {
 	createOptions(options) {
 		options.dayMaxEvents = false;
+		options.dayCellFormat = {day: 'numeric'};
 		options.dayPopoverFormat = {month: 'long', day: 'numeric', year: 'numeric'};
 		options.moreLinkContent = undefined;
 		// Common options
@@ -28,6 +29,7 @@ export default {
 
 	createStores(state) {
 		state._days = days(state);
+		state._intlDayCell = intl(state.locale, state.dayCellFormat);
 		state._intlDayPopover = intl(state.locale, state.dayPopoverFormat);
 		state._hiddenEvents = writable({});
 		state._popupDate = writable(null);

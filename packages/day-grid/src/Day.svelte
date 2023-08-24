@@ -12,7 +12,7 @@
     export let iChunks = [];
 
     let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _hiddenEvents, _popupDate, _popupChunks, _interaction, _queue} = getContext('state');
+        _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _interaction, _queue} = getContext('state');
 
     let el;
     let dayChunks;
@@ -111,7 +111,7 @@
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >
-    <div class="{$theme.dayHead}">{date.getUTCDate()}</div>
+    <div class="{$theme.dayHead}" use:setContent={$_intlDayCell.format(date)}></div>
     <!-- Pointer -->
     {#if iChunks[1] && datesEqual(iChunks[1].date, date)}
         <div class="{$theme.events}">

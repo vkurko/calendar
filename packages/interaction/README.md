@@ -26,6 +26,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [dateClick](#dateclick)
   - [datesAboveResources](#datesaboveresources)
   - [datesSet](#datesset)
+  - [dayCellFormat](#daycellformat)
   - [dayHeaderFormat](#dayheaderformat)
   - [dayMaxEvents](#daymaxevents)
   - [dayPopoverFormat](#daypopoverformat)
@@ -44,9 +45,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
-  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
+  - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -72,9 +73,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [longPressDelay](#longpressdelay)
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
-  - [noEventsContent](#noeventscontent)
   </td><td>
 
+  - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
@@ -195,8 +196,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.1.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.1.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.2.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.2.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -450,6 +451,29 @@ function (info) {}
 
 The current [View](#view-object) object
 </td>
+</tr>
+</table>
+
+### dayCellFormat
+- Type `object` or `function`
+- Default `{day: 'numeric'}`
+
+Defines the text that is displayed inside the day cell in the `dayGrid` view.
+
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+
+```js
+function (date) {
+  // return Content with the formatted date string
+}
+```
+<table>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object that needs to be formatted</td>
 </tr>
 </table>
 

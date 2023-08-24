@@ -1,9 +1,14 @@
 # Event Calendar changelog
 
+## 2.2.0
+August 24, 2023
+
+* Added `dayCellFormat` option ([169](https://github.com/vkurko/calendar/pull/169))
+
 ## 2.1.0
 August 22, 2023
 
-* Improved CSS class switching on view change ([155](https://github.com/vkurko/calendar/pull/155))
+* Improved CSS class switching on view change ([155](https://github.com/vkurko/calendar/issues/155))
 
 ## 2.0.0
 August 17, 2023
