@@ -45,9 +45,6 @@ body {
 	}
 }
 @media (min-width: 1200px) {
-	.ec {
-		height: 900px;
-	}
 	.ec.ec-day-grid {
 		height: 800px;
 	}

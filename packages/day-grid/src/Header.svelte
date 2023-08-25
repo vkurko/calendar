@@ -8,7 +8,7 @@
 <div class="{$theme.header}">
     <div class="{$theme.days}">
         {#each $_days as day}
-            <div class="{$theme.day}" use:setContent={$_intlDayHeader.format(day)}></div>
+            <div class="{$theme.day} {$theme.weekdays[day.getUTCDay()]}" use:setContent={$_intlDayHeader.format(day)}></div>
         {/each}
     </div>
     <div class="{$theme.hiddenScroll}"></div>

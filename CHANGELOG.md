@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 2.3.0
+August 25, 2023
+
+* Added CSS classes for days of the week ([156](https://github.com/vkurko/calendar/issues/156))
+* The initial value of the `height` option has changed to `undefined`
+
 ## 2.2.0
 August 24, 2023
 

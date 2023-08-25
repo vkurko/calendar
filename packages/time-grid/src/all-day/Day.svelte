@@ -60,7 +60,7 @@
 
 <div
     bind:this={el}
-    class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+    class="{$theme.day} {$theme.weekdays[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
     on:pointerdown={$_interaction.action?.select}
 >
     <!-- Drag, Resize & Select -->

@@ -38,7 +38,7 @@ export function createOptions(plugins) {
             center: '',
             end: 'today prev,next'
         },
-        height: 'auto',
+        height: undefined,
         hiddenDays: [],
         highlightedDates: [],  // ec option
         lazyFetching: true,
@@ -92,6 +92,7 @@ export function createOptions(plugins) {
             title: 'ec-title',
             toolbar: 'ec-toolbar',
             view: '',
+            weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'],
             withScroll: 'ec-with-scroll'
         },
         titleFormat: {
