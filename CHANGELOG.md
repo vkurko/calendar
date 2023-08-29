@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.3.1
+August 29, 2023
+
+* Fixed a bug in SvelteKit when using a function for the `theme` option ([179](https://github.com/vkurko/calendar/issues/179))
+
 ## 2.3.0
 August 25, 2023
 

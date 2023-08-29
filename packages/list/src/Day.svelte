@@ -50,7 +50,7 @@
 {#if chunks.length}
     <div
         bind:this={el}
-        class="{$theme.day} {$theme.weekdays[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+        class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
         on:pointerdown={$_interaction.action?.select}
     >
         <span use:setContent={$_intlListDay.format(date)}></span>
