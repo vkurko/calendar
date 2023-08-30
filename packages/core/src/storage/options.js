@@ -1,4 +1,4 @@
-import {assign, createDate, createDuration, setMidnight, createEvents, createEventSources} from '../lib.js';
+import {assign, createDate, createDuration, keys, setMidnight, createEvents, createEventSources} from '../lib.js';
 
 export function createOptions(plugins) {
     let options = {
@@ -133,17 +133,14 @@ export function createParsers(plugins) {
     return parsers;
 }
 
-let prev;
-export function diff(options) {
+export function diff(options, prevOptions) {
     let diff = [];
-    if (prev) {
-        for (let name of Object.keys(options)) {
-            if (options[name] !== prev[name]) {
-                diff.push([name, options[name]]);
-            }
+    for (let key of keys(options)) {
+        if (options[key] !== prevOptions[key]) {
+            diff.push([key, options[key]]);
         }
     }
-    prev = assign({}, options);
+    assign(prevOptions, options);
 
     return diff;
 }

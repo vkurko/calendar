@@ -1,4 +1,4 @@
-import {derived, writable, readable} from 'svelte/store';
+import {derived, writable, readable, get} from 'svelte/store';
 import {is_function} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
@@ -9,7 +9,6 @@ import {
     createView,
     addDuration,
     addDay,
-    derived2,
     subtractDay,
     toISOString,
     nextClosestDay,
@@ -66,7 +65,7 @@ export function currentRange(state) {
 }
 
 export function viewDates(state) {
-    return derived2([state._activeRange, state.hiddenDays], ([$_activeRange, $hiddenDays]) => {
+    return derived([state._activeRange, state.hiddenDays], ([$_activeRange, $hiddenDays]) => {
         let dates = [];
         let date = setMidnight(cloneDate($_activeRange.start));
         let end = setMidnight(cloneDate($_activeRange.end));
@@ -84,7 +83,7 @@ export function viewDates(state) {
                 }
                 return date;
             });
-            dates = state._viewDates.get();
+            dates = get(state._viewDates);
         }
 
         return dates;
@@ -103,7 +102,7 @@ export function viewTitle(state) {
 }
 
 export function view(state) {
-    return derived2([state.view, state._viewTitle, state._currentRange, state._activeRange], args => createView(...args));
+    return derived([state.view, state._viewTitle, state._currentRange, state._activeRange], args => createView(...args));
 }
 
 export function events(state) {

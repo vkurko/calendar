@@ -9,6 +9,7 @@
     import Auxiliary from './Auxiliary.svelte';
     import {
         assign,
+        createEvents,
         toEventWithLocalDates,
         toViewWithLocalDates,
         toLocalDate,
@@ -30,22 +31,18 @@
         events, eventSources, height, theme} = state;
 
     // Reactively update options that did change
-    $: for (let [name, value] of diff(options)) {
+    let prevOptions = {...options};
+    $: for (let [name, value] of diff(options, prevOptions)) {
         setOption(name, value);
     }
 
     export function setOption(name, value) {
-        if (state.hasOwnProperty(name)) {
-            if (state[name].parse) {
-                value = state[name].parse(value);
-            }
-            state[name].set(value);
-        }
+        state._set(name, value);
         return this;
     }
 
     export function getOption(name) {
-        let value = state.hasOwnProperty(name) ? get(state[name]) : undefined;
+        let value = state._get(name);
         return value instanceof Date ? toLocalDate(value) : value;
     }
 
@@ -68,30 +65,33 @@
     }
 
     export function addEvent(event) {
-        updateEvents(events => events.concat(state.events.parse([event])));
+        $_events.push(createEvents([event])[0]);
+        $_events = $_events;
         return this;
     }
 
     export function updateEvent(event) {
-        updateEvents(events => {
-            for (let e of events) {
-                if (e.id == event.id) {
-                    assign(e, state.events.parse([event])[0]);
-                    break;
-                }
+        for (let e of $_events) {
+            if (e.id == event.id) {
+                assign(e, createEvents([event])[0]);
+                $_events = $_events;
+                break;
             }
-            return events;
-        });
+        }
         return this;
     }
 
     export function removeEventById(id) {
-        updateEvents(events => events.filter(event => event.id != id));
+        let idx = $_events.findIndex(event => event.id == id);
+        if (idx >= 0) {
+            $_events.splice(idx, 1);
+            $_events = $_events;
+        }
         return this;
     }
 
     export function getView() {
-        return toViewWithLocalDates(state._view.get());
+        return toViewWithLocalDates(get(state._view));
     }
 
     export function unselect() {
@@ -108,13 +108,6 @@
 
     export function destroy() {
         destroy_component(component, true);
-    }
-
-    function updateEvents(func) {
-        $_events = func($_events);
-        if (!$eventSources.length) {
-            $events = $_events;
-        }
     }
 
     beforeUpdate(() => {
