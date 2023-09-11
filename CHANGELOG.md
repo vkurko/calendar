@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.3.3
+September 11, 2023
+
+* Fixed an issue with automatically updating the current day ([181](https://github.com/vkurko/calendar/discussions/181))
+
 ## 2.3.2
 August 30, 2023
 

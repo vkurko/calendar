@@ -1,7 +1,7 @@
 <script>
     import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {createDate,	setMidnight, datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload,
+    import {datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload,
         debounce, keyEnter} from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
@@ -12,11 +12,10 @@
     export let iChunks = [];
 
     let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _interaction, _queue} = getContext('state');
+        _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _today, _interaction, _queue} = getContext('state');
 
     let el;
     let dayChunks;
-    let today = setMidnight(createDate());
     let isToday;
     let otherMonth;
     let highlight;
@@ -41,8 +40,8 @@
         }
     }
 
+    $: isToday = datesEqual(date, $_today);
     $: {
-        isToday = datesEqual(date, today);
         otherMonth = date.getUTCMonth() !== $currentDate.getUTCMonth();
         highlight = $highlightedDates.some(d => datesEqual(d, date));
     }
