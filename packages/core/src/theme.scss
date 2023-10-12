@@ -1,0 +1,54 @@
+:root {
+  --ec-hue-primary: 25;
+  --ec-saturation-primary: 20%;
+  --ec-hs-primary: var(--ec-hue-primary), var(--ec-saturation-primary);
+  --ec-hue-secondary: 205;
+  --ec-saturation-secondary: 60%;
+  --ec-hs-secondary: var(--ec-hue-secondary), var(--ec-saturation-secondary);
+
+  --ec-color-b0: hsl(var(--ec-hue-primary), 3%, 5%);
+  --ec-color-b1: hsl(var(--ec-hs-primary), 15%);
+  --ec-color-b2: hsl(var(--ec-hs-primary), 20%);
+  --ec-color-b3: hsl(var(--ec-hs-primary), 30%);
+  --ec-color-b4: hsl(var(--ec-hs-primary), 50%);
+  --ec-color-b5: hsl(var(--ec-hs-primary), 70%);
+  --ec-color-b6: hsl(var(--ec-hs-primary), 85%);
+  --ec-color-b7: hsl(var(--ec-hs-primary), 95%);
+  --ec-color-b8: hsl(var(--ec-hue-primary), 100%, 100%);
+
+  color-scheme: light dark;
+  
+  --ec-theme-control: hsl(var(--ec-hs-secondary), 70%);
+  --ec-theme-fg: var(--ec-color-b0);
+  --ec-theme-bg: var(--ec-color-b8);
+  --ec-theme-bg-alt: var(--ec-color-b7);
+  --ec-theme-border: var(--ec-color-b6);
+  --ec-theme-focus: var(--ec-color-b5);
+
+  @media (prefers-color-scheme: dark) {
+    .ec-light {
+      --ec-theme-control: hsl(var(--ec-hs-secondary), 70%);
+      --ec-theme-fg: var(--ec-color-b0);
+      --ec-theme-bg: var(--ec-color-b8);
+      --ec-theme-bg-alt: var(--ec-color-b7);
+      --ec-theme-border: var(--ec-color-b6);
+      --ec-theme-focus: var(--ec-color-b5);
+      --ec-theme-transparent: hsla(var(--ec-hue-primary), 11%, 100%, 0);
+    }
+    --ec-theme-control: hsl(var(--ec-hs-secondary), 30%);
+    --ec-theme-fg: var(--ec-color-b7);
+    --ec-theme-bg: var(--ec-color-b2);
+    --ec-theme-bg-alt: var(--ec-color-b4);
+    --ec-theme-border: var(--ec-color-b3);
+    --ec-theme-focus: var(--ec-color-b5);
+    --ec-theme-transparent: hsla(var(--ec-hue-primary), 11%, 20%, 0);
+  }
+  .ec-dark {
+    --ec-theme-fg: var(--ec-color-b7);
+    --ec-theme-bg: var(--ec-color-b2);
+    --ec-theme-bg-alt: var(--ec-color-b4);
+    --ec-theme-border: var(--ec-color-b3);
+    --ec-theme-focus: var(--ec-color-b5);
+    --ec-theme-transparent: hsla(var(--ec-hue-primary), 11%, 20%, 0);
+  }
+}
