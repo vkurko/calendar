@@ -1,10 +1,10 @@
 :root {
   --ec-hue-primary: 25;
   --ec-saturation-primary: 20%;
-  --ec-hs-primary: var(--ec-hue-primary), var(--saturation-primary);
+  --ec-hs-primary: var(--ec-hue-primary), var(--ec-saturation-primary);
   --ec-hue-secondary: 205;
   --ec-saturation-secondary: 60%;
-  --ec-hs-secondary: var(--ec-hue-secondary), var(--saturation-secondary);
+  --ec-hs-secondary: var(--ec-hue-secondary), var(--ec-saturation-secondary);
 
   --ec-color-b0: hsl(var(--ec-hue-primary), 3%, 5%);
   --ec-color-b1: hsl(var(--ec-hs-primary), 15%);
