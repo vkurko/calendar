@@ -1,4 +1,4 @@
-import {derived, writable, readable} from 'svelte/store';
+import {derived, writable, readable, get} from 'svelte/store';
 import {is_function} from 'svelte/internal';
 import {
     DAY_IN_SECONDS,
@@ -9,7 +9,6 @@ import {
     createView,
     addDuration,
     addDay,
-    derived2,
     subtractDay,
     toISOString,
     nextClosestDay,
@@ -19,18 +18,18 @@ import {
     debounce
 } from '../lib.js';
 
-export function monthMode(state) {
+export function dayGrid(state) {
     return derived(state.view, $view => $view?.startsWith('dayGrid'));
 }
 
 export function activeRange(state) {
     return derived(
-        [state._currentRange, state.firstDay, state.slotMaxTime, state._monthMode],
-        ([$_currentRange, $firstDay, $slotMaxTime, $_monthMode]) => {
+        [state._currentRange, state.firstDay, state.slotMaxTime, state._dayGrid],
+        ([$_currentRange, $firstDay, $slotMaxTime, $_dayGrid]) => {
             let start = cloneDate($_currentRange.start);
             let end = cloneDate($_currentRange.end);
 
-            if ($_monthMode) {
+            if ($_dayGrid) {
                 // First day of week
                 prevClosestDay(start, $firstDay);
                 nextClosestDay(end, $firstDay);
@@ -49,10 +48,10 @@ export function activeRange(state) {
 
 export function currentRange(state) {
     return derived(
-        [state.date, state.duration, state.firstDay, state._monthMode],
-        ([$date, $duration, $firstDay, $_monthMode]) => {
+        [state.date, state.duration, state.firstDay, state._dayGrid],
+        ([$date, $duration, $firstDay, $_dayGrid]) => {
             let start = cloneDate($date), end;
-            if ($_monthMode) {
+            if ($_dayGrid) {
                 start.setUTCDate(1);
             } else if ($duration.inWeeks) {
                 // First day of week
@@ -66,7 +65,7 @@ export function currentRange(state) {
 }
 
 export function viewDates(state) {
-    return derived2([state._activeRange, state.hiddenDays], ([$_activeRange, $hiddenDays]) => {
+    return derived([state._activeRange, state.hiddenDays], ([$_activeRange, $hiddenDays]) => {
         let dates = [];
         let date = setMidnight(cloneDate($_activeRange.start));
         let end = setMidnight(cloneDate($_activeRange.end));
@@ -84,7 +83,7 @@ export function viewDates(state) {
                 }
                 return date;
             });
-            dates = state._viewDates.get();
+            dates = get(state._viewDates);
         }
 
         return dates;
@@ -93,9 +92,9 @@ export function viewDates(state) {
 
 export function viewTitle(state) {
     return derived(
-        [state.date, state._activeRange, state._intlTitle, state._monthMode],
-        ([$date, $_activeRange, $_intlTitle, $_monthMode]) => {
-            return $_monthMode
+        [state.date, state._activeRange, state._intlTitle, state._dayGrid],
+        ([$date, $_activeRange, $_intlTitle, $_dayGrid]) => {
+            return $_dayGrid
                 ? $_intlTitle.formatRange($date, $date)
                 : $_intlTitle.formatRange($_activeRange.start, subtractDay(cloneDate($_activeRange.end)));
         }
@@ -103,7 +102,7 @@ export function viewTitle(state) {
 }
 
 export function view(state) {
-    return derived2([state.view, state._viewTitle, state._currentRange, state._activeRange], args => createView(...args));
+    return derived([state.view, state._viewTitle, state._currentRange, state._activeRange], args => createView(...args));
 }
 
 export function events(state) {

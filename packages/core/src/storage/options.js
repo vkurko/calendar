@@ -1,5 +1,4 @@
-import {assign, createDate, createDuration, setMidnight, createEvents, createEventSources} from '../lib.js';
-import {is_function} from 'svelte/internal';
+import {assign, createDate, createDuration, keys, setMidnight, createEvents, createEventSources} from '../lib.js';
 
 export function createOptions(plugins) {
     let options = {
@@ -39,7 +38,7 @@ export function createOptions(plugins) {
             center: '',
             end: 'today prev,next'
         },
-        height: 'auto',
+        height: undefined,
         hiddenDays: [],
         highlightedDates: [],  // ec option
         lazyFetching: true,
@@ -92,7 +91,8 @@ export function createOptions(plugins) {
             time: 'ec-time',
             title: 'ec-title',
             toolbar: 'ec-toolbar',
-            week: 'ec-week',
+            view: '',
+            weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'],
             withScroll: 'ec-with-scroll'
         },
         titleFormat: {
@@ -112,9 +112,8 @@ export function createOptions(plugins) {
     return options;
 }
 
-export function createParsers(options, plugins) {
+export function createParsers(plugins) {
     let parsers = {
-        buttonText: input => is_function(input) ? input(options.buttonText) : input,
         date: date => setMidnight(createDate(date)),
         duration: createDuration,
         events: createEvents,
@@ -124,28 +123,24 @@ export function createParsers(options, plugins) {
         scrollTime: createDuration,
         slotDuration: createDuration,
         slotMaxTime: createDuration,
-        slotMinTime: createDuration,
-        theme: input => is_function(input) ? input(options.theme) : input
+        slotMinTime: createDuration
     };
 
     for (let plugin of plugins) {
-        plugin.createParsers?.(parsers, options);
+        plugin.createParsers?.(parsers);
     }
 
     return parsers;
 }
 
-let prev;
-export function diff(options) {
+export function diff(options, prevOptions) {
     let diff = [];
-    if (prev) {
-        for (let name of Object.keys(options)) {
-            if (options[name] !== prev[name]) {
-                diff.push([name, options[name]]);
-            }
+    for (let key of keys(options)) {
+        if (options[key] !== prevOptions[key]) {
+            diff.push([key, options[key]]);
         }
     }
-    prev = assign({}, options);
+    assign(prevOptions, options);
 
     return diff;
 }

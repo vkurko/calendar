@@ -192,7 +192,7 @@ body {
     border-top: none;
   }
 
-  .ec-month & {
+  .ec-day-grid & {
     flex: 1 1 auto;
   }
 }
@@ -223,12 +223,12 @@ body {
 .ec-content {
   display: flex;
 
-  .ec-month & {
+  .ec-day-grid & {
     flex-direction: column;
     height: 100%;
   }
 
-  .ec-month .ec-uniform & {
+  .ec-day-grid .ec-uniform & {
     overflow: hidden;  // remove scrolling due to hidden events
   }
 
@@ -249,12 +249,12 @@ body {
     border-bottom: none;
   }
 
-  .ec-month &,
+  .ec-day-grid &,
   .ec-resource & {
     flex: 1 0 auto;
   }
 
-  .ec-month .ec-uniform & {
+  .ec-day-grid .ec-uniform & {
     flex: 1 1 0%;  // % is required to work properly for both auto and fixed calendar height
     min-height: 0;
   }
@@ -271,16 +271,16 @@ body {
     background-color: #e5f7fe;
   }
 
-  .ec-month .ec-body & {
+  .ec-day-grid .ec-body & {
     min-height: 5em;
     position: relative;
   }
 
-  .ec-month .ec-uniform & {
+  .ec-day-grid .ec-uniform & {
     min-height: 0;
   }
 
-  .ec-month &:first-child {
+  .ec-day-grid &:first-child {
     border-left: none;
   }
 
@@ -304,7 +304,7 @@ body {
   }
 }
 
-.ec-month {
+.ec-day-grid {
   .ec-day-head {
     text-align: right;
     padding: 4px 4px 3px;
@@ -336,7 +336,7 @@ body {
 .ec-events {
   margin: 0 6px 0 0;
 
-  .ec-week &,
+  .ec-time-grid &,
   &.ec-preview {
     position: relative;
   }
@@ -354,12 +354,12 @@ body {
   line-height: 1.5;
   z-index: 1;  // put it above the pointer event (for multi-day events in month view)
 
-  .ec-month &,
+  .ec-day-grid &,
   .ec-all-day & {
     position: relative;
   }
 
-  .ec-week .ec-body & {
+  .ec-time-grid .ec-body & {
     position: absolute;
   }
 
@@ -398,7 +398,7 @@ body {
   flex-direction: column;
   width: 100%;
 
-  .ec-month &,
+  .ec-day-grid &,
   .ec-all-day & {
     flex-direction: row;
   }
@@ -416,7 +416,7 @@ body {
   margin: 0 0 1px 0;
   flex-shrink: 0;
 
-  .ec-month & {
+  .ec-day-grid & {
     margin: 0 3px 0 0;
     max-width: 100%;
     text-overflow: ellipsis;
@@ -426,14 +426,14 @@ body {
 .ec-event-title {
   overflow: hidden;
 
-  .ec-month &,
+  .ec-day-grid &,
   .ec-all-day & {
     min-height: 1.5em;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .ec-week .ec-body & {
+  .ec-time-grid .ec-body & {
     position: sticky;
     top: 0;
   }
@@ -565,7 +565,7 @@ body {
   position: absolute;
   user-select: none;
 
-  .ec-month &,
+  .ec-day-grid &,
   .ec-all-day & {
     top: 0;
     right: 0;
@@ -575,7 +575,7 @@ body {
     cursor: ew-resize;
   }
 
-  .ec-week .ec-body & {
+  .ec-time-grid .ec-body & {
     left: 0;
     right: 0;
     bottom: 0;

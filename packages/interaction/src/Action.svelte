@@ -21,11 +21,11 @@
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
-    let {_iEvents, _iClass, _events, _view, _monthMode, _draggable, _viewClass, dragScroll, datesAboveResources,
+    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, dateClick, dragScroll, datesAboveResources,
         eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
         eventResizeStart, eventResizeStop, eventResize, longPressDelay, selectable, select: selectFn,
         selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, unselect: unselectFn,
-        unselectAuto, unselectCancel, dateClick} = getContext('state');
+        unselectAuto, unselectCancel, view} = getContext('state');
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE = 2;
@@ -92,7 +92,7 @@
     export function select(jsEvent) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
-                $selectable && $_viewClass !== 'list' ? ACTION_SELECT : ACTION_CLICK
+                $selectable && !$view.startsWith('list') ? ACTION_SELECT : ACTION_CLICK
             ) : ACTION_NO_ACTION;
 
             if (complexAction()) {
@@ -332,7 +332,7 @@
         bodyRect = rect(bodyEl);
         clipRect = rect(clipEl);
         viewport = [
-            max(0, clipRect.left + ($_monthMode ? 0 : 8)),  // left
+            max(0, clipRect.left + ($_dayGrid ? 0 : 8)),  // left
             min(document.documentElement.clientWidth, clipRect.right) - 2,  // right
             max(0, bodyRect.top ),  // top
             min(document.documentElement.clientHeight, bodyRect.bottom) - 2  // bottom

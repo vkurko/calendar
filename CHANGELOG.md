@@ -1,5 +1,36 @@
 # Event Calendar changelog
 
+## 2.3.3
+September 11, 2023
+
+* Fixed an issue with automatically updating the current day ([181](https://github.com/vkurko/calendar/discussions/181))
+
+## 2.3.2
+August 30, 2023
+
+* Another attempt to fix the bug in SvelteKit when using a function for the `theme` option ([179](https://github.com/vkurko/calendar/issues/179))
+
+## 2.3.1
+August 29, 2023
+
+* Fixed a bug in SvelteKit when using a function for the `theme` option ([179](https://github.com/vkurko/calendar/issues/179))
+
+## 2.3.0
+August 25, 2023
+
+* Added CSS classes for days of the week ([156](https://github.com/vkurko/calendar/issues/156))
+* The initial value of the `height` option has changed to `undefined`
+
+## 2.2.0
+August 24, 2023
+
+* Added `dayCellFormat` option ([169](https://github.com/vkurko/calendar/pull/169))
+
+## 2.1.0
+August 22, 2023
+
+* Improved CSS class switching on view change ([155](https://github.com/vkurko/calendar/issues/155))
+
 ## 2.0.0
 August 17, 2023
 

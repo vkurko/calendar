@@ -5,9 +5,7 @@
     import Day from './Day.svelte';
     import {addDay, cloneDate, toViewWithLocalDates, setContent, bgEvent} from '@event-calendar/core';
 
-    let {_events, _view, _viewDates, _viewClass, noEventsClick, noEventsContent, theme} = getContext('state');
-
-    $_viewClass = 'list';
+    let {_events, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
 
     let noEvents, content;
 

@@ -1,11 +1,6 @@
 <script>
     import {afterUpdate, getContext} from 'svelte';
-    import {
-        createDate,
-        setMidnight,
-        datesEqual,
-        setPayload
-    } from '@event-calendar/core';
+    import {datesEqual, setPayload} from '@event-calendar/core';
     import Event from './Event.svelte';
 
     export let date;
@@ -14,11 +9,10 @@
     export let iChunks = [];
     export let resource = undefined;
 
-    let {highlightedDates, theme, _interaction} = getContext('state');
+    let {highlightedDates, theme, _interaction, _today} = getContext('state');
 
     let el;
     let dayChunks;
-    let today = setMidnight(createDate());
     let isToday;
     let highlight;
     let refs = [];
@@ -32,10 +26,8 @@
         }
     }
 
-    $: {
-        isToday = datesEqual(date, today);
-        highlight = $highlightedDates.some(d => datesEqual(d, date));
-    }
+    $: isToday = datesEqual(date, $_today);
+    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
     // dateFromPoint
     $: if (el) {
@@ -60,7 +52,7 @@
 
 <div
     bind:this={el}
-    class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+    class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
     on:pointerdown={$_interaction.action?.select}
 >
     <!-- Drag, Resize & Select -->

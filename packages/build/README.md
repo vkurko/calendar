@@ -26,6 +26,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [dateClick](#dateclick)
   - [datesAboveResources](#datesaboveresources)
   - [datesSet](#datesset)
+  - [dayCellFormat](#daycellformat)
   - [dayHeaderFormat](#dayheaderformat)
   - [dayMaxEvents](#daymaxevents)
   - [dayPopoverFormat](#daypopoverformat)
@@ -44,9 +45,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
-  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
+  - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -72,9 +73,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [longPressDelay](#longpressdelay)
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
-  - [noEventsContent](#noeventscontent)
   </td><td>
 
+  - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
   - [resources](#resources)
@@ -195,8 +196,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.0.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.0.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.3.3/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.3.3/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -287,15 +288,15 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 - Type `object` or `function`
 - Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
 > Views override the default value as follows:
-> - dayGridMonth `function (text) { return {...text, next: 'Next month', prev: 'Previous month'}; }`
-> - listDay `function (text) { return {...text, next: 'Next day', prev: 'Previous day'}; }`
-> - listMonth `function (text) { return {...text, next: 'Next month', prev: 'Previous month'}; }`
-> - listWeek `function (text) { return {...text, next: 'Next week', prev: 'Previous week'}; }`
-> - listYear `function (text) { return {...text, next: 'Next year', prev: 'Previous year'}; }`
-> - resourceTimeGridDay `function (text) { return {...text, next: 'Next day', prev: 'Previous day'}; }`
-> - resourceTimeGridWeek `function (text) { return {...text, next: 'Next week', prev: 'Previous week'}; }`
-> - timeGridDay `function (text) { return {...text, next: 'Next day', prev: 'Previous day'}; }`
-> - timeGridWeek `function (text) { return {...text, next: 'Next week', prev: 'Previous week'}; }`
+> - dayGridMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
+> - listDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
+> - listMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
+> - listWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
+> - listYear `text => ({...text, next: 'Next year', prev: 'Previous year'})`
+> - resourceTimeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
+> - resourceTimeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
+> - timeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
+> - timeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 
 
 Text that is displayed in buttons of the header toolbar.
@@ -450,6 +451,29 @@ function (info) {}
 
 The current [View](#view-object) object
 </td>
+</tr>
+</table>
+
+### dayCellFormat
+- Type `object` or `function`
+- Default `{day: 'numeric'}`
+
+Defines the text that is displayed inside the day cell in the `dayGrid` view.
+
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+
+```js
+function (date) {
+  // return Content with the formatted date string
+}
+```
+<table>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object that needs to be formatted</td>
 </tr>
 </table>
 
@@ -1304,7 +1328,7 @@ Determines whether the events on the calendar can be dragged.
 
 Defines the time-text that is displayed on each event.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with formatted string:
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
 ```js
 function (start, end) {
@@ -1439,7 +1463,7 @@ _a view name like_ `dayGridMonth`
 
 ### height
 - Type `string`
-- Default `'auto'`
+- Default `undefined`
 
 Defines the height of the entire calendar.
 
@@ -1906,7 +1930,17 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### theme
 - Type `object` or `function`
-- Default `{active: 'ec-active', allDay: 'ec-all-day', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayFoot: 'ec-day-foot', dayHead: 'ec-day-head', daySide: 'ec-day-side', days: 'ec-days', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', list: 'ec-list', month: 'ec-month', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', resourceTitle: 'ec-resource-title', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', time: 'ec-time', title: 'ec-title', today: 'ec-today', toolbar: 'ec-toolbar', uniform: 'ec-uniform', week: 'ec-week', withScroll: 'ec-with-scroll'}`
+- Default `{active: 'ec-active', allDay: 'ec-all-day', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayFoot: 'ec-day-foot', dayHead: 'ec-day-head', daySide: 'ec-day-side', days: 'ec-days', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', resourceTitle: 'ec-resource-title', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', time: 'ec-time', title: 'ec-title', today: 'ec-today', toolbar: 'ec-toolbar', uniform: 'ec-uniform', view: '', weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'], withScroll: 'ec-with-scroll'}`
+> Views override the default value as follows:
+> - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`
+> - listDay `theme => ({...theme, view: 'ec-list ec-day-view'})`
+> - listMonth `theme => ({...theme, view: 'ec-list ec-month-view'})`
+> - listWeek `theme => ({...theme, view: 'ec-list ec-week-view'})`
+> - listYear `theme => ({...theme, view: 'ec-list ec-year-view'})`
+> - resourceTimeGridDay `theme => ({...theme, view: 'ec-time-grid ec-resource-day-view'})`
+> - resourceTimeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-resource-week-view'})`
+> - timeGridDay `theme => ({...theme, view: 'ec-time-grid ec-day-view'})`
+> - timeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-week-view'})`
 
 Defines the CSS classes that the Event Calendar uses to generate HTML markup.
 

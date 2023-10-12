@@ -3,10 +3,8 @@
     import {
         addDay,
         cloneDate,
-        createDate,
         createEventChunk,
         datesEqual,
-        setMidnight,
         sortEventChunks,
         eventIntersects,
         setContent,
@@ -17,11 +15,11 @@
 
     export let date;
 
-    let {_events, _interaction, _intlListDay, _intlListDaySide, highlightedDates, theme} = getContext('state');
+    let {_events, _interaction, _intlListDay, _intlListDaySide, _today, highlightedDates, theme} = getContext('state');
 
     let el;
     let chunks;
-    let today = setMidnight(createDate()), isToday, highlight;
+    let isToday, highlight;
 
     $: {
         chunks = [];
@@ -36,10 +34,8 @@
         sortEventChunks(chunks);
     }
 
-    $: {
-        isToday = datesEqual(date, today);
-        highlight = $highlightedDates.some(d => datesEqual(d, date));
-    }
+    $: isToday = datesEqual(date, $_today);
+    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
     // dateFromPoint
     $: if (el) {
@@ -50,7 +46,7 @@
 {#if chunks.length}
     <div
         bind:this={el}
-        class="{$theme.day}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+        class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
         on:pointerdown={$_interaction.action?.select}
     >
         <span use:setContent={$_intlListDay.format(date)}></span>

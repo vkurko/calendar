@@ -1,26 +1,26 @@
-import {writable} from 'svelte/store';
+import {get, writable} from 'svelte/store';
 import {is_function, tick, noop, identity} from 'svelte/internal';
 import {createOptions, createParsers} from './options';
 import {
     activeRange,
     currentRange,
+    dayGrid,
     events,
-    monthMode,
     now,
     today,
     viewDates,
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
 } from './stores';
-import {assign, keys, writable2, intl, intlRange} from '../lib.js';
+import {keys, intl, intlRange} from '../lib.js';
 
 export default class {
     constructor(plugins, input) {
         plugins = plugins || [];
 
         // Create options
-        let options= createOptions(plugins);
-        let parsers = createParsers(options, plugins);
+        let options = createOptions(plugins);
+        let parsers = createParsers(plugins);
 
         // Parse options
         options = parseOpts(options, parsers);
@@ -28,13 +28,13 @@ export default class {
 
         // Create stores for options
         for (let [option, value] of Object.entries(options)) {
-            this[option] = writable2(value, parsers[option]);
+            this[option] = writable(value);
         }
 
         // Private stores
         this._queue = writable(new Map());  // debounce queue
         this._auxiliary = writable([]);  // auxiliary components
-        this._monthMode = monthMode(this);
+        this._dayGrid = dayGrid(this);
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
@@ -50,7 +50,6 @@ export default class {
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
         this._view = view2(this);
-        this._viewClass = writable(undefined);
         this._viewComponent = writable(undefined);
         // Resources
         this._resBgColor = writable(noop);
@@ -60,6 +59,17 @@ export default class {
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]
         this._iClasses = writable(identity);  // interaction event css classes
         this._iClass = writable(undefined);  // interaction css class for entire calendar
+
+        // Set & Get
+        this._set = (key, value) => {
+            if (validKey(key, this)) {
+                if (parsers[key]) {
+                    value = parsers[key](value);
+                }
+                this[key].set(value);
+            }
+        };
+        this._get = key => validKey(key, this) ? get(this[key]) : undefined;
 
         // Let plugins create their private stores
         for (let plugin of plugins) {
@@ -74,54 +84,94 @@ export default class {
         // Set options for each view
         let views = new Set([...keys(options.views), ...keys(input.views ?? {})]);
         for (let view of views) {
-            let opts = assign({}, options, options.views[view] ?? {}, input, input.views?.[view] ?? {});
-            // Change view component when view changes
+            let defOpts = mergeOpts(options, options.views[view] ?? {});
+            let opts = mergeOpts(defOpts, input, input.views?.[view] ?? {});
+            let component = opts.component;
+            // Make sure we deal with valid opts from now on
+            filterOpts(opts, this);
+            // Process options
+            for (let key of keys(opts)) {
+                let {set, _set = set, ...rest} = this[key];
+
+                this[key] = {
+                    // Set value in all views
+                    set: ['buttonText', 'theme'].includes(key)
+                        ? value => {
+                            if (is_function(value)) {
+                                let result = value(defOpts[key]);
+                                opts[key] = result;
+                                set(set === _set ? result : value);
+                            } else {
+                                opts[key] = value;
+                                set(value);
+                            }
+                        }
+                        : value => {
+                            opts[key] = value;
+                            set(value);
+                        },
+                    _set,
+                    ...rest
+                };
+            }
+            // When view changes...
             this.view.subscribe(newView => {
                 if (newView === view) {
-                    this._viewComponent.set(opts.component);
+                    // switch view component
+                    this._viewComponent.set(component);
                     if (is_function(opts.viewDidMount)) {
-                        tick().then(() => opts.viewDidMount(this._view.get()));
+                        tick().then(() => opts.viewDidMount(get(this._view)));
+                    }
+                    // update store values
+                    for (let key of keys(opts)) {
+                        this[key]._set(opts[key]);
                     }
                 }
             });
-            // Process options
-            for (let key of keys(opts)) {
-                if (this.hasOwnProperty(key) && key[0] !== '_') {
-                    let {set, _set, ...rest} = this[key];
-
-                    if (!_set) {
-                        // Original set
-                        _set = set;
-                    }
-
-                    this[key] = {
-                        // Set value in all views
-                        set: value => {opts[key] = value; set(value);},
-                        _set,
-                        ...rest
-                    };
-
-                    // Change value when view changes
-                    this.view.subscribe(newView => {
-                        if (newView === view) {
-                            _set(opts[key]);
-                        }
-                    });
-                }
-            }
         }
     }
 }
 
 function parseOpts(opts, parsers) {
-    let result = {};
-    for (let key of keys(opts)) {
-        result[key] = parsers[key] ? parsers[key](opts[key]) : opts[key];
+    let result = {...opts};
+    for (let key of keys(parsers)) {
+        if (key in result) {
+            result[key] = parsers[key](result[key]);
+        }
     }
     if (opts.views) {
+        result.views = {};
         for (let view of keys(opts.views)) {
             result.views[view] = parseOpts(opts.views[view], parsers);
         }
     }
     return result;
+}
+
+function mergeOpts(...args) {
+    let result = {};
+    for (let opts of args) {
+        let override = {};
+        for (let key of ['buttonText', 'theme']) {
+            if (is_function(opts[key])) {
+                override[key] = opts[key](result[key]);
+            }
+        }
+        result = {
+            ...result,
+            ...opts,
+            ...override
+        };
+    }
+    return result;
+}
+
+function filterOpts(opts, state) {
+    keys(opts)
+        .filter(key => !validKey(key, state) || key == 'view')
+        .forEach(key => delete opts[key]);
+}
+
+function validKey(key, state) {
+    return state.hasOwnProperty(key) && key[0] !== '_';
 }
