@@ -1,5 +1,5 @@
 <script>
-    import './index.scss';
+    import './styles/index.scss';
     import {setContext, beforeUpdate} from 'svelte';
     import {destroy_component, get_current_component} from 'svelte/internal';
     import {get} from 'svelte/store';

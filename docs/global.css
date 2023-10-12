@@ -49,3 +49,26 @@ body {
 		height: 800px;
 	}
 }
+
+/* Dark theme */
+body.ec-dark {
+	background: #22272e;
+	color: #adbac7;
+}
+body:not(.ec-dark) svg.dark {
+	display: none;
+}
+body.ec-dark svg.light {
+	display: none;
+}
+.toggle-dark-button {
+	color: inherit;
+	border: 0;
+	background: 0 0;
+	opacity: .8;
+	cursor: pointer;
+}
+.toggle-dark-button svg {
+	width: 1.25rem;
+	height: 1.25rem;
+}

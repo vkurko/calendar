@@ -4,11 +4,12 @@ import commonjs from '@rollup/plugin-commonjs';
 import babel from '@rollup/plugin-babel';
 import livereload from 'rollup-plugin-livereload';
 import terser from '@rollup/plugin-terser';
-import sass from 'rollup-plugin-scss';
+import scss from 'rollup-plugin-scss';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import {writeFileSync} from 'fs';
-import {version} from './package.json';
+import pkg from './package.json' assert {type: 'json'};
+import {spawn} from 'child_process';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -31,10 +32,11 @@ export default [
 			}),
 			// we'll extract any component CSS out into
 			// a separate file - better for performance
-			sass({
+			scss({
 				output: (styles, styleNodes) => {
 					writeFileSync('packages/core/index.css', styles);
-				}
+				},
+				watch: 'packages/core/src/styles'
 			}),
 		],
 	},
@@ -130,7 +132,7 @@ export default [
 			name: 'EventCalendar',
 			file: 'packages/build/event-calendar.min.js',
 			sourcemap: true,
-			banner: '/*!\nEventCalendar v' + version + '\nhttps://github.com/vkurko/calendar\n*/'
+			banner: '/*!\nEventCalendar v' + pkg.version + '\nhttps://github.com/vkurko/calendar\n*/'
 		},
 		plugins: [
 			// If you have external dependencies installed from
@@ -167,7 +169,7 @@ export default [
 				]
 			}),
 
-			sass({
+			scss({
 				output: (styles, styleNodes) => {
 					writeFileSync('packages/build/event-calendar.min.css', styles);
 				},
@@ -201,7 +203,7 @@ function serve() {
 			if (!started) {
 				started = true;
 
-				require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+				spawn('npm', ['run', 'start', '--', '--dev'], {
 					stdio: ['ignore', 'inherit', 'inherit'],
 					shell: true
 				});

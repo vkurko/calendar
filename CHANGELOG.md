@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.4.0
+October 20, 2023
+
+* Added support for dark theme ([68](https://github.com/vkurko/calendar/issues/68))
+
 ## 2.3.3
 September 11, 2023
 
