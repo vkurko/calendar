@@ -1,10 +1,5 @@
 @use "theme";
 
-body {
-  color: var(--ec-theme-fg);
-  background-color: var(--ec-theme-bg);
-}
-
 /* Grid */
 .ec-days,
 .ec-day,
@@ -16,6 +11,8 @@ body {
 }
 
 .ec {
+  color: var(--ec-theme-fg);
+  background-color: var(--ec-theme-bg);
   display: flex;
   flex-direction: column;
   -webkit-tap-highlight-color: transparent;
