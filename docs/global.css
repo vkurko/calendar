@@ -61,6 +61,25 @@ body:not(.ec-dark) svg.dark {
 body.ec-dark svg.light {
 	display: none;
 }
+@media (prefers-color-scheme: dark) {
+	body {
+		background: #22272e;
+		color: #adbac7;
+	}
+	body.ec-light {
+		background: #fff;
+		color: #000;
+	}
+	body:not(.ec-dark) svg.dark {
+		display: revert;
+	}
+	body:not(.ec-light) svg.light {
+		display: none;
+	}
+	body.ec-light svg.dark {
+		display: none;
+	}
+}
 .toggle-dark-button {
 	color: inherit;
 	border: 0;
