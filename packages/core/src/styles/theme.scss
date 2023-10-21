@@ -88,9 +88,8 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    @include dark-theme;
-    .ec-light & {
-      @include light-theme;
+    .ec-auto-dark & {
+      @include dark-theme;
     }
   }
 }

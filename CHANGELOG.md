@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 2.4.1
+October 21, 2023
+
+* Changed the way the dark theme is automatically activated. Now this feature should be explicitly enabled using the `ec-auto-dark` CSS class
+* Fixed an issue with the positioning of the popup in month view
+
 ## 2.4.0
 October 20, 2023
 

@@ -14,15 +14,22 @@
         let popupRect = rect(el);
         let dayRect = rect(dayEl);
         let bodyRect = rect(bodyEl);
+        style = '';
 
-        if (!dayEl.previousElementSibling) {
-            style = 'left:0;';
-        } else if (!dayEl.nextElementSibling) {
-            style = 'right:0;';
+        let left;
+        if (popupRect.width >= bodyRect.width) {
+            left = bodyRect.left - dayRect.left;
+            let right = dayRect.right - bodyRect.right;
+            style += `right:${right}px;`;
         } else {
-            let left = (dayEl.offsetWidth - popupRect.width) / 2;
-            style = `left:${left}px;`;
+            left = (dayRect.width - popupRect.width) / 2;
+            if (dayRect.left + left < bodyRect.left) {
+                left = bodyRect.left - dayRect.left;
+            } else if (dayRect.left + left + popupRect.width > bodyRect.right) {
+                left = bodyRect.right - dayRect.left - popupRect.width;
+            }
         }
+        style += `left:${left}px;`;
 
         let top;
         if (popupRect.height >= bodyRect.height) {

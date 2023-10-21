@@ -197,8 +197,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.4.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.4.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.4.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.4.1/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2723,18 +2723,11 @@ Here are all properties that exist in View object:
 
 ## Theming
 
-The library provides a built-in dark theme. This theme is activated automatically if the current [preferred color theme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) is a dark one.
+The library provides a built-in dark theme. You can activate it by adding the `ec-dark` CSS class to any parent element of the calendar, e.g. `<body class="ec-dark">`.
 
-You can also activate the dark theme manually by adding the `ec-dark` CSS class to any parent element of the calendar, e.g. `<body class="ec-dark">`.
+If you want the dark theme to be activated automatically based on the [preferred color scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme), then use the `ec-auto-dark` CSS class instead.
 
-<details>
-  <summary>Note</summary>
-
-> Use the `ec-light` CSS class to manually activate the light theme when the current [preferred color theme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme) is a dark theme, e.g. `<body class="ec-light">`.
-
-</details>
-
-Please note that the dark theme does not change the background and font color in the calendar. It is assumed that the page background and font color are set by page styles, and the calendar inherits these styles.
+Please note that the dark theme does not change the background and font color in the calendar. These are assumed to be set by the page styles, and the calendar inherits these styles.
 
 If you do need to set the background or font color of the calendar, use local CSS variables for this:
 ```css
