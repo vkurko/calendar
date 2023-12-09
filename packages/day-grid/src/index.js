@@ -20,6 +20,7 @@ export default {
 			buttonText: btnTextMonth,
 			component: View,
 			dayHeaderFormat: {weekday: 'short'},
+			dayHeaderAriaLabelFormat: {weekday: 'long'},
 			displayEventEnd: false,
 			duration: {months: 1},
 			theme: themeView('ec-day-grid ec-month-view'),

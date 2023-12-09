@@ -87,8 +87,8 @@ export function toLocalDate(date) {
     );
 }
 
-export function toISOString(date) {
-    return date.toISOString().substring(0, 19);
+export function toISOString(date, len = 19) {
+    return date.toISOString().substring(0, len);
 }
 
 export function datesEqual(date1, ...dates2) {

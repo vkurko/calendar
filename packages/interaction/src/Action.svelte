@@ -17,7 +17,8 @@
         toEventWithLocalDates,
         toISOString,
         toLocalDate,
-        toViewWithLocalDates
+        toViewWithLocalDates,
+        listView
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
@@ -92,7 +93,7 @@
     export function select(jsEvent) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
-                $selectable && !$view.startsWith('list') ? ACTION_SELECT : ACTION_CLICK
+                $selectable && !listView($view) ? ACTION_SELECT : ACTION_CLICK
             ) : ACTION_NO_ACTION;
 
             if (complexAction()) {
@@ -112,6 +113,12 @@
 
                 move(jsEvent);
             }
+        }
+    }
+
+    export function noAction() {
+        if (!action) {
+            action = ACTION_NO_ACTION;
         }
     }
 

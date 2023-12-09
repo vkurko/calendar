@@ -1,6 +1,7 @@
 import {btnTextDay, btnTextWeek, themeView} from '@event-calendar/core';
 import TimeGrid from '@event-calendar/time-grid';
 import {viewResources} from './stores.js';
+import {createResources} from './lib.js';
 import View from './View.svelte';
 import Auxiliary from './Auxiliary.svelte';
 
@@ -42,14 +43,4 @@ export default {
 		state._auxiliary.update($_auxiliary => [...$_auxiliary, Auxiliary]);
 		state._viewResources = viewResources(state);
 	}
-}
-
-function createResources(input) {
-	return input.map(resource => ({
-		id: String(resource.id),
-		title: resource.title || '',
-		titleHTML: resource.titleHTML || '',
-		eventBackgroundColor: resource.eventBackgroundColor,
-        eventTextColor: resource.eventTextColor
-	}));
 }

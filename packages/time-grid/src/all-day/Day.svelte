@@ -34,12 +34,6 @@
         setPayload(el, () => ({allDay: true, date, resource, dayEl: el}));
     }
 
-    function createPointerDownHandler(interaction, selectable) {
-        return selectable && interaction.action
-            ? interaction.action.select
-            : undefined;
-    }
-
     function reposition() {
         refs.length = dayChunks.length;
         for (let ref of refs) {
@@ -53,6 +47,7 @@
 <div
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+    role="cell"
     on:pointerdown={$_interaction.action?.select}
 >
     <!-- Drag, Resize & Select -->

@@ -3,29 +3,48 @@
     import {setContent} from '@event-calendar/core';
     import {Section, Body, Day, Week} from '@event-calendar/time-grid';
     import Label from './Label.svelte';
+    import {toISOString} from "@event-calendar/core";
 
-    let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, allDaySlot, theme} = getContext('state');
+    let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme} = getContext('state');
 
     let loops;
     $: loops = $datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates];
+
+    let resourceLabels = [];
 </script>
 
 <div class="{$theme.header}">
     <Section>
-        {#each loops[0] as item0}
+        {#each loops[0] as item0, i}
             <div class="{$theme.resource}">
                 {#if $datesAboveResources}
-                    <div class="{$theme.day}" use:setContent={$_intlDayHeader.format(item0)}></div>
+                    <div class="{$theme.day} {$theme.weekdays?.[item0.getUTCDay()]}">
+                        <time
+                            datetime="{toISOString(item0, 10)}"
+                            aria-label="{$_intlDayHeaderAL.format(item0)}"
+                            use:setContent={$_intlDayHeader.format(item0)}
+                        ></time>
+                    </div>
                 {:else}
-                    <Label resource={item0} />
+                    <div class="{$theme.day}">
+                        <Label resource={item0} on:text={e => resourceLabels[i] = e.detail + ', '} />
+                    </div>
                 {/if}
                 {#if loops[1].length > 1}
                     <div class="{$theme.days}">
                         {#each loops[1] as item1}
                             {#if $datesAboveResources}
-                                <Label resource={item1} date={item0} />
+                                <div class="{$theme.day}" role="columnheader">
+                                    <Label resource={item1} date={item0} />
+                                </div>
                             {:else}
-                                <div class="{$theme.day}" use:setContent={$_intlDayHeader.format(item1)}></div>
+                                <div class="{$theme.day} {$theme.weekdays?.[item1.getUTCDay()]}" role="columnheader">
+                                    <time
+                                        datetime="{toISOString(item1, 10)}"
+                                        aria-label="{resourceLabels[i]}{$_intlDayHeaderAL.format(item1)}"
+                                        use:setContent={$_intlDayHeader.format(item1)}
+                                    ></time>
+                                </div>
                             {/if}
                         {/each}
                     </div>

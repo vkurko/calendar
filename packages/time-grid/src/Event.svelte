@@ -3,12 +3,14 @@
     import {is_function} from 'svelte/internal';
     import {
         createEventContent,
+        createEventClasses,
         toEventWithLocalDates,
         toViewWithLocalDates,
         setContent,
         bgEvent,
         helperEvent,
-        ghostEvent, createEventClasses
+        ghostEvent,
+        keyEnter
     } from '@event-calendar/core';
 
     export let date;
@@ -26,6 +28,7 @@
     let content;
     let timeText;
     let dragged = false;
+    let onclick;
 
     $: event = chunk.event;
 
@@ -95,15 +98,20 @@
             ? jsEvent => interaction.action.drag(event, jsEvent, resize)
             : undefined;
     }
+
+    // Onclick handler
+    $: onclick = !bgEvent(display) && createHandler($eventClick, display);
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<article
     bind:this={el}
     class="{classes}"
     {style}
-    on:click={!bgEvent(display) && createHandler($eventClick, display)}
+    role="{onclick ? 'button' : undefined}"
+    tabindex="{onclick ? 0 : undefined}"
+    on:click={onclick}
+    on:keydown={onclick && keyEnter(onclick)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
     on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
@@ -114,4 +122,4 @@
         {event}
         on:pointerdown={createDragHandler($_interaction, true)}
     />
-</div>
+</article>

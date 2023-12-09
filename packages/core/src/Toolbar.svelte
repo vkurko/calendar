@@ -17,7 +17,7 @@
     }
 </script>
 
-<div class="{$theme.toolbar}">
+<nav class="{$theme.toolbar}">
     {#each Object.keys(sections) as key}
         <div>
             {#each sections[key] as buttons}
@@ -31,4 +31,4 @@
             {/each}
         </div>
     {/each}
-</div>
+</nav>

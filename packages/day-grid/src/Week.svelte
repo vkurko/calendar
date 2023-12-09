@@ -40,7 +40,7 @@
     });
 </script>
 
-<div class="{$theme.days}">
+<div class="{$theme.days}" role="row">
     {#each dates as date}
         <Day {date} {chunks} {longChunks} {iChunks} />
     {/each}

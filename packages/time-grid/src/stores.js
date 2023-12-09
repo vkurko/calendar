@@ -6,15 +6,18 @@ import {
     cloneDate,
     addDuration,
     createDuration,
-    min as minFn, max as maxFn,
-    bgEvent, setMidnight
+    min as minFn,
+    max as maxFn,
+    bgEvent,
+    setMidnight,
+    toISOString
 } from '@event-calendar/core';
 
 export function times(state) {
     return derived(
         [state._slotTimeLimits, state._intlSlotLabel, state.slotDuration],
         ([$_slotTimeLimits, $_intlSlotLabel, $slotDuration]) => {
-            let compact = $slotDuration.seconds >= 3600;
+            let large = $slotDuration.seconds >= 3600;
             let times = [];
             let date = setMidnight(createDate());
             let end = cloneDate(date);
@@ -22,7 +25,10 @@ export function times(state) {
             addDuration(date, $_slotTimeLimits.min);
             addDuration(end, $_slotTimeLimits.max);
             while (date < end) {
-                times.push(times.length && (i || compact) ? $_intlSlotLabel.format(date) : '');
+                times.push([
+                    toISOString(date),
+                    times.length && (i || large) ? $_intlSlotLabel.format(date) : ''
+                ]);
                 addDuration(date, $slotDuration);
                 i = 1 - i;
             }

@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount, createEventDispatcher} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         createEventClasses,
@@ -10,7 +10,8 @@
         setContent,
         repositionEvent,
         helperEvent,
-        previewEvent
+        previewEvent,
+        keyEnter
     } from '@event-calendar/core';
 
     export let chunk;
@@ -20,8 +21,6 @@
         eventDidMount, eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _iClasses,
         _resBgColor, _resTxtColor} = getContext('state');
 
-    const dispatch = createEventDispatcher();
-
     let el;
     let event;
     let classes;
@@ -29,8 +28,8 @@
     let content;
     let timeText;
     let margin = 1;
-    let hidden = false;
     let display;
+    let onclick;
 
     $: event = chunk.event;
 
@@ -90,15 +89,20 @@
         }
         margin = repositionEvent(chunk, longChunks, height(el));
     }
+
+    // Onclick handler
+    $: onclick = createHandler($eventClick, display);
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<article
     bind:this={el}
     class="{classes}"
     {style}
-    on:click={createHandler($eventClick, display)}
+    role="{onclick ? 'button' : undefined}"
+    tabindex="{onclick ? 0 : undefined}"
+    on:click={onclick}
+    on:keydown={onclick && keyEnter(onclick)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
     on:pointerdown={!helperEvent(display) && createDragHandler($_interaction)}
@@ -109,4 +113,4 @@
         {event}
         on:pointerdown={createDragHandler($_interaction, true)}
     />
-</div>
+</article>

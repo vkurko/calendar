@@ -16,7 +16,8 @@
         getElementWithPayload,
         getPayload,
         flushDebounce,
-        hasYScroll
+        hasYScroll,
+        listView
     } from './lib.js';
 
     export let plugins = [];
@@ -27,8 +28,7 @@
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _scrollable,
-        events, eventSources, height, theme} = state;
+    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _scrollable, height, theme, view} = state;
 
     // Reactively update options that did change
     let prevOptions = {...options};
@@ -125,6 +125,7 @@
 <div
     class="{$theme.calendar} {$theme.view}{$_scrollable ? ' ' + $theme.withScroll : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
     style:height={$height}
+    role="{listView($view) ? 'list' : 'table'}"
 >
     <Toolbar/>
     <svelte:component this={$_viewComponent}/>

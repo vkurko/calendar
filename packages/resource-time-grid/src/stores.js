@@ -1,4 +1,5 @@
 import {derived} from 'svelte/store';
+import {createResources} from './lib.js';
 
 export function viewResources(state) {
     return derived(
@@ -23,7 +24,7 @@ export function viewResources(state) {
             }
 
             if (!result.length) {
-                result = state.resources.parse([{}]);
+                result = createResources([{}]);
             }
 
             return result;

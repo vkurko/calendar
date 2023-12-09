@@ -9,7 +9,8 @@
         eventIntersects,
         setContent,
         setPayload,
-        bgEvent
+        bgEvent,
+        toISOString
     } from '@event-calendar/core';
     import Event from './Event.svelte';
 
@@ -20,6 +21,7 @@
     let el;
     let chunks;
     let isToday, highlight;
+    let datetime;
 
     $: {
         chunks = [];
@@ -36,6 +38,7 @@
 
     $: isToday = datesEqual(date, $_today);
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
+    $: datetime = toISOString(date, 10);
 
     // dateFromPoint
     $: if (el) {
@@ -47,12 +50,15 @@
     <div
         bind:this={el}
         class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+        role="listitem"
         on:pointerdown={$_interaction.action?.select}
     >
-        <span use:setContent={$_intlListDay.format(date)}></span>
-        <span class="{$theme.daySide}" use:setContent={$_intlListDaySide.format(date)}></span>
+        <h4 class="{$theme.dayHead}">
+            <time {datetime} use:setContent={$_intlListDay.format(date)}></time>
+            <time class="{$theme.daySide}" {datetime} use:setContent={$_intlListDaySide.format(date)}></time>
+        </h4>
+        {#each chunks as chunk (chunk.event)}
+            <Event {chunk}/>
+        {/each}
     </div>
-    {#each chunks as chunk (chunk.event)}
-        <Event {chunk}/>
-    {/each}
 {/if}

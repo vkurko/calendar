@@ -1,15 +1,18 @@
 <script>
-    import {getContext, onMount} from 'svelte';
+    import {getContext, onMount, afterUpdate, createEventDispatcher} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {setContent, toLocalDate} from '@event-calendar/core';
 
     export let resource;
     export let date = undefined;
 
-    let {resourceLabelContent, resourceLabelDidMount, theme} = getContext('state');
+    let {resourceLabelContent, resourceLabelDidMount, _intlDayHeaderAL} = getContext('state');
+
+    const dispatch = createEventDispatcher();
 
     let el;
     let content;
+    let ariaLabel;
 
     // Content
     $: if ($resourceLabelContent) {
@@ -32,10 +35,19 @@
             });
         }
     });
+
+    afterUpdate(() => {
+        if (date) {
+            ariaLabel = $_intlDayHeaderAL.format(date) + ', ' + el.innerText;
+        } else {
+            ariaLabel = undefined;
+            dispatch('text', el.innerText);
+        }
+    });
 </script>
 
-<div
+<span
     bind:this={el}
-    class="{$theme.day}"
+    aria-label="{ariaLabel}"
     use:setContent={content}
-></div>
+></span>

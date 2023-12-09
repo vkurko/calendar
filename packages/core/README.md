@@ -27,6 +27,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [datesAboveResources](#datesaboveresources)
   - [datesSet](#datesset)
   - [dayCellFormat](#daycellformat)
+  - [dayHeaderAriaLabelFormat](#dayheaderarialabelformat)
   - [dayHeaderFormat](#dayheaderformat)
   - [dayMaxEvents](#daymaxevents)
   - [dayPopoverFormat](#daypopoverformat)
@@ -197,8 +198,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.4.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.4.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.5.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.5.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -466,6 +467,31 @@ This value can be either an object with options for the native JavaScript [Intl.
 ```js
 function (date) {
   // return Content with the formatted date string
+}
+```
+<table>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object that needs to be formatted</td>
+</tr>
+</table>
+
+### dayHeaderAriaLabelFormat
+- Type `object` or `function`
+- Default `{dateStyle: 'long'}`
+> Views override the default value as follows:
+> - dayGridMonth `{weekday: 'long'}`
+
+Defines the text that is used inside the `aria-label` attribute in calendar column headings.
+
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+
+```js
+function (date) {
+    // return formatted date string
 }
 ```
 <table>
@@ -2222,13 +2248,6 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 
 Using this method, you can, for example, find out on which day a click occurred inside a multi-day event. To do this, inside [eventClick](#eventclick), pass the `jsEvent.clientX` and `jsEvent.clientY` coordinates to `dateFromPoint` and get the desired date.
 
-<details>
-  <summary>Note</summary>
-
-> In the `'listDay'`, `'listWeek'`, `'listMonth'` and `'listYear'` views, the events are rendered outside the day container, so the method will return `null` for the coordinates that are inside the events.
-
-</details>
-
 ### destroy()
 - Return value `undefined`
 
@@ -2300,7 +2319,7 @@ Here are all properties that exist in Event object:
 </td>
 <td>
 
-The text appearing on the event. See [Content](#content)</td>
+`Content` The text appearing on the event. See [Content](#content)</td>
 </tr>
 <tr>
 <td>
@@ -2590,14 +2609,10 @@ Here are all properties that exist in Resource object:
 
 `title`
 </td>
-<td>The title of the resource</td>
-</tr>
-<tr>
 <td>
 
-`titleHTML`
+The title of the resource. See [Content](#content).
 </td>
-<td>The HTML version of the title</td>
 </tr>
 <tr>
 <td>
@@ -2637,17 +2652,7 @@ Here are all admissible fields for the resource’s input object:
 </td>
 <td>
 
-`string` Text that will be displayed on the resource when it is rendered. Default `''`
-</td>
-</tr>
-<tr>
-<td>
-
-`titleHTML`
-</td>
-<td>
-
-`string` The HTML version of the title to be displayed instead of the text version. Default `''`
+`Content` Text that will be displayed on the resource when it is rendered. See [Content](#content). Default `''`
 </td>
 </tr>
 <tr>

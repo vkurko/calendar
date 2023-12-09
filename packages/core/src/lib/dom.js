@@ -1,6 +1,6 @@
 import {symbol} from './utils.js';
 
-export function createElement(tag, className, content) {
+export function createElement(tag, className, content, attrs = []) {
     let el = document.createElement(tag);
     el.className = className;
     if (typeof content == 'string') {
@@ -9,6 +9,9 @@ export function createElement(tag, className, content) {
         el.replaceChildren(...content.domNodes);
     } else if (content.html) {
         el.innerHTML = content.html;
+    }
+    for (let attr of attrs) {
+        el.setAttribute(...attr);
     }
     return el;
 }

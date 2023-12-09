@@ -1,4 +1,4 @@
-import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, noTimePart, copyTime} from './date';
+import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date';
 import {createElement} from './dom';
 import {assign} from './utils';
 import {toViewWithLocalDates} from './view';
@@ -148,26 +148,33 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
             })
             : eventContent;
     } else {
+        let domNodes;
         switch (chunk.event.display) {
             case 'background':
-                content = '';
+                domNodes = [];
                 break;
             case 'pointer':
-                content = {
-                    domNodes: [createElement('div', theme.eventTime, timeText)]
-                };
+                domNodes = [createTimeElement(timeText, chunk, theme)];
                 break;
             default:
-                content = {
-                    domNodes: [
-                        ...chunk.event.allDay ? [] : [createElement('div', theme.eventTime, timeText)],
-                        createElement('div', theme.eventTitle, chunk.event.title)
-                    ]
-                };
+                domNodes = [
+                    ...chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)],
+                    createElement('h4', theme.eventTitle, chunk.event.title)
+                ];
         }
+        content = {domNodes};
     }
 
     return [timeText, content];
+}
+
+function createTimeElement(timeText, chunk, theme) {
+    return createElement(
+        'time',
+        theme.eventTime,
+        timeText,
+        [['datetime', toISOString(chunk.start)]]
+    );
 }
 
 export function createEventClasses(eventClassNames, event, _view) {

@@ -14,6 +14,9 @@ export function createOptions(plugins) {
             month: 'numeric',
             day: 'numeric'
         },
+        dayHeaderAriaLabelFormat: {
+            dateStyle: 'long'
+        },
         displayEventEnd: true,
         duration: {weeks: 1},
         events: [],

@@ -22,3 +22,7 @@ export function toViewWithLocalDates(view) {
 
     return view;
 }
+
+export function listView(view) {
+    return view.startsWith('list');
+}

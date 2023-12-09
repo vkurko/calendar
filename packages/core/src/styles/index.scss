@@ -138,7 +138,8 @@
 .ec-all-day,
 .ec-body,
 .ec-days,
-.ec-day {
+.ec-day,
+.ec-list .ec-day-head {
   border: 1px solid var(--ec-border-color);
 }
 
@@ -288,23 +289,13 @@
   }
 
   .ec-list & {
-    flex: 1 0 auto;
-    background-color: var(--ec-list-day-bg-color);
-    border-style: solid none;
-    padding: 8px 14px;
-    font-weight: bold;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-
-    &:first-child {
-      border-top: none;
-    }
+    border: none;
   }
 }
 
 .ec-day-grid {
   .ec-day-head {
+    display: block;
     text-align: right;
     padding: 4px 4px 3px;
   }
@@ -322,6 +313,21 @@
 }
 
 .ec-list {
+  .ec-day-head {
+    flex: 1 0 auto;
+    background-color: var(--ec-list-day-bg-color);
+    border-style: solid none;
+    margin: -1px 0 0;
+    padding: 8px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .ec-day:first-child .ec-day-head {
+    border-top: none;
+  }
+
   .ec-day-side {
     float: right;
   }
@@ -424,6 +430,8 @@
 
 .ec-event-title {
   overflow: hidden;
+  margin: unset;
+  font-weight: inherit;
 
   .ec-day-grid &,
   .ec-all-day & {

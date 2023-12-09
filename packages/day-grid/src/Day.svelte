@@ -1,7 +1,7 @@
 <script>
     import {getContext, tick, afterUpdate} from 'svelte';
     import {is_function} from 'svelte/internal';
-    import {datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload,
+    import {datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload, toISOString,
         debounce, keyEnter} from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
@@ -106,11 +106,16 @@
 <div
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}"
+    role="cell"
     on:pointerenter={createPointerEnterHandler($_interaction)}
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >
-    <div class="{$theme.dayHead}" use:setContent={$_intlDayCell.format(date)}></div>
+    <time
+        class="{$theme.dayHead}"
+        datetime="{toISOString(date, 10)}"
+        use:setContent={$_intlDayCell.format(date)}
+    ></time>
     <!-- Pointer -->
     {#if iChunks[1] && datesEqual(iChunks[1].date, date)}
         <div class="{$theme.events}">

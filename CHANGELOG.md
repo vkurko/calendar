@@ -1,5 +1,13 @@
 # Event Calendar changelog
 
+## 2.5.0
+December 9, 2023
+
+* A11y improvements: events are now accessible from the keyboard, added `dayHeaderAriaLabelFormat` option ([161](https://github.com/vkurko/calendar/issues/161))
+* All dates and times are now rendered using `<time>` tag ([161](https://github.com/vkurko/calendar/issues/161))
+* Events are now rendered using `<article>` and `<h4>` tags instead of `<div>` ([161](https://github.com/vkurko/calendar/issues/161))
+* `dateFromPoint` now works for events in `list` view
+
 ## 2.4.1
 October 21, 2023
 
