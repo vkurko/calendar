@@ -61,11 +61,9 @@
     });
 
     function createHandler(fn) {
-        return jsEvent => {
-            if (is_function(fn)) {
-                fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)});
-            }
-        };
+        return is_function(fn)
+            ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
+            : undefined;
     }
 
     // Onclick handler

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.5.1
+December 18, 2023
+
+* Fixed unwanted keyboard accessibility of events in `list` view when the `eventClick` is not set
+
 ## 2.5.0
 December 9, 2023
 
