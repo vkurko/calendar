@@ -48,6 +48,82 @@ export function sortEventChunks(chunks) {
     chunks.sort((a, b) => a.start - b.start || b.event.allDay - a.event.allDay);
 }
 
+export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
+    let timeText = _intlEventTime.formatRange(
+        chunk.start,
+        displayEventEnd && chunk.event.display !== 'pointer'
+            ? copyTime(cloneDate(chunk.start), chunk.end)  // make Intl.formatRange output only the time part
+            : chunk.start
+    );
+    let content;
+
+    if (eventContent) {
+        content = is_function(eventContent)
+            ? eventContent({
+                event: toEventWithLocalDates(chunk.event),
+                timeText,
+                view: toViewWithLocalDates(_view)
+            })
+            : eventContent;
+    } else {
+        let domNodes;
+        switch (chunk.event.display) {
+            case 'background':
+                domNodes = [];
+                break;
+            case 'pointer':
+                domNodes = [createTimeElement(timeText, chunk, theme)];
+                break;
+            default:
+                domNodes = [
+                    ...chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)],
+                    createElement('h4', theme.eventTitle, chunk.event.title)
+                ];
+        }
+        content = {domNodes};
+    }
+
+    return [timeText, content];
+}
+
+function createTimeElement(timeText, chunk, theme) {
+    return createElement(
+        'time',
+        theme.eventTime,
+        timeText,
+        [['datetime', toISOString(chunk.start)]]
+    );
+}
+
+export function createEventClasses(eventClassNames, event, _view) {
+    if (eventClassNames) {
+        if (is_function(eventClassNames)) {
+            eventClassNames = eventClassNames({
+                event: toEventWithLocalDates(event),
+                view: toViewWithLocalDates(_view)
+            });
+        }
+        return Array.isArray(eventClassNames) ? eventClassNames : [eventClassNames];
+    }
+    return [];
+}
+
+export function toEventWithLocalDates(event) {
+    return _cloneEvent(event, toLocalDate);
+}
+
+export function cloneEvent(event) {
+    return _cloneEvent(event, cloneDate);
+}
+
+function _cloneEvent(event, dateFn) {
+    event = assign({}, event);
+    event.start = dateFn(event.start);
+    event.end = dateFn(event.end);
+
+    return event;
+}
+
 /**
  * Prepare event chunks for month view and all-day slot in week view
  */
@@ -130,80 +206,11 @@ export function repositionEvent(chunk, longChunks, height) {
     return margin;
 }
 
-export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
-    let timeText = _intlEventTime.formatRange(
-        chunk.start,
-        displayEventEnd && chunk.event.display !== 'pointer'
-            ? copyTime(cloneDate(chunk.start), chunk.end)  // make Intl.formatRange output only the time part
-            : chunk.start
-    );
-    let content;
-
-    if (eventContent) {
-        content = is_function(eventContent)
-            ? eventContent({
-                event: toEventWithLocalDates(chunk.event),
-                timeText,
-                view: toViewWithLocalDates(_view)
-            })
-            : eventContent;
-    } else {
-        let domNodes;
-        switch (chunk.event.display) {
-            case 'background':
-                domNodes = [];
-                break;
-            case 'pointer':
-                domNodes = [createTimeElement(timeText, chunk, theme)];
-                break;
-            default:
-                domNodes = [
-                    ...chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)],
-                    createElement('h4', theme.eventTitle, chunk.event.title)
-                ];
-        }
-        content = {domNodes};
+export function runReposition(refs, data) {
+    refs.length = data.length;
+    for (let ref of refs) {
+        ref?.reposition?.();
     }
-
-    return [timeText, content];
-}
-
-function createTimeElement(timeText, chunk, theme) {
-    return createElement(
-        'time',
-        theme.eventTime,
-        timeText,
-        [['datetime', toISOString(chunk.start)]]
-    );
-}
-
-export function createEventClasses(eventClassNames, event, _view) {
-    if (eventClassNames) {
-        if (is_function(eventClassNames)) {
-            eventClassNames = eventClassNames({
-                event: toEventWithLocalDates(event),
-                view: toViewWithLocalDates(_view)
-            });
-        }
-        return Array.isArray(eventClassNames) ? eventClassNames : [eventClassNames];
-    }
-    return [];
-}
-
-export function toEventWithLocalDates(event) {
-    return _cloneEvent(event, toLocalDate);
-}
-
-export function cloneEvent(event) {
-    return _cloneEvent(event, cloneDate);
-}
-
-function _cloneEvent(event, dateFn) {
-    event = assign({}, event);
-    event.start = dateFn(event.start);
-    event.end = dateFn(event.end);
-
-    return event;
 }
 
 /**

@@ -32,7 +32,9 @@ export default class {
         }
 
         // Private stores
-        this._queue = writable(new Map());  // debounce queue
+        this._queue = writable(new Map());  // debounce queue (beforeUpdate)
+        this._queue2 = writable(new Map());  // debounce queue (afterUpdate)
+        this._tasks = new Map();  // timeout IDs for tasks
         this._auxiliary = writable([]);  // auxiliary components
         this._dayGrid = dayGrid(this);
         this._currentRange = currentRange(this);

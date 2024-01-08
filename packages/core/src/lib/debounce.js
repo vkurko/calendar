@@ -8,3 +8,13 @@ export function flushDebounce(queue) {
     run_all(queue);
     queue.clear();
 }
+
+export function task(fn, handle, tasks) {
+    handle ??= fn;
+    if (!tasks.has(handle)) {
+        tasks.set(handle, setTimeout(() => {
+            tasks.delete(handle);
+            fn();
+        }));
+    }
+}

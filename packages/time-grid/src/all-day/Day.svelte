@@ -1,6 +1,6 @@
 <script>
-    import {afterUpdate, getContext} from 'svelte';
-    import {datesEqual, setPayload} from '@event-calendar/core';
+    import {getContext} from 'svelte';
+    import {datesEqual, runReposition, setPayload} from '@event-calendar/core';
     import Event from './Event.svelte';
 
     export let date;
@@ -34,14 +34,9 @@
         setPayload(el, () => ({allDay: true, date, resource, dayEl: el}));
     }
 
-    function reposition() {
-        refs.length = dayChunks.length;
-        for (let ref of refs) {
-            ref && ref.reposition && ref.reposition();
-        }
+    export function reposition() {
+        runReposition(refs, dayChunks);
     }
-
-    afterUpdate(reposition);
 </script>
 
 <div
@@ -62,5 +57,3 @@
         {/each}
     </div>
 </div>
-
-<svelte:window on:resize={reposition}/>

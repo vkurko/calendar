@@ -1,8 +1,8 @@
 <script>
-    import {getContext, tick, afterUpdate} from 'svelte';
+    import {getContext, tick} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload, toISOString,
-        debounce, keyEnter} from '@event-calendar/core';
+        keyEnter, runReposition} from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -49,12 +49,11 @@
     $: if ($_hiddenEvents && hiddenEvents.size) {  // make Svelte update this block on $_hiddenEvents update
         let text = '+' + hiddenEvents.size + ' more';
         if ($moreLinkContent) {
-            moreLink = is_function($moreLinkContent) ? $moreLinkContent({num: hiddenEvents.size, text}) : $moreLinkContent;
-            if (typeof moreLink === 'string') {
-                moreLink = {html: moreLink};
-            }
+            moreLink = is_function($moreLinkContent)
+                ? $moreLinkContent({num: hiddenEvents.size, text})
+                : $moreLinkContent;
         } else {
-            moreLink = {html: text};
+            moreLink = text;
         }
     }
 
@@ -88,18 +87,8 @@
             .sort((a, b) => a.top - b.top);
     }
 
-    function reposition() {
-        refs.length = dayChunks.length;
-        for (let ref of refs) {
-            ref?.reposition?.();
-        }
-    }
-
-    afterUpdate(reposition);
-
-    let debounceHandle = {};
-    $: if ($_hiddenEvents) {
-        debounce(reposition, debounceHandle, _queue);
+    export function reposition() {
+        runReposition(refs, dayChunks);
     }
 </script>
 
@@ -130,7 +119,7 @@
     {/if}
     <div class="{$theme.events}">
         {#each dayChunks as chunk, i (chunk.event)}
-            <Event {chunk} {longChunks} bind:this={refs[i]}/>
+            <Event {chunk} {longChunks} bind:this={refs[i]} />
         {/each}
     </div>
     {#if showPopup}
@@ -152,5 +141,3 @@
         {/if}
     </div>
 </div>
-
-<svelte:window on:resize={reposition}/>

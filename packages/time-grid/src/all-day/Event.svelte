@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount} from 'svelte';
+    import {afterUpdate, getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         createEventClasses,
@@ -10,16 +10,16 @@
         setContent,
         repositionEvent,
         helperEvent,
-        previewEvent,
-        keyEnter
+        keyEnter,
+        task
     } from '@event-calendar/core';
 
     export let chunk;
     export let longChunks = {};
 
-    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent, eventClassNames,
-        eventDidMount, eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _interaction, _iClasses,
-        _resBgColor, _resTxtColor} = getContext('state');
+    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent,
+        eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -71,6 +71,12 @@
         }
     });
 
+    afterUpdate(() => {
+        if (is_function($eventAllUpdated) && !helperEvent(display)) {
+            task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
+        }
+    });
+
     function createHandler(fn, display) {
         return !helperEvent(display) && is_function(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
@@ -84,7 +90,7 @@
     }
 
     export function reposition() {
-        if (!el || previewEvent(display)) {
+        if (!el) {
             return;
         }
         margin = repositionEvent(chunk, longChunks, height(el));

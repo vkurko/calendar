@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount} from 'svelte';
+    import {afterUpdate, getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         createEventContent,
@@ -10,15 +10,16 @@
         bgEvent,
         helperEvent,
         ghostEvent,
-        keyEnter
+        keyEnter,
+        task
     } from '@event-calendar/core';
 
     export let date;
     export let chunk;
 
-    let {displayEventEnd, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick, eventDidMount,
-        eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _slotTimeLimits} = getContext('state');
+    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
+        eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _slotTimeLimits, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -27,7 +28,6 @@
     let style;
     let content;
     let timeText;
-    let dragged = false;
     let onclick;
 
     $: event = chunk.event;
@@ -84,6 +84,12 @@
                 el,
                 view: toViewWithLocalDates($_view)
             });
+        }
+    });
+
+    afterUpdate(() => {
+        if (is_function($eventAllUpdated) && !helperEvent(display)) {
+            task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 

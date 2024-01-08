@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.6.0
+January 8, 2024
+
+* Added experimental `eventAllUpdated` option ([96](https://github.com/vkurko/calendar/issues/96))
+
 ## 2.5.1
 December 18, 2023
 

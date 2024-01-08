@@ -1,6 +1,6 @@
 <script>
     import './styles/index.scss';
-    import {setContext, beforeUpdate} from 'svelte';
+    import {setContext, beforeUpdate, afterUpdate} from 'svelte';
     import {destroy_component, get_current_component} from 'svelte/internal';
     import {get} from 'svelte/store';
     import {diff} from './storage/options';
@@ -17,7 +17,8 @@
         getPayload,
         flushDebounce,
         hasYScroll,
-        listView
+        listView,
+        task
     } from './lib.js';
 
     export let plugins = [];
@@ -28,7 +29,7 @@
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _scrollable, height, theme, view} = state;
+    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _queue2, _tasks, _scrollable, height, theme, view} = state;
 
     // Reactively update options that did change
     let prevOptions = {...options};
@@ -112,7 +113,11 @@
 
     beforeUpdate(() => {
         flushDebounce($_queue);
-        setTimeout(recheckScrollable);
+    });
+
+    afterUpdate(() => {
+        flushDebounce($_queue2);
+        task(recheckScrollable, null, _tasks);
     });
 
     function recheckScrollable() {

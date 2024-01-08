@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount} from 'svelte';
+    import {afterUpdate, getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
         createEventContent,
@@ -7,14 +7,15 @@
         toViewWithLocalDates,
         setContent,
         createEventClasses,
-        keyEnter
+        keyEnter,
+        task
     } from '@event-calendar/core';
 
     export let chunk;
 
-    let {displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClassNames, eventClick,
-        eventDidMount, eventMouseEnter, eventMouseLeave, theme, _view, _intlEventTime, _resBgColor, _resTxtColor,
-        _interaction} = getContext('state');
+    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent,
+        eventClassNames, eventClick, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
+        _view, _intlEventTime, _resBgColor, _resTxtColor, _interaction, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -57,6 +58,12 @@
                 el,
                 view: toViewWithLocalDates($_view)
             });
+        }
+    });
+
+    afterUpdate(() => {
+        if (is_function($eventAllUpdated)) {
+            task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 

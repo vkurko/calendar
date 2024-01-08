@@ -20,6 +20,7 @@ export function createOptions(plugins) {
         displayEventEnd: true,
         duration: {weeks: 1},
         events: [],
+        eventAllUpdated: undefined,
         eventBackgroundColor: undefined,
         eventTextColor: undefined,
         eventClassNames: undefined,

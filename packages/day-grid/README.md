@@ -36,6 +36,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [duration](#duration)
   - [editable](#editable)
   - [events](#events)
+  - [eventAllUpdated](#eventallupdated)
   - [eventBackgroundColor](#eventbackgroundcolor)
   - [eventClassNames](#eventclassnames)
   - [eventClick](#eventclick)
@@ -45,9 +46,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
-  - [eventDrop](#eventdrop)
   </td><td>
 
+  - [eventDrop](#eventdrop)
   - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
@@ -198,8 +199,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.5.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.5.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -602,6 +603,31 @@ If you don't need both, use the more specific [eventStartEditable](#eventstarted
 Array of plain objects that will be parsed into [Event](#event-object) objects and displayed on the calendar.
 
 This option is not used if the `eventSources` option is provided.
+
+### eventAllUpdated
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when all events have finished updating.
+
+This is an experimental feature and its behavior may change in the future. The function is called at the end of the cycle of rendering all events. The rendering occurs when new events are added, already displayed events are modified, or events are deleted.
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
 
 ### eventBackgroundColor
 - Type `string`
