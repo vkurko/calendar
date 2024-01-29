@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource view:
 
-* Lightweight (32kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (33kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -199,8 +199,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.1/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1288,7 +1288,27 @@ This option is used instead of the `events` option.
 </td>
 <td>
 
-A URL that the calendar will fetch [Event](#event-object) objects from
+A URL that the calendar will fetch [Event](#event-object) objects from. HTTP requests with the following parameters will be sent to this URL whenever the calendar needs new event data
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>
+Start date of the range the calendar needs events for
+</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>
+End date of the range the calendar needs events for
+</td>
+</tr>
+</table>
 </td>
 </tr>
 <tr>

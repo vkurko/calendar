@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.6.1
+January 29, 2024
+
+* Fixed calendar functionality in iOS 15 ([227](https://github.com/vkurko/calendar/issues/227))
+
 ## 2.6.0
 January 8, 2024
 
