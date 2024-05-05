@@ -42,6 +42,7 @@ export function createOptions(plugins) {
             center: '',
             end: 'today prev,next'
         },
+        customButtons: undefined,
         height: undefined,
         hiddenDays: [],
         highlightedDates: [],  // ec option

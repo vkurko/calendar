@@ -4,7 +4,7 @@
 
     export let buttons;
 
-    let {_currentRange, _viewTitle, buttonText, date, duration, hiddenDays, theme, view} = getContext('state');
+    let {_currentRange, _viewTitle, buttonText, customButtons, date, duration, hiddenDays, theme, view} = getContext('state');
 
     let today = setMidnight(createDate()), isToday;
 
@@ -49,6 +49,11 @@
             on:click={() => $date = cloneDate(today)}
             disabled={isToday}
         >{$buttonText[button]}</button>
+    {:else if $customButtons[button] != null}
+        <button
+            class="{$theme.button} ec-{button}"
+            on:click={$customButtons[button].click}
+        >{$customButtons[button].text }</button>
     {:else if button != ''}
         <button
             class="{$theme.button}{$view === button ? ' ' + $theme.active : ''} ec-{button}"
