@@ -1539,7 +1539,7 @@ _a view name like_ `dayGridMonth`
 - Type `object`
 - Default `undefined`
 
-Defines custom buttons that can be used in the headerToolbar/footerToolbar.
+Defines custom buttons that can be used in the headerToolbar.
 
 Specify a hash of custom buttons. Then reference them from the headerToolbar setting. Like this:
 
