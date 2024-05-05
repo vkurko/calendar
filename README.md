@@ -64,6 +64,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [firstDay](#firstday)
   - [flexibleSlotTimeLimits](#flexibleslottimelimits)
   - [headerToolbar](#headertoolbar)
+  - [customButtons](#customButtons)
   - [height](#height)
   - [hiddenDays](#hiddendays)
   - [highlightedDates](#highlighteddates)
@@ -1531,6 +1532,49 @@ An object can be supplied with properties `start`,`center`,`end`. These properti
 _a view name like_ `dayGridMonth`
 </td>
 <td>A button that will switch the calendar to a specific view</td>
+</tr>
+</table>
+
+### customButtons
+- Type `object`
+- Default `undefined`
+
+Defines custom buttons that can be used in the headerToolbar/footerToolbar.
+
+Specify a hash of custom buttons. Then reference them from the headerToolbar setting. Like this:
+
+```js
+let options = {
+  headerToolbar: {
+      start: 'prev,next today myCustomButton',
+      center: 'title',
+      end: `dayGridMonth,timeGridWeek,timeGridDay`
+  },
+  customButtons: {
+      myCustomButton: {
+          text: 'custom!',
+          click: function() {
+              alert('clicked the custom button!');
+          }
+      }
+  }
+};
+```
+Each customButton entry accepts the following properties:
+<table>
+<tr>
+<td>
+
+`text `
+</td>
+<td>The text to be display on the button itself</td>
+</tr>
+<tr>
+<td>
+
+`click`
+</td>
+<td>A callback function that is called when the button is clicked. Accepts one argument: ( <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent">mouseEvent</a> )</td>
 </tr>
 </table>
 
