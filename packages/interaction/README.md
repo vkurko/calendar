@@ -22,6 +22,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [allDayContent](#alldaycontent)
   - [allDaySlot](#alldayslot)
   - [buttonText](#buttontext)
+  - [customButtons](#custombuttons)
   - [date](#date)
   - [dateClick](#dateclick)
   - [datesAboveResources](#datesaboveresources)
@@ -45,9 +46,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
-  - [eventDragStop](#eventdragstop)
   </td><td>
 
+  - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
   - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
@@ -74,9 +75,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [locale](#locale)
   - [longPressDelay](#longpressdelay)
   - [moreLinkContent](#morelinkcontent)
-  - [noEventsClick](#noeventsclick)
   </td><td>
 
+  - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
@@ -199,8 +200,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.6.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.7.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.7.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -318,6 +319,54 @@ function (text) {
 `text`
 </td>
 <td>An object with default button text</td>
+</tr>
+</table>
+
+### customButtons
+- Type `object`
+- Default `undefined`
+
+Defines custom buttons that can be used in the [headerToolbar](#headertoolbar).
+
+First, specify the custom buttons as key-value pairs. Then reference them from the `headerToolbar` option.
+
+<details>
+  <summary>Example</summary>
+
+```js
+let options = {
+    customButtons: {
+        myCustomButton: {
+            text: 'custom!',
+            click: function() {
+                alert('clicked the custom button!');
+            }
+        }
+    },
+    headerToolbar: {
+        start: 'title myCustomButton',
+        center: '',
+        end: 'today prev,next'
+    }
+};
+```
+</details>
+
+Each `customButton` entry accepts the following properties:
+<table>
+<tr>
+<td>
+
+`text `
+</td>
+<td>The text to be display on the button itself</td>
+</tr>
+<tr>
+<td>
+
+`click`
+</td>
+<td>A callback function that is called when the button is clicked. Accepts one argument <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent">mouseEvent</a></td>
 </tr>
 </table>
 
@@ -1288,7 +1337,7 @@ This option is used instead of the `events` option.
 </td>
 <td>
 
-A URL that the calendar will fetch [Event](#event-object) objects from. HTTP requests with the following parameters will be sent to this URL whenever the calendar needs new event data
+A URL that the calendar will fetch [Event](#event-object) objects from. HTTP requests with the following parameters will be sent to this URL whenever the calendar needs new event data:
 <table>
 <tr>
 <td>

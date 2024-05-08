@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.7.0
+May 8, 2024
+
+* Added `customButtons` option ([159](https://github.com/vkurko/calendar/issues/159))
+
 ## 2.6.1
 January 29, 2024
 

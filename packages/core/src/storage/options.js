@@ -7,6 +7,7 @@ export function createOptions(plugins) {
         buttonText: {
             today: 'today',
         },
+        customButtons: {},
         date: new Date(),
         datesSet: undefined,
         dayHeaderFormat: {
