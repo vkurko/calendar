@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.7.1
+May 15, 2024
+
+* Fixed an issue with event positioning when `dayMaxEvents` is triggered ([264](https://github.com/vkurko/calendar/issues/264))
+
 ## 2.7.0
 May 8, 2024
 

@@ -1,5 +1,5 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, tick} from 'svelte';
     import {cloneDate, addDay, eventIntersects, bgEvent, createEventChunk, prepareEventChunks,
         runReposition, debounce} from '@event-calendar/core';
     import Day from './Day.svelte';
@@ -49,7 +49,8 @@
     });
 
     $: if ($_hiddenEvents) {
-        reposition();
+        // Schedule reposition during next update
+        tick().then(reposition);
     }
 </script>
 
