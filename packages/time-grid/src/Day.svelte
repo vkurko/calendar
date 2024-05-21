@@ -35,7 +35,7 @@
         chunks = [];
         bgChunks = [];
         for (let event of $_events) {
-            if (!event.allDay && eventIntersects(event, start, end, resource, true)) {
+            if (!event.allDay && eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
                 switch (event.display) {
                     case 'background': bgChunks.push(chunk); break;
@@ -47,13 +47,13 @@
     }
 
     $: iChunks = $_iEvents.map(
-        event => event && eventIntersects(event, start, end, resource, true) ? createEventChunk(event, start, end) : null
+        event => event && eventIntersects(event, start, end, resource) ? createEventChunk(event, start, end) : null
     );
 
     $: isToday = datesEqual(date, $_today);
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
-    function dateFromPoint(y) {
+    function dateFromPoint(x, y) {
         y -= rect(el).top;
         return {
             allDay: false,
@@ -70,19 +70,12 @@
     $: if (el) {
         setPayload(el, dateFromPoint);
     }
-
-    function createPointerEnterHandler(interaction) {
-        return interaction.pointer
-            ? jsEvent => interaction.pointer.enterTimeGrid(date, el, jsEvent, resource)
-            : undefined;
-    }
 </script>
 
 <div
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
     role="cell"
-    on:pointerenter={createPointerEnterHandler($_interaction)}
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >

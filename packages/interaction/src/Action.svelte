@@ -18,14 +18,14 @@
         toISOString,
         toLocalDate,
         toViewWithLocalDates,
-        listView
+        listView, timelineView
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
-    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, dateClick, dragScroll, datesAboveResources,
+    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, _bodyEl, dateClick, dragScroll, datesAboveResources,
         eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
         eventResizeStart, eventResizeStop, eventResize, longPressDelay, selectable, select: selectFn,
-        selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, unselect: unselectFn,
+        selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, slotWidth, unselect: unselectFn,
         unselectAuto, unselectCancel, view} = getContext('state');
 
     const ACTION_DRAG = 1;
@@ -51,8 +51,9 @@
     let noDateClick;  // do not perform date click
     let timer;  // timer for long press delays
     let viewport;
+    let margin;
 
-    export function drag(eventToDrag, jsEvent, resize, forceDate) {
+    export function drag(eventToDrag, jsEvent, resize, forceDate, forceMargin) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
                 resize ? ACTION_RESIZE : (
@@ -70,7 +71,11 @@
                     date = forceDate;
                 }
 
-                iClass = resize ? (allDay ? 'resizingX' : 'resizingY') : 'dragging';
+                if (forceMargin) {
+                    margin = forceMargin;
+                }
+
+                iClass = resize ? (resize == 'x' ? 'resizingX' : 'resizingY') : 'dragging';
 
                 if (resize) {
                     minEnd = cloneDate(event.start);
@@ -129,10 +134,14 @@
         fromY = toY = jsEvent.clientY;
 
         let dayEl = getElementWithPayload(toX, toY);
-        ({allDay, date, resource} = getPayload(dayEl)(toY));
+        ({allDay, date, resource} = getPayload(dayEl)(toX, toY));
 
-        bodyEl = ancestor(dayEl, resource ? 4 : 3);
-        clipEl = ancestor(dayEl, resource && (dragging() || $datesAboveResources) ? 2 : 1);
+        if (timelineView($view)) {
+            bodyEl = clipEl = $_bodyEl;
+        } else {
+            bodyEl = ancestor(dayEl, resource ? 4 : 3);
+            clipEl = ancestor(dayEl, resource && (dragging() || $datesAboveResources) ? 2 : 1);
+        }
         calcViewport();
 
         if (jsEvent.pointerType !== 'mouse') {
@@ -166,7 +175,7 @@
             let dayEl = findDayEl();
             if (dayEl) {
                 let newAllDay;
-                ({allDay: newAllDay, date: newDate, resource: newResource} = getPayload(dayEl)(toY));
+                ({allDay: newAllDay, date: newDate, resource: newResource} = getPayload(dayEl)(toX, toY));
 
                 if (newAllDay === allDay) {
                     delta = createDuration((newDate - date) / 1000);
@@ -197,20 +206,30 @@
         }
 
         if ($dragScroll) {
-            let threshold = $slotHeight * 2;
+            let thresholdY = $slotHeight * 2;
+            let thresholdX = $slotWidth;
             animate(() => {
                 if (bodyEl) {
-                    if (toY < threshold) {
-                        window.scrollBy(0, max(-10, (toY - threshold) / 3));
+                    if (toY < thresholdY) {
+                        window.scrollBy(0, max(-10, (toY - thresholdY) / 3));
                     }
-                    if (toY < bodyRect.top + threshold) {
-                        bodyEl.scrollTop += max(-10, (toY - bodyRect.top - threshold) / 3);
+                    if (toY < bodyRect.top + thresholdY) {
+                        bodyEl.scrollTop += max(-10, (toY - bodyRect.top - thresholdY) / 3);
                     }
-                    if (toY > window.innerHeight - threshold) {
-                        window.scrollBy(0, min(10, (toY - window.innerHeight + threshold) / 3));
+                    if (toY > window.innerHeight - thresholdY) {
+                        window.scrollBy(0, min(10, (toY - window.innerHeight + thresholdY) / 3));
                     }
-                    if (toY > bodyRect.bottom - threshold) {
-                        bodyEl.scrollTop += min(10, (toY - bodyRect.bottom + threshold) / 3);
+                    if (toY > bodyRect.bottom - thresholdY) {
+                        bodyEl.scrollTop += min(10, (toY - bodyRect.bottom + thresholdY) / 3);
+                    }
+
+                    if (timelineView($view)) {
+                        if (toX < bodyRect.left + thresholdX) {
+                            bodyEl.scrollLeft += max(-10, (toX - bodyRect.left - thresholdX) / 3);
+                        }
+                        if (toX > bodyRect.right - thresholdX) {
+                            bodyEl.scrollLeft += min(10, (toX - bodyRect.right + thresholdX) / 3);
+                        }
                     }
                 }
             });
@@ -298,7 +317,7 @@
                         toY = jsEvent.clientY;
                         let dayEl = getElementWithPayload(toX, toY);
                         if (dayEl) {
-                            let {allDay, date, resource} = getPayload(dayEl)(toY);
+                            let {allDay, date, resource} = getPayload(dayEl)(toX, toY);
                             $dateClick({
                                 allDay,
                                 date: toLocalDate(date),
@@ -315,7 +334,7 @@
 
             interacting = false;
             action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
-                allDay = $_iClass = minEnd = selectStep = undefined;
+                allDay = $_iClass = minEnd = selectStep = margin = undefined;
             bodyEl = clipEl = bodyRect = clipRect = undefined;
 
             if (timer) {
@@ -339,10 +358,10 @@
         bodyRect = rect(bodyEl);
         clipRect = rect(clipEl);
         viewport = [
-            max(0, clipRect.left + ($_dayGrid ? 0 : 8)),  // left
-            min(document.documentElement.clientWidth, clipRect.right) - 2,  // right
-            max(0, bodyRect.top ),  // top
-            min(document.documentElement.clientHeight, bodyRect.bottom) - 2  // bottom
+            max(0, clipRect.left + (timelineView($view) ? 1 : ($_dayGrid ? 0 : 8))),  // left
+            min(document.documentElement.clientWidth, clipRect.left + clipEl.clientWidth) - 2,  // right
+            max(0, bodyRect.top),  // top
+            min(document.documentElement.clientHeight, bodyRect.top + bodyEl.clientHeight) - 2  // bottom
         ];
     }
 
@@ -353,6 +372,9 @@
         display = event.display;
         event.display = 'preview';
         $_iEvents[0] = cloneEvent(event);
+        if (margin !== undefined) {
+            $_iEvents[0]._margin = margin;
+        }
         event.display = 'ghost';
         $_events = $_events;
     }

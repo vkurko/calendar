@@ -124,6 +124,13 @@ export function copyTime(toDate, fromDate) {
 }
 
 /**
+ * Get duration value in seconds or default value if duration is undefined
+ */
+export function toSeconds(duration, defaultValue = 0) {
+    return duration?.seconds ?? defaultValue;
+}
+
+/**
  * Private functions
  */
 

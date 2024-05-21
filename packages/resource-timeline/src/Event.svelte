@@ -2,46 +2,91 @@
     import {afterUpdate, getContext, onMount} from 'svelte';
     import {is_function} from 'svelte/internal';
     import {
-        createEventClasses,
         createEventContent,
-        height,
+        createEventClasses,
         toEventWithLocalDates,
         toViewWithLocalDates,
         setContent,
-        repositionEvent,
+        bgEvent,
         helperEvent,
         keyEnter,
-        task, rect, ancestor
+        task, height, DAY_IN_SECONDS, toSeconds
     } from '@event-calendar/core';
+    import {repositionEvent} from './lib.js';
 
+    export let date;
     export let chunk;
+    export let dayChunks = [];
     export let longChunks = {};
+    export let resource = undefined;
 
-    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent,
-        eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _tasks} = getContext('state');
+    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
+        eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotDuration, slotWidth, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _dayTimeLimits, _tasks} = getContext('state');
 
     let el;
     let event;
+    let display;
     let classes;
     let style;
     let content;
     let timeText;
-    let margin = 1;
-    let display;
     let onclick;
+    let margin = 1;
 
     $: event = chunk.event;
 
     $: {
         display = event.display;
 
-        // Class & Style
+        // Style
+        let step = toSeconds($slotDuration);
+        let start = (chunk.start - date) / 1000;
+        let end = (chunk.end - date) / 1000;
+        // Shift start
+        start -= toSeconds($_dayTimeLimits[date.getTime()]?.min);
+        if (start < 0) {
+            start = 0;
+        }
+        // Shift end
+        let cut = 0;
+        for (let i = 0; i < chunk.days; ++i) {
+            let slotTimeLimits = $_dayTimeLimits[chunk.dates[i].getTime()];
+            let offsetStart = toSeconds(slotTimeLimits?.min);
+            let offsetEnd = toSeconds(slotTimeLimits?.max, DAY_IN_SECONDS);
+            let dayStart = DAY_IN_SECONDS * i;
+            // Cut offsetEnd
+            let dayEnd = dayStart + DAY_IN_SECONDS;
+            if (dayEnd > end) {
+                dayEnd = end;
+            }
+            if (dayEnd > dayStart + offsetEnd) {
+                cut += dayEnd - dayStart - offsetEnd;
+            }
+            // Cut offsetStart
+            let c = end - dayStart;
+            if (c > offsetStart) {
+                c = offsetStart;
+            }
+            cut += c;
+        }
+        end -= cut;
+        let left = start / step * $slotWidth;
+        let width = (end - start) / step * $slotWidth;
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let marginTop = margin;
+        if (event._margin) {
+            // Force margin for helper events
+            let [_margin, _resource] = event._margin;
+            if (resource === _resource) {
+                marginTop = _margin;
+            }
+        }
         style =
-            `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
-            `margin-top:${event._margin ?? margin}px;`
+            `left:${left}px;` +
+            `width:${width}px;` +
+            `margin-top:${marginTop}px;`
         ;
         if (bgColor) {
             style += `background-color:${bgColor};`;
@@ -50,8 +95,9 @@
             style += `color:${txtColor};`;
         }
 
+        // Class
         classes = [
-            $theme.event,
+            bgEvent(display) ? $theme.bgEvent : $theme.event,
             ...$_iClasses([], event),
             ...createEventClasses($eventClassNames, event, $_view)
         ].join(' ');
@@ -85,19 +131,21 @@
 
     function createDragHandler(interaction, resize) {
         return interaction.action
-            ? jsEvent => interaction.action.drag(event, jsEvent, resize, null, rect(el).top - rect(ancestor(el, 1)).top)
+            ? jsEvent => interaction.action.drag(event, jsEvent, resize, null, [margin, resource])
             : undefined;
     }
 
+    // Onclick handler
+    $: onclick = !bgEvent(display) && createHandler($eventClick, display);
+
     export function reposition() {
         if (!el) {
-            return;
+            return 0;
         }
-        margin = repositionEvent(chunk, longChunks, height(el));
+        let h = height(el);
+        margin = repositionEvent(chunk, dayChunks, longChunks, h);
+        return margin + h;
     }
-
-    // Onclick handler
-    $: onclick = createHandler($eventClick, display);
 </script>
 
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
@@ -111,7 +159,7 @@
     on:keydown={onclick && keyEnter(onclick)}
     on:mouseenter={createHandler($eventMouseEnter, display)}
     on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={!helperEvent(display) && createDragHandler($_interaction)}
+    on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
 >
     <div class="{$theme.eventBody}" use:setContent={content}></div>
     <svelte:component

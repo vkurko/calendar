@@ -2,9 +2,9 @@
 
 See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
-Full-sized drag & drop JavaScript event calendar with resource view:
+Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (33kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (34kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -96,6 +96,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [slotLabelFormat](#slotlabelformat)
   - [slotMaxTime](#slotmaxtime)
   - [slotMinTime](#slotmintime)
+  - [slotWidth](#slotwidth)
   - [theme](#theme)
   - [titleFormat](#titleformat)
   - [unselect](#unselect)
@@ -153,6 +154,7 @@ You must use at least one plugin that provides a view. The following plugins are
 
 * `@event-calendar/day-grid`
 * `@event-calendar/list`
+* `@event-calendar/resource-timeline`
 * `@event-calendar/resource-time-grid`
 * `@event-calendar/time-grid`
 * `@event-calendar/interaction` (doesn't provide a view)
@@ -200,8 +202,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.7.2/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.7.2/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.0.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.0.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -290,13 +292,15 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 
 ### buttonText
 - Type `object` or `function`
-- Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
+- Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimelineDay: 'timeline', resourceTimelineWeek: 'timeline', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
 > Views override the default value as follows:
 > - dayGridMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
 > - listDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - listMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
 > - listWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - listYear `text => ({...text, next: 'Next year', prev: 'Previous year'})`
+> - resourceTimelineDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
+> - resourceTimelineWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - resourceTimeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - resourceTimeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - timeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
@@ -534,6 +538,8 @@ function (date) {
 - Default `{dateStyle: 'long'}`
 > Views override the default value as follows:
 > - dayGridMonth `{weekday: 'long'}`
+> - resourceTimelineDay `{dateStyle: 'long', timeStyle: 'short'}`
+> - resourceTimelineWeek `{dateStyle: 'long', timeStyle: 'short'}`
 
 Defines the text that is used inside the `aria-label` attribute in calendar column headings.
 
@@ -624,13 +630,11 @@ Determines whether the calendar should automatically scroll during the event dra
 > Views override the default value as follows:
 > - dayGridMonth `{months: 1}`
 > - listDay `{days: 1}`
-> - listWeek `{weeks: 1}`
 > - listMonth `{months: 1}`
 > - listYear `{years: 1}`
+> - resourceTimelineDay `{days: 1}`
 > - resourceTimeGridDay `{days: 1}`
-> - resourceTimeGridWeek `{weeks: 1}`
 > - timeGridDay `{days: 1}`
-> - timeGridWeek `{weeks: 1}`
 
 Sets the duration of a view.
 
@@ -1786,7 +1790,7 @@ Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` vi
 - Default `false`
 - Requires `Interaction` plugin
 
-Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` views.
+Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` and other views.
 
 ### resources
 - Type `Array`
@@ -2003,10 +2007,10 @@ If set to `false`, then intersecting events will be placed next to each other.
 - Type `integer`
 - Default `24`
 
-Defines the time slot height in pixels. When changing the setting, you must additionally override the following CSS styles:
+Defines the time slot height in pixels in the `timeGrid`/`resourceTimeGrid` views. When changing the setting, you must additionally override the following CSS styles:
 
 ```css
-.ec-time, .ec-line {
+.ec-time-grid .ec-time, .ec-time-grid .ec-line {
   height: 24px;  /* override this value */
 }
 ```
@@ -2050,9 +2054,21 @@ Defines the first time slot that will be displayed for each day.
 
 This should be a value that can be parsed into a [Duration](#duration-object) object.
 
+### slotWidth
+- Type `integer`
+- Default `52`
+
+Defines the time slot width in pixels in `ResourceTimeline` views. When changing the setting, you must additionally override the following CSS styles:
+
+```css
+.ec-timeline .ec-time, .ec-timeline .ec-line {
+  width: 52px;  /* override this value */
+}
+```
+
 ### theme
 - Type `object` or `function`
-- Default `{active: 'ec-active', allDay: 'ec-all-day', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', content: 'ec-content', day: 'ec-day', dayFoot: 'ec-day-foot', dayHead: 'ec-day-head', daySide: 'ec-day-side', days: 'ec-days', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', resourceTitle: 'ec-resource-title', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', time: 'ec-time', title: 'ec-title', today: 'ec-today', toolbar: 'ec-toolbar', uniform: 'ec-uniform', view: '', weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'], withScroll: 'ec-with-scroll'}`
+- Default `{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', container: 'ec-container', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', dayFoot: 'ec-day-foot', days: 'ec-days', daySide: 'ec-day-side', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', main: 'ec-main', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', today: 'ec-today', time: 'ec-time', times: 'ec-times', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-timeline ec-resource-week-view', weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'], withScroll: 'ec-with-scroll', uniform: 'ec-uniform'}`
 > Views override the default value as follows:
 > - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`
 > - listDay `theme => ({...theme, view: 'ec-list ec-day-view'})`
@@ -2178,7 +2194,7 @@ Clicking on elements that match this CSS selector will prevent the current selec
 - Type `string`
 - Default `'resourceTimeGridWeek'`
 
-The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`, `'listWeek'`, `'listMonth'`, `'listYear'`, `'resourceTimeGridDay'`, `'resourceTimeGridWeek'`, `'timeGridDay'` or `'timeGridWeek'`.
+The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`, `'listWeek'`, `'listMonth'`, `'listYear'`, `'resourceTimelineDay'`, `'resourceTimelineWeek'`, `'resourceTimeGridDay'`, `'resourceTimeGridWeek'`, `'timeGridDay'` or `'timeGridWeek'`.
 
 ### viewDidMount
 - Type `function`

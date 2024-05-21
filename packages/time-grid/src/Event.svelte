@@ -36,13 +36,13 @@
         display = event.display;
 
         // Style
-        let step = $slotDuration.seconds / 60;
-        let offset = $_slotTimeLimits.min.seconds / 60;
-        let start = (chunk.start - date) / 1000 / 60;
-        let end = (chunk.end - date) / 1000 / 60;
+        let step = $slotDuration.seconds;
+        let offset = $_slotTimeLimits.min.seconds;
+        let start = (chunk.start - date) / 1000;
+        let end = (chunk.end - date) / 1000;
         let top = (start - offset) / step * $slotHeight;
         let height = (end - start) / step * $slotHeight;
-        let maxHeight = ($_slotTimeLimits.max.seconds / 60 - start) / step * $slotHeight;
+        let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
         style =
@@ -126,6 +126,6 @@
     <svelte:component
         this={$_interaction.resizer}
         {event}
-        on:pointerdown={createDragHandler($_interaction, true)}
+        on:pointerdown={createDragHandler($_interaction, 'y')}
     />
 </article>

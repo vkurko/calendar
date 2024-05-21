@@ -1,7 +1,7 @@
 {
-  "name": "@event-calendar/list",
+  "name": "@event-calendar/resource-timeline",
   "version": "3.0.0",
-  "title": "Event Calendar List plugin",
+  "title": "Event Calendar ResourceTimeline plugin",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
     "calendar",
@@ -14,7 +14,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/vkurko/calendar.git",
-    "directory": "packages/list"
+    "directory": "packages/resource-timeline"
   },
   "license": "MIT",
   "type": "module",

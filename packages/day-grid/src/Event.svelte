@@ -13,12 +13,13 @@
         repositionEvent,
         helperEvent,
         keyEnter,
-        task
+        task, rect
     } from '@event-calendar/core';
 
     export let chunk;
     export let longChunks = {};
     export let inPopup = false;
+    export let dates = [];
 
     let {dayMaxEvents, displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventClick, eventColor,
         eventContent, eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
@@ -44,10 +45,17 @@
         // Class & Style
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let marginTop = margin;
+        if (event._margin) {
+            // Force margin for helper events
+            let [_margin, _dates] = event._margin;
+            if (chunk.date >= _dates[0] && chunk.date <= _dates[_dates.length - 1]) {
+                marginTop = _margin;
+            }
+        }
         style =
             `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
-            `margin-top:${margin}px;`
-        ;
+            `margin-top:${marginTop}px;`;
         if (bgColor) {
             style += `background-color:${bgColor};`;
         }
@@ -93,7 +101,14 @@
 
     function createDragHandler(interaction, resize) {
         return interaction.action
-            ? jsEvent => $_interaction.action.drag(event, jsEvent, resize, inPopup ? $_popupDate : undefined)
+            ? jsEvent =>
+                $_interaction.action.drag(
+                    event,
+                    jsEvent,
+                    resize,
+                    inPopup ? $_popupDate : null,
+                    [rect(el).top - rect(ancestor(el, 1)).top, dates]
+                )
             : undefined;
     }
 
@@ -167,6 +182,6 @@
     <svelte:component
         this={$_interaction.resizer}
         {event}
-        on:pointerdown={createDragHandler($_interaction, true)}
+        on:pointerdown={createDragHandler($_interaction, 'x')}
     />
 </article>

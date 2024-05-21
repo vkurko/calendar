@@ -7,16 +7,11 @@ import Auxiliary from './Auxiliary.svelte';
 
 export default {
 	createOptions(options) {
-		options.resources = [];
 		options.datesAboveResources = false;
 		options.filterResourcesWithEvents = false;
-		options.resourceLabelContent = undefined;
-		options.resourceLabelDidMount = undefined;
 		// Common options
-		options.buttonText.resourceTimeGridDay = 'day';
-		options.buttonText.resourceTimeGridWeek = 'week';
-		options.theme.resource = 'ec-resource';
-		options.theme.resourceTitle = 'ec-resource-title';
+		options.buttonText.resourceTimeGridDay = 'resources';
+		options.buttonText.resourceTimeGridWeek = 'resources';
 		options.view = 'resourceTimeGridWeek';
 		options.views.resourceTimeGridDay = {
 			buttonText: btnTextDay,

@@ -7,6 +7,7 @@ import terser from '@rollup/plugin-terser';
 import scss from 'rollup-plugin-scss';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
 import {writeFileSync} from 'fs';
 import pkg from './package.json' assert {type: 'json'};
 import {spawn} from 'child_process';
@@ -126,6 +127,23 @@ export default [
 		],
 	},
 	{
+		input: 'packages/resource-timeline/src/index.js',
+		output: {
+			format: 'es',
+			file: 'packages/resource-timeline/index.js'
+		},
+		external: ['@event-calendar/core', 'svelte', 'svelte/internal', 'svelte/store'],
+		plugins: [
+			svelte({
+				compilerOptions: {
+					dev: !production,
+					discloseVersion: false,
+					css: false
+				}
+			})
+		],
+	},
+	{
 		input: 'packages/build/src/index.js',
 		output: {
 			format: 'iife',
@@ -174,7 +192,7 @@ export default [
 					writeFileSync('packages/build/event-calendar.min.css', styles);
 				},
 				outputStyle: 'compressed',
-				processor: css => postcss([autoprefixer])
+				processor: css => postcss([cssnano, autoprefixer])
 			}),
 
 			// In dev mode, call `npm run start` once

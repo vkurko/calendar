@@ -1,33 +1,38 @@
 <script>
-    import {getContext, tick} from 'svelte';
+    import {getContext} from 'svelte';
     import {cloneDate, addDay, eventIntersects, bgEvent, createEventChunk, prepareEventChunks,
-        runReposition, debounce} from '@event-calendar/core';
+        runReposition, debounce, max, ceil} from '@event-calendar/core';
     import Day from './Day.svelte';
 
-    export let dates;
+    export let resource;
 
-    let {_events, _iEvents, _queue2, _hiddenEvents, hiddenDays, theme} = getContext('state');
+    let {_viewDates, _events, _iEvents, _queue2, _resHs, hiddenDays, theme} = getContext('state');
 
     let chunks, longChunks, iChunks = [];
 
     let start;
     let end;
     let refs = [];
+    let height = 0;
 
     $: {
-        start = dates[0];
-        end = addDay(cloneDate(dates[dates.length - 1]));
+        start = $_viewDates[0];
+        end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
     }
 
     let debounceHandle = {};
     function reposition() {
-        debounce(() => runReposition(refs, dates), debounceHandle, _queue2);
+        debounce(() => {
+            height = ceil(max(...runReposition(refs, $_viewDates))) + 10;
+            $_resHs.set(resource, height);
+            $_resHs = $_resHs;
+        }, debounceHandle, _queue2);
     }
 
     $: {
         chunks = [];
         for (let event of $_events) {
-            if (!bgEvent(event.display) && eventIntersects(event, start, end)) {
+            if (eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }
@@ -39,7 +44,7 @@
 
     $: iChunks = $_iEvents.map(event => {
         let chunk;
-        if (event && eventIntersects(event, start, end)) {
+        if (event && eventIntersects(event, start, end, resource)) {
             chunk = createEventChunk(event, start, end);
             prepareEventChunks([chunk], $hiddenDays);
         } else {
@@ -47,16 +52,11 @@
         }
         return chunk;
     });
-
-    $: if ($_hiddenEvents) {
-        // Schedule reposition during next update
-        tick().then(reposition);
-    }
 </script>
 
-<div class="{$theme.days}" role="row">
-    {#each dates as date, i}
-        <Day {date} {chunks} {longChunks} {iChunks} {dates} bind:this={refs[i]} />
+<div class="{$theme.days}" style="flex-basis: {max(height, 34)}px" role="row">
+    {#each $_viewDates as date, i}
+        <Day {date} {resource} {chunks} {longChunks} {iChunks} bind:this={refs[i]}/>
     {/each}
 </div>
 

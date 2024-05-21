@@ -1,0 +1,140 @@
+.ec-timeline {
+  .ec-container {
+    display: flex;
+    flex: 1 1 0%;
+    min-height: 0;
+  }
+
+  .ec-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .ec-content {
+    flex-direction: column;
+  }
+
+  .ec-body {
+    flex: 1 1 auto;
+    overflow: auto;
+
+    .ec-content {
+      min-height: 100%;
+      min-width: max-content;
+      position: relative;
+    }
+
+    .ec-days {
+      flex-shrink: 0;
+      &:not(:last-child) {
+        flex-grow: 0;
+      }
+    }
+  }
+
+  .ec-header {
+    overflow: hidden;
+
+    .ec-days {
+      min-width: max-content;
+    }
+
+    .ec-day {
+      flex-basis: auto;
+      display: flex;
+      flex-direction: column;
+
+      &:first-child {
+        .ec-day-head,
+        .ec-time:first-child {
+          border: none;
+        }
+      }
+    }
+  }
+
+  .ec-day {
+    border: none;
+  }
+
+  .ec-day-head {
+    border-style: none none none solid;
+  }
+
+  .ec-times {
+    display: flex;
+    border-style: solid none none;
+  }
+
+  .ec-time {
+    border-left: 1px solid var(--ec-border-color);
+    box-sizing: border-box;
+  }
+
+  .ec-time, .ec-line {
+    width: 52px;
+  }
+
+  .ec-events {
+    position: relative;
+    height: 100%;
+  }
+
+  .ec-event {
+    position: absolute;
+  }
+
+  .ec-bg-event {
+    height: 100%;
+    z-index: auto;
+  }
+
+  .ec-lines {
+    display: flex;
+  }
+
+  .ec-line:not(:first-child):after {
+    content: '';
+    position: absolute;
+    height: 100%;
+    border-left: 1px solid var(--ec-border-color);
+    pointer-events: none;
+  }
+
+  //.ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+  //  border-bottom-style: dotted;
+  //}
+
+  .ec-sidebar {
+    padding: 0;
+    border: 1px solid var(--ec-border-color);
+    border-right-style: none;
+
+    .ec-sidebar-title {
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--ec-border-color);
+    }
+
+    .ec-content {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .ec-resource {
+      padding: 0 8px;
+      flex-shrink: 0;
+      &:not(:last-child) {
+        flex-grow: 0;
+        border-bottom: 1px solid var(--ec-border-color);
+      }
+      &:last-child {
+        flex-basis: 100%!important;  // for vertical scroll needs
+      }
+
+      span {
+        padding-top: 8px;
+      }
+    }
+  }
+}

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.0.0
+May 23, 2024
+
+* Added `ResourcesTimeline` view ([30](https://github.com/vkurko/calendar/issues/30))
+
 ## 2.7.2
 May 22, 2024
 

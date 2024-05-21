@@ -1,12 +1,13 @@
 {
   "name": "@event-calendar/time-grid",
-  "version": "2.7.2",
+  "version": "3.0.0",
   "title": "Event Calendar TimeGrid plugin",
-  "description": "Full-sized drag & drop event calendar with resource view",
+  "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
     "calendar",
     "event",
     "resource",
+    "timeline",
     "full-sized"
   ],
   "homepage": "https://vkurko.github.io/calendar/",
@@ -26,7 +27,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/core": "~2.7.2",
+    "@event-calendar/core": "~3.0.0",
     "svelte": "^4.2.16"
   }
 }

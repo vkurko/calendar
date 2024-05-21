@@ -1,9 +1,10 @@
 @use "theme";
+@use "timeline";
+@use "time-grid";
 
 /* Grid */
 .ec-days,
 .ec-day,
-.ec-day-title,
 .ec-resource {
   flex: 1 1 0;
   min-width: 0;
@@ -139,7 +140,8 @@
 .ec-body,
 .ec-days,
 .ec-day,
-.ec-list .ec-day-head {
+.ec-times,
+.ec-day-head {
   border: 1px solid var(--ec-border-color);
 }
 
@@ -204,20 +206,6 @@
   padding: 0 4px 0 8px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.ec-sidebar-title {
-  visibility: hidden;
-  overflow-y: hidden;
-  height: 0;
-  text-align: right;
-
-  .ec-all-day & {
-    visibility: visible;
-    height: auto;
-    padding: 8px 0;
-  }
 }
 
 .ec-content {
@@ -296,6 +284,7 @@
 .ec-day-grid {
   .ec-day-head {
     display: block;
+    border: none;
     text-align: right;
     padding: 4px 4px 3px;
   }
@@ -314,7 +303,6 @@
 
 .ec-list {
   .ec-day-head {
-    flex: 1 0 auto;
     background-color: var(--ec-list-day-bg-color);
     border-style: solid none;
     margin: -1px 0 0;
@@ -345,6 +333,11 @@
   &.ec-preview {
     position: relative;
   }
+
+  .ec-day-grid &,
+  .ec-all-day & {
+    display: flow-root;
+  }
 }
 
 .ec-event {
@@ -362,10 +355,6 @@
   .ec-day-grid &,
   .ec-all-day & {
     position: relative;
-  }
-
-  .ec-time-grid .ec-body & {
-    position: absolute;
   }
 
   .ec-list & {
@@ -391,10 +380,7 @@
     position: absolute;
     z-index: 0;
     box-shadow: none;
-    display: none;
-    .ec-day:hover & {
-      display: flex;
-    }
+    display: flex;
   }
 }
 
@@ -404,7 +390,8 @@
   width: 100%;
 
   .ec-day-grid &,
-  .ec-all-day & {
+  .ec-all-day &,
+  .ec-timeline & {
     flex-direction: row;
   }
 }
@@ -421,7 +408,8 @@
   margin: 0 0 1px 0;
   flex-shrink: 0;
 
-  .ec-day-grid & {
+  .ec-day-grid &,
+  .ec-timeline & {
     margin: 0 3px 0 0;
     max-width: 100%;
     text-overflow: ellipsis;
@@ -434,15 +422,11 @@
   font-weight: inherit;
 
   .ec-day-grid &,
-  .ec-all-day & {
+  .ec-all-day &,
+  .ec-timeline & {
     min-height: 1.5em;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  .ec-time-grid .ec-body & {
-    position: sticky;
-    top: 0;
   }
 
   .ec-list & {
@@ -469,44 +453,10 @@
   position: absolute;
   background-color: var(--ec-bg-event-color);
   opacity: var(--ec-bg-event-opacity);
-  width: 100%;
-  z-index: 1;
-}
-
-.ec-time,
-.ec-line {
-  height: 24px;
 }
 
 .ec-time {
-  position: relative;
-  line-height: 24px;
-  top: -12px;
-  text-align: right;
   white-space: nowrap;
-
-  .ec-header &,
-  .ec-all-day & {
-    visibility: hidden;
-    overflow-y: hidden;
-    height: 0;
-  }
-}
-
-.ec-lines {
-  width: 8px;
-}
-
-.ec-line:not(:first-child):after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  border-bottom: 1px solid var(--ec-border-color);
-  pointer-events: none;
-}
-
-.ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
-  border-bottom-style: dotted;
 }
 
 .ec-popup {
@@ -575,22 +525,14 @@
   user-select: none;
 
   .ec-day-grid &,
-  .ec-all-day & {
+  .ec-all-day &,
+  .ec-timeline & {
     top: 0;
     right: 0;
     bottom: 0;
     width: 50%;
     max-width: 8px;
     cursor: ew-resize;
-  }
-
-  .ec-time-grid .ec-body & {
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 50%;
-    max-height: 8px;
-    cursor: ns-resize;
   }
 }
 

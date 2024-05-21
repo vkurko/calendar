@@ -1,12 +1,13 @@
 {
   "name": "@event-calendar/core",
-  "version": "2.7.2",
+  "version": "3.0.0",
   "title": "Event Calendar Core package",
-  "description": "Full-sized drag & drop event calendar with resource view",
+  "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
     "calendar",
     "event",
     "resource",
+    "timeline",
     "full-sized"
   ],
   "homepage": "https://vkurko.github.io/calendar/",

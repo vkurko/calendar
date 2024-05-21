@@ -104,7 +104,7 @@
 
     export function dateFromPoint(x, y) {
         let dayEl = getElementWithPayload(x, y);
-        return dayEl ? getPayload(dayEl)(y) : null;
+        return dayEl ? getPayload(dayEl)(x, y) : null;
     }
 
     export function destroy() {

@@ -6,7 +6,7 @@
         createEventChunk,
         prepareEventChunks,
         eventIntersects,
-        debounce, runReposition
+        debounce, runReposition, bgEvent
     } from '@event-calendar/core';
     import Day from './Day.svelte';
 
@@ -34,7 +34,7 @@
     $: {
         chunks = [];
         for (let event of $_events) {
-            if (event.allDay && event.display !== 'background' && eventIntersects(event, start, end, resource)) {
+            if (event.allDay && !bgEvent(event.display) && eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }

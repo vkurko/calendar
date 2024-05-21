@@ -6,24 +6,41 @@ import {is_function} from 'svelte/internal';
 
 let eventId = 1;
 export function createEvents(input) {
-    return input.map(event => ({
-        id: 'id' in event ? String(event.id) : `{generated-${eventId++}}`,
-        resourceIds: Array.isArray(event.resourceIds)
-            ? event.resourceIds.map(String)
-            : ('resourceId' in event ? [String(event.resourceId)] : []),
-        allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
-        start: createDate(event.start),
-        end: createDate(event.end),
-        title: event.title || '',
-        titleHTML: event.titleHTML || '',
-        editable: event.editable,
-        startEditable: event.startEditable,
-        durationEditable: event.durationEditable,
-        display: event.display || 'auto',
-        extendedProps: event.extendedProps || {},
-        backgroundColor: event.backgroundColor || event.color,
-        textColor: event.textColor
-    }));
+    return input.map(event => {
+        let result = {
+            id: 'id' in event ? String(event.id) : `{generated-${eventId++}}`,
+            resourceIds: Array.isArray(event.resourceIds)
+                ? event.resourceIds.map(String)
+                : ('resourceId' in event ? [String(event.resourceId)] : []),
+            allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
+            start: createDate(event.start),
+            end: createDate(event.end),
+            title: event.title || '',
+            titleHTML: event.titleHTML || '',
+            editable: event.editable,
+            startEditable: event.startEditable,
+            durationEditable: event.durationEditable,
+            display: event.display || 'auto',
+            extendedProps: event.extendedProps || {},
+            backgroundColor: event.backgroundColor || event.color,
+            textColor: event.textColor
+        };
+
+        if (result.allDay) {
+            // Make sure all-day events start and end at midnight
+            setMidnight(result.start);
+            let end = cloneDate(result.end);
+            setMidnight(result.end);
+            if (
+                !datesEqual(result.end, end) ||
+                datesEqual(result.end, result.start)  /** @see https://github.com/vkurko/calendar/issues/50 */
+            ) {
+                addDay(result.end);
+            }
+        }
+
+        return result;
+    });
 }
 
 export function createEventSources(input) {
@@ -158,12 +175,6 @@ export function prepareEventChunks(chunks, hiddenDays) {
                 chunk.date = dates[0];
                 chunk.days = dates.length;
                 chunk.dates = dates;
-                if (chunk.start < dates[0]) {
-                    chunk.start = dates[0];
-                }
-                if (setMidnight(cloneDate(chunk.end)) > dates[dates.length - 1]) {
-                    chunk.end = dates[dates.length - 1];
-                }
             } else {
                 chunk.date = setMidnight(cloneDate(chunk.start));
                 chunk.days = 1;
@@ -188,7 +199,7 @@ export function repositionEvent(chunk, longChunks, height) {
     chunk.bottom = chunk.top + height;
     let margin = 1;
     let key = chunk.date.getTime();
-    if (longChunks[key]?.sorted || longChunks[key]?.chunks.every(chunk => 'top' in chunk)) {
+    if (longChunks[key]) {
         if (!longChunks[key].sorted) {
             longChunks[key].chunks.sort((a, b) => a.top - b.top);
             longChunks[key].sorted = true;
@@ -208,9 +219,11 @@ export function repositionEvent(chunk, longChunks, height) {
 
 export function runReposition(refs, data) {
     refs.length = data.length;
+    let result = [];
     for (let ref of refs) {
-        ref?.reposition?.();
+        result.push(ref?.reposition?.());
     }
+    return result;
 }
 
 /**
@@ -219,13 +232,10 @@ export function runReposition(refs, data) {
  * @param start
  * @param end
  * @param [resource]
- * @param [timeMode]  Zero-length events should be allowed (@see https://github.com/vkurko/calendar/issues/50), except in time mode
  * @return boolean
  */
-export function eventIntersects(event, start, end, resource, timeMode) {
-    return (
-        event.start < end && event.end > start || !timeMode && datesEqual(event.start, event.end, start)
-    ) && (
+export function eventIntersects(event, start, end, resource) {
+    return event.start < end && event.end > start && (
         resource === undefined || event.resourceIds.includes(resource.id)
     );
 }

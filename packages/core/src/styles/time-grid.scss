@@ -1,0 +1,74 @@
+.ec-time-grid {
+  .ec-body {
+    .ec-event {
+      position: absolute;
+    }
+
+    .ec-event-title {
+      position: sticky;
+      top: 0;
+    }
+
+    .ec-resizer {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 50%;
+      max-height: 8px;
+      cursor: ns-resize;
+    }
+  }
+
+  .ec-bg-event {
+    width: 100%;
+    z-index: 1;
+  }
+
+  .ec-time {
+    position: relative;
+    line-height: 24px;
+    top: -12px;
+    text-align: right;
+  }
+
+  .ec-header .ec-time ,
+  .ec-all-day .ec-time  {
+    visibility: hidden;
+    overflow-y: hidden;
+    height: 0;
+  }
+
+  .ec-time,
+  .ec-line {
+    height: 24px;
+  }
+
+  .ec-lines {
+    width: 8px;
+  }
+
+  .ec-line:not(:first-child):after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid var(--ec-border-color);
+    pointer-events: none;
+  }
+
+  .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+    border-bottom-style: dotted;
+  }
+
+  .ec-sidebar-title {
+    visibility: hidden;
+    overflow-y: hidden;
+    height: 0;
+    text-align: right;
+  }
+
+  .ec-all-day .ec-sidebar-title {
+    visibility: visible;
+    height: auto;
+    padding: 8px 0;
+  }
+}

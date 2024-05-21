@@ -10,6 +10,10 @@ export function floor(value) {
     return Math.floor(value);
 }
 
+export function ceil(value) {
+    return Math.ceil(value);
+}
+
 export function min(...args) {
     return Math.min(...args);
 }

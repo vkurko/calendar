@@ -10,6 +10,7 @@
     export let chunks;
     export let longChunks;
     export let iChunks = [];
+    export let dates;
 
     let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
         _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _today, _interaction, _queue} = getContext('state');
@@ -69,12 +70,6 @@
         setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el}));
     }
 
-    function createPointerEnterHandler(interaction) {
-        return interaction.pointer
-            ? jsEvent => interaction.pointer.enterDayGrid(date, jsEvent)
-            : undefined;
-    }
-
     function showMore() {
         $_popupDate = date;
     }
@@ -96,7 +91,6 @@
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}"
     role="cell"
-    on:pointerenter={createPointerEnterHandler($_interaction)}
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >
@@ -119,7 +113,7 @@
     {/if}
     <div class="{$theme.events}">
         {#each dayChunks as chunk, i (chunk.event)}
-            <Event {chunk} {longChunks} bind:this={refs[i]} />
+            <Event {chunk} {longChunks} {dates} bind:this={refs[i]} />
         {/each}
     </div>
     {#if showPopup}
