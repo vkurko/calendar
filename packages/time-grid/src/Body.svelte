@@ -7,23 +7,22 @@
     let el;
     let compact;
     let lines = [];
-    let timeLimitMin;
 
     $: $_bodyEl = el;
 
     $: {
         compact = $slotDuration.seconds >= 3600;
         lines.length = $_times.length;
-        // Use intermediate variable so that changes in _slotTimeLimits do not trigger setting the el.scrollTop
-        timeLimitMin = $_slotTimeLimits.min.seconds;
     }
 
-    $: if (el && $_viewDates) {
+    $: if (el) {
+        $_viewDates;
+        $scrollTime;
         scrollToTime()
     }
 
     function scrollToTime() {
-        el.scrollTop = (($scrollTime.seconds - timeLimitMin) / $slotDuration.seconds - 0.5) * $slotHeight;
+        el.scrollTop = (($scrollTime.seconds - $_slotTimeLimits.min.seconds) / $slotDuration.seconds - 0.5) * $slotHeight;
     }
 </script>
 

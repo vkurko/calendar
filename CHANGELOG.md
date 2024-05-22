@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 2.7.2
+May 22, 2024
+
+* Fixed issue with `scrollTime` option reactivity  ([270](https://github.com/vkurko/calendar/issues/270))
+
 ## 2.7.1
 May 15, 2024
 
