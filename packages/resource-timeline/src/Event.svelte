@@ -32,7 +32,7 @@
     let content;
     let timeText;
     let onclick;
-    let margin = 1;
+    let margin = 0;
 
     $: event = chunk.event;
 

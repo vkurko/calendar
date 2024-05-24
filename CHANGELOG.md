@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 3.0.1
+May 24, 2024
+
+* Fixed `scrollTime` in `ResourceTimeline` view
+* Fixed an issue with erroneous vertical scrolling in `ResourceTimeline` view
+
 ## 3.0.0
 May 23, 2024
 
