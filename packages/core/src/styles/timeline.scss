@@ -117,6 +117,7 @@
     .ec-sidebar-title {
       flex-shrink: 0;
       border-bottom: 1px solid var(--ec-border-color);
+      box-sizing: content-box;
     }
 
     .ec-content {

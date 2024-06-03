@@ -1,5 +1,5 @@
 import {writable} from 'svelte/store';
-import {btnTextDay, btnTextWeek, themeView} from '@event-calendar/core';
+import {btnTextDay, btnTextWeek, themeView, viewResources} from '@event-calendar/core';
 import {dayTimeLimits, dayTimes} from './stores.js';
 import View from './View.svelte';
 
@@ -36,6 +36,9 @@ export default {
 	},
 
 	createStores(state) {
+		if (!('_viewResources' in state)) {
+			state._viewResources = viewResources(state);
+		}
 		state._headerEl = writable(undefined);
 		state._dayTimeLimits = dayTimeLimits(state);  // flexible time limits per day
 		state._dayTimes = dayTimes(state);

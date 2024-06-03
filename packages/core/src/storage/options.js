@@ -1,4 +1,13 @@
-import {assign, createDate, createDuration, keys, setMidnight, createEvents, createEventSources} from '../lib.js';
+import {
+    assign,
+    createDate,
+    createDuration,
+    keys,
+    setMidnight,
+    createEvents,
+    createEventSources,
+    createResources
+} from '../lib.js';
 
 export function createOptions(plugins) {
     let options = {
@@ -36,6 +45,7 @@ export function createOptions(plugins) {
             hour: 'numeric',
             minute: '2-digit'
         },
+        filterResourcesWithEvents: false,
         firstDay: 0,
         flexibleSlotTimeLimits: false,  // ec option
         headerToolbar: {
@@ -130,6 +140,7 @@ export function createParsers(plugins) {
         eventSources: createEventSources,
         hiddenDays: days => [...new Set(days)],
         highlightedDates: dates => dates.map(createDate),
+        resources: createResources,
         scrollTime: createDuration,
         slotDuration: createDuration,
         slotMaxTime: createDuration,

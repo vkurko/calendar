@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 3.0.2
+June 3, 2024
+
+* Fixed so that `ResourceTimeline` plugin does not depend on `ResourceTimeGrid`
+* Fixed minor visual defects in `ResourceTimeline` view
+
 ## 3.0.1
 May 24, 2024
 

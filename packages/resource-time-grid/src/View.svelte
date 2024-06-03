@@ -1,9 +1,8 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent} from '@event-calendar/core';
+    import {setContent, toISOString} from '@event-calendar/core';
     import {Section, Body, Day, Week} from '@event-calendar/time-grid';
     import Label from './Label.svelte';
-    import {toISOString} from "@event-calendar/core";
 
     let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme} = getContext('state');
 
