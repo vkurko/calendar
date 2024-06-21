@@ -5,6 +5,7 @@ import {
     activeRange,
     currentRange,
     dayGrid,
+    monthView,
     events,
     now,
     today,
@@ -37,6 +38,7 @@ export default class {
         this._tasks = new Map();  // timeout IDs for tasks
         this._auxiliary = writable([]);  // auxiliary components
         this._dayGrid = dayGrid(this);
+        this._monthView = monthView(this);
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});

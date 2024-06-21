@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {createDate, cloneDate, subtractDay, addDuration, setContent, subtractDuration, setMidnight} from './lib.js';
+    import {createDate, cloneDate, setContent, setMidnight, nextDate, prevDate} from './lib.js';
 
     export let buttons;
 
@@ -11,17 +11,11 @@
     $: isToday = today >= $_currentRange.start && today < $_currentRange.end || null;
 
     function prev() {
-        let d = subtractDuration($date, $duration);
-        if ($hiddenDays.length && $hiddenDays.length < 7) {
-            while ($hiddenDays.includes(d.getUTCDay())) {
-                subtractDay(d);
-            }
-        }
-        $date = d;
+        $date = prevDate($date, $duration, $hiddenDays);
     }
 
     function next() {
-        $date = addDuration($date, $duration);
+        $date = nextDate($date, $duration);
     }
 </script>
 

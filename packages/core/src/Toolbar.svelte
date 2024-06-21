@@ -1,5 +1,6 @@
 <script>
     import {getContext} from 'svelte';
+    import {keys} from './lib.js';
     import Buttons from './Buttons.svelte';
 
     let {headerToolbar, theme} = getContext('state');
@@ -11,15 +12,15 @@
     };
 
     $: {
-        for (let key of Object.keys(sections)) {
+        for (let key of keys(sections)) {
             sections[key] = $headerToolbar[key].split(' ').map(group => group.split(','));
         }
     }
 </script>
 
 <nav class="{$theme.toolbar}">
-    {#each Object.keys(sections) as key}
-        <div>
+    {#each keys(sections) as key}
+        <div class="ec-{key}">
             {#each sections[key] as buttons}
                 {#if buttons.length > 1}
                     <div class="{$theme.buttonGroup}">

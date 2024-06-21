@@ -25,7 +25,7 @@ export function createOptions(plugins) {
             day: 'numeric'
         },
         dayHeaderAriaLabelFormat: {
-            dateStyle: 'long'
+            dateStyle: 'full'
         },
         displayEventEnd: true,
         duration: {weeks: 1},
@@ -74,7 +74,7 @@ export function createOptions(plugins) {
         },
         slotMaxTime: '24:00:00',
         slotMinTime: '00:00:00',
-        slotWidth: 52,
+        slotWidth: 72,
         theme: {
             allDay: 'ec-all-day',
             active: 'ec-active',

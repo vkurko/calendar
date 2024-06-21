@@ -27,6 +27,7 @@
     let isToday, highlight;
     let refs = [];
     let slotTimeLimits;
+    let allDay;
 
     let start, end;
 
@@ -51,16 +52,19 @@
 
     $: isToday = datesEqual(date, $_today);
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
+    $: allDay = !toSeconds($slotDuration);
 
     function dateFromPoint(x, y) {
         x -= rect(el).left;
         return {
-            allDay: false,
-            date: addDuration(
-                addDuration(cloneDate(date), slotTimeLimits.min),
-                $slotDuration,
-                floor(x / $slotWidth)
-            ),
+            allDay,
+            date: allDay
+                ? cloneDate(date)
+                : addDuration(
+                    addDuration(cloneDate(date), slotTimeLimits.min),
+                    $slotDuration,
+                    floor(x / $slotWidth)
+                ),
             resource,
             dayEl: el
         };
@@ -78,7 +82,7 @@
 <div
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
-    style="flex-grow: {ceil((toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min)) / toSeconds($slotDuration))}"
+    style="flex-grow: {allDay ? null : ceil((toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min)) / toSeconds($slotDuration))}"
     role="cell"
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}

@@ -1,15 +1,15 @@
 <script>
-    import {getContext} from 'svelte';
-    import {max, setContent} from '@event-calendar/core';
+    import {getContext, afterUpdate} from 'svelte';
+    import {max} from '@event-calendar/core';
     import Label from './Label.svelte';
 
     let {_viewResources, _headerEl, _resHs, _sidebarEl, theme} = getContext('state');
 
     let titleHeight = 0;
 
-    $: if ($_headerEl) {
+    afterUpdate(() => {
         titleHeight = $_headerEl.clientHeight;
-    }
+    });
 </script>
 
 <div class="{$theme.sidebar}">

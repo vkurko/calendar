@@ -3,7 +3,7 @@ import {addDuration, cloneDate, createDuration, DAY_IN_SECONDS, toISOString, toS
 import {max as maxFn, min as minFn} from './utils.js';
 import {bgEvent} from './events.js';
 
-export function createTimes(date, $slotDuration, $_slotTimeLimits, $_intlSlotLabel, $_intlDayHeaderAL) {
+export function createTimes(date, $slotDuration, $_slotTimeLimits, $_intlSlotLabel) {
     date = cloneDate(date);
     let compact = $slotDuration.seconds < 3600;
     let times = [];
@@ -15,8 +15,7 @@ export function createTimes(date, $slotDuration, $_slotTimeLimits, $_intlSlotLab
         times.push([
             toISOString(date),
             $_intlSlotLabel.format(date),
-            times.length && (i || !compact),
-            $_intlDayHeaderAL && $_intlDayHeaderAL.format(date)
+            times.length && (i || !compact)
         ]);
         addDuration(date, $slotDuration);
         i = 1 - i;

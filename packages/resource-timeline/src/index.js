@@ -1,5 +1,5 @@
 import {writable} from 'svelte/store';
-import {btnTextDay, btnTextWeek, themeView, viewResources} from '@event-calendar/core';
+import {btnTextDay, btnTextMonth, btnTextWeek, themeView, viewResources} from '@event-calendar/core';
 import {dayTimeLimits, dayTimes} from './stores.js';
 import View from './View.svelte';
 
@@ -8,10 +8,7 @@ export default {
 		// Common options
 		options.buttonText.resourceTimelineDay = 'timeline';
 		options.buttonText.resourceTimelineWeek = 'timeline';
-		options.dayHeaderAriaLabelFormat = {
-			dateStyle: 'long',
-			timeStyle: 'short'
-		};
+		options.buttonText.resourceTimelineMonth = 'timeline';
 		options.theme.main = 'ec-main';
 		options.theme.times = 'ec-times';
 		options.theme.container = 'ec-container';
@@ -19,6 +16,7 @@ export default {
 		options.views.resourceTimelineDay = {
 			buttonText: btnTextDay,
 			component: View,
+			displayEventEnd: false,
 			dayHeaderFormat: {weekday: 'long'},
 			duration: {days: 1},
 			slotDuration: '01:00',
@@ -32,6 +30,19 @@ export default {
 			duration: {weeks: 1},
 			slotDuration: '01:00',
 			theme: themeView('ec-timeline ec-resource-week-view')
+		};
+		options.views.resourceTimelineMonth = {
+			buttonText: btnTextMonth,
+			component: View,
+			displayEventEnd: false,
+			dayHeaderFormat: {
+				weekday: 'short',
+				day: 'numeric'
+			},
+			duration: {months: 1},
+			slotDuration: {days: 1},
+			theme: themeView('ec-timeline ec-resource-month-view'),
+			titleFormat: {year: 'numeric', month: 'long'}
 		};
 	},
 

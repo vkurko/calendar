@@ -41,38 +41,48 @@
 
         // Style
         let step = toSeconds($slotDuration);
-        let start = (chunk.start - date) / 1000;
-        let end = (chunk.end - date) / 1000;
-        // Shift start
-        start -= toSeconds($_dayTimeLimits[date.getTime()]?.min);
-        if (start < 0) {
-            start = 0;
+        if (step) {
+            let start = (chunk.start - date) / 1000;
+            let end = (chunk.end - date) / 1000;
+            // Shift start
+            start -= toSeconds($_dayTimeLimits[date.getTime()]?.min);
+            if (start < 0) {
+                start = 0;
+            }
+            // Shift end
+            let cut = 0;
+            for (let i = 0; i < chunk.days; ++i) {
+                let slotTimeLimits = $_dayTimeLimits[chunk.dates[i].getTime()];
+                let offsetStart = toSeconds(slotTimeLimits?.min);
+                let offsetEnd = toSeconds(slotTimeLimits?.max, DAY_IN_SECONDS);
+                let dayStart = DAY_IN_SECONDS * i;
+                // Cut offsetEnd
+                let dayEnd = dayStart + DAY_IN_SECONDS;
+                if (dayEnd > end) {
+                    dayEnd = end;
+                }
+                if (dayEnd > dayStart + offsetEnd) {
+                    cut += dayEnd - dayStart - offsetEnd;
+                }
+                // Cut offsetStart
+                let c = end - dayStart;
+                if (c > offsetStart) {
+                    c = offsetStart;
+                }
+                cut += c;
+            }
+            end -= cut;
+            let left = start / step * $slotWidth;
+            let width = (end - start) / step * $slotWidth;
+            style =
+                `left:${left}px;` +
+                `width:${width}px;`
+            ;
+        } else {
+            style =
+                `width:${chunk.days * 100}%;`
+            ;
         }
-        // Shift end
-        let cut = 0;
-        for (let i = 0; i < chunk.days; ++i) {
-            let slotTimeLimits = $_dayTimeLimits[chunk.dates[i].getTime()];
-            let offsetStart = toSeconds(slotTimeLimits?.min);
-            let offsetEnd = toSeconds(slotTimeLimits?.max, DAY_IN_SECONDS);
-            let dayStart = DAY_IN_SECONDS * i;
-            // Cut offsetEnd
-            let dayEnd = dayStart + DAY_IN_SECONDS;
-            if (dayEnd > end) {
-                dayEnd = end;
-            }
-            if (dayEnd > dayStart + offsetEnd) {
-                cut += dayEnd - dayStart - offsetEnd;
-            }
-            // Cut offsetStart
-            let c = end - dayStart;
-            if (c > offsetStart) {
-                c = offsetStart;
-            }
-            cut += c;
-        }
-        end -= cut;
-        let left = start / step * $slotWidth;
-        let width = (end - start) / step * $slotWidth;
         let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
         let marginTop = margin;
@@ -83,11 +93,7 @@
                 marginTop = _margin;
             }
         }
-        style =
-            `left:${left}px;` +
-            `width:${width}px;` +
-            `margin-top:${marginTop}px;`
-        ;
+        style += `margin-top:${marginTop}px;`;
         if (bgColor) {
             style += `background-color:${bgColor};`;
         }
@@ -143,7 +149,7 @@
             return 0;
         }
         let h = height(el);
-        margin = repositionEvent(chunk, dayChunks, longChunks, h);
+        margin = repositionEvent(chunk, dayChunks, longChunks, h, !toSeconds($slotDuration));
         return margin + h;
     }
 </script>

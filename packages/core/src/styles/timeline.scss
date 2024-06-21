@@ -64,24 +64,26 @@
 
   .ec-times {
     display: flex;
-    border-style: solid none none;
+    border-top: 1px solid var(--ec-border-color);;
   }
 
   .ec-time {
     border-left: 1px solid var(--ec-border-color);
     box-sizing: border-box;
+    font-size: .95em;
     min-height: 24px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .ec-time, .ec-line {
-    width: 52px;
+    width: 72px;
   }
 
   .ec-events {
     position: relative;
     height: 100%;
+    margin: 0;
   }
 
   .ec-event {

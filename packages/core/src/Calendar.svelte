@@ -18,7 +18,7 @@
         flushDebounce,
         hasYScroll,
         listView,
-        task
+        task, prevDate, nextDate
     } from './lib.js';
 
     export let plugins = [];
@@ -29,7 +29,8 @@
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _queue2, _tasks, _scrollable, height, theme, view} = state;
+    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _queue2, _tasks, _scrollable,
+        date, duration, hiddenDays, height, theme, view} = state;
 
     // Reactively update options that did change
     let prevOptions = {...options};
@@ -96,9 +97,7 @@
     }
 
     export function unselect() {
-        if ($_interaction.action) {
-            $_interaction.action.unselect();
-        }
+        $_interaction.action?.unselect();
         return this;
     }
 
@@ -109,6 +108,16 @@
 
     export function destroy() {
         destroy_component(component, true);
+    }
+
+    export function next() {
+        $date = nextDate($date, $duration);
+        return this;
+    }
+
+    export function prev() {
+        $date = prevDate($date, $duration, $hiddenDays);
+        return this;
     }
 
     beforeUpdate(() => {

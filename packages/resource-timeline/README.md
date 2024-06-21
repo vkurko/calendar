@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (34kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (39kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -115,10 +115,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [setOption](#setoption-name-value-)
   </td><td>
 
-  - [getEvents](#getevents)
-  - [getEventById](#geteventbyid-id-)
-  - [removeEventById](#removeeventbyid-id-)
   - [addEvent](#addevent-event-)
+  - [getEventById](#geteventbyid-id-)
+  - [getEvents](#getevents)
+  - [removeEventById](#removeeventbyid-id-)
   - [updateEvent](#updateevent-event-)
   - [refetchEvents](#refetchevents)
   </td><td>
@@ -126,6 +126,8 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [dateFromPoint](#datefrompoint-x-y-)
   - [destroy](#destroy)
   - [getView](#getview)
+  - [next](#next)
+  - [prev](#prev)
   - [unselect](#unselect-1)
   </td></tr>
   </table>
@@ -202,8 +204,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.0.2/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.0.2/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.1.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.1.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -292,20 +294,20 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 
 ### buttonText
 - Type `object` or `function`
-- Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimelineDay: 'timeline', resourceTimelineWeek: 'timeline', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
+- Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', resourceTimelineDay: 'timeline', resourceTimelineMonth: 'timeline', resourceTimelineWeek: 'timeline', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
 > Views override the default value as follows:
 > - dayGridMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
 > - listDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - listMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
 > - listWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - listYear `text => ({...text, next: 'Next year', prev: 'Previous year'})`
-> - resourceTimelineDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
-> - resourceTimelineWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - resourceTimeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - resourceTimeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
+> - resourceTimelineDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
+> - resourceTimelineMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
+> - resourceTimelineWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - timeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - timeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
-
 
 Text that is displayed in buttons of the header toolbar.
 
@@ -538,8 +540,6 @@ function (date) {
 - Default `{dateStyle: 'long'}`
 > Views override the default value as follows:
 > - dayGridMonth `{weekday: 'long'}`
-> - resourceTimelineDay `{dateStyle: 'long', timeStyle: 'short'}`
-> - resourceTimelineWeek `{dateStyle: 'long', timeStyle: 'short'}`
 
 Defines the text that is used inside the `aria-label` attribute in calendar column headings.
 
@@ -565,6 +565,7 @@ function (date) {
 - Default `{weekday: 'short', month: 'numeric', day: 'numeric'}`
 > Views override the default value as follows:
 > - dayGridMonth `{weekday: 'short'}`
+> - resourceTimelineMonth `{weekday: 'short', day: 'numeric'}`
 > - timeGridDay `{weekday: 'long'}`
 
 Defines the text that is displayed on the calendar’s column headings.
@@ -614,6 +615,9 @@ function (date) {
 - Default `true`
 > Views override the default value as follows:
 > - dayGridMonth `false`
+> - resourceTimelineDay `false`
+> - resourceTimelineMonth `false`
+> - resourceTimelineWeek `false`
 
 Determines whether to display an event’s end time.
 
@@ -632,8 +636,9 @@ Determines whether the calendar should automatically scroll during the event dra
 > - listDay `{days: 1}`
 > - listMonth `{months: 1}`
 > - listYear `{years: 1}`
-> - resourceTimelineDay `{days: 1}`
 > - resourceTimeGridDay `{days: 1}`
+> - resourceTimelineDay `{days: 1}`
+> - resourceTimelineMonth `{months: 1}`
 > - timeGridDay `{days: 1}`
 
 Sets the duration of a view.
@@ -1691,7 +1696,7 @@ function (isLoading) { }
 - Type `string`
 - Default `undefined`
 
-Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object that the Event Calendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
+Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#locales) object that the Event Calendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
 
 ### longPressDelay
 - Type `integer`
@@ -1990,6 +1995,8 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 ### slotDuration
 - Type `string`, `integer` or `object`
 - Default `'00:30:00'`
+> Views override the default value as follows:
+> - resourceTimelineMonth `{days: 1}`
 
 Defines the frequency for displaying time slots.
 
@@ -2077,6 +2084,9 @@ Defines the time slot width in pixels in `ResourceTimeline` views. When changing
 > - listYear `theme => ({...theme, view: 'ec-list ec-year-view'})`
 > - resourceTimeGridDay `theme => ({...theme, view: 'ec-time-grid ec-resource-day-view'})`
 > - resourceTimeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-resource-week-view'})`
+> - resourceTimelineDay `theme => ({...theme, view: 'ec-timeline ec-resource-day-view'})`
+> - resourceTimelineMonth `theme => ({...theme, view: 'ec-timeline ec-resource-month-view'})`
+> - resourceTimelineWeek `theme => ({...theme, view: 'ec-timeline ec-resource-week-view'})`
 > - timeGridDay `theme => ({...theme, view: 'ec-time-grid ec-day-view'})`
 > - timeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-week-view'})`
 
@@ -2194,7 +2204,7 @@ Clicking on elements that match this CSS selector will prevent the current selec
 - Type `string`
 - Default `'resourceTimeGridWeek'`
 
-The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`, `'listWeek'`, `'listMonth'`, `'listYear'`, `'resourceTimelineDay'`, `'resourceTimelineWeek'`, `'resourceTimeGridDay'`, `'resourceTimeGridWeek'`, `'timeGridDay'` or `'timeGridWeek'`.
+The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`, `'listWeek'`, `'listMonth'`, `'listYear'`, `'resourceTimeGridDay'`, `'resourceTimeGridWeek'`, `'resourceTimelineDay'`, `'resourceTimelineWeek'`, `'resourceTimelineMonth'`, `'timeGridDay'` or `'timeGridWeek'`.
 
 ### viewDidMount
 - Type `function`
@@ -2277,10 +2287,13 @@ This method allows you to set new value to any calendar option.
 // E.g. Change the current date
 ec.setOption('date', new Date());
 ```
-### getEvents()
-- Return value `Event[]` Array of [Event](#event-object) objects
 
-Returns an array of events that the calendar has in memory.
+### addEvent( event )
+- Parameters
+  - `event` `object` A plain object that will be parsed into an [Event](#event-object) object
+- Return value [Event](#event-object) object or `null`
+
+Adds a new event to the calendar.
 
 ### getEventById( id )
 - Parameters
@@ -2289,19 +2302,17 @@ Returns an array of events that the calendar has in memory.
 
 Returns a single event with the matching `id`.
 
+### getEvents()
+- Return value `Event[]` Array of [Event](#event-object) objects
+
+Returns an array of events that the calendar has in memory.
+
 ### removeEventById( id )
 - Parameters
   - `id` `string|integer` The ID of the event
 - Return value `EventCalendar` The calendar instance for chaining
 
 Removes a single event with the matching `id`.
-
-### addEvent( event )
-- Parameters
-  - `event` `object` A plain object that will be parsed into an [Event](#event-object) object
-- Return value [Event](#event-object) object or `null`
-
-Adds a new event to the calendar.
 
 ### updateEvent( event )
 - Parameters
@@ -2368,6 +2379,16 @@ Destroys the calendar, removing all DOM elements, event handlers, and internal d
 - Return value `View`
 
 Returns the [View](#view-object) object for the current view.
+
+### next()
+- Return value `EventCalendar` The calendar instance for chaining
+
+Moves the current calendar date forward by 1 day/week/month (depending on the current view).
+
+### prev()
+- Return value `EventCalendar` The calendar instance for chaining
+
+Moves the current calendar date backward by 1 day/week/month (depending on the current view).
 
 ### unselect()
 - Return value `EventCalendar` The calendar instance for chaining

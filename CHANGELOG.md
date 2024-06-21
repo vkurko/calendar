@@ -1,5 +1,12 @@
 # Event Calendar changelog
 
+## 3.1.0
+June 21, 2024
+
+* Added `resourceTimelineMonth` view ([275](https://github.com/vkurko/calendar/issues/275))
+* Added `next()` and `prev()` methods ([279](https://github.com/vkurko/calendar/issues/279))
+* Added CSS classes for toolbar sections ([283](https://github.com/vkurko/calendar/issues/283))
+
 ## 3.0.2
 June 3, 2024
 

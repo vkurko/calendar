@@ -131,6 +131,27 @@ export function toSeconds(duration, defaultValue = 0) {
 }
 
 /**
+ * Move the date forward (when pressing the next button)
+ */
+export function nextDate(date, duration) {
+    addDuration(date, duration);
+    return date;
+}
+
+/**
+ * Move the date backward (when pressing the prev button)
+ */
+export function prevDate(date, duration, hiddenDays) {
+    subtractDuration(date, duration);
+    if (hiddenDays.length && hiddenDays.length < 7) {
+        while (hiddenDays.includes(date.getUTCDay())) {
+            subtractDay(date);
+        }
+    }
+    return date;
+}
+
+/**
  * Private functions
  */
 
