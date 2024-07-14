@@ -100,9 +100,9 @@
         use:setContent={$_intlDayCell.format(date)}
     ></time>
     <!-- Pointer -->
-    {#if iChunks[1] && datesEqual(iChunks[1].date, date)}
+    {#if iChunks[2] && datesEqual(iChunks[2].date, date)}
         <div class="{$theme.events}">
-            <Event chunk={iChunks[1]}/>
+            <Event chunk={iChunks[2]}/>
         </div>
     {/if}
     <!-- Drag & Resize -->

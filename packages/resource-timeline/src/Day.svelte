@@ -29,6 +29,7 @@
     let refs = [];
     let slotTimeLimits;
     let allDay;
+    let pointerIdx = 1;
 
     let start, end;
 
@@ -53,7 +54,10 @@
 
     $: isToday = datesEqual(date, $_today);
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
-    $: allDay = !toSeconds($slotDuration);
+    $: {
+        allDay = !toSeconds($slotDuration);
+        pointerIdx = allDay ? 2 : 1;
+    }
 
     function dateFromPoint(x, y) {
         x -= rect(el).left;
@@ -93,8 +97,8 @@
             <Event {date} {chunk}/>
         {/each}
         <!-- Pointer -->
-        {#if iChunks[1] && datesEqual(iChunks[1].date, date)}
-            <Event {date} chunk={iChunks[1]}/>
+        {#if iChunks[pointerIdx] && datesEqual(iChunks[pointerIdx].date, date)}
+            <Event {date} chunk={iChunks[pointerIdx]}/>
         {/if}
         {#each dayChunks as chunk, i (chunk.event)}
             <Event {date} {chunk} {dayChunks} {longChunks} {resource} bind:this={refs[i]}/>

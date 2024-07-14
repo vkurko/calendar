@@ -20,14 +20,15 @@
         let dayEl = getElementWithPayload(x, y);
 
         if (dayEl) {
-            let {date, resource} = getPayload(dayEl)(x, y);
+            let {allDay, date, resource} = getPayload(dayEl)(x, y);
+            let idx = allDay ? 2 : 1;
 
-            if (!$_iEvents[1]) {
-                createPointerEvent();
+            if (!$_iEvents[idx]) {
+                createPointerEvent(idx);
             }
-            $_iEvents[1].start = date;
-            $_iEvents[1].end = addDuration(cloneDate(date), $slotDuration);
-            $_iEvents[1].resourceIds = resource ? [resource.id] : [];
+            $_iEvents[idx].start = date;
+            $_iEvents[idx].end = addDuration(cloneDate(date), $slotDuration);
+            $_iEvents[idx].resourceIds = resource ? [resource.id] : [];
         }
     }
 
@@ -43,8 +44,8 @@
         }
     }
 
-    function createPointerEvent() {
-        $_iEvents[1] = {
+    function createPointerEvent(idx) {
+        $_iEvents[idx] = {
             id: '{pointer}',
             title: '',
             display: 'pointer',
@@ -55,6 +56,7 @@
 
     function removePointerEvent() {
         $_iEvents[1] = null;
+        $_iEvents[2] = null;
     }
 
     function validEvent(jsEvent) {

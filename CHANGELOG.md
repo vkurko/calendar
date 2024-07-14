@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.2.1
+July 15, 2024
+
+* Fixed an issue with the pointer not hiding when hovering over the all-day slot
+
 ## 3.2.0
 July 14, 2024
 
