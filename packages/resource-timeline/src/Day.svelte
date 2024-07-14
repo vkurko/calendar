@@ -12,6 +12,7 @@
         toSeconds,
         runReposition
     } from '@event-calendar/core';
+    import {getSlotTimeLimits} from './lib.js';
     import Event from './Event.svelte';
 
     export let date;
@@ -32,7 +33,7 @@
     let start, end;
 
     $: {
-        slotTimeLimits = $_dayTimeLimits[date.getTime()];
+        slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
         start = addDuration(cloneDate(date), slotTimeLimits.min);
         end = addDuration(cloneDate(date), slotTimeLimits.max);
     }

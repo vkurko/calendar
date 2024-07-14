@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (39kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (35kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -204,8 +204,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.1.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.1.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.2.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.2.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -363,9 +363,12 @@ Each `customButton` entry accepts the following properties:
 <tr>
 <td>
 
-`text `
+`text`
 </td>
-<td>The text to be display on the button itself</td>
+<td>
+
+The text to be display on the button itself. See [Content](#content)
+</td>
 </tr>
 <tr>
 <td>
@@ -373,6 +376,16 @@ Each `customButton` entry accepts the following properties:
 `click`
 </td>
 <td>A callback function that is called when the button is clicked. Accepts one argument <a href="https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent">mouseEvent</a></td>
+</tr>
+<tr>
+<td>
+
+`active`
+</td>
+<td>
+
+If `true`, the button will appear pressed/active
+</td>
 </tr>
 </table>
 
@@ -2743,7 +2756,7 @@ Here are all properties that exist in Resource object:
 </td>
 <td>
 
-The title of the resource. See [Content](#content).
+The title of the resource. See [Content](#content)
 </td>
 </tr>
 <tr>

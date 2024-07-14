@@ -139,7 +139,7 @@ export function createParsers(plugins) {
         events: createEvents,
         eventSources: createEventSources,
         hiddenDays: days => [...new Set(days)],
-        highlightedDates: dates => dates.map(createDate),
+        highlightedDates: dates => dates.map(date => setMidnight(createDate(date))),
         resources: createResources,
         scrollTime: createDuration,
         slotDuration: createDuration,

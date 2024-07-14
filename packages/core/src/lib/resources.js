@@ -7,3 +7,15 @@ export function createResources(input) {
         eventTextColor: resource.eventTextColor
     }));
 }
+
+export function resourceBackgroundColor(event, resources) {
+    return findResource(event, resources)?.eventBackgroundColor;
+}
+
+export function resourceTextColor(event, resources) {
+    return findResource(event, resources)?.eventTextColor;
+}
+
+function findResource(event, resources) {
+    return resources.find(resource => event.resourceIds.includes(resource.id));
+}

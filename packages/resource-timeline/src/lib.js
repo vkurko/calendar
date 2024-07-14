@@ -1,3 +1,5 @@
+import {createDuration} from '@event-calendar/core';
+
 export function repositionEvent(chunk, dayChunks, longChunks, height, allDay) {
     chunk.top = 0;
     chunk.bottom = height;
@@ -19,4 +21,8 @@ export function repositionEvent(chunk, dayChunks, longChunks, height, allDay) {
     }
 
     return margin;
+}
+
+export function getSlotTimeLimits($_dayTimeLimits, date) {
+    return $_dayTimeLimits[date.getTime()] ?? {min: createDuration(0), max: createDuration(0)};
 }

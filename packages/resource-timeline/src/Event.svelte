@@ -10,9 +10,11 @@
         bgEvent,
         helperEvent,
         keyEnter,
+        resourceBackgroundColor,
+        resourceTextColor,
         task, height, DAY_IN_SECONDS, toSeconds
     } from '@event-calendar/core';
-    import {repositionEvent} from './lib.js';
+    import {repositionEvent, getSlotTimeLimits} from './lib.js';
 
     export let date;
     export let chunk;
@@ -21,8 +23,8 @@
     export let resource = undefined;
 
     let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
-        eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotDuration, slotWidth, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _dayTimeLimits, _tasks} = getContext('state');
+        eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, resources, slotDuration, slotWidth, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _dayTimeLimits, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -45,16 +47,16 @@
             let start = (chunk.start - date) / 1000;
             let end = (chunk.end - date) / 1000;
             // Shift start
-            start -= toSeconds($_dayTimeLimits[date.getTime()]?.min);
+            start -= toSeconds(getSlotTimeLimits($_dayTimeLimits, date).min);
             if (start < 0) {
                 start = 0;
             }
             // Shift end
             let cut = 0;
             for (let i = 0; i < chunk.days; ++i) {
-                let slotTimeLimits = $_dayTimeLimits[chunk.dates[i].getTime()];
-                let offsetStart = toSeconds(slotTimeLimits?.min);
-                let offsetEnd = toSeconds(slotTimeLimits?.max, DAY_IN_SECONDS);
+                let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, chunk.dates[i]);
+                let offsetStart = toSeconds(slotTimeLimits.min);
+                let offsetEnd = toSeconds(slotTimeLimits.max);
                 let dayStart = DAY_IN_SECONDS * i;
                 // Cut offsetEnd
                 let dayEnd = dayStart + DAY_IN_SECONDS;
@@ -83,8 +85,8 @@
                 `width:${chunk.days * 100}%;`
             ;
         }
-        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
-        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
         let marginTop = margin;
         if (event._margin) {
             // Force margin for helper events

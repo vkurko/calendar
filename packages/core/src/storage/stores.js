@@ -22,10 +22,6 @@ export function dayGrid(state) {
     return derived(state.view, $view => $view?.startsWith('dayGrid'));
 }
 
-export function monthView(state) {
-    return derived(state.view, $view => $view?.includes('Month'));
-}
-
 export function activeRange(state) {
     return derived(
         [state._currentRange, state.firstDay, state.slotMaxTime, state._dayGrid],
@@ -52,10 +48,10 @@ export function activeRange(state) {
 
 export function currentRange(state) {
     return derived(
-        [state.date, state.duration, state.firstDay, state._monthView],
-        ([$date, $duration, $firstDay, $_monthView]) => {
+        [state.date, state.duration, state.firstDay],
+        ([$date, $duration, $firstDay]) => {
             let start = cloneDate($date), end;
-            if ($_monthView) {
+            if ($duration.months) {
                 start.setUTCDate(1);
             } else if ($duration.inWeeks) {
                 // First day of week

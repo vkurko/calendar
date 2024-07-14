@@ -8,14 +8,16 @@
         setContent,
         createEventClasses,
         keyEnter,
+        resourceBackgroundColor,
+        resourceTextColor,
         task
     } from '@event-calendar/core';
 
     export let chunk;
 
     let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent,
-        eventClassNames, eventClick, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
-        _view, _intlEventTime, _resBgColor, _resTxtColor, _interaction, _tasks} = getContext('state');
+        eventClassNames, eventClick, eventDidMount, eventMouseEnter, eventMouseLeave, resources, theme,
+        _view, _intlEventTime, _interaction, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -30,11 +32,11 @@
     $: {
         // Class & Style
         style = '';
-        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
+        let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         if (bgColor) {
             style = `background-color:${bgColor};`;
         }
-        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
         if (txtColor) {
             style += `color:${txtColor};`;
         }

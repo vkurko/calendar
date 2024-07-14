@@ -1,5 +1,12 @@
 # Event Calendar changelog
 
+## 3.2.0
+July 14, 2024
+
+* Added the ability to pass `html` to custom buttons ([277](https://github.com/vkurko/calendar/issues/277))
+* Added `active` parameter for custom buttons
+* Fixed event background color defined from resource ([295](https://github.com/vkurko/calendar/issues/295))
+
 ## 3.1.0
 June 21, 2024
 

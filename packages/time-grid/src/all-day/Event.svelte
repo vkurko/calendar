@@ -9,6 +9,8 @@
         toViewWithLocalDates,
         setContent,
         repositionEvent,
+        resourceBackgroundColor,
+        resourceTextColor,
         helperEvent,
         keyEnter,
         task, rect, ancestor
@@ -18,8 +20,8 @@
     export let longChunks = {};
 
     let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventClick, eventColor, eventContent,
-        eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _tasks} = getContext('state');
+        eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, resources, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -37,8 +39,8 @@
         display = event.display;
 
         // Class & Style
-        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
-        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
         style =
             `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
             `margin-top:${event._margin ?? margin}px;`

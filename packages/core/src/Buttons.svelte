@@ -45,9 +45,10 @@
         >{$buttonText[button]}</button>
     {:else if $customButtons[button]}
         <button
-            class="{$theme.button} ec-{button}"
+            class="{$theme.button} ec-{button}{$customButtons[button].active ? ' ' + $theme.active : ''}"
             on:click={$customButtons[button].click}
-        >{$customButtons[button].text}</button>
+            use:setContent={$customButtons[button].text}
+        ></button>
     {:else if button != ''}
         <button
             class="{$theme.button}{$view === button ? ' ' + $theme.active : ''} ec-{button}"

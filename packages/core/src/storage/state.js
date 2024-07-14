@@ -5,7 +5,6 @@ import {
     activeRange,
     currentRange,
     dayGrid,
-    monthView,
     events,
     now,
     today,
@@ -38,7 +37,6 @@ export default class {
         this._tasks = new Map();  // timeout IDs for tasks
         this._auxiliary = writable([]);  // auxiliary components
         this._dayGrid = dayGrid(this);
-        this._monthView = monthView(this);
         this._currentRange = currentRange(this);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
@@ -56,9 +54,6 @@ export default class {
         this._viewDates = viewDates(this);
         this._view = view2(this);
         this._viewComponent = writable(undefined);
-        // Resources
-        this._resBgColor = writable(noop);
-        this._resTxtColor = writable(noop);
         // Interaction
         this._interaction = writable({});
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]

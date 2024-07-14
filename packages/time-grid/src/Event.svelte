@@ -11,15 +11,18 @@
         helperEvent,
         ghostEvent,
         keyEnter,
+        resourceBackgroundColor,
+        resourceTextColor,
         task
     } from '@event-calendar/core';
 
     export let date;
     export let chunk;
 
-    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
-        eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _slotTimeLimits, _tasks} = getContext('state');
+    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick,
+        eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight,
+        resources, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _slotTimeLimits, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -43,8 +46,8 @@
         let top = (start - offset) / step * $slotHeight;
         let height = (end - start) / step * $slotHeight;
         let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
-        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
-        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
         style =
             `top:${top}px;` +
             `min-height:${height}px;` +

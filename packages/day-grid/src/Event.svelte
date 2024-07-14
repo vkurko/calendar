@@ -11,9 +11,12 @@
         toViewWithLocalDates,
         setContent,
         repositionEvent,
+        resourceBackgroundColor,
+        resourceTextColor,
         helperEvent,
         keyEnter,
-        task, rect
+        task,
+        rect
     } from '@event-calendar/core';
 
     export let chunk;
@@ -22,9 +25,8 @@
     export let dates = [];
 
     let {dayMaxEvents, displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventClick, eventColor,
-        eventContent, eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _resBgColor, _resTxtColor, _hiddenEvents, _popupDate,
-        _tasks} = getContext('state');
+        eventContent, eventClassNames, eventDidMount, eventMouseEnter, eventMouseLeave, resources, theme,
+        _view, _intlEventTime, _interaction, _iClasses, _hiddenEvents, _popupDate, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -43,8 +45,8 @@
         display = event.display;
 
         // Class & Style
-        let bgColor = event.backgroundColor || $_resBgColor(event) || $eventBackgroundColor || $eventColor;
-        let txtColor = event.textColor || $_resTxtColor(event) || $eventTextColor;
+        let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
+        let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
         let marginTop = margin;
         if (event._margin) {
             // Force margin for helper events
