@@ -103,7 +103,13 @@
 
     export function dateFromPoint(x, y) {
         let dayEl = getElementWithPayload(x, y);
-        return dayEl ? getPayload(dayEl)(x, y) : null;
+        if (dayEl) {
+            let info = getPayload(dayEl)(x, y);
+            info.date = toLocalDate(info.date);
+
+            return info;
+        }
+        return null;
     }
 
     export function destroy() {

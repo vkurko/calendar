@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.2.2
+July 22, 2024
+
+* Fixed an issue with `dateFromPoint` method ([145](https://github.com/vkurko/calendar/issues/145#issuecomment-2236673640))
+
 ## 3.2.1
 July 15, 2024
 
