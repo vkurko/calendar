@@ -1,6 +1,7 @@
 @use "theme";
 @use "timeline";
 @use "time-grid";
+@use "day-grid";
 
 /* Grid */
 .ec-days,
@@ -180,6 +181,7 @@
 
   .ec-day {
     padding-bottom: 4px;
+    position: relative;
   }
 }
 
@@ -191,10 +193,6 @@
 
   .ec:not(.ec-list) & {
     border-top: none;
-  }
-
-  .ec-day-grid & {
-    flex: 1 1 auto;
   }
 }
 
@@ -209,15 +207,6 @@
 
 .ec-content {
   display: flex;
-
-  .ec-day-grid & {
-    flex-direction: column;
-    height: 100%;
-  }
-
-  .ec-day-grid .ec-uniform & {
-    overflow: hidden;  // remove scrolling due to hidden events
-  }
 
   .ec-list & {
     flex-direction: column;
@@ -240,11 +229,6 @@
   .ec-resource & {
     flex: 1 0 auto;
   }
-
-  .ec-day-grid .ec-uniform & {
-    flex: 1 1 0%;  // % is required to work properly for both auto and fixed calendar height
-    min-height: 0;
-  }
 }
 
 .ec-day {
@@ -258,18 +242,7 @@
     background-color: var(--ec-highlight-color);
   }
 
-  .ec-day-grid .ec-body & {
-    min-height: 5em;
-    position: relative;
-  }
 
-  .ec-day-grid .ec-uniform & {
-    min-height: 0;
-  }
-
-  .ec-day-grid &:first-child {
-    border-left: none;
-  }
 
   &.ec-other-month .ec-day-head {
     opacity: .3;
@@ -277,26 +250,6 @@
 
   .ec-list & {
     border: none;
-  }
-}
-
-.ec-day-grid {
-  .ec-day-head {
-    display: block;
-    border: none;
-    text-align: right;
-    padding: 4px 4px 3px;
-  }
-
-  .ec-day-foot {
-    position: absolute;
-    bottom: 0;
-    padding: 2px;
-    font-size: .85em;
-
-    a {
-      cursor: pointer;
-    }
   }
 }
 
@@ -446,12 +399,24 @@
 
 .ec-bg-events {
   position: relative;
+
+  .ec-day-grid &,
+  .ec-all-day & {
+    position: absolute;
+    inset: 0;
+  }
 }
 
 .ec-bg-event {
   position: absolute;
   background-color: var(--ec-bg-event-color);
   opacity: var(--ec-bg-event-opacity);
+
+  .ec-day-grid &,
+  .ec-all-day & {
+    height: 100%;
+    z-index: auto;
+  }
 }
 
 .ec-time {

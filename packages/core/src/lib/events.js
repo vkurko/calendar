@@ -175,6 +175,14 @@ export function prepareEventChunks(chunks, hiddenDays) {
                 chunk.date = dates[0];
                 chunk.days = dates.length;
                 chunk.dates = dates;
+                // Adjust the start and end dates of the chunk if hidden days affected them
+                if (chunk.start < dates[0]) {
+                    chunk.start = dates[0];
+                }
+                let maxEnd = addDay(cloneDate(dates.at(-1)));
+                if (chunk.end > maxEnd) {
+                    chunk.end = maxEnd;
+                }
             } else {
                 chunk.date = setMidnight(cloneDate(chunk.start));
                 chunk.days = 1;

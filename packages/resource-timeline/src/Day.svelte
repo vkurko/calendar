@@ -18,13 +18,14 @@
     export let date;
     export let resource;
     export let chunks;
+    export let bgChunks;
     export let longChunks;
     export let iChunks = [];
 
     let {highlightedDates, slotDuration, slotWidth, theme, _interaction, _today, _dayTimeLimits} = getContext('state');
 
     let el;
-    let dayChunks, bgChunks;
+    let dayChunks, dayBgChunks;
     let isToday, highlight;
     let refs = [];
     let slotTimeLimits;
@@ -38,26 +39,20 @@
         start = addDuration(cloneDate(date), slotTimeLimits.min);
         end = addDuration(cloneDate(date), slotTimeLimits.max);
     }
-
-    $: {
-        dayChunks = [];
-        bgChunks = [];
-        for (let chunk of chunks) {
-            if (datesEqual(chunk.date, date) && (chunk.start < end && chunk.end > start || chunk.event.allDay)) {
-                switch (chunk.event.display) {
-                    case 'background': bgChunks.push(chunk); break;
-                    default: dayChunks.push(chunk);
-                }
-            }
-        }
-    }
-
-    $: isToday = datesEqual(date, $_today);
-    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
     $: {
         allDay = !toSeconds($slotDuration);
         pointerIdx = allDay ? 2 : 1;
     }
+
+    $: dayChunks = chunks.filter(chunkIntersects);
+    $: dayBgChunks = bgChunks.filter(bgChunk => (!allDay || bgChunk.event.allDay) && chunkIntersects(bgChunk));
+
+    function chunkIntersects(chunk) {
+        return datesEqual(chunk.date, date);
+    }
+
+    $: isToday = datesEqual(date, $_today);
+    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
     function dateFromPoint(x, y) {
         x -= rect(el).left;
@@ -93,7 +88,7 @@
     on:pointerdown={$_interaction.action?.select}
 >
     <div class="{$theme.events}">
-        {#each bgChunks as chunk (chunk.event)}
+        {#each dayBgChunks as chunk (chunk.event)}
             <Event {date} {chunk}/>
         {/each}
         <!-- Pointer -->

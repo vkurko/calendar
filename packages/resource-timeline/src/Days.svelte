@@ -1,14 +1,16 @@
 <script>
     import {getContext} from 'svelte';
-    import {cloneDate, addDay, eventIntersects, bgEvent, createEventChunk, prepareEventChunks,
-        runReposition, debounce, max, ceil} from '@event-calendar/core';
+    import {
+        cloneDate, addDay, eventIntersects, createEventChunk, prepareEventChunks,
+        runReposition, debounce, max, ceil, bgEvent
+    } from '@event-calendar/core';
     import Day from './Day.svelte';
 
     export let resource;
 
     let {_viewDates, _events, _iEvents, _queue2, _resHs, hiddenDays, theme} = getContext('state');
 
-    let chunks, longChunks, iChunks = [];
+    let chunks, bgChunks, longChunks, iChunks = [];
 
     let start;
     let end;
@@ -17,7 +19,7 @@
 
     $: {
         start = $_viewDates[0];
-        end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
+        end = addDay(cloneDate($_viewDates.at(-1)));
     }
 
     let debounceHandle = {};
@@ -31,12 +33,18 @@
 
     $: {
         chunks = [];
+        bgChunks = [];
         for (let event of $_events) {
             if (eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
-                chunks.push(chunk);
+                if (bgEvent(event.display)) {
+                    bgChunks.push(chunk);
+                } else {
+                    chunks.push(chunk);
+                }
             }
         }
+        prepareEventChunks(bgChunks, $hiddenDays);
         longChunks = prepareEventChunks(chunks, $hiddenDays);
         // Run reposition only when events get changed
         reposition();
@@ -56,7 +64,7 @@
 
 <div class="{$theme.days}" style="flex-basis: {max(height, 34)}px" role="row">
     {#each $_viewDates as date, i}
-        <Day {date} {resource} {chunks} {longChunks} {iChunks} bind:this={refs[i]}/>
+        <Day {date} {resource} {chunks} {bgChunks} {longChunks} {iChunks} bind:this={refs[i]}/>
     {/each}
 </div>
 

@@ -5,6 +5,7 @@
 
     export let date;
     export let chunks;
+    export let bgChunks;
     export let longChunks;
     export let iChunks = [];
     export let resource = undefined;
@@ -12,19 +13,13 @@
     let {highlightedDates, theme, _interaction, _today} = getContext('state');
 
     let el;
-    let dayChunks;
+    let dayChunks, dayBgChunks;
     let isToday;
     let highlight;
     let refs = [];
 
-    $: {
-        dayChunks = [];
-        for (let chunk of chunks) {
-            if (datesEqual(chunk.date, date)) {
-                dayChunks.push(chunk);
-            }
-        }
-    }
+    $: dayChunks = chunks.filter(chunk => datesEqual(chunk.date, date));
+    $: dayBgChunks = bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date));
 
     $: isToday = datesEqual(date, $_today);
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
@@ -46,6 +41,11 @@
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >
+    <div class="{$theme.bgEvents}">
+        {#each dayBgChunks as chunk (chunk.event)}
+            <Event {chunk}/>
+        {/each}
+    </div>
     <!-- Drag, Resize & Select -->
     {#if iChunks[0] && datesEqual(iChunks[0].date, date)}
         <div class="{$theme.events} {$theme.preview}">

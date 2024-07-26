@@ -16,7 +16,8 @@
         helperEvent,
         keyEnter,
         task,
-        rect
+        rect,
+        bgEvent
     } from '@event-calendar/core';
 
     export let chunk;
@@ -47,17 +48,21 @@
         // Class & Style
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
-        let marginTop = margin;
-        if (event._margin) {
-            // Force margin for helper events
-            let [_margin, _dates] = event._margin;
-            if (chunk.date >= _dates[0] && chunk.date <= _dates[_dates.length - 1]) {
-                marginTop = _margin;
+        if (bgEvent(display)) {
+            style = `width:calc(${chunk.days * 100}% + ${(chunk.days - 1)}px);`;
+        } else {
+            let marginTop = margin;
+            if (event._margin) {
+                // Force margin for helper events
+                let [_margin, _dates] = event._margin;
+                if (chunk.date >= _dates[0] && chunk.date <= _dates.at(-1)) {
+                    marginTop = _margin;
+                }
             }
+            style =
+                `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
+                `margin-top:${marginTop}px;`;
         }
-        style =
-            `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
-            `margin-top:${marginTop}px;`;
         if (bgColor) {
             style += `background-color:${bgColor};`;
         }
@@ -69,7 +74,7 @@
         }
 
         classes = [
-            $theme.event,
+            bgEvent(display) ? $theme.bgEvent : $theme.event,
             ...$_iClasses([], event),
             ...createEventClasses($eventClassNames, event, $_view)
         ].join(' ');

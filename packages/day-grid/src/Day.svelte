@@ -8,6 +8,7 @@
 
     export let date;
     export let chunks;
+    export let bgChunks;
     export let longChunks;
     export let iChunks = [];
     export let dates;
@@ -16,7 +17,7 @@
         _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _today, _interaction, _queue} = getContext('state');
 
     let el;
-    let dayChunks;
+    let dayChunks, dayBgChunks;
     let isToday;
     let otherMonth;
     let highlight;
@@ -29,6 +30,7 @@
 
     $: {
         dayChunks = [];
+        dayBgChunks = bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date));
         hiddenEvents.clear();
         hiddenEvents = hiddenEvents;
         for (let chunk of chunks) {
@@ -99,6 +101,11 @@
         datetime="{toISOString(date, 10)}"
         use:setContent={$_intlDayCell.format(date)}
     ></time>
+    <div class="{$theme.bgEvents}">
+        {#each dayBgChunks as chunk (chunk.event)}
+            <Event {chunk}/>
+        {/each}
+    </div>
     <!-- Pointer -->
     {#if iChunks[2] && datesEqual(iChunks[2].date, date)}
         <div class="{$theme.events}">

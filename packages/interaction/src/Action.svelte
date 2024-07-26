@@ -184,6 +184,7 @@
                         // Resizing
                         if ($_iEvents[0].end < minEnd) {
                             $_iEvents[0].end = minEnd;
+                            delta = createDuration((minEnd - event.end) / 1000);
                         }
                     } else if (selecting()) {
                         // Selecting

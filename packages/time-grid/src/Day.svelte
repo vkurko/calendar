@@ -8,7 +8,8 @@
         eventIntersects,
         floor,
         rect,
-        setPayload
+        setPayload,
+        bgEvent
     } from '@event-calendar/core';
     import {groupEventChunks} from './utils';
     import Event from './Event.svelte';
@@ -35,7 +36,7 @@
         chunks = [];
         bgChunks = [];
         for (let event of $_events) {
-            if (!event.allDay && eventIntersects(event, start, end, resource)) {
+            if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
                 switch (event.display) {
                     case 'background': bgChunks.push(chunk); break;

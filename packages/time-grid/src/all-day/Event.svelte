@@ -13,7 +13,7 @@
         resourceTextColor,
         helperEvent,
         keyEnter,
-        task, rect, ancestor
+        task, rect, ancestor, bgEvent
     } from '@event-calendar/core';
 
     export let chunk;
@@ -41,10 +41,14 @@
         // Class & Style
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
-        style =
-            `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
-            `margin-top:${event._margin ?? margin}px;`
-        ;
+        if (bgEvent(display)) {
+            style = `width:calc(${chunk.days * 100}% + ${(chunk.days - 1)}px);`;
+        } else {
+            style =
+                `width:calc(${chunk.days * 100}% + ${(chunk.days - 1) * 7}px);` +
+                `margin-top:${event._margin ?? margin}px;`
+            ;
+        }
         if (bgColor) {
             style += `background-color:${bgColor};`;
         }
@@ -53,7 +57,7 @@
         }
 
         classes = [
-            $theme.event,
+            bgEvent(display) ? $theme.bgEvent : $theme.event,
             ...$_iClasses([], event),
             ...createEventClasses($eventClassNames, event, $_view)
         ].join(' ');

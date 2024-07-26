@@ -17,7 +17,7 @@ export function groupEventChunks(chunks) {
         let c = 0;
         if (chunk.start < group.end) {
             for (; c < group.columns.length; ++c) {
-                if (group.columns[c][group.columns[c].length - 1].end <= chunk.start) {
+                if (group.columns[c].at(-1).end <= chunk.start) {
                     break;
                 }
             }

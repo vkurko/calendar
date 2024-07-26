@@ -12,7 +12,7 @@
         noEvents = true;
         if ($_viewDates.length) {
             let start = $_viewDates[0];
-            let end = addDay(cloneDate($_viewDates[$_viewDates.length - 1]));
+            let end = addDay(cloneDate($_viewDates.at(-1)));
             for (let event of $_events) {
                 if (!bgEvent(event.display) && event.start < end && event.end > start) {
                     noEvents = false;

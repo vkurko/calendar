@@ -1,5 +1,12 @@
 # Event Calendar changelog
 
+## 3.3.0
+July 26, 2024
+
+* Now all-day background events are rendered in `dayGridMonth`/`resourceTimelineMonth` views, as well as in the `all-day` slot of the `timeGrid` views ([300](https://github.com/vkurko/calendar/discussions/300))
+* Fixed `endDelta` in `eventResize` callback ([145](https://github.com/vkurko/calendar/issues/145#issuecomment-2244686814))
+* Fixed display of events in `resourceTimeline` views when the start of the event falls after `slotMaxTime`
+
 ## 3.2.2
 July 22, 2024
 
@@ -8,7 +15,7 @@ July 22, 2024
 ## 3.2.1
 July 15, 2024
 
-* Fixed an issue with the pointer not hiding when hovering over the all-day slot
+* Fixed an issue with the pointer not hiding when hovering over the `all-day` slot
 
 ## 3.2.0
 July 14, 2024
@@ -315,7 +322,7 @@ June 3, 2022
 ## 0.11.0
 May 27, 2022
 
-* Added "all-day" slot ([#41](https://github.com/vkurko/calendar/issues/41))
+* Added `all-day` slot ([#41](https://github.com/vkurko/calendar/issues/41))
 
 ## 0.10.2
 April 27, 2022

@@ -35,6 +35,7 @@
     let timeText;
     let onclick;
     let margin = helperEvent(chunk.event.display) ? 1 : 0;
+    let width = 0;
 
     $: event = chunk.event;
 
@@ -47,9 +48,15 @@
             let start = (chunk.start - date) / 1000;
             let end = (chunk.end - date) / 1000;
             // Shift start
-            start -= toSeconds(getSlotTimeLimits($_dayTimeLimits, date).min);
+            let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
+            let offsetStart = toSeconds(slotTimeLimits.min);
+            let offsetEnd = toSeconds(slotTimeLimits.max);
+            start -= offsetStart;
             if (start < 0) {
                 start = 0;
+            }
+            if (start > offsetEnd - offsetStart) {
+                start = offsetEnd - offsetStart;
             }
             // Shift end
             let cut = 0;
@@ -75,14 +82,16 @@
             }
             end -= cut;
             let left = start / step * $slotWidth;
-            let width = (end - start) / step * $slotWidth;
+            width = (end - start) / step * $slotWidth;
             style =
                 `left:${left}px;` +
                 `width:${width}px;`
             ;
         } else {
+            // Month view
+            width = chunk.days * 100;
             style =
-                `width:${chunk.days * 100}%;`
+                `width:${width}%;`
             ;
         }
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
@@ -156,23 +165,25 @@
     }
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-<article
-    bind:this={el}
-    class="{classes}"
-    {style}
-    role="{onclick ? 'button' : undefined}"
-    tabindex="{onclick ? 0 : undefined}"
-    on:click={onclick}
-    on:keydown={onclick && keyEnter(onclick)}
-    on:mouseenter={createHandler($eventMouseEnter, display)}
-    on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
->
-    <div class="{$theme.eventBody}" use:setContent={content}></div>
-    <svelte:component
-        this={$_interaction.resizer}
-        {event}
-        on:pointerdown={createDragHandler($_interaction, 'x')}
-    />
-</article>
+{#if width > 0}
+    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+    <article
+        bind:this={el}
+        class="{classes}"
+        {style}
+        role="{onclick ? 'button' : undefined}"
+        tabindex="{onclick ? 0 : undefined}"
+        on:click={onclick}
+        on:keydown={onclick && keyEnter(onclick)}
+        on:mouseenter={createHandler($eventMouseEnter, display)}
+        on:mouseleave={createHandler($eventMouseLeave, display)}
+        on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
+    >
+        <div class="{$theme.eventBody}" use:setContent={content}></div>
+        <svelte:component
+            this={$_interaction.resizer}
+            {event}
+            on:pointerdown={createDragHandler($_interaction, 'x')}
+        />
+    </article>
+{/if}

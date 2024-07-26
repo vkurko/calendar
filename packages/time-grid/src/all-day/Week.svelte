@@ -15,7 +15,7 @@
 
     let {_events, _iEvents, _queue2, hiddenDays} = getContext('state');
 
-    let chunks, longChunks, iChunks = [];
+    let chunks, bgChunks, longChunks, iChunks = [];
 
     let start;
     let end;
@@ -23,7 +23,7 @@
 
     $: {
         start = dates[0];
-        end = addDay(cloneDate(dates[dates.length - 1]));
+        end = addDay(cloneDate(dates.at(-1)));
     }
 
     let debounceHandle = {};
@@ -33,12 +33,18 @@
 
     $: {
         chunks = [];
+        bgChunks = [];
         for (let event of $_events) {
-            if (event.allDay && !bgEvent(event.display) && eventIntersects(event, start, end, resource)) {
+            if (event.allDay && eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
-                chunks.push(chunk);
+                if (bgEvent(event.display)) {
+                    bgChunks.push(chunk);
+                } else {
+                    chunks.push(chunk);
+                }
             }
         }
+        prepareEventChunks(bgChunks, $hiddenDays);
         longChunks = prepareEventChunks(chunks, $hiddenDays);
         // Run reposition only when events get changed
         reposition();
@@ -57,7 +63,7 @@
 </script>
 
 {#each dates as date, i}
-    <Day {date} {chunks} {longChunks} {iChunks} {resource} bind:this={refs[i]} />
+    <Day {date} {chunks} {bgChunks} {longChunks} {iChunks} {resource} bind:this={refs[i]} />
 {/each}
 
 <svelte:window on:resize={reposition}/>
