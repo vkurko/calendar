@@ -67,20 +67,23 @@
     }
 
     export function addEvent(event) {
-        $_events.push(createEvents([event])[0]);
+        const ev = createEvents([event])[0]
+        $_events.push(ev);
         $_events = $_events;
-        return this;
+        return ev;
     }
 
     export function updateEvent(event) {
+        let ev = null
         for (let e of $_events) {
             if (e.id == event.id) {
-                assign(e, createEvents([event])[0]);
+                ev = createEvents([event])[0]
+                assign(e, ev);
                 $_events = $_events;
                 break;
             }
         }
-        return this;
+        return ev;
     }
 
     export function removeEventById(id) {
