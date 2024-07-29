@@ -9,7 +9,7 @@ import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import {writeFileSync} from 'fs';
-import pkg from './package.json' assert {type: 'json'};
+import pkg from './package.json' with {type: 'json'};
 import {spawn} from 'child_process';
 
 const production = !process.env.ROLLUP_WATCH;
