@@ -204,8 +204,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.3.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.3.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.4.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.4.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -668,7 +668,7 @@ Determines whether the events on the calendar can be dragged and resized (both a
 If you don't need both, use the more specific [eventStartEditable](#eventstarteditable) and [eventDurationEditable](#eventdurationeditable) instead.
 
 ### events
-- Type `Array`
+- Type `array`
 - Default `[]`
 
 Array of plain objects that will be parsed into [Event](#event-object) objects and displayed on the calendar.
@@ -804,11 +804,11 @@ This is currently an alias for the `eventBackgroundColor`.
 
 Defines the content that is rendered inside an event’s element.
 
-This value can be either a [Content](#content) or a function that returns content:
+This value can be either a [Content](#content) or a function that returns content or `undefined`:
 
 ```js
 function (info) {
-    // return Content
+    // return Content or undefined
 }
 ```
 `info` is an object with the following properties:
@@ -841,6 +841,8 @@ The current [View](#view-object) object
 </td>
 </tr>
 </table>
+
+In case the function returns `undefined`, the event will be rendered in the default way.
 
 ### eventDidMount
 - Type `function`
@@ -1614,13 +1616,13 @@ Defines the height of the entire calendar.
 This should be a valid CSS value like `'100%'` or `'600px'`.
 
 ### hiddenDays
-- Type `Array`
+- Type `array`
 - Default `[]`
 
 Exclude certain days-of-the-week from being displayed, where Sunday is `0`, Monday is `1`, etc. Saturday is `6`.
 
 ### highlightedDates
-- Type `Array`
+- Type `array`
 - Default `[]`
 
 Array of dates that need to be highlighted in the calendar.
@@ -1811,7 +1813,7 @@ Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` vi
 Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` and other views.
 
 ### resources
-- Type `Array`
+- Type `array`
 - Default `[]`
 
 Array of plain objects that will be parsed into [Resource](#resource-object) objects for displaying in the resource view.
@@ -2076,13 +2078,13 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### slotWidth
 - Type `integer`
-- Default `52`
+- Default `72`
 
 Defines the time slot width in pixels in `ResourceTimeline` views. When changing the setting, you must additionally override the following CSS styles:
 
 ```css
 .ec-timeline .ec-time, .ec-timeline .ec-line {
-  width: 52px;  /* override this value */
+  width: 72px;  /* override this value */
 }
 ```
 
@@ -2531,6 +2533,26 @@ The [eventTextColor](#eventtextcolor) override for this specific event
 <tr>
 <td>
 
+`classNames`
+</td>
+<td>
+
+An array of additional CSS classes for this specific event
+</td>
+</tr>
+<tr>
+<td>
+
+`styles`
+</td>
+<td>
+
+An array of additional inline styling declarations for this specific event
+</td>
+</tr>
+<tr>
+<td>
+
 `extendedProps`
 </td>
 <td>
@@ -2553,26 +2575,6 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `string` or `integer` A unique identifier of the event. Default `auto-generated value`
-</td>
-</tr>
-<tr>
-<td>
-
-`resourceId`
-</td>
-<td>
-
-`string` or `integer` An ID of a resource that the event is associated with. This field is not used if `resourceIds` is provided. Default `undefined`
-</td>
-</tr>
-<tr>
-<td>
-
-`resourceIds`
-</td>
-<td>
-
-`Array` An array of resource IDs that the event is associated with. This field is used instead of `resourceId`. Default `[]`
 </td>
 </tr>
 <tr>
@@ -2638,6 +2640,26 @@ Here are all admissible fields for the event’s input object:
 <tr>
 <td>
 
+`durationEditable`
+</td>
+<td>
+
+`boolean` Overrides the master [eventDurationEditable](#eventdurationeditable) option for this single event. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
+`resourceIds` or `resourceId`
+</td>
+<td>
+
+`string`, `integer` or `array`  An ID of a resource or an array of resource IDs that the event is associated with. Default `[]`
+</td>
+</tr>
+<tr>
+<td>
+
 `display`
 </td>
 <td>
@@ -2673,6 +2695,26 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `string` This is currently an alias for the `backgroundColor` field. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
+`classNames` or `className`
+</td>
+<td>
+
+`string` or `array` Sets additional CSS classes for this single event. See [eventClassNames](#eventclassnames). Default `[]`
+</td>
+</tr>
+<tr>
+<td>
+
+`styles` or `style`
+</td>
+<td>
+
+`string` or `array` Sets additional inline styling declarations for this single event. This value can be either a string containing styles `'font-size: 24px; border-radius: 4px; ...'` or an array of strings `['font-size: 24px', 'border-radius: 4px', ...]`. Default `[]`
 </td>
 </tr>
 <tr>

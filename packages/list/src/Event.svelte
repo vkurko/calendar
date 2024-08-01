@@ -40,6 +40,7 @@
         if (txtColor) {
             style += `color:${txtColor};`;
         }
+        style += event.styles.join(';');
 
         classes = [
             $theme.event,

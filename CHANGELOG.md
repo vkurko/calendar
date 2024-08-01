@@ -1,5 +1,13 @@
 # Event Calendar changelog
 
+## 3.4.0
+August 1, 2024
+
+* Added the ability to set additional styles for a specific event ([305](https://github.com/vkurko/calendar/issues/305))
+* Added the ability to set additional CSS classes for a specific event
+* Added the ability to apply default rendering in the `eventContent` callback by returning `undefined` ([306](https://github.com/vkurko/calendar/discussions/306))
+* Fixed return value of `addEvent` and `updateEvent` methods ([301](https://github.com/vkurko/calendar/issues/301))
+
 ## 3.3.0
 July 26, 2024
 

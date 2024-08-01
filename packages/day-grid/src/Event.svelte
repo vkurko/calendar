@@ -72,6 +72,7 @@
         if (hidden) {
             style += 'visibility:hidden;';
         }
+        style += event.styles.join(';');
 
         classes = [
             bgEvent(display) ? $theme.bgEvent : $theme.event,

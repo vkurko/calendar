@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/build",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "title": "Event Calendar",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
@@ -20,11 +20,11 @@
   "jsdelivr": "event-calendar.min.js",
   "style": "event-calendar.min.css",
   "devDependencies": {
-    "@event-calendar/day-grid": "~3.3.0",
-    "@event-calendar/interaction": "~3.3.0",
-    "@event-calendar/list": "~3.3.0",
-    "@event-calendar/time-grid": "~3.3.0",
-    "@event-calendar/resource-time-grid": "~3.3.0",
-    "@event-calendar/resource-timeline": "~3.3.0"
+    "@event-calendar/day-grid": "~3.4.0",
+    "@event-calendar/interaction": "~3.4.0",
+    "@event-calendar/list": "~3.4.0",
+    "@event-calendar/time-grid": "~3.4.0",
+    "@event-calendar/resource-time-grid": "~3.4.0",
+    "@event-calendar/resource-timeline": "~3.4.0"
   }
 }

@@ -55,6 +55,7 @@
         if (txtColor) {
             style += `color:${txtColor};`;
         }
+        style += event.styles.join(';');
 
         classes = [
             bgEvent(display) ? $theme.bgEvent : $theme.event,

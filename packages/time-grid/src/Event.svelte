@@ -67,6 +67,7 @@
                 `width:${100 / chunk.group.columns.length * ($slotEventOverlap ? 0.5 * (1 + chunk.group.columns.length - chunk.column) : 1)}%;`
             ;
         }
+        style += event.styles.join(';');
 
         // Class
         classes = [

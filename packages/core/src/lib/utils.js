@@ -25,3 +25,7 @@ export function max(...args) {
 export function symbol() {
     return Symbol('ec');
 }
+
+export function isArray(value) {
+    return Array.isArray(value);
+}

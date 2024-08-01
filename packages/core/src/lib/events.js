@@ -1,6 +1,6 @@
 import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date';
 import {createElement} from './dom';
-import {assign} from './utils';
+import {assign, isArray} from './utils';
 import {toViewWithLocalDates} from './view';
 import {is_function} from 'svelte/internal';
 
@@ -9,21 +9,20 @@ export function createEvents(input) {
     return input.map(event => {
         let result = {
             id: 'id' in event ? String(event.id) : `{generated-${eventId++}}`,
-            resourceIds: Array.isArray(event.resourceIds)
-                ? event.resourceIds.map(String)
-                : ('resourceId' in event ? [String(event.resourceId)] : []),
+            resourceIds: toArrayProp(event, 'resourceId').map(String),
             allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
             start: createDate(event.start),
             end: createDate(event.end),
-            title: event.title || '',
-            titleHTML: event.titleHTML || '',
+            title: event.title ?? '',
             editable: event.editable,
             startEditable: event.startEditable,
             durationEditable: event.durationEditable,
-            display: event.display || 'auto',
-            extendedProps: event.extendedProps || {},
-            backgroundColor: event.backgroundColor || event.color,
-            textColor: event.textColor
+            display: event.display ?? 'auto',
+            extendedProps: event.extendedProps ?? {},
+            backgroundColor: event.backgroundColor ?? event.color,
+            textColor: event.textColor,
+            classNames: toArrayProp(event, 'className'),
+            styles: toArrayProp(event, 'style')
         };
 
         if (result.allDay) {
@@ -41,6 +40,11 @@ export function createEvents(input) {
 
         return result;
     });
+}
+
+function toArrayProp(input, propName) {
+    let result = input[propName + 's'] ?? input[propName] ?? [];
+    return isArray(result) ? result : [result];
 }
 
 export function createEventSources(input) {
@@ -82,7 +86,9 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
                 view: toViewWithLocalDates(_view)
             })
             : eventContent;
-    } else {
+    }
+
+    if (content === undefined) {
         let domNodes;
         switch (chunk.event.display) {
             case 'background':
@@ -113,6 +119,7 @@ function createTimeElement(timeText, chunk, theme) {
 }
 
 export function createEventClasses(eventClassNames, event, _view) {
+    let result = event.classNames;
     if (eventClassNames) {
         if (is_function(eventClassNames)) {
             eventClassNames = eventClassNames({
@@ -120,9 +127,12 @@ export function createEventClasses(eventClassNames, event, _view) {
                 view: toViewWithLocalDates(_view)
             });
         }
-        return Array.isArray(eventClassNames) ? eventClassNames : [eventClassNames];
+        result = [
+            ...isArray(eventClassNames) ? eventClassNames : [eventClassNames],
+            ...result
+        ];
     }
-    return [];
+    return result;
 }
 
 export function toEventWithLocalDates(event) {

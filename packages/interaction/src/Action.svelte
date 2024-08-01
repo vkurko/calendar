@@ -389,7 +389,9 @@
             display: 'preview',
             extendedProps: {},
             backgroundColor: $selectBackgroundColor,
-            resourceIds: event.resourceIds
+            resourceIds: event.resourceIds,
+            classNames: [],
+            styles: []
         };
     }
 

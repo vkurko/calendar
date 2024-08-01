@@ -50,7 +50,9 @@
             title: '',
             display: 'pointer',
             extendedProps: {},
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
+            classNames: [],
+            styles: []
         };
     }
 
