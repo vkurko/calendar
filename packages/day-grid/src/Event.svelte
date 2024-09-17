@@ -1,6 +1,5 @@
 <script>
     import {afterUpdate, getContext, onMount} from 'svelte';
-    import {is_function} from 'svelte/internal';
     import {
         ancestor,
         createEventClasses,
@@ -17,7 +16,8 @@
         keyEnter,
         task,
         rect,
-        bgEvent
+        bgEvent,
+        is_function
     } from '@event-calendar/core';
 
     export let chunk;

@@ -1,5 +1,5 @@
 import {get, writable} from 'svelte/store';
-import {is_function, tick, noop, identity} from 'svelte/internal';
+import {tick} from 'svelte';
 import {createOptions, createParsers} from './options';
 import {
     activeRange,
@@ -12,7 +12,7 @@ import {
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
 } from './stores';
-import {keys, intl, intlRange} from '../lib.js';
+import {keys, intl, intlRange, is_function} from '../lib.js';
 
 export default class {
     constructor(plugins, input) {
@@ -57,7 +57,7 @@ export default class {
         // Interaction
         this._interaction = writable({});
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]
-        this._iClasses = writable(identity);  // interaction event css classes
+        this._iClasses = writable([]);  // interaction event css classes
         this._iClass = writable(undefined);  // interaction css class for entire calendar
 
         // Set & Get

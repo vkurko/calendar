@@ -33,7 +33,7 @@
     "rollup-plugin-scss": "^4.0.0",
     "rollup-plugin-svelte": "^7.2.2",
     "sass": "^1.77.6",
-    "svelte": "^4.2.18"
+    "svelte": "^4.2.19 || ^5.0.0-next.249"
   },
   "dependencies": {
     "sirv-cli": "^2.0.2"

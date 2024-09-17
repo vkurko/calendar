@@ -1,6 +1,5 @@
-import {is_function} from 'svelte/internal';
 import {addDuration, cloneDate, createDuration, DAY_IN_SECONDS, toISOString, toSeconds} from './date.js';
-import {max as maxFn, min as minFn} from './utils.js';
+import {max as maxFn, min as minFn, is_function} from './utils.js';
 import {bgEvent} from './events.js';
 
 export function createTimes(date, $slotDuration, $_slotTimeLimits, $_intlSlotLabel) {

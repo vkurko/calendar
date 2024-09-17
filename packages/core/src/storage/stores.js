@@ -1,5 +1,5 @@
 import {derived, writable, readable, get} from 'svelte/store';
-import {is_function} from 'svelte/internal';
+import {is_function} from '../lib/utils.js';
 import {
     DAY_IN_SECONDS,
     assign,

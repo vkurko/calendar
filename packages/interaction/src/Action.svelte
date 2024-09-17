@@ -1,6 +1,5 @@
 <script>
     import {getContext} from 'svelte';
-    import {is_function, listen, run_all} from 'svelte/internal';
     import {
         addDay,
         addDuration,
@@ -18,7 +17,8 @@
         toISOString,
         toLocalDate,
         toViewWithLocalDates,
-        listView, timelineView
+        listView, timelineView,
+        is_function, listen, run_all
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 

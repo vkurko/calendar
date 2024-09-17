@@ -1,5 +1,5 @@
 import {derived} from 'svelte/store';
-import {is_function} from 'svelte/internal';
+import {is_function} from './utils.js';
 import {toLocalDate} from './date';
 import {createResources} from './resources.js';
 

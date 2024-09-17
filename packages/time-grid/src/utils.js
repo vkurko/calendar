@@ -1,4 +1,4 @@
-import {is_function} from 'svelte/internal';
+import {is_function} from '@event-calendar/core';
 import {sortEventChunks} from '@event-calendar/core';
 
 export function groupEventChunks(chunks) {
