@@ -18,12 +18,13 @@
     export let date;
     export let resource = undefined;
 
-    let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, theme,
-        _interaction, _today, _slotTimeLimits} = getContext('state');
+    let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, filterEventsWithResources, theme,
+        resources, _interaction, _today, _slotTimeLimits} = getContext('state');
 
     let el;
     let chunks, bgChunks, iChunks = [];
     let isToday, highlight;
+    let resourceFilter;
 
     let start, end;
 
@@ -32,11 +33,15 @@
         end = addDuration(cloneDate(date), $_slotTimeLimits.max);
     }
 
+    $: resourceFilter = resource ?? (
+        $filterEventsWithResources ? $resources : undefined
+    );
+
     $: {
         chunks = [];
         bgChunks = [];
         for (let event of $_events) {
-            if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resource)) {
+            if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resourceFilter)) {
                 let chunk = createEventChunk(event, start, end);
                 switch (event.display) {
                     case 'background': bgChunks.push(chunk); break;

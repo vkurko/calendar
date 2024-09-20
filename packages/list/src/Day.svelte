@@ -16,7 +16,8 @@
 
     export let date;
 
-    let {_events, _interaction, _intlListDay, _intlListDaySide, _today, highlightedDates, theme} = getContext('state');
+    let {_events, _interaction, _intlListDay, _intlListDaySide, _today,
+        resources, filterEventsWithResources, highlightedDates, theme} = getContext('state');
 
     let el;
     let chunks;
@@ -28,7 +29,7 @@
         let start = date;
         let end = addDay(cloneDate(date));
         for (let event of $_events) {
-            if (!bgEvent(event.display) && eventIntersects(event, start, end)) {
+            if (!bgEvent(event.display) && eventIntersects(event, start, end, $filterEventsWithResources ? $resources : undefined)) {
                 let chunk = createEventChunk(event, start, end);
                 chunks.push(chunk);
             }

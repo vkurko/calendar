@@ -61,6 +61,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventStartEditable](#eventstarteditable)
   - [eventTextColor](#eventtextcolor)
   - [eventTimeFormat](#eventtimeformat)
+  - [filterEventsWithResources](#filtereventswithresources)
   - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
   - [flexibleSlotTimeLimits](#flexibleslottimelimits)
@@ -204,8 +205,8 @@ import '@event-calendar/core/index.css';
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.4.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.4.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.5.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.5.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1505,6 +1506,12 @@ function (start, end) {
 Sets the default text color for events on the calendar.
 
 You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+
+### filterEventsWithResources
+- Type `boolean`
+- Default `false`
+
+Determines whether events that do not belong to the current array of [resources](#resources) should be hidden in `dayGrid`/`timeGrid`/`list` views.
 
 ### filterResourcesWithEvents
 - Type `boolean`
@@ -2815,6 +2822,16 @@ The title of the resource. See [Content](#content)
 </td>
 <td>Default text color for this resource's events</td>
 </tr>
+<tr>
+<td>
+
+`extendedProps`
+</td>
+<td>
+
+A plain object holding miscellaneous properties specified during parsing in the explicitly given `extendedProps` field
+</td>
+</tr>
 </table>
 
 ### Parsing resource from a plain object
@@ -2860,6 +2877,16 @@ Here are all admissible fields for the resource’s input object:
 <td>
 
 `string` Sets the default text color for this resource's events just like the calendar-wide [eventTextColor](#eventtextcolor) option. Default `undefined`
+</td>
+</tr>
+<tr>
+<td>
+
+`extendedProps`
+</td>
+<td>
+
+`object` A plain object with any miscellaneous properties. It will be directly transferred to the `extendedProps` property of the Resource object. Default `{}`
 </td>
 </tr>
 </table>

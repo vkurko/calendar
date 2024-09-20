@@ -6,7 +6,8 @@
 
     export let dates;
 
-    let {_events, _iEvents, _queue2, _hiddenEvents, hiddenDays, theme} = getContext('state');
+    let {_events, _iEvents, _queue2, _hiddenEvents,
+        resources, filterEventsWithResources, hiddenDays, theme} = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
@@ -28,7 +29,7 @@
         chunks = [];
         bgChunks = [];
         for (let event of $_events) {
-            if (eventIntersects(event, start, end)) {
+            if (eventIntersects(event, start, end, $filterEventsWithResources ? $resources : undefined)) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {
                     if (event.allDay) {

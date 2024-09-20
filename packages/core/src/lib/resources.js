@@ -3,7 +3,8 @@ export function createResources(input) {
         id: String(resource.id),
         title: resource.title || '',
         eventBackgroundColor: resource.eventBackgroundColor,
-        eventTextColor: resource.eventTextColor
+        eventTextColor: resource.eventTextColor,
+        extendedProps: resource.extendedProps ?? {}
     }));
 }
 
