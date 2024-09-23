@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/time-grid",
-  "version": "4.0.0",
+  "version": "3.5.0",
   "title": "Event Calendar TimeGrid plugin",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
@@ -27,7 +27,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@event-calendar/core": "~4.0.0",
-    "svelte": "^4.2.16"
+    "@event-calendar/core": "~3.5.0",
+    "svelte": "^4.2.19"
   }
 }

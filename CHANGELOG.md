@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 3.5.0
+September 20, 2024
+
+* Added `extendedProps` for resources ([310](https://github.com/vkurko/calendar/discussions/310))
+* Added `filterEventsWithResources` option
+
 ## 3.4.0
 August 1, 2024
 

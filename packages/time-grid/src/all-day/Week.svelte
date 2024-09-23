@@ -13,18 +13,23 @@
     export let dates;
     export let resource = undefined;
 
-    let {_events, _iEvents, _queue2, hiddenDays} = getContext('state');
+    let {_events, _iEvents, _queue2, hiddenDays, resources, filterEventsWithResources} = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
     let start;
     let end;
     let refs = [];
+    let resourceFilter;
 
     $: {
         start = dates[0];
         end = addDay(cloneDate(dates.at(-1)));
     }
+
+    $: resourceFilter = resource ?? (
+        $filterEventsWithResources ? $resources : undefined
+    );
 
     let debounceHandle = {};
     function reposition() {
@@ -35,7 +40,7 @@
         chunks = [];
         bgChunks = [];
         for (let event of $_events) {
-            if (event.allDay && eventIntersects(event, start, end, resource)) {
+            if (event.allDay && eventIntersects(event, start, end, resourceFilter)) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {
                     bgChunks.push(chunk);

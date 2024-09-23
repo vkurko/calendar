@@ -244,17 +244,24 @@ export function runReposition(refs, data) {
 }
 
 /**
- * Check whether the event intersects with the given date range and resource
+ * Check whether the event intersects with the given date range and resources
  * @param event
  * @param start
  * @param end
- * @param [resource]
+ * @param resources
  * @return boolean
  */
-export function eventIntersects(event, start, end, resource) {
-    return event.start < end && event.end > start && (
-        resource === undefined || event.resourceIds.includes(resource.id)
-    );
+export function eventIntersects(event, start, end, resources) {
+    if (event.start < end && event.end > start) {
+        if (resources) {
+            if (!isArray(resources)) {
+                resources = [resources];
+            }
+            return resources.some(resource => event.resourceIds.includes(resource.id));
+        }
+        return true;
+    }
+    return false;
 }
 
 export function helperEvent(display) {
