@@ -1,7 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {listen} from 'svelte/internal';
-    import {bgEvent, helperEvent} from '@event-calendar/core';
+    import {bgEvent, helperEvent, listen} from '@event-calendar/core';
     import Action from './Action.svelte';
     import Pointer from './Pointer.svelte';
     import Resizer from './Resizer.svelte';

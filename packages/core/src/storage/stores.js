@@ -1,5 +1,5 @@
 import {derived, writable, readable, get} from 'svelte/store';
-import {is_function} from 'svelte/internal';
+import {isFunction} from '../lib/utils.js';
 import {
     DAY_IN_SECONDS,
     assign,
@@ -127,11 +127,11 @@ export function events(state) {
                 // Create new abort controller
                 abortController = new AbortController();
                 // Call loading hook
-                if (is_function($loading) && !fetching) {
+                if (isFunction($loading) && !fetching) {
                     $loading(true);
                 }
                 let stopLoading = () => {
-                    if (--fetching === 0 && is_function($loading)) {
+                    if (--fetching === 0 && isFunction($loading)) {
                         $loading(false);
                     }
                 };
@@ -148,7 +148,7 @@ export function events(state) {
                 let endStr = toISOString($_activeRange.end);
                 // Loop over event sources
                 for (let source of $eventSources) {
-                    if (is_function(source.events)) {
+                    if (isFunction(source.events)) {
                         // Events as a function
                         let result = source.events({
                             start: toLocalDate($_activeRange.start),
@@ -162,7 +162,7 @@ export function events(state) {
                     } else {
                         // Events as a JSON feed
                         // Prepare params
-                        let params = is_function(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
+                        let params = isFunction(source.extraParams) ? source.extraParams() : assign({}, source.extraParams);
                         params.start = startStr;
                         params.end = endStr;
                         params = new URLSearchParams(params);

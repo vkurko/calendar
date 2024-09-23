@@ -1,6 +1,5 @@
 <script>
     import {afterUpdate, getContext, onMount} from 'svelte';
-    import {is_function} from 'svelte/internal';
     import {
         createEventContent,
         createEventClasses,
@@ -12,7 +11,8 @@
         keyEnter,
         resourceBackgroundColor,
         resourceTextColor,
-        task, height, DAY_IN_SECONDS, toSeconds
+        task, height, DAY_IN_SECONDS, toSeconds,
+        isFunction
     } from '@event-calendar/core';
     import {repositionEvent, getSlotTimeLimits} from './lib.js';
 
@@ -125,7 +125,7 @@
     $: [timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
 
     onMount(() => {
-        if (is_function($eventDidMount)) {
+        if (isFunction($eventDidMount)) {
             $eventDidMount({
                 event: toEventWithLocalDates(event),
                 timeText,
@@ -136,13 +136,13 @@
     });
 
     afterUpdate(() => {
-        if (is_function($eventAllUpdated) && !helperEvent(display)) {
+        if (isFunction($eventAllUpdated) && !helperEvent(display)) {
             task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 
     function createHandler(fn, display) {
-        return !helperEvent(display) && is_function(fn)
+        return !helperEvent(display) && isFunction(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
             : undefined;
     }

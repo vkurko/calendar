@@ -63,3 +63,8 @@ export function getElementWithPayload(x, y, root = document) {
     }
     return null;
 }
+
+export function listen(node, event, handler, options) {
+    node.addEventListener(event, handler, options);
+    return () => node.removeEventListener(event, handler, options);
+}

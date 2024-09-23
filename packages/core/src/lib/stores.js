@@ -1,11 +1,11 @@
 import {derived} from 'svelte/store';
-import {is_function} from 'svelte/internal';
+import {isFunction} from './utils.js';
 import {toLocalDate} from './date';
 import {createResources} from './resources.js';
 
 export function intl(locale, format) {
     return derived([locale, format], ([$locale, $format]) => {
-        let intl = is_function($format)
+        let intl = isFunction($format)
             ? {format: $format}
             : new Intl.DateTimeFormat($locale, $format);
         return {
@@ -17,7 +17,7 @@ export function intl(locale, format) {
 export function intlRange(locale, format) {
     return derived([locale, format], ([$locale, $format]) => {
         let formatRange;
-        if (is_function($format)) {
+        if (isFunction($format)) {
             formatRange = $format;
         } else {
             let intl = new Intl.DateTimeFormat($locale, $format);

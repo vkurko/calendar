@@ -1,7 +1,6 @@
 <script>
     import {getContext, onMount} from 'svelte';
-    import {is_function} from 'svelte/internal';
-    import {setContent, toLocalDate} from '@event-calendar/core';
+    import {setContent, toLocalDate, isFunction} from '@event-calendar/core';
 
     export let resource;
     export let date = undefined;
@@ -13,7 +12,7 @@
 
     // Content
     $: if ($resourceLabelContent) {
-        content = is_function($resourceLabelContent)
+        content = isFunction($resourceLabelContent)
             ? $resourceLabelContent({
                 resource,
                 date: date ? toLocalDate(date) : undefined,
@@ -24,7 +23,7 @@
     }
 
     onMount(() => {
-        if (is_function($resourceLabelDidMount)) {
+        if (isFunction($resourceLabelDidMount)) {
             $resourceLabelDidMount({
                 resource,
                 date: date ? toLocalDate(date) : undefined,

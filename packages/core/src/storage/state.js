@@ -1,5 +1,5 @@
 import {get, writable} from 'svelte/store';
-import {is_function, tick, noop, identity} from 'svelte/internal';
+import {tick} from 'svelte';
 import {createOptions, createParsers} from './options';
 import {
     activeRange,
@@ -12,7 +12,7 @@ import {
     viewTitle,
     view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
 } from './stores';
-import {keys, intl, intlRange} from '../lib.js';
+import {keys, intl, intlRange, isFunction, identity} from '../lib.js';
 
 export default class {
     constructor(plugins, input) {
@@ -97,7 +97,7 @@ export default class {
                     // Set value in all views
                     set: ['buttonText', 'theme'].includes(key)
                         ? value => {
-                            if (is_function(value)) {
+                            if (isFunction(value)) {
                                 let result = value(defOpts[key]);
                                 opts[key] = result;
                                 set(set === _set ? result : value);
@@ -119,7 +119,7 @@ export default class {
                 if (newView === view) {
                     // switch view component
                     this._viewComponent.set(component);
-                    if (is_function(opts.viewDidMount)) {
+                    if (isFunction(opts.viewDidMount)) {
                         tick().then(() => opts.viewDidMount(get(this._view)));
                     }
                     // update store values
@@ -153,7 +153,7 @@ function mergeOpts(...args) {
     for (let opts of args) {
         let override = {};
         for (let key of ['buttonText', 'theme']) {
-            if (is_function(opts[key])) {
+            if (isFunction(opts[key])) {
                 override[key] = opts[key](result[key]);
             }
         }

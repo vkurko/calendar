@@ -1,8 +1,7 @@
 import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date';
 import {createElement} from './dom';
-import {assign, isArray} from './utils';
+import {assign, isArray, isFunction} from './utils';
 import {toViewWithLocalDates} from './view';
-import {is_function} from 'svelte/internal';
 
 let eventId = 1;
 export function createEvents(input) {
@@ -79,7 +78,7 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
     let content;
 
     if (eventContent) {
-        content = is_function(eventContent)
+        content = isFunction(eventContent)
             ? eventContent({
                 event: toEventWithLocalDates(chunk.event),
                 timeText,
@@ -121,7 +120,7 @@ function createTimeElement(timeText, chunk, theme) {
 export function createEventClasses(eventClassNames, event, _view) {
     let result = event.classNames;
     if (eventClassNames) {
-        if (is_function(eventClassNames)) {
+        if (isFunction(eventClassNames)) {
             eventClassNames = eventClassNames({
                 event: toEventWithLocalDates(event),
                 view: toViewWithLocalDates(_view)

@@ -1,11 +1,11 @@
-import {run_all} from 'svelte/internal';
+import {runAll} from './utils.js';
 
 export function debounce(fn, handle, queueStore) {
     queueStore.update(queue => queue.set(handle, fn));
 }
 
 export function flushDebounce(queue) {
-    run_all(queue);
+    runAll(queue);
     queue.clear();
 }
 

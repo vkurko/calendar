@@ -1,6 +1,5 @@
-import {is_function} from 'svelte/internal';
 import {addDuration, cloneDate, createDuration, DAY_IN_SECONDS, toISOString, toSeconds} from './date.js';
-import {max as maxFn, min as minFn} from './utils.js';
+import {max as maxFn, min as minFn, isFunction} from './utils.js';
 import {bgEvent} from './events.js';
 
 export function createTimes(date, $slotDuration, $_slotTimeLimits, $_intlSlotLabel) {
@@ -32,7 +31,7 @@ export function createSlotTimeLimits($slotMinTime, $slotMaxTime, $flexibleSlotTi
         // If slotMaxTime goes past midnight, then extend it back by a maximum of 24 hours
         let minMin = createDuration(minFn(toSeconds(min), maxFn(0, toSeconds(max) - DAY_IN_SECONDS)));
         let maxMax = createDuration(maxFn(toSeconds(max), toSeconds(minMin) + DAY_IN_SECONDS));
-        let filter = is_function($flexibleSlotTimeLimits?.eventFilter)
+        let filter = isFunction($flexibleSlotTimeLimits?.eventFilter)
             ? $flexibleSlotTimeLimits.eventFilter
             : event => !bgEvent(event.display);
         loop: for (let date of $_viewDates) {

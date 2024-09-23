@@ -1,8 +1,7 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {is_function} from 'svelte/internal';
     import {datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload, toISOString,
-        keyEnter, runReposition} from '@event-calendar/core';
+        keyEnter, runReposition, isFunction} from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -52,7 +51,7 @@
     $: if ($_hiddenEvents && hiddenEvents.size) {  // make Svelte update this block on $_hiddenEvents update
         let text = '+' + hiddenEvents.size + ' more';
         if ($moreLinkContent) {
-            moreLink = is_function($moreLinkContent)
+            moreLink = isFunction($moreLinkContent)
                 ? $moreLinkContent({num: hiddenEvents.size, text})
                 : $moreLinkContent;
         } else {

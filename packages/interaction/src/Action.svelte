@@ -1,6 +1,5 @@
 <script>
     import {getContext} from 'svelte';
-    import {is_function, listen, run_all} from 'svelte/internal';
     import {
         addDay,
         addDuration,
@@ -18,7 +17,8 @@
         toISOString,
         toLocalDate,
         toViewWithLocalDates,
-        listView, timelineView
+        listView, timelineView,
+        isFunction, listen, runAll
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
@@ -260,7 +260,7 @@
             if (interacting) {
                 if (selecting()) {
                     selected = true;
-                    if (is_function($selectFn)) {
+                    if (isFunction($selectFn)) {
                         let {start, end} = toEventWithLocalDates($_iEvents[0]);
                         $selectFn({
                             start,
@@ -277,7 +277,7 @@
                     event.display = display;
 
                     let callback = resizing() ? $eventResizeStop : $eventDragStop;
-                    if (is_function(callback)) {
+                    if (isFunction(callback)) {
                         callback({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
                     }
 
@@ -287,7 +287,7 @@
                     destroyIEvent();
 
                     callback = resizing() ? $eventResize : $eventDrop;
-                    if (is_function(callback)) {
+                    if (isFunction(callback)) {
                         let eventRef = event;
                         let info;
                         if (resizing()) {
@@ -313,7 +313,7 @@
             } else {
                 if (clicking() || selecting()) {
                     // Perform date click
-                    if (is_function($dateClick) && !noDateClick) {
+                    if (isFunction($dateClick) && !noDateClick) {
                         toX = jsEvent.clientX;
                         toY = jsEvent.clientY;
                         let dayEl = getElementWithPayload(toX, toY);
@@ -367,7 +367,7 @@
     }
 
     function createIEvent(jsEvent, callback) {
-        if (is_function(callback)) {
+        if (isFunction(callback)) {
             callback({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
         }
         display = event.display;
@@ -438,7 +438,7 @@
         if (selected) {
             selected = false;
             destroyIEvent();
-            if (is_function($unselectFn)) {
+            if (isFunction($unselectFn)) {
                 $unselectFn({
                     jsEvent,
                     view: toViewWithLocalDates($_view)
@@ -458,7 +458,7 @@
         if (complexAction()) {
             let target = jsEvent.target;
             let stops = [];
-            let stop = () => run_all(stops);
+            let stop = () => runAll(stops);
             stops.push(listen(target, 'touchmove', createPreventDefaultHandler(() => interacting)));
             stops.push(listen(target, 'touchend', stop));
             stops.push(listen(target, 'touchcancel', stop));

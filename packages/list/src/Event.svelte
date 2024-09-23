@@ -1,6 +1,5 @@
 <script>
     import {afterUpdate, getContext, onMount} from 'svelte';
-    import {is_function} from 'svelte/internal';
     import {
         createEventContent,
         toEventWithLocalDates,
@@ -10,7 +9,8 @@
         keyEnter,
         resourceBackgroundColor,
         resourceTextColor,
-        task
+        task,
+        isFunction
     } from '@event-calendar/core';
 
     export let chunk;
@@ -54,7 +54,7 @@
     }
 
     onMount(() => {
-        if (is_function($eventDidMount)) {
+        if (isFunction($eventDidMount)) {
             $eventDidMount({
                 event: toEventWithLocalDates(event),
                 timeText,
@@ -65,13 +65,13 @@
     });
 
     afterUpdate(() => {
-        if (is_function($eventAllUpdated)) {
+        if (isFunction($eventAllUpdated)) {
             task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 
     function createHandler(fn) {
-        return is_function(fn)
+        return isFunction(fn)
             ? jsEvent => fn({event: toEventWithLocalDates(event), el, jsEvent, view: toViewWithLocalDates($_view)})
             : undefined;
     }

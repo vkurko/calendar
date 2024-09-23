@@ -1,4 +1,4 @@
-import {is_function} from 'svelte/internal';
+import {isFunction} from '@event-calendar/core';
 import {sortEventChunks} from '@event-calendar/core';
 
 export function groupEventChunks(chunks) {
@@ -45,7 +45,7 @@ export function createAllDayContent(allDayContent) {
     let text = 'all-day';
     let content;
     if (allDayContent) {
-        content = is_function(allDayContent) ? allDayContent({text}) : allDayContent;
+        content = isFunction(allDayContent) ? allDayContent({text}) : allDayContent;
         if (typeof content === 'string') {
             content = {html: content};
         }

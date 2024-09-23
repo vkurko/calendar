@@ -29,3 +29,19 @@ export function symbol() {
 export function isArray(value) {
     return Array.isArray(value);
 }
+
+export function isFunction(value) {
+    return typeof value === 'function';
+}
+
+export function run(fn) {
+    return fn();
+}
+
+export function runAll(fns) {
+    fns.forEach(run);
+}
+
+export function noop() {}
+
+export const identity = (x) => x;
