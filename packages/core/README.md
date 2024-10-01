@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (35kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (36kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Zero-dependency (pre-built bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -12,7 +12,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 
 ## Table of contents
 - [Usage](#usage)
-  - [Svelte component / ES6 module](#svelte-component--es6-module)
+  - [JavaScript module / Svelte component](#javascript-module--svelte-component)
   - [Pre-built browser ready bundle](#pre-built-browser-ready-bundle)
   - [Modifying options after initialization](#modifying-options-after-initialization)
 - [Options](#options)
@@ -144,7 +144,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 - [Browser support](#browser-support)
 
 ## Usage
-### Pure JavaScript / Svelte component
+### JavaScript module / Svelte component
 The first step is to install the Event Calendar `core` package:
 ```bash
 npm install --save-dev @event-calendar/core
@@ -203,8 +203,8 @@ Or in your Svelte component, use the calendar like this:
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.1/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.1/event-calendar.min.js"></script>
 ```
 
 <details>

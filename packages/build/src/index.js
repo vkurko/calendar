@@ -17,12 +17,4 @@ export default class extends Calendar {
             }
         });
     }
-
-    get view() {
-        return this.getView();
-    }
-
-    destroy() {
-        this.$destroy();
-    }
 }

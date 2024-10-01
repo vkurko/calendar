@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.6.1
+October 1, 2024
+
+* Fixed `destroy()` method in pure JS version of the library
+
 ## 3.6.0
 October 1, 2024
 
