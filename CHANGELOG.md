@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 3.6.0
+October 1, 2024
+
+* Fixed some issues in Svelte 5 ([235](https://github.com/vkurko/calendar/issues/235))
+* :warning: `destroy()` is no longer available in Svelte version
+
 ## 3.5.0
 September 20, 2024
 

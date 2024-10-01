@@ -144,7 +144,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 - [Browser support](#browser-support)
 
 ## Usage
-### Svelte component / ES6 module
+### Pure JavaScript / Svelte component
 The first step is to install the Event Calendar `core` package:
 ```bash
 npm install --save-dev @event-calendar/core
@@ -162,7 +162,27 @@ You must use at least one plugin that provides a view. The following plugins are
 * `@event-calendar/time-grid`
 * `@event-calendar/interaction` (doesn't provide a view)
 
-Then, in your Svelte component, use the calendar something like this:
+Then, in your JavaScript module:
+```js
+import Calendar from '@event-calendar/core';
+import TimeGrid from '@event-calendar/time-grid';
+// Import CSS if your build tool supports it
+import '@event-calendar/core/index.css';
+
+let ec = new Calendar({
+    target: document.getElementById('ec'),
+    props: {
+        plugins: [TimeGrid],
+        options: {
+            view: 'timeGridWeek',
+            events: [
+                // your list of events
+            ]
+        }
+    }
+});
+```
+Or in your Svelte component, use the calendar like this:
 ```html
 <script>
     import Calendar from '@event-calendar/core';
@@ -179,34 +199,12 @@ Then, in your Svelte component, use the calendar something like this:
 
 <Calendar {plugins} {options} />
 ```
-Or in ES6 module:
-```js
-import Calendar from '@event-calendar/core';
-import TimeGrid from '@event-calendar/time-grid';
-
-let ec = new Calendar({
-    target: document.getElementById('ec'),
-    props: {
-        plugins: [TimeGrid],
-        options: {
-            view: 'timeGridWeek',
-            events: [
-                // your list of events
-            ]
-        }
-    }
-});
-```
-The CSS is located at `@event-calendar/core/index.css`. If your build tool supports CSS processing, you can import it like this:
-```js
-import '@event-calendar/core/index.css';
-```
 
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.5.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.5.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -221,7 +219,7 @@ Include the following lines of code in the `<head>` section of your page:
 
 </details>
 
-Then initialize the calendar with something like this:
+Then initialize the calendar like this:
 ```js
 let ec = new EventCalendar(document.getElementById('ec'), {
     view: 'timeGridWeek',
@@ -2394,8 +2392,11 @@ Using this method, you can, for example, find out on which day a click occurred 
 
 ### destroy()
 - Return value `undefined`
+- Not available in Svelte
 
 Destroys the calendar, removing all DOM elements, event handlers, and internal data.
+
+Please note that this method is not available in Svelte. Instead, the calendar is destroyed gracefully when the component containing it is destroyed.
 
 ### getView()
 - Return value `View`
