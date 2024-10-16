@@ -11,12 +11,11 @@
         keyEnter,
         resourceBackgroundColor,
         resourceTextColor,
-        task, height, DAY_IN_SECONDS, toSeconds,
+        task, height, toSeconds,
         isFunction
     } from '@event-calendar/core';
-    import {repositionEvent, getSlotTimeLimits} from './lib.js';
+    import {repositionEvent} from './lib.js';
 
-    export let date;
     export let chunk;
     export let dayChunks = [];
     export let longChunks = {};
@@ -24,7 +23,7 @@
 
     let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
         eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, resources, slotDuration, slotWidth, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _dayTimeLimits, _tasks} = getContext('state');
+        _view, _intlEventTime, _interaction, _iClasses, _tasks} = getContext('state');
 
     let el;
     let event;
@@ -43,46 +42,9 @@
         display = event.display;
 
         // Style
-        let step = toSeconds($slotDuration);
-        if (step) {
-            let start = (chunk.start - date) / 1000;
-            let end = (chunk.end - date) / 1000;
-            // Shift start
-            let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
-            let offsetStart = toSeconds(slotTimeLimits.min);
-            let offsetEnd = toSeconds(slotTimeLimits.max);
-            start -= offsetStart;
-            if (start < 0) {
-                start = 0;
-            }
-            if (start > offsetEnd - offsetStart) {
-                start = offsetEnd - offsetStart;
-            }
-            // Shift end
-            let cut = 0;
-            for (let i = 0; i < chunk.days; ++i) {
-                let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, chunk.dates[i]);
-                let offsetStart = toSeconds(slotTimeLimits.min);
-                let offsetEnd = toSeconds(slotTimeLimits.max);
-                let dayStart = DAY_IN_SECONDS * i;
-                // Cut offsetEnd
-                let dayEnd = dayStart + DAY_IN_SECONDS;
-                if (dayEnd > end) {
-                    dayEnd = end;
-                }
-                if (dayEnd > dayStart + offsetEnd) {
-                    cut += dayEnd - dayStart - offsetEnd;
-                }
-                // Cut offsetStart
-                let c = end - dayStart;
-                if (c > offsetStart) {
-                    c = offsetStart;
-                }
-                cut += c;
-            }
-            end -= cut;
-            let left = start / step * $slotWidth;
-            width = (end - start) / step * $slotWidth;
+        if ('slots' in chunk) {
+            let left = chunk.offset * $slotWidth;
+            width = chunk.slots * $slotWidth;
             style =
                 `left:${left}px;` +
                 `width:${width}px;`

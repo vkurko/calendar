@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.6.2
+October 17, 2024
+
+* Fixed an issue in `timeline` views with displaying events beyond midnight when `slotMaxTime` is greater than `24:00` ([235](https://github.com/vkurko/calendar/issues/333))
+
 ## 3.6.1
 October 1, 2024
 

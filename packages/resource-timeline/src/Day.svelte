@@ -32,13 +32,8 @@
     let allDay;
     let pointerIdx = 1;
 
-    let start, end;
 
-    $: {
-        slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
-        start = addDuration(cloneDate(date), slotTimeLimits.min);
-        end = addDuration(cloneDate(date), slotTimeLimits.max);
-    }
+    $: slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
     $: {
         allDay = !toSeconds($slotDuration);
         pointerIdx = allDay ? 2 : 1;
@@ -89,18 +84,18 @@
 >
     <div class="{$theme.events}">
         {#each dayBgChunks as chunk (chunk.event)}
-            <Event {date} {chunk}/>
+            <Event {chunk}/>
         {/each}
         <!-- Pointer -->
-        {#if iChunks[pointerIdx] && datesEqual(iChunks[pointerIdx].date, date)}
-            <Event {date} chunk={iChunks[pointerIdx]}/>
+        {#if iChunks[pointerIdx] && chunkIntersects(iChunks[pointerIdx])}
+            <Event chunk={iChunks[pointerIdx]}/>
         {/if}
         {#each dayChunks as chunk, i (chunk.event)}
-            <Event {date} {chunk} {dayChunks} {longChunks} {resource} bind:this={refs[i]}/>
+            <Event {chunk} {dayChunks} {longChunks} {resource} bind:this={refs[i]}/>
         {/each}
         <!-- Drag, Resize & Select -->
-        {#if iChunks[0] && datesEqual(iChunks[0].date, date)}
-            <Event {date} chunk={iChunks[0]} {resource}/>
+        {#if iChunks[0] && chunkIntersects(iChunks[0])}
+            <Event chunk={iChunks[0]} {resource}/>
         {/if}
     </div>
 </div>

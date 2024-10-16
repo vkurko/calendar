@@ -1,14 +1,15 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        cloneDate, addDay, eventIntersects, createEventChunk, prepareEventChunks,
-        runReposition, debounce, max, ceil, bgEvent
+        cloneDate, addDay, eventIntersects, createEventChunk,
+        runReposition, debounce, max, ceil, bgEvent, DAY_IN_SECONDS, addDuration
     } from '@event-calendar/core';
+    import {getSlotTimeLimits, prepareEventChunks} from './lib.js';
     import Day from './Day.svelte';
 
     export let resource;
 
-    let {_viewDates, _events, _iEvents, _queue2, _resHs, hiddenDays, theme} = getContext('state');
+    let {_viewDates, _events, _iEvents, _queue2, _resHs, _dayTimeLimits, slotDuration, theme} = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
@@ -19,7 +20,10 @@
 
     $: {
         start = $_viewDates[0];
-        end = addDay(cloneDate($_viewDates.at(-1)));
+        let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, $_viewDates.at(-1));
+        end = slotTimeLimits.max.seconds > DAY_IN_SECONDS
+            ? addDuration(cloneDate($_viewDates.at(-1)), slotTimeLimits.max)  /** @see https://github.com/vkurko/calendar/issues/333 */
+            : addDay(cloneDate($_viewDates.at(-1)));
     }
 
     let debounceHandle = {};
@@ -44,8 +48,8 @@
                 }
             }
         }
-        prepareEventChunks(bgChunks, $hiddenDays);
-        longChunks = prepareEventChunks(chunks, $hiddenDays);
+        prepareEventChunks(bgChunks, $_viewDates, $_dayTimeLimits, $slotDuration);
+        longChunks = prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration);
         // Run reposition only when events get changed
         reposition();
     }
@@ -54,7 +58,7 @@
         let chunk;
         if (event && eventIntersects(event, start, end, resource)) {
             chunk = createEventChunk(event, start, end);
-            prepareEventChunks([chunk], $hiddenDays);
+            prepareEventChunks([chunk], $_viewDates, $_dayTimeLimits, $slotDuration);
         } else {
             chunk = null;
         }
