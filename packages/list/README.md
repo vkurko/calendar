@@ -203,8 +203,8 @@ Or in your Svelte component, use the calendar like this:
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.2/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.6.2/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.7.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.7.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2095,7 +2095,7 @@ Defines the time slot width in pixels in `ResourceTimeline` views. When changing
 
 ### theme
 - Type `object` or `function`
-- Default `{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', container: 'ec-container', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', dayFoot: 'ec-day-foot', days: 'ec-days', daySide: 'ec-day-side', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', main: 'ec-main', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', today: 'ec-today', time: 'ec-time', times: 'ec-times', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-timeline ec-resource-week-view', weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'], withScroll: 'ec-with-scroll', uniform: 'ec-uniform'}`
+- Default `{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', compact: 'ec-compact', container: 'ec-container', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', dayFoot: 'ec-day-foot', days: 'ec-days', daySide: 'ec-day-side', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', expander: 'ec-expander', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', main: 'ec-main', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', today: 'ec-today', time: 'ec-time', times: 'ec-times', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-timeline ec-resource-week-view', weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'], withScroll: 'ec-with-scroll', uniform: 'ec-uniform'}`
 > Views override the default value as follows:
 > - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`
 > - listDay `theme => ({...theme, view: 'ec-list ec-day-view'})`
@@ -2890,7 +2890,35 @@ Here are all admissible fields for the resource’s input object:
 `object` A plain object with any miscellaneous properties. It will be directly transferred to the `extendedProps` property of the Resource object. Default `{}`
 </td>
 </tr>
+<tr>
+<td>
+
+`children`
+</td>
+<td>Nested resources. See below</td>
+</tr>
 </table>
+
+The `timeline` views support displaying nested resources. Nested resources can be collapsed or expanded using an additional button that appears before the parent resource name. To pass nested resources, use the `children` field:
+
+```js
+resources: [
+  {
+    id: 1,
+    title: 'Resource A',
+    children: [
+      {
+        id: 11,
+        title: 'Resource A1'
+      },
+      {
+        id: 12,
+        title: 'Resource A2'
+      }
+    ]
+  }
+]
+```
 
 ## View object
 A View object contains information about a calendar view, such as title and date range.

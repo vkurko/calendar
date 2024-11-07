@@ -17,7 +17,8 @@
         flushDebounce,
         hasYScroll,
         listView,
-        task, prevDate, nextDate
+        task,
+        prevDate, nextDate
     } from './lib.js';
 
     export let plugins = [];

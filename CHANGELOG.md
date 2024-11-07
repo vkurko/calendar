@@ -1,9 +1,14 @@
 # Event Calendar changelog
 
+## 3.7.0
+November 7, 2024
+
+* Added support for nested resources ([302](https://github.com/vkurko/calendar/issues/302))
+
 ## 3.6.2
 October 17, 2024
 
-* Fixed an issue in `timeline` views with displaying events beyond midnight when `slotMaxTime` is greater than `24:00` ([235](https://github.com/vkurko/calendar/issues/333))
+* Fixed an issue in `timeline` views with displaying events beyond midnight when `slotMaxTime` is greater than `24:00` ([333](https://github.com/vkurko/calendar/issues/333))
 
 ## 3.6.1
 October 1, 2024

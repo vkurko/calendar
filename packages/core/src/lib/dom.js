@@ -1,4 +1,4 @@
-import {symbol} from './utils.js';
+import {hasPayload} from './payload.js';
 
 export function createElement(tag, className, content, attrs = []) {
     let el = document.createElement(tag);
@@ -33,19 +33,6 @@ export function ancestor(el, up) {
 
 export function height(el) {
     return rect(el).height;
-}
-
-let payloadProp = symbol();
-export function setPayload(el, payload) {
-    el[payloadProp] = payload;
-}
-
-export function hasPayload(el) {
-    return !!el?.[payloadProp];
-}
-
-export function getPayload(el) {
-    return el[payloadProp];
 }
 
 export function getElementWithPayload(x, y, root = document) {

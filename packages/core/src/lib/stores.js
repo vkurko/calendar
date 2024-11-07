@@ -2,6 +2,7 @@ import {derived} from 'svelte/store';
 import {isFunction} from './utils.js';
 import {toLocalDate} from './date';
 import {createResources} from './resources.js';
+import {getPayload} from './payload.js';
 
 export function intl(locale, format) {
     return derived([locale, format], ([$locale, $format]) => {
@@ -67,7 +68,7 @@ export function viewResources(state) {
     return derived(
         [state.resources, state.filterResourcesWithEvents, state._events, state._activeRange],
         ([$resources, $filterResourcesWithEvents, $_events, $_activeRange]) => {
-            let result = $resources;
+            let result = $resources.filter(resource => !getPayload(resource).hidden);
 
             if ($filterResourcesWithEvents) {
                 result = $resources.filter(resource => {

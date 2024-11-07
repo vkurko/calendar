@@ -96,6 +96,18 @@
   }
 }
 
+.ec-expander {
+  margin-right: .25em;
+  width: 1.25em;
+
+  .ec-button {
+    line-height: normal;
+    padding: 0;
+    aspect-ratio: 1;
+    height: 1.25em;
+  }
+}
+
 .ec-button-group {
   display: inline-flex;
 
