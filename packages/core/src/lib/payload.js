@@ -12,7 +12,3 @@ export function hasPayload(obj) {
 export function getPayload(obj) {
     return obj[payloadProp];
 }
-
-export function removePayload(obj) {
-    delete obj?.[payloadProp];
-}

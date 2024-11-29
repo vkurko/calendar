@@ -13,7 +13,8 @@
         resourceBackgroundColor,
         resourceTextColor,
         task,
-        isFunction
+        isFunction,
+        max
     } from '@event-calendar/core';
 
     export let date;
@@ -44,7 +45,7 @@
         let start = (chunk.start - date) / 1000;
         let end = (chunk.end - date) / 1000;
         let top = (start - offset) / step * $slotHeight;
-        let height = (end - start) / step * $slotHeight;
+        let height = max((end - start) / step * $slotHeight, $slotHeight);
         let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;

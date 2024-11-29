@@ -371,6 +371,7 @@
   white-space: nowrap;
   margin: 0 0 1px 0;
   flex-shrink: 0;
+  max-height: 100%;
 
   .ec-day-grid &,
   .ec-timeline & {
