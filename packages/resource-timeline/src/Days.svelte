@@ -2,7 +2,7 @@
     import {getContext} from 'svelte';
     import {
         cloneDate, addDay, eventIntersects, createEventChunk,
-        runReposition, debounce, max, ceil, bgEvent, DAY_IN_SECONDS, addDuration
+        runReposition, debounce, max, ceil, bgEvent, DAY_IN_SECONDS, addDuration, handleZeroDurationChunk
     } from '@event-calendar/core';
     import {getSlotTimeLimits, prepareEventChunks} from './lib.js';
     import Day from './Day.svelte';
@@ -41,6 +41,7 @@
         for (let event of $_events) {
             if (eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
+                handleZeroDurationChunk(chunk, $slotDuration);
                 if (bgEvent(event.display)) {
                     bgChunks.push(chunk);
                 } else {

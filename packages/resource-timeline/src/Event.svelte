@@ -12,7 +12,7 @@
         resourceBackgroundColor,
         resourceTextColor,
         task, height, toSeconds,
-        isFunction
+        isFunction, subtractDuration, cloneDate
     } from '@event-calendar/core';
     import {repositionEvent} from './lib.js';
 
@@ -111,7 +111,13 @@
 
     function createDragHandler(interaction, resize) {
         return interaction.action
-            ? jsEvent => interaction.action.drag(event, jsEvent, resize, null, [margin, resource])
+            ? jsEvent => interaction.action.drag(
+                event,
+                jsEvent,
+                resize,
+                resize && chunk.zeroDuration ? subtractDuration(cloneDate(event.end), $slotDuration) : undefined,
+                [margin, resource]
+            )
             : undefined;
     }
 

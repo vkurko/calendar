@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {getPayload} from '@event-calendar/core';
+    import {getPayload, identity} from '@event-calendar/core';
 
     export let resource;
 
@@ -13,7 +13,7 @@
     function handleClick() {
         payload.expanded = !payload.expanded;
         toggle(payload.children, payload.expanded);
-        $resources = $resources;
+        resources.update(identity);
     }
 
     function toggle(children, expand) {

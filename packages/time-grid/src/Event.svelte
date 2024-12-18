@@ -13,8 +13,7 @@
         resourceBackgroundColor,
         resourceTextColor,
         task,
-        isFunction,
-        max
+        isFunction, cloneDate, subtractDuration
     } from '@event-calendar/core';
 
     export let date;
@@ -45,7 +44,7 @@
         let start = (chunk.start - date) / 1000;
         let end = (chunk.end - date) / 1000;
         let top = (start - offset) / step * $slotHeight;
-        let height = max((end - start) / step * $slotHeight, $slotHeight);
+        let height = (end - start) / step * $slotHeight;
         let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
@@ -106,7 +105,12 @@
 
     function createDragHandler(interaction, resize) {
         return interaction.action
-            ? jsEvent => interaction.action.drag(event, jsEvent, resize)
+            ? jsEvent => interaction.action.drag(
+                event,
+                jsEvent,
+                resize,
+                resize && chunk.zeroDuration ? subtractDuration(cloneDate(event.end), $slotDuration) : undefined
+            )
             : undefined;
     }
 
