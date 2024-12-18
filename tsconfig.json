@@ -1,0 +1,33 @@
+{
+	"include": [
+		"./packages/core/**/*",
+		"./packages/day-grid/**/*",
+		"./packages/interaction/**/*",
+		"./packages/list/**/*",
+		"./packages/resource-time-grid/**/*",
+		"./packages/resource-timeline/**/*",
+		"./packages/time-grid/**/*",
+	],
+	"compilerOptions": {
+        "outDir": "./ts",
+		"allowJs": true,
+		"checkJs": true,
+		"strict": true,
+		"target": "ES6",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"allowUnreachableCode": false,
+		"noUncheckedIndexedAccess": true,
+		"declaration": true,
+		"isolatedModules": true,
+		"sourceMap": true,
+        "noImplicitAny": false,
+		//"rewriteRelativeImportExtensions": true,
+
+		"lib": ["ESNext", "dom"],
+	},
+}
