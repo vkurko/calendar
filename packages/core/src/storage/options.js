@@ -114,6 +114,7 @@ export function createOptions(plugins) {
             toolbar: 'ec-toolbar',
             view: '',
             weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'],
+            weekNumber: 'ec-week-number',
             withScroll: 'ec-with-scroll'
         },
         titleFormat: {
@@ -123,7 +124,9 @@ export function createOptions(plugins) {
         },
         view: undefined,
         viewDidMount: undefined,
-        views: {}
+        views: {},
+        weekNumbers: false,
+        weekNumbersLabelContent: undefined,
     };
 
     for (let plugin of plugins) {

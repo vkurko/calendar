@@ -106,6 +106,8 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [view](#view)
   - [viewDidMount](#viewdidmount)
   - [views](#views)
+  - [weekNumbers]()
+  - [weekNumbersLabelContent]()
   </td></tr>
   </table>
 - [Methods](#methods)
@@ -2254,6 +2256,26 @@ The mounted [View](#view-object) object
 - Default `{}`
 
 You can specify options that apply only to specific views. To do so provide separate options objects within the `views` option, keyed by the name of the view.
+
+### weekNumbers
+- Type `boolean`
+- Default `false`
+
+Determines whether the month view should render the week numbers
+
+### weekNumbersLabelContent
+- Type `string`, `object`or `function`
+- Default `undefined`
+
+Defines the content that is rendered inside a week number element.
+
+This value can be either a [Content](#content) or a function that returns content:
+
+```js
+function (weekNumber) {
+    // return Content
+}
+```
 
 ## Methods
 Methods allow you to manipulate the Event Calendar after initialization. They are accessible from the calendar instance.
