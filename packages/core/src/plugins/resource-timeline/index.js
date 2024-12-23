@@ -8,6 +8,7 @@ export default {
 	createOptions(options) {
         createTRROptions(options);
         createRROptions(options);
+		options.resourceExpand = undefined;
         options.slotWidth = 32;
 		// Common options
 		options.buttonText.resourceTimelineDay = 'timeline';

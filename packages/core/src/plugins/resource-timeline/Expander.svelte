@@ -1,32 +1,33 @@
 <script>
     import {getContext} from 'svelte';
-    import {getPayload} from '#lib';
+    import {getPayload, isFunction, toViewWithLocalDates} from '#lib';
 
     let {resource} = $props();
 
-    let {resources, options: {theme}} = $derived(getContext('state'));
+    let {resources, view, options: {resourceExpand, theme}} = $derived(getContext('state'));
 
     let payload = $state.raw({});
-    let expanded = $state(true);
+    let expanded = $derived(resource.expanded);
 
     $effect.pre(() => {
         payload = getPayload(resource);
-        expanded = payload.expanded;
     });
 
     function onclick() {
-        expanded = !expanded;
-        payload.expanded = expanded;
-        toggle(payload.children, expanded);
+        resource.expanded = expanded = !expanded;
+        toggle(payload.children);
         resources.length = resources.length;
+        if (isFunction(resourceExpand)) {
+            resourceExpand({resource, view: toViewWithLocalDates(view)});
+        }
     }
 
-    function toggle(children, expand) {
+    function toggle(children) {
         for (let child of children) {
             let payload = getPayload(child);
-            payload.hidden = !expand;
-            if (payload.expanded) {
-                toggle(payload.children, expand);
+            payload.hidden = !expanded;
+            if (child.expanded) {
+                toggle(payload.children);
             }
         }
     }

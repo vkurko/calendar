@@ -16,7 +16,6 @@ function _createResources(input, level, flat) {
         let payload = {
             level,
             children: [],
-            expanded: true,
             hidden: false
         };
         setPayload(resource, payload);
@@ -33,7 +32,8 @@ export function createResource(input) {
         title: input.title || '',
         eventBackgroundColor: eventBackgroundColor(input),
         eventTextColor: eventTextColor(input),
-        extendedProps: input.extendedProps ?? {}
+        extendedProps: input.extendedProps ?? {},
+        expanded: input.expanded ?? true
     };
 }
 
