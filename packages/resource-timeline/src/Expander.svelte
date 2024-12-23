@@ -11,11 +11,13 @@
     $: {
         payload = getPayload(resource);
         const storageKey = `expanded-${resource.title}`;
-        if (localStorage.getItem(storageKey) === 'true') {
+
+        if (localStorage.getItem(storageKey) === null) {
             payload.expanded = true;
         } else {
-            payload.expanded = false;
+            payload.expanded = localStorage.getItem(storageKey) === 'true';
         }
+        
         toggle(payload.children, payload.expanded);
     }
 
