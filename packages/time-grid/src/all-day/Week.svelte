@@ -13,34 +13,32 @@
     export let dates;
     export let resource = undefined;
 
-    let {_events, _iEvents, _queue2, hiddenDays, resources, filterEventsWithResources} = getContext('state');
+    let {_filtered, _iEvents, _queue2, hiddenDays } = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
     let start;
     let end;
     let refs = [];
-    let resourceFilter;
 
     $: {
         start = dates[0];
         end = addDay(cloneDate(dates.at(-1)));
     }
 
-    $: resourceFilter = resource ?? (
-        $filterEventsWithResources ? $resources : undefined
-    );
 
     let debounceHandle = {};
     function reposition() {
         debounce(() => runReposition(refs, dates), debounceHandle, _queue2);
     }
 
+    $: resources = resource ? [resource] : undefined;
+
     $: {
         chunks = [];
         bgChunks = [];
-        for (let event of $_events) {
-            if (event.allDay && eventIntersects(event, start, end, resourceFilter)) {
+        for (let event of $_filtered) {
+            if (event.allDay && eventIntersects(event, start, end, resources)) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {
                     bgChunks.push(chunk);
@@ -57,7 +55,7 @@
 
     $: iChunks = $_iEvents.map(event => {
         let chunk;
-        if (event && event.allDay && eventIntersects(event, start, end, resource)) {
+        if (event && event.allDay && eventIntersects(event, start, end, resources)) {
             chunk = createEventChunk(event, start, end);
             prepareEventChunks([chunk], $hiddenDays);
         } else {

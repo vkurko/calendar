@@ -248,15 +248,13 @@ export function runReposition(refs, data) {
  * @param event
  * @param start
  * @param end
- * @param resources
+ * @param resources for resource time grid
  * @return boolean
  */
-export function eventIntersects(event, start, end, resources) {
+export function eventIntersects(event, start, end, resources ){
     if (event.start < end && event.end > start) {
         if (resources) {
-            if (!isArray(resources)) {
-                resources = [resources];
-            }
+            
             return resources.some(resource => event.resourceIds.includes(resource.id));
         }
         return true;

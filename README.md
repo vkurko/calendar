@@ -61,7 +61,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventStartEditable](#eventstarteditable)
   - [eventTextColor](#eventtextcolor)
   - [eventTimeFormat](#eventtimeformat)
-  - [filterEventsWithResources](#filtereventswithresources)
+  - [filterEvents](#filterevents)
   - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
   - [flexibleSlotTimeLimits](#flexibleslottimelimits)
@@ -1505,11 +1505,11 @@ Sets the default text color for events on the calendar.
 
 You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
 
-### filterEventsWithResources
-- Type `boolean`
-- Default `false`
+### filterEvents
+- Type `function`
+- Default `undefined`
 
-Determines whether events that do not belong to the current array of [resources](#resources) should be hidden in `dayGrid`/`timeGrid`/`list` views.
+A function to determine whether a given event should be hidden.
 
 ### filterResourcesWithEvents
 - Type `boolean`

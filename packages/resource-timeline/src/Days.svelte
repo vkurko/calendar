@@ -9,7 +9,7 @@
 
     export let resource;
 
-    let {_viewDates, _events, _iEvents, _queue2, _resHs, _dayTimeLimits, slotDuration, theme} = getContext('state');
+    let {_viewDates, _filtered, _iEvents, _queue2, _resHs, _dayTimeLimits, slotDuration, theme} = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
@@ -35,11 +35,13 @@
         }, debounceHandle, _queue2);
     }
 
+    $: resources = resource ? [resource] : undefined;
+
     $: {
         chunks = [];
         bgChunks = [];
-        for (let event of $_events) {
-            if (eventIntersects(event, start, end, resource)) {
+        for (let event of $_filtered) {
+            if (eventIntersects(event, start, end, resources)) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {
                     bgChunks.push(chunk);
@@ -56,7 +58,7 @@
 
     $: iChunks = $_iEvents.map(event => {
         let chunk;
-        if (event && eventIntersects(event, start, end, resource)) {
+        if (event && eventIntersects(event, start, end, resources)) {
             chunk = createEventChunk(event, start, end);
             prepareEventChunks([chunk], $_viewDates, $_dayTimeLimits, $slotDuration);
         } else {
