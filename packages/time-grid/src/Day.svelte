@@ -9,7 +9,7 @@
         floor,
         rect,
         setPayload,
-        bgEvent
+        bgEvent, handleZeroDurationChunk
     } from '@event-calendar/core';
     import {groupEventChunks} from './utils';
     import Event from './Event.svelte';
@@ -40,6 +40,7 @@
         for (let event of $_filtered) {
             if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resources )) {
                 let chunk = createEventChunk(event, start, end);
+                handleZeroDurationChunk(chunk, $slotDuration);
                 switch (event.display) {
                     case 'background': bgChunks.push(chunk); break;
                     default: chunks.push(chunk);

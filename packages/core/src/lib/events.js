@@ -1,4 +1,4 @@
-import {addDay, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date';
+import {addDay, addDuration, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date';
 import {createElement} from './dom';
 import {assign, isArray, isFunction} from './utils';
 import {toViewWithLocalDates} from './view';
@@ -71,7 +71,7 @@ export function sortEventChunks(chunks) {
 export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
     let timeText = _intlEventTime.formatRange(
         chunk.start,
-        displayEventEnd && chunk.event.display !== 'pointer'
+        displayEventEnd && chunk.event.display !== 'pointer' && !chunk.zeroDuration
             ? copyTime(cloneDate(chunk.start), chunk.end)  // make Intl.formatRange output only the time part
             : chunk.start
     );
@@ -106,6 +106,13 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
     }
 
     return [timeText, content];
+}
+
+export function handleZeroDurationChunk(chunk, preferredDuration) {
+    if (datesEqual(chunk.start, chunk.end)) {
+        chunk.zeroDuration = true;
+        chunk.end = addDuration(cloneDate(chunk.end), preferredDuration);
+    }
 }
 
 function createTimeElement(timeText, chunk, theme) {
