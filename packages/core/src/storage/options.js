@@ -45,8 +45,8 @@ export function createOptions(plugins) {
             hour: 'numeric',
             minute: '2-digit'
         },
-        filterEventsWithResources: false,
         filterResourcesWithEvents: false,
+        filterEvents: undefined,
         firstDay: 0,
         flexibleSlotTimeLimits: false,  // ec option
         headerToolbar: {
