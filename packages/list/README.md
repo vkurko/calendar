@@ -46,14 +46,15 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [eventDidMount](#eventdidmount)
   - [eventDragMinDistance](#eventdragmindistance)
   - [eventDragStart](#eventdragstart)
+  - [eventDragStop](#eventdragstop)
   </td><td>
 
-  - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
   - [eventDurationEditable](#eventdurationeditable)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
+  - [eventResizableFromStart](#eventresizablefromstart)
   - [eventResize](#eventresize)
   - [eventResizeStart](#eventresizestart)
   - [eventResizeStop](#eventresizestop)
@@ -203,8 +204,8 @@ Or in your Svelte component, use the calendar like this:
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.7.2/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.7.2/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.8.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.8.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1183,6 +1184,13 @@ The current [View](#view-object) object
 </td>
 </tr>
 </table>
+
+### eventResizableFromStart
+- Type `boolean`
+- Default `false`
+- Requires `Interaction` plugin
+
+Determines whether the event can be resized from its starting edge.
 
 ### eventResize
 - Type `function`

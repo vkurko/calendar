@@ -61,7 +61,7 @@
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
     function dateFromPoint(x, y) {
-        y -= rect(el).top;
+        y = floor(y) - floor(rect(el).top);
         return {
             allDay: false,
             date: addDuration(

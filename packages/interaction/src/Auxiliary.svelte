@@ -5,7 +5,7 @@
     import Pointer from './Pointer.svelte';
     import Resizer from './Resizer.svelte';
 
-    let {theme, editable, eventStartEditable, eventDurationEditable, pointer, _bodyEl,
+    let {theme, editable, eventStartEditable, pointer, _bodyEl,
         _interaction, _iClasses, _draggable} = getContext('state');
 
     $_interaction.resizer = Resizer;

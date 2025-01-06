@@ -131,10 +131,16 @@
     on:mouseleave={createHandler($eventMouseLeave, display)}
     on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
 >
+    <svelte:component
+        this={$_interaction.resizer}
+        start
+        {event}
+        on:pointerdown={createDragHandler($_interaction, ['y', 'start'])}
+    />
     <div class="{$theme.eventBody}" use:setContent={content}></div>
     <svelte:component
         this={$_interaction.resizer}
         {event}
-        on:pointerdown={createDragHandler($_interaction, 'y')}
+        on:pointerdown={createDragHandler($_interaction, ['y', 'end'])}
     />
 </article>

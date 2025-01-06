@@ -16,6 +16,11 @@
       height: 50%;
       max-height: 8px;
       cursor: ns-resize;
+
+      &.ec-start {
+        bottom: auto;
+        top: 0;
+      }
     }
   }
 

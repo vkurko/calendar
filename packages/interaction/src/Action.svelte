@@ -18,7 +18,7 @@
         toLocalDate,
         toViewWithLocalDates,
         listView, timelineView,
-        isFunction, listen, runAll
+        isFunction, listen, runAll, copyTime, subtractDay
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
@@ -29,10 +29,11 @@
         unselectAuto, unselectCancel, view} = getContext('state');
 
     const ACTION_DRAG = 1;
-    const ACTION_RESIZE = 2;
-    const ACTION_SELECT = 3;
-    const ACTION_CLICK = 4;
-    const ACTION_NO_ACTION = 5;
+    const ACTION_RESIZE_END = 2;
+    const ACTION_RESIZE_START = 3;
+    const ACTION_SELECT = 4;
+    const ACTION_CLICK = 5;
+    const ACTION_NO_ACTION = 6;
     let action;
     let interacting;
     let event;
@@ -45,7 +46,7 @@
     let delta;
     let allDay;
     let iClass;
-    let minEnd;  // minimum end time when resizing
+    let minResize;  // minimum end time when resizing
     let selectStep;  // minimum selection step
     let selected;  // whether selection has been made
     let noDateClick;  // do not perform date click
@@ -56,9 +57,9 @@
     export function drag(eventToDrag, jsEvent, resize, forceDate, forceMargin) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
-                resize ? ACTION_RESIZE : (
-                    $_draggable(eventToDrag) ? ACTION_DRAG : ACTION_NO_ACTION
-                )
+                resize
+                    ? (resize[1] == 'start' ? ACTION_RESIZE_START : ACTION_RESIZE_END)
+                    : ($_draggable(eventToDrag) ? ACTION_DRAG : ACTION_NO_ACTION)
             ) : ACTION_NO_ACTION;
 
             if (complexAction()) {
@@ -75,18 +76,30 @@
                     margin = forceMargin;
                 }
 
-                iClass = resize ? (resize == 'x' ? 'resizingX' : 'resizingY') : 'dragging';
+                iClass = resize ? (resize[0] == 'x' ? 'resizingX' : 'resizingY') : 'dragging';
 
                 if (resize) {
-                    minEnd = cloneDate(event.start);
-                    if (allDay) {
-                        minEnd.setUTCHours(event.end.getUTCHours(), event.end.getUTCMinutes(), event.end.getUTCSeconds(), 0);
-                        if (minEnd < event.start) {
-                            addDay(minEnd);
-                            // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
+                    if (resizingStart()) {
+                        minResize = cloneDate(event.end);
+                        if (allDay) {
+                            copyTime(minResize, event.start);
+                            if (minResize >= event.end) {
+                                subtractDay(minResize);
+                            }
+                        } else {
+                            subtractDuration(minResize, $slotDuration);
                         }
                     } else {
-                        addDuration(minEnd, $slotDuration);
+                        minResize = cloneDate(event.start);
+                        if (allDay) {
+                            copyTime(minResize, event.end);
+                            if (minResize <= event.start) {
+                                addDay(minResize);
+                                // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
+                            }
+                        } else {
+                            addDuration(minResize, $slotDuration);
+                        }
                     }
                 }
 
@@ -179,27 +192,36 @@
 
                 if (newAllDay === allDay) {
                     delta = createDuration((newDate - date) / 1000);
-                    $_iEvents[0].end = addDuration(cloneDate(event.end), delta);
-                    if (resizing()) {
-                        // Resizing
-                        if ($_iEvents[0].end < minEnd) {
-                            $_iEvents[0].end = minEnd;
-                            delta = createDuration((minEnd - event.end) / 1000);
-                        }
-                    } else if (selecting()) {
-                        // Selecting
-                        if ($_iEvents[0].end < event.end) {
-                            $_iEvents[0].start = subtractDuration($_iEvents[0].end, selectStep);
-                            $_iEvents[0].end = event.end;
-                        } else {
-                            $_iEvents[0].start = event.start;
+                    if (resizingStart()) {
+                        // Resizing start
+                        $_iEvents[0].start = addDuration(cloneDate(event.start), delta);
+                        if ($_iEvents[0].start > minResize) {
+                            $_iEvents[0].start = minResize;
+                            delta = createDuration((minResize - event.start) / 1000);
                         }
                     } else {
-                        // Dragging
-                        $_iEvents[0].start = addDuration(cloneDate(event.start), delta);
-                        if (resource) {
-                            $_iEvents[0].resourceIds = event.resourceIds.filter(id => id !== resource.id);
-                            $_iEvents[0].resourceIds.push(newResource.id);
+                        $_iEvents[0].end = addDuration(cloneDate(event.end), delta);
+                        if (resizing()) {
+                            // Resizing end
+                            if ($_iEvents[0].end < minResize) {
+                                $_iEvents[0].end = minResize;
+                                delta = createDuration((minResize - event.end) / 1000);
+                            }
+                        } else if (selecting()) {
+                            // Selecting
+                            if ($_iEvents[0].end < event.end) {
+                                $_iEvents[0].start = subtractDuration($_iEvents[0].end, selectStep);
+                                $_iEvents[0].end = event.end;
+                            } else {
+                                $_iEvents[0].start = event.start;
+                            }
+                        } else {
+                            // Dragging
+                            $_iEvents[0].start = addDuration(cloneDate(event.start), delta);
+                            if (resource) {
+                                $_iEvents[0].resourceIds = event.resourceIds.filter(id => id !== resource.id);
+                                $_iEvents[0].resourceIds.push(newResource.id);
+                            }
                         }
                     }
                 }
@@ -335,7 +357,7 @@
 
             interacting = false;
             action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
-                allDay = $_iClass = minEnd = selectStep = margin = undefined;
+                allDay = $_iClass = minResize = selectStep = margin = undefined;
             bodyEl = clipEl = bodyRect = clipRect = undefined;
 
             if (timer) {
@@ -415,7 +437,11 @@
     }
 
     function resizing() {
-        return action === ACTION_RESIZE;
+        return action === ACTION_RESIZE_END || resizingStart();
+    }
+
+    function resizingStart() {
+        return action === ACTION_RESIZE_START;
     }
 
     function clicking() {

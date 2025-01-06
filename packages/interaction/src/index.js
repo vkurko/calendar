@@ -13,6 +13,7 @@ export default {
         options.eventDrop = undefined;
         options.eventDurationEditable = true;
         options.eventLongPressDelay = undefined;
+        options.eventResizableFromStart = false;
         options.eventResizeStart = undefined;
         options.eventResizeStop = undefined;
         options.eventResize = undefined;
@@ -31,6 +32,7 @@ export default {
         options.theme.preview = 'ec-preview';
         options.theme.pointer = 'ec-pointer';
         options.theme.resizer = 'ec-resizer';
+        options.theme.start = 'ec-start';
         options.theme.dragging = 'ec-dragging';
         options.theme.resizingY = 'ec-resizing-y';
         options.theme.resizingX = 'ec-resizing-x';

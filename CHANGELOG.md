@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.8.0
+January 6, 2025
+
+* Added the ability to resize the event from its starting edge ([343](https://github.com/vkurko/calendar/issues/343))
+
 ## 3.7.2
 December 18, 2024
 

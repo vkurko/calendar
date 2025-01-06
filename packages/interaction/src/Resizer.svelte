@@ -3,12 +3,14 @@
     import {bgEvent, helperEvent} from '@event-calendar/core';
 
     export let event;
+    export let start = false;
 
-    let {theme, eventDurationEditable, editable} = getContext('state');
+    let {theme, eventDurationEditable, eventResizableFromStart, editable} = getContext('state');
 
     let resizable;
     $: resizable = !bgEvent(event.display) &&
-        !helperEvent(event.display) && (
+        !helperEvent(event.display) &&
+        (!start || $eventResizableFromStart) && (
             (event.durationEditable ?? $eventDurationEditable) ||
             (event.editable ?? $editable)
         )
@@ -16,7 +18,7 @@
 
 {#if resizable}
     <div
-        class="{$theme.resizer}"
+        class="{$theme.resizer}{start ? ' ' + $theme.start : ''}"
         on:pointerdown
     ></div>
 {/if}

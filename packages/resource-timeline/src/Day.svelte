@@ -50,7 +50,7 @@
     $: highlight = $highlightedDates.some(d => datesEqual(d, date));
 
     function dateFromPoint(x, y) {
-        x -= rect(el).left;
+        x = floor(x) - floor(rect(el).left);
         return {
             allDay,
             date: allDay

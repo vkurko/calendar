@@ -510,6 +510,11 @@
     width: 50%;
     max-width: 8px;
     cursor: ew-resize;
+
+    &.ec-start {
+      right: auto;
+      left: 0;
+    }
   }
 }
 
