@@ -1,7 +1,9 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {datesEqual, setContent, createEventChunk, addDay, cloneDate, assign, setPayload, toISOString,
-        keyEnter, runReposition, isFunction} from '@event-calendar/core';
+    import {
+        addDay, assign, cloneDate, createEventChunk, datesEqual, getWeekNumber, isFunction, keyEnter, runReposition,
+        setContent, setPayload, toISOString, toLocalDate
+    } from '@event-calendar/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
@@ -12,8 +14,10 @@
     export let iChunks = [];
     export let dates;
 
-    let {date: currentDate, dayMaxEvents, highlightedDates, moreLinkContent, theme,
-        _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _today, _interaction, _queue} = getContext('state');
+    let {
+        date: currentDate, dayMaxEvents, highlightedDates, firstDay, moreLinkContent, theme, weekNumbers,
+        weekNumberContent, _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _today, _interaction
+    } = getContext('state');
 
     let el;
     let dayChunks, dayBgChunks;
@@ -23,6 +27,8 @@
     let hiddenEvents = new Set();  // hidden events of this day
     let moreLink = '';
     let showPopup;
+    let showWeekNumber;
+    let weekNumber;
     let refs = [];
 
     $: $_hiddenEvents[date.getTime()] = hiddenEvents;
@@ -83,6 +89,20 @@
             .sort((a, b) => a.top - b.top);
     }
 
+    $: {
+        showWeekNumber = $weekNumbers && date.getUTCDay() == ($firstDay ? 1 : 0);
+        if (showWeekNumber) {
+            let week = getWeekNumber(date, $firstDay);
+            if ($weekNumberContent) {
+                weekNumber = isFunction($weekNumberContent)
+                    ? $weekNumberContent({date: toLocalDate(date), week})
+                    : $weekNumberContent;
+            } else {
+                weekNumber = 'W' + String(week).padStart(2, '0');
+            }
+        }
+    }
+
     export function reposition() {
         runReposition(refs, dayChunks);
     }
@@ -95,11 +115,18 @@
     on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >
-    <time
-        class="{$theme.dayHead}"
-        datetime="{toISOString(date, 10)}"
-        use:setContent={$_intlDayCell.format(date)}
-    ></time>
+    <div class="{$theme.dayHead}">
+        <time
+            datetime="{toISOString(date, 10)}"
+            use:setContent={$_intlDayCell.format(date)}
+        ></time>
+        {#if showWeekNumber}
+            <span
+                class="{$theme.weekNumber}"
+                use:setContent={weekNumber}
+            ></span>
+        {/if}
+    </div>
     <div class="{$theme.bgEvents}">
         {#each dayBgChunks as chunk (chunk.event)}
             <Event {chunk}/>
@@ -119,7 +146,7 @@
     {/if}
     <div class="{$theme.events}">
         {#each dayChunks as chunk, i (chunk.event)}
-            <Event {chunk} {longChunks} {dates} bind:this={refs[i]} />
+            <Event {chunk} {longChunks} {dates} bind:this={refs[i]}/>
         {/each}
     </div>
     {#if showPopup}

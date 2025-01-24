@@ -31,9 +31,10 @@
   }
 
   .ec-day-head {
-    display: block;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
     border: none;
-    text-align: right;
     padding: 4px 4px 3px;
   }
 

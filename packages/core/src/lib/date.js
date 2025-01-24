@@ -152,6 +152,28 @@ export function prevDate(date, duration, hiddenDays) {
 }
 
 /**
+ * For a given date, get its week number
+ *  - ISO @see https://stackoverflow.com/questions/6117814/get-week-of-year-in-javascript-like-in-php
+ *  - Western @see https://en.wikipedia.org/wiki/Week#Other_week_numbering_systems
+ */
+export function getWeekNumber(date, firstDay) {
+    // Copy date so don't modify original
+    date = cloneDate(date);
+    if (firstDay == 0) {  // Western
+        // Set to nearest Saturday: current date + 5 - current day number
+        date.setUTCDate(date.getUTCDate() + 5 - date.getUTCDay());
+    } else {  // ISO
+        // Set to nearest Thursday: current date + 4 - current day number
+        // Make Sunday's day number 7
+        date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+    }
+    // Get first day of year
+    let yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    // Calculate full weeks to `date`
+    return Math.ceil((((date - yearStart) / 1000 / DAY_IN_SECONDS) + 1) / 7);
+}
+
+/**
  * Private functions
  */
 

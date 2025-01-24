@@ -68,7 +68,7 @@
         event = createEvents([event])[0];
         $_events.push(event);
         $_events = $_events;
-        return event;
+        return toEventWithLocalDates(event);
     }
 
     export function updateEvent(event) {
@@ -77,7 +77,7 @@
                 event = createEvents([event])[0];
                 assign(e, event);
                 $_events = $_events;
-                return event;
+                return toEventWithLocalDates(event);
             }
         }
         return null;
