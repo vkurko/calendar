@@ -18,13 +18,12 @@
     export let date;
     export let resource = undefined;
 
-    let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, filterEventsWithResources, theme,
-        resources, _interaction, _today, _slotTimeLimits} = getContext('state');
+    let {_filtered, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, theme,
+        _interaction, _today, _slotTimeLimits} = getContext('state');
 
     let el;
     let chunks, bgChunks, iChunks = [];
     let isToday, highlight;
-    let resourceFilter;
 
     let start, end;
 
@@ -33,15 +32,13 @@
         end = addDuration(cloneDate(date), $_slotTimeLimits.max);
     }
 
-    $: resourceFilter = resource ?? (
-        $filterEventsWithResources ? $resources : undefined
-    );
+    $: resources = resource ? [resource] : undefined;
 
     $: {
         chunks = [];
         bgChunks = [];
-        for (let event of $_events) {
-            if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resourceFilter)) {
+        for (let event of $_filtered) {
+            if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resources )) {
                 let chunk = createEventChunk(event, start, end);
                 handleZeroDurationChunk(chunk, $slotDuration);
                 switch (event.display) {
@@ -54,7 +51,7 @@
     }
 
     $: iChunks = $_iEvents.map(
-        event => event && eventIntersects(event, start, end, resource) ? createEventChunk(event, start, end) : null
+        event => event && eventIntersects(event, start, end, resources) ? createEventChunk(event, start, end) : null
     );
 
     $: isToday = datesEqual(date, $_today);

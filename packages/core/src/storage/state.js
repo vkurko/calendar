@@ -10,7 +10,8 @@ import {
     today,
     viewDates,
     viewTitle,
-    view as view2  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
+    view as view2,  // hack to avoid a runtime error in SvelteKit dev mode (ReferenceError: view is not defined)
+    filteredEvents,
 } from './stores';
 import {keys, intl, intlRange, isFunction, identity} from '../lib.js';
 
@@ -41,6 +42,7 @@ export default class {
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = events(this);
+        this._filtered = filteredEvents(this);
         this._now = now();
         this._today = today(this);
         this._intlEventTime = intlRange(this.locale, this.eventTimeFormat);

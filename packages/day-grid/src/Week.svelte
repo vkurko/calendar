@@ -3,11 +3,12 @@
     import {cloneDate, addDay, eventIntersects, bgEvent, createEventChunk, prepareEventChunks,
         runReposition, debounce} from '@event-calendar/core';
     import Day from './Day.svelte';
-
+    
     export let dates;
 
     let {_events, _iEvents, _queue2, _hiddenEvents,
-        resources, filterEventsWithResources, hiddenDays, theme} = getContext('state');
+        resources, hiddenDays, theme,
+        _filtered } = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
@@ -28,8 +29,8 @@
     $: {
         chunks = [];
         bgChunks = [];
-        for (let event of $_events) {
-            if (eventIntersects(event, start, end, $filterEventsWithResources ? $resources : undefined)) {
+        for (let event of $_filtered) {
+            if (eventIntersects(event, start, end )) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {
                     if (event.allDay) {
