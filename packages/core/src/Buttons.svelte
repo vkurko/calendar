@@ -1,14 +1,50 @@
 <script>
-    import {getContext} from 'svelte';
-    import {createDate, cloneDate, setContent, setMidnight, nextDate, prevDate} from './lib.js';
+    import {getContext, tick} from 'svelte';
+    import {createDate, cloneDate, setContent, setMidnight, nextDate, prevDate, outsideRange} from './lib.js';
 
     export let buttons;
 
-    let {_currentRange, _viewTitle, buttonText, customButtons, date, duration, hiddenDays, theme, view} = getContext('state');
+    let {
+        _currentRange, _viewTitle, _viewDates, buttonText, customButtons, date, duration, hiddenDays, theme, validRange,
+        view
+    } = getContext('state');
 
-    let today = setMidnight(createDate()), isToday;
+    let today = setMidnight(createDate());
+    let prevDisabled, nextDisabled, todayDisabled;
 
-    $: isToday = today >= $_currentRange.start && today < $_currentRange.end || null;
+    let running = false;
+    function isRunning() {
+        return running;
+    }
+    $: if (!isRunning()) {
+        running = true;
+        prevDisabled = false;
+        nextDisabled = false;
+        if ($validRange.start) {
+            let currentDate = cloneDate($date);
+            $date = prevDate($date, $duration, $hiddenDays);
+            prevDisabled = test();
+            $date = currentDate;
+        }
+        if ($validRange.end) {
+            let currentDate = cloneDate($date);
+            $date = nextDate($date, $duration);
+            nextDisabled = test();
+            $date = currentDate;
+        }
+        todayDisabled = today >= $_currentRange.start && today < $_currentRange.end;
+        if (!todayDisabled && ($validRange.start || $validRange.end)) {
+            let currentDate = cloneDate($date);
+            $date = cloneDate(today);
+            todayDisabled = test();
+            $date = currentDate;
+        }
+        tick().then(() => running = false);
+    }
+
+    function test() {
+        return $_viewDates.every(date => outsideRange(date, $validRange));
+    }
 
     function prev() {
         $date = prevDate($date, $duration, $hiddenDays);
@@ -29,6 +65,7 @@
             aria-label={$buttonText.prev}
             title={$buttonText.prev}
             on:click={prev}
+            disabled={prevDisabled}
         ><i class="{$theme.icon} ec-{button}"></i></button>
     {:else if button == 'next'}
         <button
@@ -36,12 +73,13 @@
             aria-label={$buttonText.next}
             title={$buttonText.next}
             on:click={next}
+            disabled={nextDisabled}
         ><i class="{$theme.icon} ec-{button}"></i></button>
     {:else if button == 'today'}
         <button
             class="{$theme.button} ec-{button}"
             on:click={() => $date = cloneDate(today)}
-            disabled={isToday}
+            disabled={todayDisabled}
         >{$buttonText[button]}</button>
     {:else if $customButtons[button]}
         <button

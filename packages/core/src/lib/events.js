@@ -56,11 +56,14 @@ export function createEventSources(input) {
 }
 
 export function createEventChunk(event, start, end) {
-    return {
+    let chunk = {
         start: event.start > start ? event.start : start,
         end: event.end < end ? event.end : end,
         event
     };
+    chunk.zeroDuration = datesEqual(chunk.start, chunk.end);
+
+    return chunk;
 }
 
 export function sortEventChunks(chunks) {
@@ -106,13 +109,6 @@ export function createEventContent(chunk, displayEventEnd, eventContent, theme, 
     }
 
     return [timeText, content];
-}
-
-export function handleZeroDurationChunk(chunk, preferredDuration) {
-    if (datesEqual(chunk.start, chunk.end)) {
-        chunk.zeroDuration = true;
-        chunk.end = addDuration(cloneDate(chunk.end), preferredDuration);
-    }
 }
 
 function createTimeElement(timeText, chunk, theme) {

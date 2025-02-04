@@ -1,30 +1,27 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        addDay,
-        cloneDate,
-        createEventChunk,
-        datesEqual,
-        sortEventChunks,
-        eventIntersects,
-        setContent,
-        setPayload,
-        bgEvent,
-        toISOString
+        addDay, bgEvent, cloneDate, createEventChunk, datesEqual, eventIntersects, outsideRange, setContent, setPayload,
+        sortEventChunks, toISOString
     } from '@event-calendar/core';
     import Event from './Event.svelte';
 
     export let date;
 
     let {_events, _interaction, _intlListDay, _intlListDaySide, _today,
-        resources, filterEventsWithResources, highlightedDates, theme} = getContext('state');
+        resources, filterEventsWithResources, highlightedDates, theme, validRange} = getContext('state');
 
     let el;
-    let chunks;
-    let isToday, highlight;
+    let chunks = [];
+    let isToday, highlight, disabled;
     let datetime;
 
-    $: {
+    $: isToday = datesEqual(date, $_today);
+    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
+    $: disabled = outsideRange(date, $validRange);
+    $: datetime = toISOString(date, 10);
+
+    $: if (!disabled) {
         chunks = [];
         let start = date;
         let end = addDay(cloneDate(date));
@@ -37,13 +34,9 @@
         sortEventChunks(chunks);
     }
 
-    $: isToday = datesEqual(date, $_today);
-    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
-    $: datetime = toISOString(date, 10);
-
     // dateFromPoint
     $: if (el) {
-        setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el}));
+        setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el, disabled}));
     }
 </script>
 

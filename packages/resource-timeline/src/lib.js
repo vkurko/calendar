@@ -9,6 +9,7 @@ import {
 
 export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration) {
     let longChunks = {};
+    let filteredChunks = [];
 
     if (chunks.length) {
         sortEventChunks(chunks);
@@ -24,7 +25,7 @@ export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDu
                     let dayStart = addDuration(cloneDate($_viewDates[i]), slotTimeLimits.min);
                     let dayEnd = addDuration(cloneDate($_viewDates[i]), slotTimeLimits.max);
                     if (!chunk.date) {
-                        if (chunk.start < dayEnd) {
+                        if (chunk.start < dayEnd && chunk.end > dayStart) {
                             // The first day is found
                             chunk.date = $_viewDates[i];
                             if (chunk.start < dayStart) {
@@ -101,14 +102,20 @@ export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDu
                 chunk.days = days;
             }
 
+            if (!chunk.date) {
+                // Chunk is outside the slot time limits, so skip it
+                continue;
+            }
+
             if (prevChunk && datesEqual(prevChunk.date, chunk.date)) {
                 chunk.prev = prevChunk;
             }
             prevChunk = chunk;
+            filteredChunks.push(chunk);
         }
     }
 
-    return longChunks;
+    return [filteredChunks, longChunks];
 }
 
 export function repositionEvent(chunk, dayChunks, longChunks, height, allDay) {

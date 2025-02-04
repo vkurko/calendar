@@ -115,7 +115,8 @@
                     jsEvent,
                     resize,
                     inPopup ? $_popupDate : null,
-                    [rect(el).top - rect(ancestor(el, 1)).top, dates]
+                    [rect(el).top - rect(ancestor(el, 1)).top, dates],
+                    chunk.zeroDuration
                 )
             : undefined;
     }

@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.10.0
+February 4, 2025
+
+* Added `validRange` option ([141](https://github.com/vkurko/calendar/issues/141))
+
 ## 3.9.0
 January 27, 2025
 

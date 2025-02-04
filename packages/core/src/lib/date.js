@@ -160,8 +160,8 @@ export function getWeekNumber(date, firstDay) {
     // Copy date so don't modify original
     date = cloneDate(date);
     if (firstDay == 0) {  // Western
-        // Set to nearest Saturday: current date + 5 - current day number
-        date.setUTCDate(date.getUTCDate() + 5 - date.getUTCDay());
+        // Set to nearest Saturday: current date + 6 - current day number
+        date.setUTCDate(date.getUTCDate() + 6 - date.getUTCDay());
     } else {  // ISO
         // Set to nearest Thursday: current date + 4 - current day number
         // Make Sunday's day number 7

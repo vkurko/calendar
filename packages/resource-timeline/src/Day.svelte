@@ -1,16 +1,7 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        cloneDate,
-        addDuration,
-        datesEqual,
-        max,
-        floor,
-        ceil,
-        rect,
-        setPayload,
-        toSeconds,
-        runReposition
+        addDuration, ceil, cloneDate, datesEqual, floor, max, outsideRange, rect, runReposition, setPayload, toSeconds
     } from '@event-calendar/core';
     import {getSlotTimeLimits} from './lib.js';
     import Event from './Event.svelte';
@@ -22,16 +13,19 @@
     export let longChunks;
     export let iChunks = [];
 
-    let {highlightedDates, slotDuration, slotWidth, theme, _interaction, _today, _dayTimeLimits} = getContext('state');
+    let {highlightedDates, slotDuration, slotWidth, theme, validRange, _interaction, _today, _dayTimeLimits} = getContext('state');
 
     let el;
     let dayChunks, dayBgChunks;
-    let isToday, highlight;
+    let isToday, highlight, disabled;
     let refs = [];
     let slotTimeLimits;
     let allDay;
     let pointerIdx = 1;
 
+    $: isToday = datesEqual(date, $_today);
+    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
+    $: disabled = outsideRange(date, $validRange);
 
     $: slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
     $: {
@@ -46,11 +40,8 @@
         return datesEqual(chunk.date, date);
     }
 
-    $: isToday = datesEqual(date, $_today);
-    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
-
     function dateFromPoint(x, y) {
-        x = floor(x) - floor(rect(el).left);
+        x -= rect(el).left;
         return {
             allDay,
             date: allDay
@@ -61,7 +52,8 @@
                     floor(x / $slotWidth)
                 ),
             resource,
-            dayEl: el
+            dayEl: el,
+            disabled
         };
     }
 
@@ -76,26 +68,27 @@
 
 <div
     bind:this={el}
-    class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}"
+    class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}{disabled ? ' ' + $theme.disabled : ''}"
     style="flex-grow: {allDay ? null : ceil((toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min)) / toSeconds($slotDuration))}"
     role="cell"
-    on:pointerleave={$_interaction.pointer?.leave}
     on:pointerdown={$_interaction.action?.select}
 >
     <div class="{$theme.events}">
-        {#each dayBgChunks as chunk (chunk.event)}
-            <Event {chunk}/>
-        {/each}
-        <!-- Pointer -->
-        {#if iChunks[pointerIdx] && chunkIntersects(iChunks[pointerIdx])}
-            <Event chunk={iChunks[pointerIdx]}/>
-        {/if}
-        {#each dayChunks as chunk, i (chunk.event)}
-            <Event {chunk} {dayChunks} {longChunks} {resource} bind:this={refs[i]}/>
-        {/each}
-        <!-- Drag, Resize & Select -->
-        {#if iChunks[0] && chunkIntersects(iChunks[0])}
-            <Event chunk={iChunks[0]} {resource}/>
+        {#if !disabled}
+            {#each dayBgChunks as chunk (chunk.event)}
+                <Event {chunk}/>
+            {/each}
+            <!-- Pointer -->
+            {#if iChunks[pointerIdx] && chunkIntersects(iChunks[pointerIdx])}
+                <Event chunk={iChunks[pointerIdx]}/>
+            {/if}
+            {#each dayChunks as chunk, i (chunk.event)}
+                <Event {chunk} {dayChunks} {longChunks} {resource} bind:this={refs[i]}/>
+            {/each}
+            <!-- Drag, Resize & Select -->
+            {#if iChunks[0] && chunkIntersects(iChunks[0])}
+                <Event chunk={iChunks[0]} {resource}/>
+            {/if}
         {/if}
     </div>
 </div>

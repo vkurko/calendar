@@ -92,7 +92,14 @@
 
     function createDragHandler(interaction, resize) {
         return interaction.action
-            ? jsEvent => interaction.action.drag(event, jsEvent, resize, null, rect(el).top - rect(ancestor(el, 1)).top)
+            ? jsEvent => interaction.action.drag(
+                event,
+                jsEvent,
+                resize,
+                null,
+                rect(el).top - rect(ancestor(el, 1)).top,
+                chunk.zeroDuration
+            )
             : undefined;
     }
 

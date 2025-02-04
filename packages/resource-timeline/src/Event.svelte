@@ -116,7 +116,8 @@
                 jsEvent,
                 resize,
                 resize && chunk.zeroDuration ? subtractDuration(cloneDate(event.end), $slotDuration) : undefined,
-                [margin, resource]
+                [margin, resource],
+                chunk.zeroDuration
             )
             : undefined;
     }

@@ -254,7 +254,16 @@
     background-color: var(--ec-highlight-color);
   }
 
-
+  &.ec-disabled {
+    position: relative;
+    &:after {
+      content: '';
+      position: absolute;
+      inset: 0 0 0 0;
+      background-color: var(--ec-bg-event-color);
+      opacity: .3;
+    }
+  }
 
   &.ec-other-month .ec-day-head time {
     opacity: .3;

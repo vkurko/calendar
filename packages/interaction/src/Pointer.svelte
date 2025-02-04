@@ -10,26 +10,26 @@
         removePointerEvent();
     }
 
-    export function leave(jsEvent) {
-        if (validEvent(jsEvent)) {
-            removePointerEvent();
-        }
-    }
-
     function move() {
         let dayEl = getElementWithPayload(x, y);
 
         if (dayEl) {
-            let {allDay, date, resource} = getPayload(dayEl)(x, y);
-            let idx = allDay ? 2 : 1;
+            let {allDay, date, resource, disabled} = getPayload(dayEl)(x, y);
+            if (!disabled) {
+                let idx = allDay ? 2 : 1;
 
-            if (!$_iEvents[idx]) {
-                createPointerEvent(idx);
+                if (!$_iEvents[idx]) {
+                    createPointerEvent(idx);
+                }
+                $_iEvents[idx].start = date;
+                $_iEvents[idx].end = addDuration(cloneDate(date), $slotDuration);
+                $_iEvents[idx].resourceIds = resource ? [resource.id] : [];
+
+                return;
             }
-            $_iEvents[idx].start = date;
-            $_iEvents[idx].end = addDuration(cloneDate(date), $slotDuration);
-            $_iEvents[idx].resourceIds = resource ? [resource.id] : [];
         }
+
+        removePointerEvent();
     }
 
     export function handleScroll() {
@@ -57,8 +57,12 @@
     }
 
     function removePointerEvent() {
-        $_iEvents[1] = null;
-        $_iEvents[2] = null;
+        if ($_iEvents[1]) {
+            $_iEvents[1] = null;
+        }
+        if ($_iEvents[2]) {
+            $_iEvents[2] = null;
+        }
     }
 
     function validEvent(jsEvent) {

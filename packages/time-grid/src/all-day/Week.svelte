@@ -1,19 +1,15 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        cloneDate,
-        addDay,
-        createEventChunk,
-        prepareEventChunks,
-        eventIntersects,
-        debounce, runReposition, bgEvent
+        addDay, bgEvent, cloneDate, createEventChunk, debounce, eventIntersects, limitToRange, prepareEventChunks,
+        runReposition
     } from '@event-calendar/core';
     import Day from './Day.svelte';
 
     export let dates;
     export let resource = undefined;
 
-    let {_events, _iEvents, _queue2, hiddenDays, resources, filterEventsWithResources} = getContext('state');
+    let {_events, _iEvents, _queue2, hiddenDays, resources, filterEventsWithResources, validRange} = getContext('state');
 
     let chunks, bgChunks, longChunks, iChunks = [];
 
@@ -23,8 +19,8 @@
     let resourceFilter;
 
     $: {
-        start = dates[0];
-        end = addDay(cloneDate(dates.at(-1)));
+        start = limitToRange(dates[0], $validRange);
+        end = addDay(cloneDate(limitToRange(dates.at(-1), $validRange)));
     }
 
     $: resourceFilter = resource ?? (

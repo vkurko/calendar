@@ -1,24 +1,9 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        addDay,
-        addDuration,
-        ancestor,
-        assign,
-        cloneDate,
-        cloneEvent,
-        createDuration,
-        getElementWithPayload,
-        getPayload,
-        min, max,
-        rect,
-        subtractDuration,
-        toEventWithLocalDates,
-        toISOString,
-        toLocalDate,
-        toViewWithLocalDates,
-        listView, timelineView,
-        isFunction, listen, runAll, copyTime, subtractDay
+        addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, getElementWithPayload,
+        getPayload, isFunction, listen, listView, max, min, rect, runAll, subtractDay, subtractDuration, timelineView,
+        toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
@@ -26,7 +11,7 @@
         eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
         eventResizeStart, eventResizeStop, eventResize, longPressDelay, selectable, select: selectFn,
         selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, slotWidth, unselect: unselectFn,
-        unselectAuto, unselectCancel, view} = getContext('state');
+        unselectAuto, unselectCancel, validRange, view} = getContext('state');
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE_END = 2;
@@ -53,8 +38,9 @@
     let timer;  // timer for long press delays
     let viewport;
     let margin;
+    let extraDuration;  // extra duration for zero duration events
 
-    export function drag(eventToDrag, jsEvent, resize, forceDate, forceMargin) {
+    export function drag(eventToDrag, jsEvent, resize, forceDate, forceMargin, zeroDuration) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
                 resize
@@ -79,6 +65,7 @@
                 iClass = resize ? (resize[0] == 'x' ? 'resizingX' : 'resizingY') : 'dragging';
 
                 if (resize) {
+                    // Calculate the limits for resize
                     if (resizingStart()) {
                         minResize = cloneDate(event.end);
                         if (allDay) {
@@ -87,19 +74,31 @@
                                 subtractDay(minResize);
                             }
                         } else {
-                            subtractDuration(minResize, $slotDuration);
+                            if (!zeroDuration) {
+                                subtractDuration(minResize, $slotDuration);
+                            }
+                            // Overwrite the date due to possible discrepancy between calculated date
+                            // and resizer coordinates in browser
+                            date = event.start;
                         }
                     } else {
                         minResize = cloneDate(event.start);
                         if (allDay) {
                             copyTime(minResize, event.end);
-                            if (minResize <= event.start) {
+                            if (minResize <= event.start && !zeroDuration) {
                                 addDay(minResize);
-                                // minEnd = addDuration(cloneDate(event.start), $slotDuration);  alternative version
                             }
                         } else {
                             addDuration(minResize, $slotDuration);
+                            // Overwrite the date due to possible discrepancy between calculated date
+                            // and resizer coordinates in browser
+                            date = event.end;
                         }
+                    }
+
+                    // Handle zero duration events
+                    if (zeroDuration && !allDay) {
+                        extraDuration = $slotDuration;
                     }
                 }
 
@@ -185,10 +184,10 @@
                 }
             }
 
-            let dayEl = findDayEl();
-            if (dayEl) {
+            let payload = findPayload(findDayEl());
+            if (payload) {
                 let newAllDay;
-                ({allDay: newAllDay, date: newDate, resource: newResource} = getPayload(dayEl)(toX, toY));
+                ({allDay: newAllDay, date: newDate, resource: newResource} = payload);
 
                 if (newAllDay === allDay) {
                     delta = createDuration((newDate - date) / 1000);
@@ -201,6 +200,9 @@
                         }
                     } else {
                         $_iEvents[0].end = addDuration(cloneDate(event.end), delta);
+                        if (extraDuration) {
+                            addDuration($_iEvents[0].end, extraDuration);
+                        }
                         if (resizing()) {
                             // Resizing end
                             if ($_iEvents[0].end < minResize) {
@@ -357,7 +359,7 @@
 
             interacting = false;
             action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
-                allDay = $_iClass = minResize = selectStep = margin = undefined;
+                extraDuration = allDay = $_iClass = minResize = selectStep = margin = undefined;
             bodyEl = clipEl = bodyRect = clipRect = undefined;
 
             if (timer) {
@@ -375,6 +377,23 @@
             limit(toX, viewport[0], viewport[1]),
             limit(toY, viewport[2], viewport[3])
         );
+    }
+
+    function findPayload(dayEl) {
+        if (dayEl) {
+            let payload = getPayload(dayEl)(toX, toY);
+            if (payload.disabled) {
+                if (!$validRange.end || payload.date < $validRange.end) {
+                    return findPayload(dayEl.nextElementSibling);
+                }
+                if (!$validRange.start || payload.date > $validRange.start) {
+                    return findPayload(dayEl.previousElementSibling);
+                }
+            } else {
+                return payload;
+            }
+        }
+        return null;
     }
 
     function calcViewport() {
@@ -397,6 +416,9 @@
         $_iEvents[0] = cloneEvent(event);
         if (margin !== undefined) {
             $_iEvents[0]._margin = margin;
+        }
+        if (extraDuration) {
+            addDuration($_iEvents[0].end, extraDuration);
         }
         event.display = 'ghost';
         $_events = $_events;
