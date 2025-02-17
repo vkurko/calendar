@@ -1,14 +1,12 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDay, cloneDate, toViewWithLocalDates, setContent, bgEvent, isFunction} from '@event-calendar/core';
+    import {addDay, cloneDate, toViewWithLocalDates, setContent, bgEvent, isFunction} from '$lib/core';
     import Day from './Day.svelte';
 
     let {_bodyEl, _events, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
 
-    let noEvents, content;
-
-    $: {
-        noEvents = true;
+    let noEvents = $derived.by(() => {
+        let noEvents = true;
         if ($_viewDates.length) {
             let start = $_viewDates[0];
             let end = addDay(cloneDate($_viewDates.at(-1)));
@@ -19,16 +17,12 @@
                 }
             }
         }
-    }
+        return noEvents;
+    });
 
-    $: {
-        content = isFunction($noEventsContent) ? $noEventsContent() : $noEventsContent;
-        if (typeof content === 'string') {
-            content = {html: content};
-        }
-    }
+    let content = $derived(isFunction($noEventsContent) ? $noEventsContent() : $noEventsContent);
 
-    function handleClick(jsEvent) {
+    function onclick(jsEvent) {
         if (isFunction($noEventsClick)) {
             $noEventsClick({jsEvent, view: toViewWithLocalDates($_view)});
         }
@@ -38,9 +32,9 @@
 <div bind:this={$_bodyEl} class="{$theme.body}">
     <div class="{$theme.content}">
         {#if noEvents}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div use:setContent={content} class="{$theme.noEvents}" on:click={handleClick}></div>
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div use:setContent={content} class="{$theme.noEvents}" {onclick}></div>
         {:else}
             {#each $_viewDates as date}
                 <Day {date}/>

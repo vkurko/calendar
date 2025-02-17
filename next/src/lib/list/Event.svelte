@@ -1,37 +1,21 @@
 <script>
-    import {afterUpdate, getContext, onMount} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {
-        createEventContent,
-        toEventWithLocalDates,
-        toViewWithLocalDates,
-        setContent,
-        createEventClasses,
-        keyEnter,
-        resourceBackgroundColor,
-        resourceTextColor,
-        task,
-        isFunction
-    } from '@event-calendar/core';
+        createEventClasses, createEventContent, isFunction, keyEnter, resourceBackgroundColor, resourceTextColor,
+        setContent, task, toEventWithLocalDates, toViewWithLocalDates
+    } from '$lib/core';
 
-    export let chunk;
+    let {chunk} = $props();
 
     let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent,
         eventClassNames, eventClick, eventDidMount, eventMouseEnter, eventMouseLeave, resources, theme,
         _view, _intlEventTime, _interaction, _tasks} = getContext('state');
 
-    let el;
-    let event;
-    let classes;
-    let style;
-    let content;
-    let timeText;
-    let onclick;
-
-    $: event = chunk.event;
-
-    $: {
-        // Class & Style
-        style = '';
+    let el = $state();
+    let event = $derived(chunk.event);
+    // Style & Class
+    let style = $derived.by(() => {
+        let style = '';
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         if (bgColor) {
             style = `background-color:${bgColor};`;
@@ -41,17 +25,11 @@
             style += `color:${txtColor};`;
         }
         style += event.styles.join(';');
-
-        classes = [
-            $theme.event,
-            ...createEventClasses($eventClassNames, event, $_view)
-        ].join(' ');
-    }
-
-    $: {
-        // Content
-        [timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
-    }
+        return style;
+    });
+    let classes = $derived([$theme.event, ...createEventClasses($eventClassNames, event, $_view)].join(' '));
+    // Content
+    let [timeText, content] = $derived(createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view));
 
     onMount(() => {
         if (isFunction($eventDidMount)) {
@@ -64,7 +42,7 @@
         }
     });
 
-    afterUpdate(() => {
+    $effect(() => {
         if (isFunction($eventAllUpdated)) {
             task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
@@ -76,21 +54,23 @@
             : undefined;
     }
 
-    // Onclick handler
-    $: onclick = createHandler($eventClick);
+    // Handlers
+    let onclick = $derived(createHandler($eventClick));
+    let onmouseenter = $derived(createHandler($eventMouseEnter));
+    let onmouseleave = $derived(createHandler($eventMouseLeave));
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <article
     bind:this={el}
     class="{classes}"
     role="{onclick ? 'button' : undefined}"
     tabindex="{onclick ? 0 : undefined}"
-    on:click={onclick}
-    on:keydown={onclick && keyEnter(onclick)}
-    on:mouseenter={createHandler($eventMouseEnter)}
-    on:mouseleave={createHandler($eventMouseLeave)}
-    on:pointerdown={$_interaction.action?.noAction}
+    {onclick}
+    {onmouseenter}
+    {onmouseleave}
+    onkeydown={onclick && keyEnter(onclick)}
+    onpointerdown={$_interaction.action?.noAction}
 >
     <div class="{$theme.eventTag}" {style}></div>
     <div class="{$theme.eventBody}" use:setContent={content}></div>
