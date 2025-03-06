@@ -13,7 +13,7 @@
 
     let el = $state();
     let event = $derived(chunk.event);
-    // Style & Class
+    // Style
     let style = $derived.by(() => {
         let style = '';
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
@@ -27,6 +27,7 @@
         style += event.styles.join(';');
         return style;
     });
+    // Class
     let classes = $derived([$theme.event, ...createEventClasses($eventClassNames, event, $_view)].join(' '));
     // Content
     let [timeText, content] = $derived(createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view));
@@ -56,8 +57,10 @@
 
     // Handlers
     let onclick = $derived(createHandler($eventClick));
+    let onkeydown = $derived(onclick && keyEnter(onclick));
     let onmouseenter = $derived(createHandler($eventMouseEnter));
     let onmouseleave = $derived(createHandler($eventMouseLeave));
+    let onpointerdown = $derived($_interaction.action?.noAction);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -67,10 +70,10 @@
     role="{onclick ? 'button' : undefined}"
     tabindex="{onclick ? 0 : undefined}"
     {onclick}
+    {onkeydown}
     {onmouseenter}
     {onmouseleave}
-    onkeydown={onclick && keyEnter(onclick)}
-    onpointerdown={$_interaction.action?.noAction}
+    {onpointerdown}
 >
     <div class="{$theme.eventTag}" {style}></div>
     <div class="{$theme.eventBody}" use:setContent={content}></div>

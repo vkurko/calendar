@@ -1,5 +1,4 @@
-import {isFunction} from '@event-calendar/core';
-import {sortEventChunks} from '@event-calendar/core';
+import {isFunction, sortEventChunks} from '$lib/core';
 
 export function groupEventChunks(chunks) {
     if (!chunks.length) {

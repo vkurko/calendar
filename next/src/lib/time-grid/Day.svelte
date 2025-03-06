@@ -3,39 +3,33 @@
     import {
         addDuration, bgEvent, cloneDate, createEventChunk, datesEqual, eventIntersects, floor, outsideRange, rect,
         setPayload
-    } from '@event-calendar/core';
+    } from '$lib/core';
     import {groupEventChunks} from './utils';
     import Event from './Event.svelte';
     import NowIndicator from './NowIndicator.svelte';
 
-    export let date;
-    export let resource = undefined;
+    let {date, resource = undefined} = $props();
 
     let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, filterEventsWithResources, theme,
         resources, validRange, _interaction, _today, _slotTimeLimits} = getContext('state');
 
-    let el;
-    let chunks, bgChunks, iChunks = [];
-    let isToday, highlight, disabled;
-    let resourceFilter;
-    let start, end;
+    let el = $state();
 
-    $: isToday = datesEqual(date, $_today);
-    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
-    $: disabled = outsideRange(date, $validRange);
+    let isToday = $derived(datesEqual(date, $_today));
+    let highlight = $derived($highlightedDates.some(d => datesEqual(d, date)));
+    let disabled = $derived(outsideRange(date, $validRange));
 
-    $: if (!disabled) {
-        start = addDuration(cloneDate(date), $_slotTimeLimits.min);
-        end = addDuration(cloneDate(date), $_slotTimeLimits.max);
-    }
+    let start = $derived(addDuration(cloneDate(date), $_slotTimeLimits.min));
+    let end = $derived(addDuration(cloneDate(date), $_slotTimeLimits.max));
 
-    $: resourceFilter = resource ?? (
-        $filterEventsWithResources ? $resources : undefined
-    );
+    let resourceFilter = $derived(resource ?? ($filterEventsWithResources ? $resources : undefined));
 
-    $: if (!disabled) {
-        chunks = [];
-        bgChunks = [];
+    let [chunks, bgChunks] = $derived.by(() => {
+        if (disabled) {
+            return [[], []];
+        }
+        let chunks = [];
+        let bgChunks = [];
         for (let event of $_events) {
             if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resourceFilter)) {
                 let chunk = createEventChunk(event, start, end);
@@ -46,13 +40,17 @@
             }
         }
         groupEventChunks(chunks);
-    }
+        return [chunks, bgChunks];
+    });
 
-    $: if (!disabled) {
-        iChunks = $_iEvents.map(
+    let iChunks = $derived.by(() => {
+        if (disabled) {
+            return [];
+        }
+        return $_iEvents.map(
             event => event && eventIntersects(event, start, end, resource) ? createEventChunk(event, start, end) : null
         );
-    }
+    });
 
     function dateFromPoint(x, y) {
         y -= rect(el).top;
@@ -69,16 +67,18 @@
         };
     }
 
-    $: if (el) {
-        setPayload(el, dateFromPoint);
-    }
+    $effect(() => {
+        if (el) {
+            setPayload(el, dateFromPoint);
+        }
+    });
 </script>
 
 <div
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}{disabled ? ' ' + $theme.disabled : ''}"
     role="cell"
-    on:pointerdown={!disabled ? $_interaction.action?.select : undefined}
+    onpointerdown={!disabled ? $_interaction.action?.select : undefined}
 >
     <div class="{$theme.bgEvents}">
         {#if !disabled}

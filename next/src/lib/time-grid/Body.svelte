@@ -2,24 +2,25 @@
     import {getContext} from 'svelte';
     import Section from './Section.svelte';
 
+    let {children} = $props();
+
     let {_bodyEl, _viewDates, _slotTimeLimits, _times, scrollTime, slotDuration, slotHeight, theme} = getContext('state');
 
-    let el;
-    let compact;
-    let lines = [];
+    let el = $state();
 
-    $: $_bodyEl = el;
+    let compact = $derived($slotDuration.seconds >= 3600);
 
-    $: {
-        compact = $slotDuration.seconds >= 3600;
-        lines.length = $_times.length;
-    }
+    $effect(() => {
+        $_bodyEl = el;
+    });
 
-    $: if (el) {
-        $_viewDates;
-        $scrollTime;
-        scrollToTime()
-    }
+    $effect(() => {
+        if (el) {
+            $_viewDates;
+            $scrollTime;
+            scrollToTime();
+        }
+    });
 
     function scrollToTime() {
         el.scrollTop = (($scrollTime.seconds - $_slotTimeLimits.min.seconds) / $slotDuration.seconds - 0.5) * $slotHeight;
@@ -31,13 +32,12 @@
     class="{$theme.body}{compact ? ' ' + $theme.compact : ''}"
 >
     <div class="{$theme.content}">
-        <Section>
-            <svelte:fragment slot="lines">
-                {#each lines as line}
+        <Section {children}>
+            {#snippet lines()}
+                {#each new Array($_times.length) as line}
                     <div class="{$theme.line}"></div>
                 {/each}
-            </svelte:fragment>
-            <slot></slot>
+            {/snippet}
         </Section>
     </div>
 </div>

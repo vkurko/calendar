@@ -1,5 +1,5 @@
 import {derived} from 'svelte/store';
-import {createDate, createSlotTimeLimits, createTimes, setMidnight} from '@event-calendar/core';
+import {createDate, createSlotTimeLimits, createTimes, setMidnight} from '$lib/core';
 
 export function times(state) {
     return derived(

@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent, toISOString} from '@event-calendar/core';
+    import {setContent, toISOString} from '$lib/core';
     import Section from './Section.svelte';
     import Body from './Body.svelte';
     import Day from './Day.svelte';

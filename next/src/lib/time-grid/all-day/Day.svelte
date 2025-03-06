@@ -1,39 +1,34 @@
 <script>
     import {getContext} from 'svelte';
-    import {datesEqual, outsideRange, runReposition, setPayload} from '@event-calendar/core';
+    import {datesEqual, outsideRange, runReposition, setPayload} from '$lib/core';
     import Event from './Event.svelte';
 
-    export let date;
-    export let chunks;
-    export let bgChunks;
-    export let longChunks;
-    export let iChunks = [];
-    export let resource = undefined;
+    let {date, chunks, bgChunks, longChunks, iChunks = [], resource = undefined} = $props();
 
     let {highlightedDates, theme, validRange, _interaction, _today} = getContext('state');
 
-    let el;
-    let dayChunks, dayBgChunks;
-    let isToday, highlight, disabled;
+    let el = $state();
     let refs = [];
 
-    $: dayChunks = chunks.filter(chunk => datesEqual(chunk.date, date));
-    $: dayBgChunks = bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date));
+    let dayChunks = $derived(chunks.filter(chunk => datesEqual(chunk.date, date)));
+    let dayBgChunks = $derived(bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date)));
 
-    $: isToday = datesEqual(date, $_today);
-    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
-    $: disabled = outsideRange(date, $validRange);
+    let isToday = $derived(datesEqual(date, $_today));
+    let highlight = $derived($highlightedDates.some(d => datesEqual(d, date)));
+    let disabled = $derived(outsideRange(date, $validRange));
 
     // dateFromPoint
-    $: if (el) {
-        setPayload(el, () => ({
-            allDay: true,
-            date,
-            resource,
-            dayEl: el,
-            disabled
-        }));
-    }
+    $effect(() => {
+        if (el) {
+            setPayload(el, () => ({
+                allDay: true,
+                date,
+                resource,
+                dayEl: el,
+                disabled
+            }));
+        }
+    });
 
     export function reposition() {
         if (!disabled) {
@@ -46,7 +41,7 @@
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{highlight ? ' ' + $theme.highlight : ''}{disabled ? ' ' + $theme.disabled : ''}"
     role="cell"
-    on:pointerdown={!disabled ? $_interaction.action?.select : undefined}
+    onpointerdown={!disabled ? $_interaction.action?.select : undefined}
 >
     <div class="{$theme.bgEvents}">
         {#if !disabled}
@@ -64,6 +59,7 @@
     <div class="{$theme.events}">
         {#if !disabled}
             {#each dayChunks as chunk, i (chunk.event)}
+                <!-- svelte-ignore binding_property_non_reactive -->
                 <Event {chunk} {longChunks} bind:this={refs[i]}/>
             {/each}
         {/if}

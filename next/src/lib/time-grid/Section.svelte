@@ -1,12 +1,13 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent} from '@event-calendar/core';
+    import {setContent} from '$lib/core';
     import {createAllDayContent} from './utils.js';
+
+    let {children, lines} = $props();
 
     let {allDayContent, theme, _times} = getContext('state');
 
-    let allDayText;
-    $: allDayText = createAllDayContent($allDayContent);
+    let allDayText = $derived(createAllDayContent($allDayContent));
 </script>
 
 <div class="{$theme.sidebar}">
@@ -16,6 +17,8 @@
     {/each}
 </div>
 <div class="{$theme.days}" role="row">
-    <div class="{$theme.lines}"><slot name="lines"></slot></div>
-    <slot></slot>
+    <div class="{$theme.lines}">{#if lines}{@render lines()}{/if}</div>
+    {#if children}
+        {@render children()}
+    {/if}
 </div>

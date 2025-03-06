@@ -1,33 +1,25 @@
 <script>
-    import {afterUpdate, getContext, onMount} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {
         bgEvent, createEventClasses, createEventContent, ghostEvent, helperEvent, isFunction, keyEnter, max,
         resourceBackgroundColor, resourceTextColor, setContent, task, toEventWithLocalDates, toViewWithLocalDates
-    } from '@event-calendar/core';
+    } from '$lib/core';
 
-    export let date;
-    export let chunk;
+    let {date, chunk} = $props();
 
-    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick,
+    let {
+        displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick,
         eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight,
         resources, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _slotTimeLimits, _tasks} = getContext('state');
+        _view, _intlEventTime, _interaction, _iClasses, _slotTimeLimits, _tasks
+    } = getContext('state');
 
-    let el;
-    let event;
-    let display;
-    let classes;
-    let style;
-    let content;
-    let timeText;
-    let onclick;
+    let el = $state();
+    let event = $derived(chunk.event);
+    let display = $derived(event.display);
 
-    $: event = chunk.event;
-
-    $: {
-        display = event.display;
-
-        // Style
+    // Style
+    let style = $derived.by(() => {
         let step = $slotDuration.seconds;
         let offset = $_slotTimeLimits.min.seconds;
         let start = (chunk.start - date) / 1000;
@@ -37,7 +29,7 @@
         let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
-        style =
+        let style =
             `top:${top}px;` +
             `min-height:${height}px;` +
             `height:${height}px;` +
@@ -57,17 +49,16 @@
             ;
         }
         style += event.styles.join(';');
-
-        // Class
-        classes = [
-            bgEvent(display) ? $theme.bgEvent : $theme.event,
-            ...$_iClasses([], event),
-            ...createEventClasses($eventClassNames, event, $_view)
-        ].join(' ');
-    }
-
+        return style;
+    });
+    // Class
+    let classes = $derived([
+        bgEvent(display) ? $theme.bgEvent : $theme.event,
+        ...$_iClasses([], event),
+        ...createEventClasses($eventClassNames, event, $_view)
+    ].join(' '));
     // Content
-    $: [timeText, content] = createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view);
+    let [timeText, content] = $derived(createEventContent(chunk, $displayEventEnd, $eventContent, $theme, $_intlEventTime, $_view));
 
     onMount(() => {
         if (isFunction($eventDidMount)) {
@@ -80,7 +71,7 @@
         }
     });
 
-    afterUpdate(() => {
+    $effect(() => {
         if (isFunction($eventAllUpdated) && !helperEvent(display)) {
             task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
@@ -92,8 +83,8 @@
             : undefined;
     }
 
-    function createDragHandler(interaction, resize) {
-        return interaction.action
+    function createDragHandler(interaction, display, resize) {
+        return interaction.action && !bgEvent(display) && !helperEvent(display)
             ? jsEvent => interaction.action.drag(
                 event,
                 jsEvent,
@@ -105,33 +96,37 @@
             : undefined;
     }
 
-    // Onclick handler
-    $: onclick = !bgEvent(display) && createHandler($eventClick, display);
+    // Handlers
+    let onclick = $derived(!bgEvent(display) && createHandler($eventClick, display) || undefined);
+    let onkeydown = $derived(onclick && keyEnter(onclick));
+    let onmouseenter = $derived(createHandler($eventMouseEnter, display));
+    let onmouseleave = $derived(createHandler($eventMouseLeave, display));
+    let onpointerdown = $derived(createDragHandler($_interaction, display));
+
+    let Resizer = $derived($_interaction.resizer);
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <article
     bind:this={el}
     class="{classes}"
     {style}
     role="{onclick ? 'button' : undefined}"
     tabindex="{onclick ? 0 : undefined}"
-    on:click={onclick}
-    on:keydown={onclick && keyEnter(onclick)}
-    on:mouseenter={createHandler($eventMouseEnter, display)}
-    on:mouseleave={createHandler($eventMouseLeave, display)}
-    on:pointerdown={!bgEvent(display) && !helperEvent(display) && createDragHandler($_interaction)}
+    {onclick}
+    {onkeydown}
+    {onmouseenter}
+    {onmouseleave}
+    {onpointerdown}
 >
-    <svelte:component
-        this={$_interaction.resizer}
+    <Resizer
         start
         {event}
-        on:pointerdown={createDragHandler($_interaction, ['y', 'start'])}
+        onpointerdown={createDragHandler($_interaction, display, ['y', 'start'])}
     />
     <div class="{$theme.eventBody}" use:setContent={content}></div>
-    <svelte:component
-        this={$_interaction.resizer}
+    <Resizer
         {event}
-        on:pointerdown={createDragHandler($_interaction, ['y', 'end'])}
+        onpointerdown={createDragHandler($_interaction, display, ['y', 'end'])}
     />
 </article>
