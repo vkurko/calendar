@@ -4,13 +4,9 @@
 
     let {_bodyEl, _viewDates, _hiddenEvents, dayMaxEvents, hiddenDays, theme} = getContext('state');
 
-    let weeks;
-    let days;
-
-    $: {
-        weeks = [];
-        days = 7 - $hiddenDays.length;
-        $_hiddenEvents = {};
+    let days = $derived(7 - $hiddenDays.length);
+    let weeks = $derived.by(() => {
+        let weeks = [];
         $dayMaxEvents;
         for (let i = 0; i < $_viewDates.length / days; ++i) {
             let dates = [];
@@ -19,7 +15,13 @@
             }
             weeks.push(dates);
         }
-    }
+        return weeks;
+    });
+
+    $effect(() => {
+        weeks;
+        $_hiddenEvents = {};
+    });
 </script>
 
 <div

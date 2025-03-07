@@ -1,12 +1,12 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {ancestor, rect, setContent, outsideEvent, keyEnter, toISOString} from '@event-calendar/core';
+    import {ancestor, rect, setContent, outsideEvent, keyEnter, toISOString} from '$lib/core';
     import Event from './Event.svelte';
 
     let {buttonText, theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
 
-    let el;
-    let style = '';
+    let el = $state();
+    let style = $state('');
 
     function position() {
         let dayEl = ancestor(el, 1);
@@ -62,12 +62,15 @@
         }
     }
 
-    $: if ($_popupChunks) {
-        // Fire reposition only on popup chunks change
-       reposition();
-    }
+    $effect(() => {
+        if ($_popupChunks) {
+            // Fire reposition only on popup chunks change
+            reposition();
+        }
+    });
 
-    function close(e) {
+    function close(jsEvent) {
+        jsEvent.stopPropagation();
         $_popupDate = null;
     }
 
@@ -82,18 +85,18 @@
     class="{$theme.popup}"
     {style}
     use:outsideEvent={'pointerdown'}
-    on:pointerdown|stopPropagation
-    on:pointerdownoutside={handlePointerDownOutside}
+    onpointerdown={e => e.stopPropagation()}
+    onpointerdownoutside={handlePointerDownOutside}
 >
     <div class="{$theme.dayHead}">
         <time datetime="{toISOString($_popupDate, 10)}" use:setContent={$_intlDayPopover.format($_popupDate)}></time>
-        <!-- svelte-ignore a11y-missing-attribute -->
+        <!-- svelte-ignore a11y_missing_attribute -->
         <a
             role="button"
             tabindex="0"
             aria-label={$buttonText.close}
-            on:click|stopPropagation={close}
-            on:keydown={keyEnter(close)}
+            onclick={close}
+            onkeydown={keyEnter(close)}
         >&times;</a>
     </div>
     <div class="{$theme.events}">

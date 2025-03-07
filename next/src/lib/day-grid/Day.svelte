@@ -1,79 +1,82 @@
 <script>
     import {getContext, tick} from 'svelte';
+    import {SvelteSet} from 'svelte/reactivity';
     import {
         addDay, assign, cloneDate, createEventChunk, datesEqual, getWeekNumber, isFunction, keyEnter, outsideRange,
         runReposition, setContent, setPayload, toISOString, toLocalDate
-    } from '@event-calendar/core';
+    } from '$lib/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
 
-    export let date;
-    export let chunks;
-    export let bgChunks;
-    export let longChunks;
-    export let iChunks = [];
-    export let dates;
+    let {date, chunks, bgChunks, longChunks, iChunks = [], dates} = $props();
 
     let {
         date: currentDate, dayMaxEvents, highlightedDates, firstDay, moreLinkContent, theme, validRange, weekNumbers,
         weekNumberContent, _hiddenEvents, _intlDayCell, _popupDate, _popupChunks, _today, _interaction
     } = getContext('state');
 
-    let el;
-    let dayChunks, dayBgChunks;
-    let isToday, otherMonth, highlight, disabled;
-    let hiddenEvents = new Set();  // hidden events of this day
-    let moreLink = '';
-    let showPopup;
-    let showWeekNumber;
-    let weekNumber;
+    let el = $state();
+    let hiddenEvents = new SvelteSet();  // hidden events of this day
     let refs = [];
 
-    $: $_hiddenEvents[date.getTime()] = hiddenEvents;
-    $: isToday = datesEqual(date, $_today);
-    $: otherMonth = date.getUTCMonth() !== $currentDate.getUTCMonth();
-    $: highlight = $highlightedDates.some(d => datesEqual(d, date));
-    $: disabled = outsideRange(date, $validRange);
+    $effect(() => {
+        $_hiddenEvents[date.getTime()] = hiddenEvents;
+    });
+    let isToday = $derived(datesEqual(date, $_today));
+    let otherMonth = $derived(date.getUTCMonth() !== $currentDate.getUTCMonth());
+    let highlight = $derived($highlightedDates.some(d => datesEqual(d, date)));
+    let disabled = $derived(outsideRange(date, $validRange));
 
-    $: if (!disabled) {
-        dayChunks = [];
-        dayBgChunks = bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date));
-        hiddenEvents.clear();
-        hiddenEvents = hiddenEvents;
-        for (let chunk of chunks) {
-            if (datesEqual(chunk.date, date)) {
-                dayChunks.push(chunk);
-                // if ($dayMaxEvents !== false && dayChunks.length > $dayMaxEvents) {
-                // 	chunk.hidden = true;
-                // }
+    let dayBgChunks = $derived(disabled || bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date)));
+    let dayChunks = $derived.by(() => {
+        let dayChunks = [];
+        if (!disabled) {
+            hiddenEvents.clear();
+            for (let chunk of chunks) {
+                if (datesEqual(chunk.date, date)) {
+                    dayChunks.push(chunk);
+                    // if ($dayMaxEvents !== false && dayChunks.length > $dayMaxEvents) {
+                    // 	chunk.hidden = true;
+                    // }
+                }
             }
         }
-    }
+        return dayChunks;
+    });
 
-    $: if (!disabled && $_hiddenEvents && hiddenEvents.size) {  // make Svelte update this block on $_hiddenEvents update
-        let text = '+' + hiddenEvents.size + ' more';
-        if ($moreLinkContent) {
-            moreLink = isFunction($moreLinkContent)
-                ? $moreLinkContent({num: hiddenEvents.size, text})
-                : $moreLinkContent;
-        } else {
-            moreLink = text;
+    let moreLink = $derived.by(() => {
+        let moreLink = '';
+        if (!disabled && $_hiddenEvents && hiddenEvents.size) {  // make Svelte update this block on $_hiddenEvents update
+            let text = '+' + hiddenEvents.size + ' more';
+            if ($moreLinkContent) {
+                moreLink = isFunction($moreLinkContent)
+                    ? $moreLinkContent({num: hiddenEvents.size, text})
+                    : $moreLinkContent;
+            } else {
+                moreLink = text;
+            }
         }
-    }
+        return moreLink;
+    });
 
-    $: showPopup = $_popupDate && datesEqual(date, $_popupDate);
+    let showPopup = $derived($_popupDate && datesEqual(date, $_popupDate));
 
-    $: if (showPopup && longChunks && dayChunks) {
-        // Let chunks to reposition then set popup chunks
-        tick().then(setPopupChunks);
-    }
+    $effect(() => {
+        if (showPopup && longChunks && dayChunks) {
+            // Let chunks to reposition then set popup chunks
+            tick().then(setPopupChunks);
+        }
+    });
 
     // dateFromPoint
-    $: if (el) {
-        setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el, disabled}));
-    }
+    $effect(() => {
+        if (el) {
+            setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el, disabled}));
+        }
+    });
 
-    function showMore() {
+    function showMore(jsEvent) {
+        jsEvent.stopPropagation();
         $_popupDate = date;
     }
 
@@ -85,8 +88,9 @@
             .sort((a, b) => a.top - b.top);
     }
 
-    $: {
-        showWeekNumber = $weekNumbers && date.getUTCDay() == ($firstDay ? 1 : 0);
+    let showWeekNumber = $derived($weekNumbers && date.getUTCDay() == ($firstDay ? 1 : 0));
+    let weekNumber = $derived.by(() => {
+        let weekNumber;
         if (showWeekNumber) {
             let week = getWeekNumber(date, $firstDay);
             if ($weekNumberContent) {
@@ -97,7 +101,8 @@
                 weekNumber = 'W' + String(week).padStart(2, '0');
             }
         }
-    }
+        return weekNumber;
+    });
 
     export function reposition() {
         if (!disabled) {
@@ -110,7 +115,7 @@
     bind:this={el}
     class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{isToday ? ' ' + $theme.today : ''}{otherMonth ? ' ' + $theme.otherMonth : ''}{highlight ? ' ' + $theme.highlight : ''}{disabled ? ' ' + $theme.disabled : ''}"
     role="cell"
-    on:pointerdown={$_interaction.action?.select}
+    onpointerdown={$_interaction.action?.select}
 >
     <div class="{$theme.dayHead}">
         <time
@@ -148,6 +153,7 @@
     <div class="{$theme.events}">
         {#if !disabled}
             {#each dayChunks as chunk, i (chunk.event)}
+                <!-- svelte-ignore binding_property_non_reactive -->
                 <Event {chunk} {longChunks} {dates} bind:this={refs[i]}/>
             {/each}
         {/if}
@@ -157,15 +163,16 @@
     {/if}
     <div class="{$theme.dayFoot}">
         {#if !disabled && hiddenEvents.size}
-            <!-- svelte-ignore a11y-missing-attribute -->
-            <!-- svelte-ignore a11y-missing-content -->
+            <!-- svelte-ignore a11y_missing_attribute -->
+            <!-- svelte-ignore a11y_missing_content -->
+            <!-- svelte-ignore a11y_consider_explicit_label -->
             <a
                 role="button"
                 tabindex="0"
                 aria-haspopup="true"
-                on:click|stopPropagation={showMore}
-                on:keydown={keyEnter(showMore)}
-                on:pointerdown|stopPropagation
+                onclick={showMore}
+                onkeydown={keyEnter(showMore)}
+                onpointerdown={e => e.stopPropagation()}
                 use:setContent={moreLink}
             ></a>
         {/if}

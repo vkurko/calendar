@@ -1,5 +1,5 @@
 import {derived} from 'svelte/store';
-import {cloneDate, addDay, subtractDay} from '@event-calendar/core';
+import {cloneDate, addDay, subtractDay} from '$lib/core';
 
 export function days(state) {
     return derived([state.date, state.firstDay, state.hiddenDays], ([$date, $firstDay, $hiddenDays]) => {
