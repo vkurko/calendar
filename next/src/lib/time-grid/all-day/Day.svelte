@@ -1,5 +1,5 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {datesEqual, outsideRange, runReposition, setPayload} from '$lib/core';
     import Event from './Event.svelte';
 
@@ -18,16 +18,14 @@
     let disabled = $derived(outsideRange(date, $validRange));
 
     // dateFromPoint
-    $effect(() => {
-        if (el) {
-            setPayload(el, () => ({
-                allDay: true,
-                date,
-                resource,
-                dayEl: el,
-                disabled
-            }));
-        }
+    onMount(() => {
+        setPayload(el, () => ({
+            allDay: true,
+            date,
+            resource,
+            dayEl: el,
+            disabled
+        }));
     });
 
     export function reposition() {

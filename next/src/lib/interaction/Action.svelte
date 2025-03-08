@@ -4,7 +4,7 @@
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, getElementWithPayload,
         getPayload, isFunction, listen, listView, max, min, rect, runAll, subtractDay, subtractDuration, timelineView,
         toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
-    } from '@event-calendar/core';
+    } from '$lib/core';
     import {animate, limit} from './utils';
 
     let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, _bodyEl, dateClick, dragScroll, datesAboveResources,

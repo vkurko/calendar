@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {bgEvent, helperEvent, listen} from '@event-calendar/core';
+    import {bgEvent, helperEvent, listen} from '$lib/core';
     import Action from './Action.svelte';
     import Pointer from './Pointer.svelte';
     import Resizer from './Resizer.svelte';

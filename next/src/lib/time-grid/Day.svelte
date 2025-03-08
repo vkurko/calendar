@@ -1,5 +1,5 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {
         addDuration, bgEvent, cloneDate, createEventChunk, datesEqual, eventIntersects, floor, outsideRange, rect,
         setPayload
@@ -67,10 +67,8 @@
         };
     }
 
-    $effect(() => {
-        if (el) {
-            setPayload(el, dateFromPoint);
-        }
+    onMount(() => {
+        setPayload(el, dateFromPoint);
     });
 </script>
 

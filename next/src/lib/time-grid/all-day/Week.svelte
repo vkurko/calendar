@@ -1,14 +1,13 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, untrack} from 'svelte';
     import {
-        addDay, bgEvent, cloneDate, createEventChunk, debounce, eventIntersects, limitToRange, prepareEventChunks,
-        runReposition
+        addDay, bgEvent, cloneDate, createEventChunk, eventIntersects, limitToRange, prepareEventChunks, runReposition
     } from '$lib/core';
     import Day from './Day.svelte';
 
     let {dates, resource = undefined} = $props();
 
-    let {_events, _iEvents, _queue2, hiddenDays, resources, filterEventsWithResources, validRange} = getContext('state');
+    let {_events, _iEvents, hiddenDays, resources, filterEventsWithResources, validRange} = getContext('state');
 
     let refs = [];
 
@@ -18,16 +17,6 @@
     let resourceFilter = $derived(resource ?? (
         $filterEventsWithResources ? $resources : undefined
     ));
-
-    let debounceHandle = {};
-    function reposition() {
-        debounce(() => runReposition(refs, dates), debounceHandle, _queue2);
-    }
-
-    $effect(() => {
-        // Run reposition only when events get changed
-        runReposition(refs, dates);
-    });
 
     let [chunks, bgChunks, longChunks] = $derived.by(() => {
         let chunks = [];
@@ -44,8 +33,15 @@
         }
         prepareEventChunks(bgChunks, $hiddenDays);
         let longChunks = prepareEventChunks(chunks, $hiddenDays);
-
         return [chunks, bgChunks, longChunks];
+    });
+
+    function reposition() {
+        runReposition(refs, dates);
+    }
+    $effect(() => {
+        chunks;
+        untrack(reposition);
     });
 
     let iChunks = $derived($_iEvents.map(event => {

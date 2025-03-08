@@ -17,7 +17,7 @@
     let hidden = $state(false);
 
     let event = $derived(chunk.event);
-    let display = $derived(event.display);
+    let display = $derived(chunk.event.display);
 
     // Style
     let style = $derived.by(() => {
@@ -98,9 +98,6 @@
     }
 
     export function reposition() {
-        if (!el) {
-            return;
-        }
         margin = repositionEvent(chunk, longChunks, height(el));
         if ($dayMaxEvents === true) {
             hide();

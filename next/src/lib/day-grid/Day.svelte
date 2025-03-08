@@ -1,9 +1,9 @@
 <script>
-    import {getContext, tick} from 'svelte';
+    import {getContext, onMount, untrack} from 'svelte';
     import {SvelteSet} from 'svelte/reactivity';
     import {
         addDay, assign, cloneDate, createEventChunk, datesEqual, getWeekNumber, isFunction, keyEnter, outsideRange,
-        runReposition, setContent, setPayload, toISOString, toLocalDate
+        runReposition, setContent, setPayload, toISOString, toLocalDate, stopPropagation
     } from '$lib/core';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
@@ -17,21 +17,19 @@
 
     let el = $state();
     let hiddenEvents = new SvelteSet();  // hidden events of this day
-    let refs = [];
-
-    $effect(() => {
-        $_hiddenEvents[date.getTime()] = hiddenEvents;
+    $effect.pre(() => {
+        $_hiddenEvents[date.getTime()] = untrack(() => hiddenEvents);
     });
+    let refs = [];
     let isToday = $derived(datesEqual(date, $_today));
     let otherMonth = $derived(date.getUTCMonth() !== $currentDate.getUTCMonth());
     let highlight = $derived($highlightedDates.some(d => datesEqual(d, date)));
     let disabled = $derived(outsideRange(date, $validRange));
 
-    let dayBgChunks = $derived(disabled || bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date)));
+    let dayBgChunks = $derived(!disabled ? bgChunks.filter(bgChunk => datesEqual(bgChunk.date, date)) : []);
     let dayChunks = $derived.by(() => {
         let dayChunks = [];
         if (!disabled) {
-            hiddenEvents.clear();
             for (let chunk of chunks) {
                 if (datesEqual(chunk.date, date)) {
                     dayChunks.push(chunk);
@@ -43,10 +41,14 @@
         }
         return dayChunks;
     });
+    $effect.pre(() => {
+        dayChunks;
+        hiddenEvents.clear();
+    });
 
     let moreLink = $derived.by(() => {
         let moreLink = '';
-        if (!disabled && $_hiddenEvents && hiddenEvents.size) {  // make Svelte update this block on $_hiddenEvents update
+        if (!disabled && hiddenEvents.size) {
             let text = '+' + hiddenEvents.size + ' more';
             if ($moreLinkContent) {
                 moreLink = isFunction($moreLinkContent)
@@ -59,27 +61,23 @@
         return moreLink;
     });
 
-    let showPopup = $derived($_popupDate && datesEqual(date, $_popupDate));
-
-    $effect(() => {
-        if (showPopup && longChunks && dayChunks) {
-            // Let chunks to reposition then set popup chunks
-            tick().then(setPopupChunks);
-        }
-    });
-
     // dateFromPoint
-    $effect(() => {
-        if (el) {
-            setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el, disabled}));
-        }
+    onMount(() => {
+        setPayload(el, () => ({allDay: true, date, resource: undefined, dayEl: el, disabled}));
     });
 
-    function showMore(jsEvent) {
-        jsEvent.stopPropagation();
+    // Popup
+    function showMore() {
         $_popupDate = date;
     }
-
+    let showPopup = $derived($_popupDate && datesEqual(date, $_popupDate));
+    $effect.pre(() => {
+        dayChunks;
+        longChunks;
+        if (showPopup) {
+            untrack(setPopupChunks);
+        }
+    });
     function setPopupChunks() {
         let nextDay = addDay(cloneDate(date));
         let chunks = dayChunks.concat(longChunks[date.getTime()]?.chunks || []);
@@ -88,6 +86,7 @@
             .sort((a, b) => a.top - b.top);
     }
 
+    // Week numbers
     let showWeekNumber = $derived($weekNumbers && date.getUTCDay() == ($firstDay ? 1 : 0));
     let weekNumber = $derived.by(() => {
         let weekNumber;
@@ -170,9 +169,9 @@
                 role="button"
                 tabindex="0"
                 aria-haspopup="true"
-                onclick={showMore}
+                onclick={stopPropagation(showMore)}
                 onkeydown={keyEnter(showMore)}
-                onpointerdown={e => e.stopPropagation()}
+                onpointerdown={stopPropagation()}
                 use:setContent={moreLink}
             ></a>
         {/if}

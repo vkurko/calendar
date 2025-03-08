@@ -16,7 +16,7 @@
 
     let el = $state();
     let event = $derived(chunk.event);
-    let display = $derived(event.display);
+    let display = $derived(chunk.event.display);
 
     // Style
     let style = $derived.by(() => {

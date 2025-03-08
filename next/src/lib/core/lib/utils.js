@@ -45,3 +45,12 @@ export function runAll(fns) {
 export function noop() {}
 
 export const identity = (x) => x;
+
+export function stopPropagation(fn) {
+    return function (event) {
+        event.stopPropagation();
+        if (fn) {
+            fn.call(this, event);
+        }
+    };
+}

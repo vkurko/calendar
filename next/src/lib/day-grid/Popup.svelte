@@ -1,6 +1,6 @@
 <script>
-    import {getContext, tick} from 'svelte';
-    import {ancestor, rect, setContent, outsideEvent, keyEnter, toISOString} from '$lib/core';
+    import {getContext, tick, untrack} from 'svelte';
+    import {ancestor, rect, setContent, outsideEvent, keyEnter, toISOString, stopPropagation} from '$lib/core';
     import Event from './Event.svelte';
 
     let {buttonText, theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
@@ -46,35 +46,28 @@
         }
         style += `top:${top}px;`;
     }
-
     function reposition() {
-        // Skip the first call (el is not defined at this time)
-        if (el) {
-            style = '';
-            // Let chunks to update/mount then position the popup
-            tick().then(() => {
-                if ($_popupChunks.length) {
-                    position();
-                } else {
-                    close();
-                }
-            });
-        }
+        // Let chunks to update/mount then position the popup
+        tick().then(() => {
+            if ($_popupChunks.length) {
+                position();
+            } else {
+                close();
+            }
+        });
     }
-
     $effect(() => {
         if ($_popupChunks) {
             // Fire reposition only on popup chunks change
-            reposition();
+            untrack(reposition);
         }
     });
 
-    function close(jsEvent) {
-        jsEvent.stopPropagation();
+    function close() {
         $_popupDate = null;
     }
 
-    function handlePointerDownOutside(e) {
+    function handlePointerDownOutside() {
         close();
         $_interaction.action?.noClick();
     }
@@ -85,7 +78,7 @@
     class="{$theme.popup}"
     {style}
     use:outsideEvent={'pointerdown'}
-    onpointerdown={e => e.stopPropagation()}
+    onpointerdown={stopPropagation()}
     onpointerdownoutside={handlePointerDownOutside}
 >
     <div class="{$theme.dayHead}">
@@ -95,7 +88,7 @@
             role="button"
             tabindex="0"
             aria-label={$buttonText.close}
-            onclick={close}
+            onclick={stopPropagation(close)}
             onkeydown={keyEnter(close)}
         >&times;</a>
     </div>

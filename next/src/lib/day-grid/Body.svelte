@@ -1,13 +1,15 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, untrack} from 'svelte';
+    import {runReposition} from '$lib/core/index.js';
     import Week from './Week.svelte';
 
-    let {_bodyEl, _viewDates, _hiddenEvents, dayMaxEvents, hiddenDays, theme} = getContext('state');
+    let {_bodyEl, _viewDates, _events, _hiddenEvents, dayMaxEvents, hiddenDays, theme} = getContext('state');
+
+    let refs = [];
 
     let days = $derived(7 - $hiddenDays.length);
     let weeks = $derived.by(() => {
         let weeks = [];
-        $dayMaxEvents;
         for (let i = 0; i < $_viewDates.length / days; ++i) {
             let dates = [];
             for (let j = 0; j < days; ++j) {
@@ -17,10 +19,20 @@
         }
         return weeks;
     });
-
-    $effect(() => {
+    $effect.pre(() => {
         weeks;
+        $dayMaxEvents;
         $_hiddenEvents = {};
+    });
+
+    function reposition() {
+        runReposition(refs, weeks);
+    }
+    $effect(() => {
+        $_events;
+        $_hiddenEvents;
+        $dayMaxEvents;
+        untrack(reposition);
     });
 </script>
 
@@ -29,8 +41,11 @@
     class="{$theme.body}{$dayMaxEvents === true ? ' ' + $theme.uniform : ''}"
 >
     <div class="{$theme.content}">
-        {#each weeks as dates}
-            <Week {dates}/>
+        {#each weeks as dates, i}
+            <!-- svelte-ignore binding_property_non_reactive -->
+            <Week {dates} bind:this={refs[i]}/>
         {/each}
     </div>
 </div>
+
+<svelte:window on:resize={reposition}/>

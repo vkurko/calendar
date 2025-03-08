@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {bgEvent, helperEvent} from '@event-calendar/core';
+    import {bgEvent, helperEvent} from '$lib/core';
 
     export let event;
     export let start = false;
