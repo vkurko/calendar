@@ -33,7 +33,6 @@ export default class {
 
         // Private stores
         this._queue = writable(new Map());  // debounce queue (beforeUpdate)
-        this._queue2 = writable(new Map());  // debounce queue (afterUpdate)
         this._tasks = new Map();  // timeout IDs for tasks
         this._auxiliary = writable([]);  // auxiliary components
         this._dayGrid = dayGrid(this);
@@ -50,6 +49,7 @@ export default class {
         this._intlTitle = intlRange(this.locale, this.titleFormat);
         this._bodyEl = writable(undefined);
         this._scrollable = writable(false);
+        this._recheckScrollable = writable(false);
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
         this._view = view2(this);

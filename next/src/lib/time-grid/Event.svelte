@@ -2,16 +2,16 @@
     import {getContext, onMount} from 'svelte';
     import {
         bgEvent, createEventClasses, createEventContent, ghostEvent, helperEvent, isFunction, keyEnter, max,
-        resourceBackgroundColor, resourceTextColor, setContent, task, toEventWithLocalDates, toViewWithLocalDates
+        resourceBackgroundColor, resourceTextColor, setContent, toEventWithLocalDates, toViewWithLocalDates
     } from '$lib/core';
 
     let {date, chunk} = $props();
 
     let {
-        displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick,
+        displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent, eventClick,
         eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, slotEventOverlap, slotDuration, slotHeight,
         resources, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _slotTimeLimits, _tasks
+        _view, _intlEventTime, _interaction, _iClasses, _slotTimeLimits
     } = getContext('state');
 
     let el = $state();
@@ -68,12 +68,6 @@
                 el,
                 view: toViewWithLocalDates($_view)
             });
-        }
-    });
-
-    $effect(() => {
-        if (isFunction($eventAllUpdated) && !helperEvent(display)) {
-            task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 

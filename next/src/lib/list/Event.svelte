@@ -2,14 +2,16 @@
     import {getContext, onMount} from 'svelte';
     import {
         createEventClasses, createEventContent, isFunction, keyEnter, resourceBackgroundColor, resourceTextColor,
-        setContent, task, toEventWithLocalDates, toViewWithLocalDates
+        setContent, toEventWithLocalDates, toViewWithLocalDates
     } from '$lib/core';
 
     let {chunk} = $props();
 
-    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor, eventColor, eventContent,
+    let {
+        displayEventEnd, eventBackgroundColor, eventTextColor, eventColor, eventContent,
         eventClassNames, eventClick, eventDidMount, eventMouseEnter, eventMouseLeave, resources, theme,
-        _view, _intlEventTime, _interaction, _tasks} = getContext('state');
+        _view, _intlEventTime, _interaction
+    } = getContext('state');
 
     let el = $state();
     let event = $derived(chunk.event);
@@ -40,12 +42,6 @@
                 el,
                 view: toViewWithLocalDates($_view)
             });
-        }
-    });
-
-    $effect(() => {
-        if (isFunction($eventAllUpdated)) {
-            task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 

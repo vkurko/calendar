@@ -21,9 +21,9 @@
     export let longChunks = {};
     export let resource = undefined;
 
-    let {displayEventEnd, eventAllUpdated, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
+    let {displayEventEnd, eventBackgroundColor, eventTextColor,eventColor, eventContent, eventClick,
         eventDidMount, eventClassNames, eventMouseEnter, eventMouseLeave, resources, slotDuration, slotWidth, theme,
-        _view, _intlEventTime, _interaction, _iClasses, _tasks} = getContext('state');
+        _view, _intlEventTime, _interaction, _iClasses} = getContext('state');
 
     let el;
     let event;
@@ -94,12 +94,6 @@
                 el,
                 view: toViewWithLocalDates($_view)
             });
-        }
-    });
-
-    afterUpdate(() => {
-        if (isFunction($eventAllUpdated) && !helperEvent(display)) {
-            task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
         }
     });
 

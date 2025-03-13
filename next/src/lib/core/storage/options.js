@@ -159,7 +159,5 @@ export function diff(options, prevOptions) {
             diff.push([key, options[key]]);
         }
     }
-    assign(prevOptions, options);
-
     return diff;
 }

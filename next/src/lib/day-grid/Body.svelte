@@ -1,9 +1,11 @@
 <script>
     import {getContext, untrack} from 'svelte';
-    import {runReposition} from '$lib/core/index.js';
+    import {runReposition, observeResize} from '$lib/core';
     import Week from './Week.svelte';
 
-    let {_bodyEl, _viewDates, _events, _hiddenEvents, dayMaxEvents, hiddenDays, theme} = getContext('state');
+    let {
+        _bodyEl, _viewDates, _events, _hiddenEvents, _recheckScrollable, dayMaxEvents, hiddenDays, theme
+    } = getContext('state');
 
     let refs = [];
 
@@ -39,6 +41,7 @@
 <div
     bind:this={$_bodyEl}
     class="{$theme.body}{$dayMaxEvents === true ? ' ' + $theme.uniform : ''}"
+    use:observeResize={() => $_recheckScrollable = true}
 >
     <div class="{$theme.content}">
         {#each weeks as dates, i}
