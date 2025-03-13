@@ -1,15 +1,16 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent, toISOString} from '@event-calendar/core';
-    import {Section, Body, Day, Week} from '@event-calendar/time-grid';
+    import {setContent, toISOString} from '$lib/core';
+    import {Section, Body, Day, Week} from '$lib/time-grid';
     import Label from './Label.svelte';
 
-    let {datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme} = getContext('state');
+    let {
+        datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme
+    } = getContext('state');
 
-    let loops;
-    $: loops = $datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates];
+    let loops = $derived($datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates]);
 
-    let resourceLabels = [];
+    let resourceLabels = $state([]);
 </script>
 
 <div class="{$theme.header}">
@@ -26,7 +27,7 @@
                     </div>
                 {:else}
                     <div class="{$theme.day}">
-                        <Label resource={item0} on:text={e => resourceLabels[i] = e.detail + ', '} />
+                        <Label resource={item0} setLabel={e => resourceLabels[i] = e.detail + ', '} />
                     </div>
                 {/if}
                 {#if loops[1].length > 1}
