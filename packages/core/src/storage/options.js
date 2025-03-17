@@ -60,6 +60,7 @@ export function createOptions(plugins) {
         resources: [],
         selectable: false,
         scrollTime: '06:00:00',
+        showAllTimes: false,
         slotDuration: '00:30:00',
         slotEventOverlap: true,
         slotHeight: 24,  // ec option

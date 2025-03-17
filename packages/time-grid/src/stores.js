@@ -3,7 +3,7 @@ import {createDate, createSlotTimeLimits, createTimes, setMidnight} from '@event
 
 export function times(state) {
     return derived(
-        [state.slotDuration, state._slotTimeLimits, state._intlSlotLabel],
+        [state.slotDuration, state.showAllTimes, state._slotTimeLimits, state._intlSlotLabel],
         args => createTimes(setMidnight(createDate()), ...args)
     );
 }

@@ -24,13 +24,13 @@ export function dayTimeLimits(state) {
 
 export function dayTimes(state) {
     return derived(
-        [state._viewDates, state.slotDuration, state._dayTimeLimits, state._intlSlotLabel],
-        ([$_viewDates, $slotDuration, $_dayTimeLimits, $_intlSlotLabel]) => {
+        [state._viewDates, state.slotDuration, state.showAllTimes, state._dayTimeLimits, state._intlSlotLabel],
+        ([$_viewDates, $slotDuration, $showAllTimes, $_dayTimeLimits, $_intlSlotLabel]) => {
             let dayTimes = {};
             for (let date of $_viewDates) {
                 let time = date.getTime();
                 dayTimes[time] = time in $_dayTimeLimits
-                    ? createTimes(date, $slotDuration, $_dayTimeLimits[time], $_intlSlotLabel)
+                    ? createTimes(date, $slotDuration, $showAllTimes, $_dayTimeLimits[time], $_intlSlotLabel)
                     : [];
             }
 

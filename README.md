@@ -92,6 +92,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [selectLongPressDelay](#selectlongpressdelay)
   - [selectMinDistance](#selectmindistance)
   - [scrollTime](#scrolltime)
+  - [showAllTimes](#showalltimes)
   - [slotDuration](#slotduration)
   - [slotEventOverlap](#sloteventoverlap)
   - [slotHeight](#slotheight)
@@ -2022,6 +2023,14 @@ Defines how many pixels the user’s mouse must move before the selection begins
 Determines how far forward the scroll pane is initially scrolled.
 
 This should be a value that can be parsed into a [Duration](#duration-object) object.
+
+### showAllTimes
+- Type `boolean`
+- Default `false`
+
+Forces the `timeGrid` views to render all time slot labels.
+
+If set to `true` all time labels will be shown. CSS can then be used to adjust their placement in your project.
 
 ### slotDuration
 - Type `string`, `integer` or `object`
