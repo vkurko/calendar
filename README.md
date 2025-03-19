@@ -21,6 +21,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
 
   - [allDayContent](#alldaycontent)
   - [allDaySlot](#alldayslot)
+  - [allowMutlidayResize](#allowmutlidayresize)
   - [buttonText](#buttontext)
   - [customButtons](#custombuttons)
   - [date](#date)
@@ -294,6 +295,14 @@ The default text
 Determines whether the `all-day` slot is displayed at the top of the calendar.
 
 When hidden with `false`, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
+
+### allowMutlidayResize
+- Type `boolean`
+- Default `true`
+
+Determines whether an event can by resized across multiple days.
+
+When set to `false` resizing an event will be limited to a single day.
 
 ### buttonText
 - Type `object` or `function`

@@ -7,8 +7,8 @@
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
-    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, _bodyEl, dateClick, dragScroll, datesAboveResources,
-        eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
+    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, _bodyEl, allowMutlidayResize, dateClick, dragScroll,
+        datesAboveResources, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
         eventResizeStart, eventResizeStop, eventResize, longPressDelay, selectable, select: selectFn,
         selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, slotWidth, unselect: unselectFn,
         unselectAuto, unselectCancel, validRange, view} = getContext('state');
@@ -270,7 +270,10 @@
 
     function handlePointerMove(jsEvent) {
         if (complexAction() && jsEvent.isPrimary) {
-            toX = jsEvent.clientX;
+            // Ignore the change in x if multiday resize is disabled
+            if (!resizing() || $allowMutlidayResize) {
+                toX = jsEvent.clientX;
+            }
             toY = jsEvent.clientY;
             move(jsEvent);
         }
