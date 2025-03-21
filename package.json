@@ -1,45 +1,58 @@
 {
-  "name": "event-calendar",
-  "version": "3.10.0",
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "start": "sirv public",
-    "set-version": "node ./scripts/set-version.cjs",
-    "publish": "node ./scripts/publish.cjs"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/plugin-transform-runtime": "^7.25.9",
-    "@babel/preset-env": "^7.26.0",
-    "@babel/runtime-corejs3": "^7.26.0",
-    "@event-calendar/build": "~3.10.0",
-    "@event-calendar/core": "~3.10.0",
-    "@event-calendar/day-grid": "~3.10.0",
-    "@event-calendar/interaction": "~3.10.0",
-    "@event-calendar/list": "~3.10.0",
-    "@event-calendar/resource-time-grid": "~3.10.0",
-    "@event-calendar/resource-timeline": "~3.10.0",
-    "@event-calendar/time-grid": "~3.10.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.1",
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-terser": "^0.4.4",
-    "autoprefixer": "^10.4.20",
-    "cssnano": "^7.0.6",
-    "postcss": "^8.4.49",
-    "rollup": "^4.27.4",
-    "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-scss": "^4.0.0",
-    "rollup-plugin-svelte": "^7.2.2",
-    "sass": "^1.81.0",
-    "svelte": "^4.2.19"
-  },
-  "dependencies": {
-    "sirv-cli": "^2.0.2"
-  },
-  "browserslist": [
-    "defaults and supports fetch"
-  ],
-  "type": "module"
+	"name": "@event-calendar/svelte",
+	"version": "5.0.0-alpha.1",
+	"title": "Event Calendar (Svelte version)",
+	"description": "Full-sized drag & drop event calendar with resource & timeline views",
+	"keywords": [
+		"calendar",
+		"event",
+		"resource",
+		"timeline",
+		"full-sized"
+	],
+	"homepage": "https://vkurko.github.io/calendar/",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vkurko/calendar.git"
+	},
+	"license": "MIT",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build && npm run prepack",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
+	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"sideEffects": [
+		"**/*.css"
+	],
+	"svelte": "./dist/index.svelte.js",
+	"types": "./dist/index.svelte.d.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.svelte.d.ts",
+			"svelte": "./dist/index.svelte.js"
+		}
+	},
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/package": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"publint": "^0.3.2",
+		"sass": "^1.83.4",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
+		"typescript": "^5.0.0",
+		"vite": "^5.4.11"
+	}
 }

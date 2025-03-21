@@ -1,6 +1,25 @@
 .idea
 node_modules
-/packages/*/*.js
-/packages/*/*.css
-/packages/*/*.map
-/public
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+/dist
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
