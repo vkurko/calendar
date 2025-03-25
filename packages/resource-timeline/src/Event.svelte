@@ -12,7 +12,7 @@
         resourceBackgroundColor,
         resourceTextColor,
         task, height, toSeconds,
-        isFunction, subtractDuration, cloneDate
+        isFunction
     } from '@event-calendar/core';
     import {repositionEvent} from './lib.js';
 
@@ -115,7 +115,7 @@
                 event,
                 jsEvent,
                 resize,
-                resize && chunk.zeroDuration ? subtractDuration(cloneDate(event.end), $slotDuration) : undefined,
+                undefined,
                 [margin, resource],
                 chunk.zeroDuration
             )

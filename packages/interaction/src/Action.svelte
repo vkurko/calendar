@@ -74,8 +74,9 @@
                                 subtractDay(minResize);
                             }
                         } else {
-                            if (!zeroDuration) {
-                                subtractDuration(minResize, $slotDuration);
+                            subtractDuration(minResize, $slotDuration);
+                            if (minResize < event.start) {
+                                minResize = event.start;
                             }
                             // Overwrite the date due to possible discrepancy between calculated date
                             // and resizer coordinates in browser
@@ -90,9 +91,15 @@
                             }
                         } else {
                             addDuration(minResize, $slotDuration);
+                            if (minResize > event.end) {
+                                minResize = event.end;
+                            }
                             // Overwrite the date due to possible discrepancy between calculated date
                             // and resizer coordinates in browser
                             date = event.end;
+                            if (!zeroDuration) {
+                                date = subtractDuration(cloneDate(date), $slotDuration);
+                            }
                         }
                     }
 

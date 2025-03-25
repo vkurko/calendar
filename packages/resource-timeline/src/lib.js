@@ -2,7 +2,7 @@ import {
     addDay, addDuration,
     cloneDate,
     createDuration,
-    datesEqual, max,
+    datesEqual,
     sortEventChunks,
     toSeconds
 } from '@event-calendar/core';
@@ -38,7 +38,7 @@ export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDu
                             if (chunk.end > dayEnd) {
                                 slots += dayEnd - chunk.start;
                             } else {
-                                slots += max(chunk.end - chunk.start, step * 1000);
+                                slots += chunk.end - chunk.start || step * 1000;
                                 break;
                             }
                         }

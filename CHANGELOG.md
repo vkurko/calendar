@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.10.1
+March 25, 2025
+
+* Fixed an issue with displaying events shorter than the slot duration ([423](https://github.com/vkurko/calendar/issues/423))
+
 ## 3.10.0
 February 4, 2025
 

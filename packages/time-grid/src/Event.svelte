@@ -1,7 +1,7 @@
 <script>
     import {afterUpdate, getContext, onMount} from 'svelte';
     import {
-        bgEvent, createEventClasses, createEventContent, ghostEvent, helperEvent, isFunction, keyEnter, max,
+        bgEvent, createEventClasses, createEventContent, ghostEvent, helperEvent, isFunction, keyEnter,
         resourceBackgroundColor, resourceTextColor, setContent, task, toEventWithLocalDates, toViewWithLocalDates
     } from '@event-calendar/core';
 
@@ -33,7 +33,7 @@
         let start = (chunk.start - date) / 1000;
         let end = (chunk.end - date) / 1000;
         let top = (start - offset) / step * $slotHeight;
-        let height = max((end - start) / step * $slotHeight, $slotHeight);
+        let height = (end - start) / step * $slotHeight || $slotHeight;
         let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
         let bgColor = event.backgroundColor || resourceBackgroundColor(event, $resources) || $eventBackgroundColor || $eventColor;
         let txtColor = event.textColor || resourceTextColor(event, $resources) || $eventTextColor;
