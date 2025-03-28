@@ -4,6 +4,7 @@ import Auxiliary from './Auxiliary.svelte';
 
 export default {
     createOptions(options) {
+        options.allowMutlidayResize = true;
         options.dateClick = undefined;
         options.dragScroll = true;
         options.editable = false;
