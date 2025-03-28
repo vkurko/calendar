@@ -2,22 +2,34 @@ import {addDuration, cloneDate, createDuration, DAY_IN_SECONDS, toISOString, toS
 import {max as maxFn, min as minFn, isFunction} from './utils.js';
 import {bgEvent} from './events.js';
 
-export function createTimes(date, $slotDuration, $_slotTimeLimits, $_intlSlotLabel) {
+export function createTimes(date, $slotDuration, $slotLabelInterval, $_slotTimeLimits, $_intlSlotLabel) {
     date = cloneDate(date);
-    let compact = $slotDuration.seconds < 3600;
     let times = [];
     let end = cloneDate(date);
-    let i = 1;
     addDuration(date, $_slotTimeLimits.min);
     addDuration(end, $_slotTimeLimits.max);
+    // Labels
+    if ($slotLabelInterval === undefined) {
+        $slotLabelInterval = $slotDuration.seconds < 3600
+            ? createDuration($slotDuration.seconds * 2)
+            : $slotDuration;
+    }
+    let showAll = $slotLabelInterval.seconds <= 0;
+    let label;
+    if (!showAll) {
+        label = cloneDate(date);
+    }
+    // Build times
     while (date < end) {
         times.push([
             toISOString(date),
             $_intlSlotLabel.format(date),
-            times.length && (i || !compact)
+            showAll || (times.length && date >= label)
         ]);
+        while (!showAll && date >= label) {
+            addDuration(label, $slotLabelInterval);
+        }
         addDuration(date, $slotDuration);
-        i = 1 - i;
     }
 
     return times;

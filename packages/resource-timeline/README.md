@@ -96,6 +96,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [slotEventOverlap](#sloteventoverlap)
   - [slotHeight](#slotheight)
   - [slotLabelFormat](#slotlabelformat)
+  - [slotLabelInterval](#slotlabelinterval)
   - [slotMaxTime](#slotmaxtime)
   - [slotMinTime](#slotmintime)
   - [slotWidth](#slotwidth)
@@ -207,8 +208,8 @@ Or in your Svelte component, use the calendar like this:
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.10.1/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.10.1/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.11.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.11.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2076,6 +2077,16 @@ function (time) {
 </tr>
 </table>
 
+### slotLabelInterval
+- Type `string`, `integer` or `object`
+- Default `undefined`
+
+The interval at which slot labels should be displayed in `timeGrid` views.
+
+If not specified, then if `slotDuration` is less than 1 hour, the interval is considered to be twice as long, i.e. the labels are displayed every other time.
+
+If the interval is set to zero, then labels are displayed for all slots, including the very first one, which is not normally displayed.
+
 ### slotMaxTime
 - Type `string`, `integer` or `object`
 - Default `'24:00:00'`
@@ -2096,7 +2107,7 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 - Type `integer`
 - Default `72`
 
-Defines the time slot width in pixels in `ResourceTimeline` views. When changing the setting, you must additionally override the following CSS styles:
+Defines the time slot width in pixels in `resourceTimeline` views. When changing the setting, you must additionally override the following CSS styles:
 
 ```css
 .ec-timeline .ec-time, .ec-timeline .ec-line {

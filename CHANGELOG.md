@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.11.0
+March 29, 2025
+
+* Added `slotLabelInterval` option ([329](https://github.com/vkurko/calendar/issues/329))
+
 ## 3.10.1
 March 25, 2025
 
