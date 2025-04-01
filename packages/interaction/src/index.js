@@ -5,6 +5,7 @@ import Auxiliary from './Auxiliary.svelte';
 export default {
     createOptions(options) {
         options.dateClick = undefined;
+        options.dragConstraint = undefined;
         options.dragScroll = true;
         options.editable = false;
         options.eventDragMinDistance = 5;
@@ -20,8 +21,10 @@ export default {
         options.eventStartEditable = true;
         options.longPressDelay = 1000;
         options.pointer = false;
+        options.resizeConstraint = undefined;
         options.select = undefined;
         options.selectBackgroundColor = undefined;  // ec option
+        options.selectConstraint = undefined;
         options.selectLongPressDelay = undefined;
         options.selectMinDistance = 5;
         options.unselect = undefined;

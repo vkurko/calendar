@@ -33,6 +33,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [dayMaxEvents](#daymaxevents)
   - [dayPopoverFormat](#daypopoverformat)
   - [displayEventEnd](#displayeventend)
+  - [dragConstraint](#dragconstraint)
   - [dragScroll](#dragscroll)
   - [duration](#duration)
   - [editable](#editable)
@@ -79,19 +80,21 @@ Inspired by [FullCalendar](https://fullcalendar.io/), implements similar options
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
+  - [nowIndicator](#nowindicator)
   </td><td>
 
-  - [nowIndicator](#nowindicator)
   - [pointer](#pointer)
+  - [resizeConstraint](#resizeconstraint)
   - [resources](#resources)
   - [resourceLabelContent](#resourcelabelcontent)
   - [resourceLabelDidMount](#resourcelabeldidmount)
+  - [scrollTime](#scrolltime)
   - [select](#select)
   - [selectable](#selectable)
   - [selectBackgroundColor](#selectbackgroundcolor)
+  - [selectConstraint](#selectconstraint)
   - [selectLongPressDelay](#selectlongpressdelay)
   - [selectMinDistance](#selectmindistance)
-  - [scrollTime](#scrolltime)
   - [slotDuration](#slotduration)
   - [slotEventOverlap](#sloteventoverlap)
   - [slotHeight](#slotheight)
@@ -208,8 +211,8 @@ Or in your Svelte component, use the calendar like this:
 ### Pre-built browser ready bundle
 Include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.11.0/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.11.0/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.12.0/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@3.12.0/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -637,6 +640,15 @@ function (date) {
 > - resourceTimelineWeek `false`
 
 Determines whether to display an event’s end time.
+
+### dragConstraint
+- Type `function`
+- Default `undefined`
+- Requires `Interaction` plugin
+
+Callback function that, if specified, limits the area into which events are allowed to be dragged.
+
+The function is called during dragging for each cursor movement and takes the same parameters as [eventDrop](#eventdrop). The function should return `true` if dragging to the new position is allowed, and `false` otherwise.
 
 ### dragScroll
 - Type `boolean`
@@ -1228,6 +1240,16 @@ The associated [Event](#event-object) object
 <td>
 
 An [Event](#event-object) object that holds information about the event before the resize
+</td>
+</tr>
+<tr>
+<td>
+
+`startDelta`
+</td>
+<td>
+
+A [Duration](#duration-object) object that represents the amount of time the event’s start date was moved by
 </td>
 </tr>
 <tr>
@@ -1829,6 +1851,15 @@ Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` vi
 
 Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` and other views.
 
+### resizeConstraint
+- Type `function`
+- Default `undefined`
+- Requires `Interaction` plugin
+
+Callback function that, if specified, limits the area within which the event is allowed to resize.
+
+The function is called during resizing for each cursor movement and takes the same parameters as [eventResize](#eventresize). The function should return `true` if the new size is allowed, and `false` otherwise.
+
 ### resources
 - Type `array`
 - Default `[]`
@@ -1905,6 +1936,14 @@ The associated [Resource](#resource-object) object
 <td>If it is a column that is within a specific date, this will be a Date object</td>
 </tr>
 </table>
+
+### scrollTime
+- Type `string`, `integer` or `object`
+- Default `'06:00:00'`
+
+Determines how far forward the scroll pane is initially scrolled.
+
+This should be a value that can be parsed into a [Duration](#duration-object) object.
 
 ### select
 - Type `function`
@@ -1991,6 +2030,15 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 
 Determines whether the user is allowed to highlight multiple days or time slots by clicking and moving the pointer.
 
+### selectConstraint
+- Type `function`
+- Default `undefined`
+- Requires `Interaction` plugin
+
+Callback function that, if specified, limits the area that can be selected.
+
+The function is called during selection for each cursor movement and takes the same parameters as [select](#select). The function should return `true` if the selected range is allowed, and `false` otherwise.
+
 ### selectBackgroundColor
 - Type `string`
 - Default `undefined`
@@ -2015,14 +2063,6 @@ If not specified, it falls back to [longPressDelay](#longpressdelay).
 - Requires `Interaction` plugin
 
 Defines how many pixels the user’s mouse must move before the selection begins.
-
-### scrollTime
-- Type `string`, `integer` or `object`
-- Default `'06:00:00'`
-
-Determines how far forward the scroll pane is initially scrolled.
-
-This should be a value that can be parsed into a [Duration](#duration-object) object.
 
 ### slotDuration
 - Type `string`, `integer` or `object`
@@ -2082,6 +2122,8 @@ function (time) {
 - Default `undefined`
 
 The interval at which slot labels should be displayed in `timeGrid` views.
+
+This should be a value that can be parsed into a [Duration](#duration-object) object.
 
 If not specified, then if `slotDuration` is less than 1 hour, the interval is considered to be twice as long, i.e. the labels are displayed every other time.
 

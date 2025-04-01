@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 3.12.0
+April 1, 2025
+
+* Added `dragConstraint`, `resizeConstraint` and `selectConstraint` options ([412](https://github.com/vkurko/calendar/issues/412))
+
 ## 3.11.0
 March 29, 2025
 

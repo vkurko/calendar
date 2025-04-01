@@ -527,12 +527,12 @@
   }
 }
 
-.ec-dragging {
+.ec-dragging, .ec-dragging * {
   cursor: pointer!important;
 }
-.ec-resizing-y {
+.ec-resizing-y, .ec-resizing-y * {
   cursor: ns-resize!important;
 }
-.ec-resizing-x {
+.ec-resizing-x, .ec-resizing-x * {
   cursor: ew-resize!important;
 }

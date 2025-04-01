@@ -7,10 +7,10 @@
     } from '@event-calendar/core';
     import {animate, limit} from './utils';
 
-    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, _bodyEl, dateClick, dragScroll, datesAboveResources,
-        eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay,
-        eventResizeStart, eventResizeStop, eventResize, longPressDelay, selectable, select: selectFn,
-        selectBackgroundColor, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, slotWidth, unselect: unselectFn,
+    let {_iEvents, _iClass, _events, _view, _dayGrid, _draggable, _bodyEl, datesAboveResources, dateClick, dragConstraint,
+        dragScroll, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop, eventLongPressDelay, eventResizeStart,
+        eventResizeStop, eventResize, longPressDelay, resizeConstraint, selectable, select: selectFn, selectBackgroundColor,
+        selectConstraint, selectLongPressDelay, selectMinDistance, slotDuration, slotHeight, slotWidth, unselect: unselectFn,
         unselectAuto, unselectCancel, validRange, view} = getContext('state');
 
     const ACTION_DRAG = 1;
@@ -197,42 +197,64 @@
                 ({allDay: newAllDay, date: newDate, resource: newResource} = payload);
 
                 if (newAllDay === allDay) {
+                    let candidate = copyIEventData({}, $_iEvents[0]);
+                    let constraintFn = $resizeConstraint;
                     delta = createDuration((newDate - date) / 1000);
                     if (resizingStart()) {
                         // Resizing start
-                        $_iEvents[0].start = addDuration(cloneDate(event.start), delta);
-                        if ($_iEvents[0].start > minResize) {
-                            $_iEvents[0].start = minResize;
+                        candidate.start = addDuration(cloneDate(event.start), delta);
+                        if (candidate.start > minResize) {
+                            candidate.start = minResize;
                             delta = createDuration((minResize - event.start) / 1000);
                         }
                     } else {
-                        $_iEvents[0].end = addDuration(cloneDate(event.end), delta);
+                        candidate.end = addDuration(cloneDate(event.end), delta);
                         if (extraDuration) {
-                            addDuration($_iEvents[0].end, extraDuration);
+                            addDuration(candidate.end, extraDuration);
                         }
                         if (resizing()) {
                             // Resizing end
-                            if ($_iEvents[0].end < minResize) {
-                                $_iEvents[0].end = minResize;
+                            if (candidate.end < minResize) {
+                                candidate.end = minResize;
                                 delta = createDuration((minResize - event.end) / 1000);
                             }
                         } else if (selecting()) {
                             // Selecting
-                            if ($_iEvents[0].end < event.end) {
-                                $_iEvents[0].start = subtractDuration($_iEvents[0].end, selectStep);
-                                $_iEvents[0].end = event.end;
+                            if (candidate.end < event.end) {
+                                candidate.start = subtractDuration(candidate.end, selectStep);
+                                candidate.end = event.end;
                             } else {
-                                $_iEvents[0].start = event.start;
+                                candidate.start = event.start;
                             }
+                            constraintFn = $selectConstraint;
                         } else {
                             // Dragging
-                            $_iEvents[0].start = addDuration(cloneDate(event.start), delta);
+                            candidate.start = addDuration(cloneDate(event.start), delta);
                             if (resource) {
-                                $_iEvents[0].resourceIds = event.resourceIds.filter(id => id !== resource.id);
-                                $_iEvents[0].resourceIds.push(newResource.id);
+                                candidate.resourceIds = event.resourceIds.filter(id => id !== resource.id);
+                                candidate.resourceIds.push(newResource.id);
                             }
+                            constraintFn = $dragConstraint;
                         }
                     }
+                    // Check constraint
+                    do {
+                        if (constraintFn !== undefined) {
+                            candidate = copyIEventData(cloneEvent(event), candidate);
+                            let result = constraintFn(
+                                selecting()
+                                    ? createSelectCallbackInfo(candidate, jsEvent)
+                                    : createCallbackInfo(candidate, event, jsEvent)
+                            );
+                            if (result === false) {
+                                // Revert preview event
+                                $_iEvents[0] = copyIEventData($_iEvents[0], event);
+                                break;
+                            }
+                        }
+                        // Update preview event
+                        $_iEvents[0] = copyIEventData($_iEvents[0], candidate);
+                    } while (0);
                 }
             }
         }
@@ -292,17 +314,8 @@
                 if (selecting()) {
                     selected = true;
                     if (isFunction($selectFn)) {
-                        let {start, end} = toEventWithLocalDates($_iEvents[0]);
-                        $selectFn({
-                            start,
-                            end,
-                            startStr: toISOString($_iEvents[0].start),
-                            endStr: toISOString($_iEvents[0].end),
-                            allDay,
-                            jsEvent,
-                            view: toViewWithLocalDates($_view),
-                            resource
-                        });
+                        let info = createSelectCallbackInfo($_iEvents[0], jsEvent);
+                        $selectFn(info);
                     }
                 } else {
                     event.display = display;
@@ -320,21 +333,8 @@
                     callback = resizing() ? $eventResize : $eventDrop;
                     if (isFunction(callback)) {
                         let eventRef = event;
-                        let info;
-                        if (resizing()) {
-                            info = {endDelta: delta};
-                        } else {
-                            info = {
-                                delta,
-                                oldResource: resource !== newResource ? resource : undefined,
-                                newResource: resource !== newResource ? newResource : undefined
-                            };
-                        }
+                        let info = createCallbackInfo(event, oldEvent, jsEvent);
                         callback(assign(info, {
-                            event: toEventWithLocalDates(event),
-                            oldEvent: toEventWithLocalDates(oldEvent),
-                            jsEvent,
-                            view: toViewWithLocalDates($_view),
                             revert() {
                                 updateEvent(eventRef, oldEvent);
                             }
@@ -450,11 +450,53 @@
         $_iEvents[0] = null;
     }
 
-    function updateEvent(target, source) {
+    function copyIEventData(target, source) {
         target.start = source.start;
         target.end = source.end;
         target.resourceIds = source.resourceIds;
+        return target;
+    }
+
+    function updateEvent(target, source) {
+        copyIEventData(target, source);
         $_events = $_events;
+    }
+
+    function createSelectCallbackInfo(event, jsEvent) {
+        let {start, end} = toEventWithLocalDates(event);
+        return {
+            start,
+            end,
+            startStr: toISOString(event.start),
+            endStr: toISOString(event.end),
+            allDay,
+            view: toViewWithLocalDates($_view),
+            resource,
+            jsEvent
+        };
+    }
+
+    function createCallbackInfo(event, oldEvent, jsEvent) {
+        let info;
+        if (resizing()) {
+            info = resizingStart()
+                ? {startDelta: delta, endDelta: createDuration(0)}
+                : {startDelta: createDuration(0), endDelta: delta};
+        } else {
+            info = {
+                delta,
+                oldResource: resource !== newResource ? resource : undefined,
+                newResource: resource !== newResource ? newResource : undefined
+            };
+        }
+        assign(info, {
+            event: toEventWithLocalDates(event),
+            oldEvent: toEventWithLocalDates(oldEvent),
+            view: toViewWithLocalDates($_view),
+            jsEvent
+        });
+
+        return info;
     }
 
     function distance() {
