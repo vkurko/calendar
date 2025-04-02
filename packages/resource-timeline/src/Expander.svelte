@@ -8,12 +8,28 @@
 
     let payload = {};
 
-    $: payload = getPayload(resource);
+    $: {
+        payload = getPayload(resource);
+        const storageKey = `expanded-${resource.title}`;
+
+        if (localStorage.getItem(storageKey) === null) {
+            payload.expanded = true;
+        } else {
+            payload.expanded = localStorage.getItem(storageKey) === 'true';
+        }
+        
+        toggle(payload.children, payload.expanded);
+    }
 
     function handleClick() {
         payload.expanded = !payload.expanded;
         toggle(payload.children, payload.expanded);
         resources.update(identity);
+
+        if (resource.id === 'undefined') {
+            const storageKey = `expanded-${resource.title}`;
+            localStorage.setItem(storageKey, payload.expanded);
+        }
     }
 
     function toggle(children, expand) {
