@@ -1,5 +1,14 @@
 # Event Calendar changelog
 
+## 4.0.0
+April 16, 2025
+* Added support for Svelte 5 ([359](https://github.com/vkurko/calendar/issues/359))
+* :warning: Svelte 4 is not supported anymore
+* :warning: All plugins have been moved to the `@event-calendar/core` package
+* :warning: In ES modules, you now need to use `createCalendar(target, plugins, options)` to initialize the calendar
+* :warning: With standalone bundle, you now need to use `EventCalendar.create(target, options)` to initialize the calendar
+* The following options now have higher priority from left to right `event.startEditable` > `eventStartEditable` > `editable` and `event.durationEditable` > `eventDurationEditable` > `editable` ([440](https://github.com/vkurko/calendar/issues/440))
+
 ## 3.12.0
 April 1, 2025
 

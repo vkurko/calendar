@@ -6,6 +6,10 @@ export function keys(object) {
     return Object.keys(object);
 }
 
+export function entries(object) {
+    return Object.entries(object);
+}
+
 export function floor(value) {
     return Math.floor(value);
 }
@@ -45,3 +49,12 @@ export function runAll(fns) {
 export function noop() {}
 
 export const identity = (x) => x;
+
+export function stopPropagation(fn) {
+    return function (event) {
+        event.stopPropagation();
+        if (fn) {
+            fn.call(this, event);
+        }
+    };
+}

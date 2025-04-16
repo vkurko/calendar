@@ -1,6 +1,6 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {createDate, cloneDate, setContent, setMidnight, nextDate, prevDate, outsideRange} from './lib.js';
+    import {createDate, cloneDate, setContent, setMidnight, nextDate, prevDate, outsideRange} from '#lib';
 
     export let buttons;
 
@@ -82,6 +82,7 @@
             disabled={todayDisabled}
         >{$buttonText[button]}</button>
     {:else if $customButtons[button]}
+        <!-- svelte-ignore a11y_consider_explicit_label -->
         <button
             class="{$theme.button} ec-{button}{$customButtons[button].active ? ' ' + $theme.active : ''}"
             on:click={$customButtons[button].click}

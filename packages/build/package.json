@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/build",
-  "version": "3.12.0",
+  "version": "4.0.0",
   "title": "Event Calendar",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
@@ -13,18 +13,10 @@
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vkurko/calendar.git",
+    "url": "git+https://github.com/vkurko/calendar.git",
     "directory": "packages/build"
   },
   "license": "MIT",
-  "jsdelivr": "event-calendar.min.js",
-  "style": "event-calendar.min.css",
-  "devDependencies": {
-    "@event-calendar/day-grid": "~3.12.0",
-    "@event-calendar/interaction": "~3.12.0",
-    "@event-calendar/list": "~3.12.0",
-    "@event-calendar/time-grid": "~3.12.0",
-    "@event-calendar/resource-time-grid": "~3.12.0",
-    "@event-calendar/resource-timeline": "~3.12.0"
-  }
+  "main": "./dist/event-calendar.min.js",
+  "style": "./dist/event-calendar.min.css"
 }

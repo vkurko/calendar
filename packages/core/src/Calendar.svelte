@@ -1,40 +1,36 @@
 <script>
     import './styles/index.scss';
-    import {setContext, beforeUpdate, afterUpdate} from 'svelte';
+    import {setContext, untrack} from 'svelte';
     import {get} from 'svelte/store';
-    import {diff} from './storage/options';
-    import State from './storage/state';
+    import {diff} from './storage/options.js';
+    import State from './storage/state.js';
     import Toolbar from './Toolbar.svelte';
     import Auxiliary from './Auxiliary.svelte';
     import {
-        assign,
-        createEvents,
-        toEventWithLocalDates,
-        toViewWithLocalDates,
-        toLocalDate,
-        getElementWithPayload,
-        getPayload,
-        flushDebounce,
-        hasYScroll,
-        listView,
-        task,
-        prevDate, nextDate
-    } from './lib.js';
+        assign, createEvents, getElementWithPayload, getPayload, listView, nextDate,
+        prevDate, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
+    } from '#lib';
 
-    export let plugins = [];
-    export let options = {};
+    let {plugins = [], options = {}} = $props();
 
     let state = new State(plugins, options);
     setContext('state', state);
 
-    let {_viewComponent, _bodyEl, _interaction, _iClass, _events, _queue, _queue2, _tasks, _scrollable,
-        date, duration, hiddenDays, height, theme, view} = state;
+    let {
+        _viewComponent, _interaction, _iClass, _events, _scrollable,
+        date, duration, hiddenDays, height, theme, view
+    } = state;
 
     // Reactively update options that did change
     let prevOptions = {...options};
-    $: for (let [name, value] of diff(options, prevOptions)) {
-        setOption(name, value);
-    }
+    $effect(() => {
+        for (let [name, value] of diff(options, prevOptions)) {
+            untrack(() => {
+                setOption(name, value);
+            });
+        }
+        assign(prevOptions, options);
+    });
 
     export function setOption(name, value) {
         state._set(name, value);
@@ -122,20 +118,7 @@
         return this;
     }
 
-    beforeUpdate(() => {
-        flushDebounce($_queue);
-    });
-
-    afterUpdate(() => {
-        flushDebounce($_queue2);
-        task(recheckScrollable, null, _tasks);
-    });
-
-    function recheckScrollable() {
-        if ($_bodyEl) {
-            $_scrollable = hasYScroll($_bodyEl);
-        }
-    }
+    let View = $derived($_viewComponent);
 </script>
 
 <div
@@ -144,8 +127,6 @@
     role="{listView($view) ? 'list' : 'table'}"
 >
     <Toolbar/>
-    <svelte:component this={$_viewComponent}/>
+    <View/>
 </div>
 <Auxiliary/>
-
-<svelte:window on:resize={recheckScrollable}/>

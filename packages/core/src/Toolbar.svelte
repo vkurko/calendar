@@ -1,21 +1,17 @@
 <script>
     import {getContext} from 'svelte';
-    import {keys} from './lib.js';
+    import {keys} from '#lib';
     import Buttons from './Buttons.svelte';
 
     let {headerToolbar, theme} = getContext('state');
 
-    let sections = {
-        start: [],
-        center: [],
-        end: []
-    };
-
-    $: {
-        for (let key of keys(sections)) {
-            sections[key] = $headerToolbar[key].split(' ').map(group => group.split(','));
+    let sections = $derived.by(() => {
+        let sections = {};
+        for (let key of ['start', 'center', 'end']) {
+            sections[key] = $headerToolbar[key]?.split(' ').map(group => group.split(',')) ?? [];
         }
-    }
+        return sections;
+    });
 </script>
 
 <nav class="{$theme.toolbar}">

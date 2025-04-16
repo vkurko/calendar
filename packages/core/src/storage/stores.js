@@ -1,22 +1,8 @@
-import {derived, writable, readable, get} from 'svelte/store';
-import {isFunction} from '../lib/utils.js';
+import {derived, get, readable, writable} from 'svelte/store';
 import {
-    DAY_IN_SECONDS,
-    assign,
-    cloneDate,
-    createDate,
-    createEvents,
-    createView,
-    addDuration,
-    addDay,
-    subtractDay,
-    toISOString,
-    nextClosestDay,
-    prevClosestDay,
-    setMidnight,
-    toLocalDate,
-    debounce
-} from '../lib.js';
+    addDay, addDuration, assign, cloneDate, createDate, createEvents, createView, DAY_IN_SECONDS, debounce,
+    isFunction, nextClosestDay, prevClosestDay, setMidnight, subtractDay, toISOString, toLocalDate
+} from '#lib';
 
 export function dayGrid(state) {
     return derived(state.view, $view => $view?.startsWith('dayGrid'));

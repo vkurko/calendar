@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/core",
-  "version": "3.12.0",
+  "version": "4.0.0",
   "title": "Event Calendar Core package",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
@@ -13,21 +13,25 @@
   "homepage": "https://vkurko.github.io/calendar/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vkurko/calendar.git",
+    "url": "git+https://github.com/vkurko/calendar.git",
     "directory": "packages/core"
   },
   "license": "MIT",
   "type": "module",
-  "svelte": "src/index.svelte.js",
+  "svelte": "./src/index.svelte.js",
   "exports": {
     ".": {
       "svelte": "./src/index.svelte.js",
-      "default": "./index.js"
+      "default": "./dist/index.js"
     },
-    "./index.css": "./index.css",
+    "./index.css": "./dist/index.css",
     "./package.json": "./package.json"
   },
-  "dependencies": {
-    "svelte": "^4.2.19"
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#components": "./src/lib/components/index.js"
+  },
+  "peerDependencies": {
+    "svelte": "^5.25.10"
   }
 }

@@ -1,6 +1,6 @@
 import {derived} from 'svelte/store';
 import {isFunction} from './utils.js';
-import {toLocalDate} from './date';
+import {toLocalDate} from './date.js';
 import {createResources} from './resources.js';
 import {getPayload} from './payload.js';
 

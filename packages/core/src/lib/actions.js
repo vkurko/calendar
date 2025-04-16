@@ -35,3 +35,18 @@ export function outsideEvent(node, type) {
         }
     };
 }
+
+export function observeResize(node, callback) {
+    let resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+            callback(entry);
+        }
+    });
+    resizeObserver.observe(node);
+
+    return {
+        destroy() {
+            resizeObserver.unobserve(node);
+        }
+    };
+}

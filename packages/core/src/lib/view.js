@@ -1,5 +1,5 @@
-import {assign} from './utils';
-import {toLocalDate} from './date';
+import {assign} from './utils.js';
+import {toLocalDate} from './date.js';
 
 export function createView(view, _viewTitle, _currentRange, _activeRange) {
     return {

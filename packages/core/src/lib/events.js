@@ -1,7 +1,7 @@
-import {addDay, addDuration, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date';
-import {createElement} from './dom';
-import {assign, isArray, isFunction} from './utils';
-import {toViewWithLocalDates} from './view';
+import {addDay, addDuration, datesEqual, createDate, cloneDate, setMidnight, toLocalDate, toISOString, noTimePart, copyTime} from './date.js';
+import {createElement} from './dom.js';
+import {assign, isArray, isFunction} from './utils.js';
+import {toViewWithLocalDates} from './view.js';
 
 let eventId = 1;
 export function createEvents(input) {

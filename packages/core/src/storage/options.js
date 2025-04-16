@@ -1,7 +1,6 @@
 import {
-    assign, createDate, createDuration, createEvents, createEventSources, createResources, createDateRange, keys,
-    setMidnight
-} from '../lib.js';
+    createDate, createDuration, createEvents, createEventSources, createResources, createDateRange, keys, setMidnight
+} from '#lib';
 
 export function createOptions(plugins) {
     let options = {
@@ -161,7 +160,5 @@ export function diff(options, prevOptions) {
             diff.push([key, options[key]]);
         }
     }
-    assign(prevOptions, options);
-
     return diff;
 }
