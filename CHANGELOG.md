@@ -1,5 +1,9 @@
 # Event Calendar changelog
 
+## 4.0.1
+April 16, 2025
+* Fixed row height sync issue in `timeline` view
+
 ## 4.0.0
 April 16, 2025
 * Added support for Svelte 5 ([359](https://github.com/vkurko/calendar/issues/359))

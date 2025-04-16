@@ -18,7 +18,6 @@
     });
 
     $effect(() => {
-        console.log('hit')
         $_viewDates;
         $scrollTime;
         untrack(scrollToTime);
