@@ -34,7 +34,7 @@
         untrack(reposition);
     });
 
-    function handleScroll() {
+    function onscroll() {
         $_headerEl.scrollLeft = $_bodyEl.scrollLeft;
         $_sidebarEl.scrollTop = $_bodyEl.scrollTop;
     }
@@ -43,7 +43,7 @@
 <div
     bind:this={el}
     class="{$theme.body}"
-    onscroll={handleScroll}
+    {onscroll}
     use:observeResize={() => $_recheckScrollable = true}
 >
     <div class="{$theme.content}">

@@ -6,11 +6,18 @@
 
     let {resources, theme} = getContext('state');
 
-    let payload = $derived(getPayload(resource));
+    let payload = $state.raw({});
+    let expanded = $state(true);
+
+    $effect.pre(() => {
+        payload = getPayload(resource);
+        expanded = payload.expanded;
+    });
 
     function onclick() {
-        payload.expanded = !payload.expanded;
-        toggle(payload.children, payload.expanded);
+        expanded = !expanded;
+        payload.expanded = expanded;
+        toggle(payload.children, expanded);
         resources.update(identity);
     }
 
@@ -30,9 +37,9 @@
 {/each}
 
 <span class="{$theme.expander}">
-    {#if payload.children.length}
+    {#if payload.children?.length}
         <button class="{$theme.button}" {onclick}>
-            {#if payload.expanded}&minus;{:else}&plus;{/if}
+            {#if expanded}&minus;{:else}&plus;{/if}
         </button>
     {/if}
 </span>

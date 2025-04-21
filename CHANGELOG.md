@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 4.0.2
+April 21, 2025
+* Fixed nested resource expander in `timeline` view
+* Added scrolling of resources when rotating the mouse wheel over resources in `timeline` view
+
 ## 4.0.1
 April 16, 2025
 * Fixed row height sync issue in `timeline` view
