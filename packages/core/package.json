@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/core",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "title": "Event Calendar Core package",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
@@ -31,7 +31,7 @@
     "#lib": "./src/lib/index.js",
     "#components": "./src/lib/components/index.js"
   },
-  "peerDependencies": {
-    "svelte": "^5.25.10"
+  "dependencies": {
+    "svelte": "^5.28.2"
   }
 }

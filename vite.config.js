@@ -32,7 +32,7 @@ export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
                 minify: false,
                 outDir: 'packages/core/dist',
                 rollupOptions: {
-                    external: ['svelte', 'svelte/reactivity', 'svelte/store']
+                    external: [/^svelte(?:\/.+)?/]
                 }
             }
     }

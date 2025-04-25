@@ -1,5 +1,9 @@
 # Event Calendar changelog
 
+## 4.0.3
+April 25, 2025
+* Fixed issues [474](https://github.com/vkurko/calendar/issues/474) and [475](https://github.com/vkurko/calendar/issues/475)
+
 ## 4.0.2
 April 21, 2025
 * Fixed nested resource expander in `timeline` view

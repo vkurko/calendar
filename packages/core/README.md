@@ -154,7 +154,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 
 ## Usage
 ### JavaScript module
-The first step is to install the Event Calendar `core` package:
+The first step is to install the EventCalendar `core` package:
 ```bash
 npm install --save-dev @event-calendar/core
 ```
@@ -192,7 +192,7 @@ destroyCalendar(ec);
 ```
 
 ### Svelte 5 component
-The first step is to install the Event Calendar `core` package:
+The first step is to install the EventCalendar `core` package:
 ```bash
 npm install --save-dev @event-calendar/core
 ```
@@ -223,12 +223,12 @@ Then in your Svelte 5 component, use the calendar like this:
 The calendar is destroyed gracefully when the component containing it is destroyed.
 
 ### Standalone bundle
-This bundle contains a version of the calendar that includes all plugins and is prepared for use in the browser via the &lt;script&gt; tag.
+This bundle contains a version of the calendar that includes all plugins and is prepared for use in the browser via the `<script>` tag.
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.0.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.0.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.0.3/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.0.3/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1396,7 +1396,7 @@ The current [View](#view-object) object
 - Type `EventSource[]`
 - Default `[]`
 
-Array of EventSource objects that will provide the Event Calendar with data about events.
+Array of `EventSource` objects that will provide EventCalendar with data about events.
 
 This option is used instead of the `events` option.
 
@@ -1465,7 +1465,7 @@ Other GET/POST data you want to send to the server. Can be a plain object or a f
 </td>
 <td>
 
-A custom function that is executed whenever the Event Calendar needs new event data.
+A custom function that is executed whenever EventCalendar needs new event data.
 
 ```js
 function(fetchInfo, successCallback, failureCallback) { }
@@ -1691,7 +1691,7 @@ Each date can be either an ISO8601 date string like `'2022-12-31'`, or a JavaScr
 
 Determines when event fetching should occur.
 
-When set to `true` (the default), the calendar will only fetch events when it absolutely needs to, minimizing HTTP requests. For example, say your calendar starts out in month view, in February. The Event Calendar will fetch events for the entire month of February and store them in its internal storage. Then, say the user switches to week view and begins browsing the weeks in February. The calendar will avoid fetching events because it already has this information stored.
+When set to `true` (the default), the calendar will only fetch events when it absolutely needs to, minimizing HTTP requests. For example, say your calendar starts out in month view, in February. EventCalendar will fetch events for the entire month of February and store them in its internal storage. Then, say the user switches to week view and begins browsing the weeks in February. The calendar will avoid fetching events because it already has this information stored.
 
 When set to `false`, the calendar will fetch events any time the view is switched, or any time the current date changes (for example, as a result of the user clicking prev/next).
 
@@ -1767,7 +1767,7 @@ function (isLoading) { }
 - Type `string`
 - Default `undefined`
 
-Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#locales) object that the Event Calendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
+Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#locales) object that EventCalendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
 
 ### longPressDelay
 - Type `integer`
@@ -2191,7 +2191,7 @@ Defines the time slot width in pixels in `resourceTimeline` views. When changing
 > - timeGridDay `theme => ({...theme, view: 'ec-time-grid ec-day-view'})`
 > - timeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-week-view'})`
 
-Defines the CSS classes that the Event Calendar uses to generate HTML markup.
+Defines the CSS classes that EventCalendar uses to generate HTML markup.
 
 This value can be either a plain object with all necessary properties, or a callback function that receives default theme object and should return a new one:
 
@@ -2408,31 +2408,29 @@ Determines whether week numbers should be displayed in the `dayGrid` view.
 The numbering of weeks depends on the value of [firstDay](#firstday). When `firstDay` is `0`, the [Western](https://en.wikipedia.org/wiki/Week#Other_week_numbering_systems) system is used. Any other value uses the [ISO](https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system) system.
 
 ## Methods
-Methods allow you to manipulate the Event Calendar after initialization. They are accessible from the calendar instance.
+Methods allow you to manipulate EventCalendar after initialization. They are accessible from the calendar instance.
 
 In Svelte, methods are available from a component instance:
 ```html
 <script>
-    import Calendar from '@event-calendar/core';
-    import TimeGrid from '@event-calendar/time-grid';
+    import {Calendar, TimeGrid} from '@event-calendar/core';
 
-    let ec;
-    let plugins = [TimeGrid];
-    let options = {
+    let ec = $state();
+    let options = $state({
         view: 'timeGridWeek',
         eventSources: [{events: function() {
             console.log('fetching...');
             return [];
         }}]
-    };
+    });
 
     function invokeMethod() {
         ec.refetchEvents();
     }
 </script>
 
-<button on:click={invokeMethod}>Refetch events</button>
-<Calendar bind:this={ec} {plugins} {options} />
+<button onclick={invokeMethod}>Refetch events</button>
+<Calendar bind:this={ec} plugins={[TimeGrid]} {options} />
 ```
 
 ### getOption( name )
@@ -2570,7 +2568,7 @@ The content value can be presented in the following forms:
 * an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}`
 
 ## Event object
-This is a JavaScript object that the Event Calendar uses to store information about a calendar event.
+This is a JavaScript object that EventCalendar uses to store information about a calendar event.
 
 Here are all properties that exist in Event object:
 <table>
@@ -2715,7 +2713,7 @@ A plain object holding miscellaneous properties specified during parsing in the 
 </table>
 
 ### Parsing event from a plain object
-When Event Calendar receives an array of plain event’s objects either from the `events` option or as a result of an HTTP request to a URL of an event source, it parses the input objects into proper Event objects.
+When EventCalendar receives an array of plain event’s objects either from the `events` option or as a result of an HTTP request to a URL of an event source, it parses the input objects into proper Event objects.
 
 Here are all admissible fields for the event’s input object:
 <table>
@@ -2882,7 +2880,7 @@ Here are all admissible fields for the event’s input object:
 </table>
 
 ## Duration object
-This is a JavaScript object that the Event Calendar uses to store information about a period of time, like _30 minutes_ or _1 day and 6 hours_.
+This is a JavaScript object that EventCalendar uses to store information about a period of time, like _30 minutes_ or _1 day and 6 hours_.
 
 Here are all properties that exist in Duration object:
 <table>
@@ -2924,7 +2922,7 @@ Here are all properties that exist in Duration object:
 </table>
 
 ### Parsing duration from input values
-When Event Calendar receives a value for options like `duration`, `scrollTime`, `slotDuration` and others, it parses it into a proper Duration object.
+When EventCalendar receives a value for options like `duration`, `scrollTime`, `slotDuration` and others, it parses it into a proper Duration object.
 
 The admissible input value can be specified in one of three formats:
 - an object with any of the following keys: `year`, `years`, `month`, `months`, `day`, `days`, `minute`, `minutes`, `second`, `seconds`
@@ -2932,7 +2930,7 @@ The admissible input value can be specified in one of three formats:
 - an integer specifying the total number of seconds
 
 ## Resource object
-This is a JavaScript object that the Event Calendar uses to store information about a resource. Calendar events can be associated with resources and displayed separately using the resource view.
+This is a JavaScript object that EventCalendar uses to store information about a resource. Calendar events can be associated with resources and displayed separately using the resource view.
 
 Here are all properties that exist in Resource object:
 <table>
@@ -2980,7 +2978,7 @@ A plain object holding miscellaneous properties specified during parsing in the 
 </table>
 
 ### Parsing resource from a plain object
-When Event Calendar receives an array of plain resource’s objects for the `resources` option, it parses the input objects into proper Resource objects.
+When EventCalendar receives an array of plain resource’s objects for the `resources` option, it parses the input objects into proper Resource objects.
 
 Here are all admissible fields for the resource’s input object:
 <table>
