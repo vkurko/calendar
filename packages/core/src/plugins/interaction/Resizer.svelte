@@ -1,5 +1,6 @@
 <script>
     import {getContext} from 'svelte';
+    import {bgEvent, helperEvent} from '#lib';
     import {eventResizable} from './lib';
 
     let {chunk, axis, forceDate = undefined, forceMargin = undefined, children} = $props();
@@ -7,8 +8,11 @@
     let {theme, eventDurationEditable, eventResizableFromStart, editable, _interaction} = getContext('state');
 
     let event = $derived(chunk.event);
+    let display = $derived(chunk.event.display);
 
-    let resizable = $derived(eventResizable(event, $eventDurationEditable, $editable));
+    let resizable = $derived(
+        !bgEvent(display) && !helperEvent(display) && eventResizable(event, $eventDurationEditable, $editable)
+    );
 
     function createResizeHandler(start) {
         return jsEvent => $_interaction.action.resize(

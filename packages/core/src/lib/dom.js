@@ -41,7 +41,7 @@ export function getElementWithPayload(x, y, root = document) {
             return el;
         }
         /** @see https://github.com/vkurko/calendar/issues/142 */
-        if (el.shadowRoot) {
+        if (el.shadowRoot && el.shadowRoot !== root) {
             let shadowEl = getElementWithPayload(x, y, el.shadowRoot);
             if (shadowEl) {
                 return shadowEl;

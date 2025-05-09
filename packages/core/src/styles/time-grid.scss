@@ -34,6 +34,10 @@
     line-height: 24px;
     top: -12px;
     text-align: right;
+
+    &.ec-minor {
+      visibility: hidden;
+    }
   }
 
   .ec-header .ec-time ,
@@ -60,7 +64,7 @@
     pointer-events: none;
   }
 
-  .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+  .ec-line.ec-minor:after {
     border-bottom-style: dotted;
   }
 

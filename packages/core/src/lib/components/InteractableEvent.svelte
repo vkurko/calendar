@@ -1,6 +1,7 @@
 <script>
     import {getContext} from 'svelte';
     import BaseEvent from './BaseEvent.svelte';
+    import {bgEvent, helperEvent} from "#lib";
 
     let {
         el = $bindable(),
@@ -14,6 +15,7 @@
     let {_interaction, _iClasses} = getContext('state');
 
     let event = $derived(chunk.event);
+    let display = $derived(chunk.event.display);
 
     // Class
     let classes = $derived(classNames => $_iClasses(classNames, event));
@@ -23,9 +25,9 @@
             ? jsEvent => $_interaction.action.drag(
                 event, jsEvent, forceDate?.(), forceMargin?.()
             )
-            : undefined;
+            : $_interaction.action?.noAction;
     }
-    let onpointerdown = $derived(createDragHandler(event));
+    let onpointerdown = $derived(!bgEvent(display) && !helperEvent(display) ? createDragHandler(event) : undefined);
 
     let Resizer = $derived($_interaction.resizer);
 </script>

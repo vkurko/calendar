@@ -50,7 +50,7 @@
         <div class="{$theme.lines}">
             {#each $_viewDates as date}
                 {#each $_dayTimes[date.getTime()] as time}
-                    <div class="{$theme.line}"></div>
+                    <div class="{$theme.line}{time[2] ? '' : ' ' + $theme.minor}"></div>
                 {/each}
             {/each}
         </div>

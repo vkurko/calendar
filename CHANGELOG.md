@@ -1,17 +1,23 @@
 # Event Calendar changelog
 
+## 4.1.0
+May 9, 2025
+* Added ability to use `slotLabelInterval` option in `resourceTimeline` views ([372](https://github.com/vkurko/calendar/issues/372))
+* Fixed an issue with `dateClick` triggered on `eventClick` ([490](https://github.com/vkurko/calendar/issues/490))
+* Fixed infinite recursion when using calendar in Lit component ([142](https://github.com/vkurko/calendar/issues/142#issuecomment-2847030101))
+
 ## 4.0.3
 April 25, 2025
 * Fixed issues [474](https://github.com/vkurko/calendar/issues/474) and [475](https://github.com/vkurko/calendar/issues/475)
 
 ## 4.0.2
 April 21, 2025
-* Fixed nested resource expander in `timeline` view
-* Added scrolling of resources when rotating the mouse wheel over resources in `timeline` view
+* Fixed nested resource expander in `resourceTimeline` views
+* Added scrolling of resources when rotating the mouse wheel over resources in `resourceTimeline` views
 
 ## 4.0.1
 April 16, 2025
-* Fixed row height sync issue in `timeline` view
+* Fixed row height sync issue in `resourceTimeline` views
 
 ## 4.0.0
 April 16, 2025
@@ -72,7 +78,7 @@ November 7, 2024
 ## 3.6.2
 October 17, 2024
 
-* Fixed an issue in `timeline` views with displaying events beyond midnight when `slotMaxTime` is greater than `24:00` ([333](https://github.com/vkurko/calendar/issues/333))
+* Fixed an issue in `resourceTimeline` views with displaying events beyond midnight when `slotMaxTime` is greater than `24:00` ([333](https://github.com/vkurko/calendar/issues/333))
 
 ## 3.6.1
 October 1, 2024
@@ -134,18 +140,18 @@ June 21, 2024
 June 3, 2024
 
 * Fixed so that `ResourceTimeline` plugin does not depend on `ResourceTimeGrid`
-* Fixed minor visual defects in `ResourceTimeline` view
+* Fixed minor visual defects in `resourceTimeline` view
 
 ## 3.0.1
 May 24, 2024
 
-* Fixed `scrollTime` in `ResourceTimeline` view
-* Fixed an issue with erroneous vertical scrolling in `ResourceTimeline` view
+* Fixed `scrollTime` in `resourceTimeline` view
+* Fixed an issue with erroneous vertical scrolling in `resourceTimeline` view
 
 ## 3.0.0
 May 23, 2024
 
-* Added `ResourcesTimeline` view ([30](https://github.com/vkurko/calendar/issues/30))
+* Added `resourcesTimeline` view ([30](https://github.com/vkurko/calendar/issues/30))
 
 ## 2.7.2
 May 22, 2024

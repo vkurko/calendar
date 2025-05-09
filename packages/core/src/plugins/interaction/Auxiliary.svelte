@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {helperEvent, listen} from '#lib';
+    import {bgEvent, helperEvent, listen} from '#lib';
     import {eventDraggable} from './lib';
     import Action from './Action.svelte';
     import Pointer from './Pointer.svelte';
@@ -21,7 +21,11 @@
                 ...classNames,
                 helperEvent(display)
                     ? [$theme[display]]
-                    : (eventDraggable(event, $eventStartEditable, $editable) ? [$theme.draggable] : [])
+                    : (
+                        !bgEvent(display) && eventDraggable(event, $eventStartEditable, $editable)
+                            ? [$theme.draggable]
+                            : []
+                    )
             ];
         };
     });

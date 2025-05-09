@@ -14,19 +14,15 @@ export function createTimes(date, $slotDuration, $slotLabelInterval, $_slotTimeL
             ? createDuration($slotDuration.seconds * 2)
             : $slotDuration;
     }
-    let showAll = $slotLabelInterval.seconds <= 0;
-    let label;
-    if (!showAll) {
-        label = cloneDate(date);
-    }
+    let label = cloneDate(date);
     // Build times
     while (date < end) {
         times.push([
             toISOString(date),
             $_intlSlotLabel.format(date),
-            showAll || (times.length && date >= label)
+            date >= label
         ]);
-        while (!showAll && date >= label) {
+        while ($slotLabelInterval.seconds && date >= label) {
             addDuration(label, $slotLabelInterval);
         }
         addDuration(date, $slotDuration);

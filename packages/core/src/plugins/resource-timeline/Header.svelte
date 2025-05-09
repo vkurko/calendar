@@ -19,7 +19,7 @@
                     </div>
                     <div class="{$theme.times}">
                         {#each $_dayTimes[date.getTime()] as time}
-                            <div class="{$theme.time}" role="columnheader">
+                            <div class="{$theme.time}{time[2] ? '' : ' ' + $theme.minor}" role="columnheader">
                                 <time
                                     datetime="{time[0]}"
                                     use:setContent={time[1]}
@@ -28,13 +28,13 @@
                         {/each}
                     </div>
                 {:else}
-                        <div class="{$theme.time}" role="columnheader">
-                            <time
-                                datetime="{toISOString(date, 10)}"
-                                aria-label="{$_intlDayHeaderAL.format(date)}"
-                                use:setContent={$_intlDayHeader.format(date)}
-                            ></time>
-                        </div>
+                    <div class="{$theme.time}" role="columnheader">
+                        <time
+                            datetime="{toISOString(date, 10)}"
+                            aria-label="{$_intlDayHeaderAL.format(date)}"
+                            use:setContent={$_intlDayHeader.format(date)}
+                        ></time>
+                    </div>
                 {/if}
             </div>
         {/each}

@@ -5,15 +5,20 @@
 
     let {children, lines} = $props();
 
-    let {allDayContent, theme, _times} = getContext('state');
+    let {allDayContent, slotLabelInterval, theme, _times} = getContext('state');
 
     let allDayText = $derived(createAllDayContent($allDayContent));
+    let showAllTimes = $derived($slotLabelInterval && $slotLabelInterval.seconds <= 0);
 </script>
 
 <div class="{$theme.sidebar}">
     <div class="{$theme.sidebarTitle}" use:setContent={allDayText}></div>
-    {#each $_times as time}
-        <time class="{$theme.time}" datetime="{time[0]}" use:setContent={time[2] ? time[1] : ''}></time>
+    {#each $_times as time, i}
+        <time
+            class="{$theme.time}{(i || showAllTimes) && time[2] ? '' : ' ' + $theme.minor}"
+            datetime="{time[0]}"
+            use:setContent={time[1]}
+        ></time>
     {/each}
 </div>
 <div class="{$theme.days}" role="row">

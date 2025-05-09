@@ -11,8 +11,6 @@
 
     let el = $state();
 
-    let compact = $derived($slotDuration.seconds >= 3600);
-
     $effect(() => {
         $_bodyEl = el;
     });
@@ -30,14 +28,14 @@
 
 <div
     bind:this={el}
-    class="{$theme.body}{compact ? ' ' + $theme.compact : ''}"
+    class="{$theme.body}"
     use:observeResize={() => $_recheckScrollable = true}
 >
     <div class="{$theme.content}">
         <Section {children}>
             {#snippet lines()}
-                {#each new Array($_times.length) as line}
-                    <div class="{$theme.line}"></div>
+                {#each $_times as time}
+                    <div class="{$theme.line}{time[2] ? '' : ' ' + $theme.minor}"></div>
                 {/each}
             {/snippet}
         </Section>

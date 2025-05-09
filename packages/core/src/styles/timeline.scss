@@ -74,6 +74,10 @@
     min-height: 24px;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &.ec-minor {
+      visibility: hidden;
+    }
   }
 
   .ec-time, .ec-line {
@@ -107,9 +111,9 @@
     pointer-events: none;
   }
 
-  //.ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
-  //  border-bottom-style: dotted;
-  //}
+  .ec-line.ec-minor:after {
+    border-left-style: dotted;
+  }
 
   .ec-sidebar {
     padding: 0;
