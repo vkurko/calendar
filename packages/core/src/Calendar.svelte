@@ -68,19 +68,18 @@
     }
 
     export function updateEvent(event) {
-        for (let e of $_events) {
-            if (e.id == event.id) {
-                event = createEvents([event])[0];
-                assign(e, event);
-                $_events = $_events;
-                return toEventWithLocalDates(event);
-            }
+        let id = String(event.id);
+        let idx = $_events.findIndex(event => event.id === id);
+        if (idx >= 0) {
+            $_events[idx] = createEvents([event])[0];
+            return toEventWithLocalDates(event);
         }
         return null;
     }
 
     export function removeEventById(id) {
-        let idx = $_events.findIndex(event => event.id == id);
+        id = String(id);
+        let idx = $_events.findIndex(event => event.id === id);
         if (idx >= 0) {
             $_events.splice(idx, 1);
             $_events = $_events;

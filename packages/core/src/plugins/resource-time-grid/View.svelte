@@ -1,11 +1,11 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent, toISOString} from '#lib';
+    import {datesEqual, setContent, toISOString} from '#lib';
     import {Section, Body, Day, Week} from '../time-grid/index.js';
     import Label from './Label.svelte';
 
     let {
-        datesAboveResources, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme
+        datesAboveResources, _today, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme
     } = getContext('state');
 
     let loops = $derived($datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates]);
@@ -18,7 +18,7 @@
         {#each loops[0] as item0, i}
             <div class="{$theme.resource}">
                 {#if $datesAboveResources}
-                    <div class="{$theme.day} {$theme.weekdays?.[item0.getUTCDay()]}">
+                    <div class="{$theme.day} {$theme.weekdays?.[item0.getUTCDay()]}{datesEqual(item0, $_today) ? ' ' + $theme.today : ''}">
                         <time
                             datetime="{toISOString(item0, 10)}"
                             aria-label="{$_intlDayHeaderAL.format(item0)}"
@@ -38,7 +38,10 @@
                                     <Label resource={item1} date={item0} />
                                 </div>
                             {:else}
-                                <div class="{$theme.day} {$theme.weekdays?.[item1.getUTCDay()]}" role="columnheader">
+                                <div
+                                    class="{$theme.day} {$theme.weekdays?.[item1.getUTCDay()]}{datesEqual(item1, $_today) ? ' ' + $theme.today : ''}"
+                                    role="columnheader"
+                                >
                                     <time
                                         datetime="{toISOString(item1, 10)}"
                                         aria-label="{resourceLabels[i]}{$_intlDayHeaderAL.format(item1)}"

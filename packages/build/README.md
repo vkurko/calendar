@@ -227,8 +227,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.1.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.1.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.2.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.2.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1552,7 +1552,7 @@ function (start, end) {
 - Type `string`
 - Default `undefined`
 
-Sets the default text color for events on the calendar.
+Sets the default text color for calendar events (except for `list` view).
 
 You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
 

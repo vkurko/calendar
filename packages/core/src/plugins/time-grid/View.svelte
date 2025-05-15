@@ -1,18 +1,21 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent, toISOString} from '#lib';
+    import {datesEqual, setContent, toISOString} from '#lib';
     import Section from './Section.svelte';
     import Body from './Body.svelte';
     import Day from './Day.svelte';
     import Week from './all-day/Week.svelte';
 
-    let {_viewDates, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme} = getContext('state');
+    let {_viewDates, _intlDayHeader, _intlDayHeaderAL, _today, allDaySlot, theme} = getContext('state');
 </script>
 
 <div class="{$theme.header}">
     <Section>
         {#each $_viewDates as date}
-            <div class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}" role="columnheader">
+            <div
+                class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{datesEqual(date, $_today) ? ' ' + $theme.today : ''}"
+                role="columnheader"
+            >
                 <time
                     datetime="{toISOString(date, 10)}"
                     aria-label="{$_intlDayHeaderAL.format(date)}"

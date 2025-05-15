@@ -1,5 +1,11 @@
 # Event Calendar changelog
 
+## 4.2.0
+May 15, 2025
+* Added CSS class `ec-today` to the current day header ([492](https://github.com/vkurko/calendar/issues/492))
+* Fixed an issue with `updateEvent()` not updating CSS classes ([496](https://github.com/vkurko/calendar/issues/496))
+* Reverted the previous behavior of `eventTextColor` option when it was not applied in `list` view ([497](https://github.com/vkurko/calendar/issues/497))
+
 ## 4.1.0
 May 9, 2025
 * Added ability to use `slotLabelInterval` option in `resourceTimeline` views ([372](https://github.com/vkurko/calendar/issues/372))

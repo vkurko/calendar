@@ -77,8 +77,8 @@
     {onmouseleave}
     {onpointerdown}
 >
-    {#snippet defaultBody(style)}
-        <div class={$theme.eventBody} {style} use:setContent={content}></div>
+    {#snippet defaultBody()}
+        <div class={$theme.eventBody} use:setContent={content}></div>
     {/snippet}
     {#if body}
         {@render body(defaultBody, bgColor, txtColor)}

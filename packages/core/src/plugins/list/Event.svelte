@@ -17,6 +17,6 @@
 <BaseEvent {chunk} {styles} onpointerdown={$_interaction.action?.noAction}>
     {#snippet body(defaultBody, bgColor, txtColor)}
         <div class="{$theme.eventTag}" style:background-color={bgColor}></div>
-        {@render defaultBody(`color:${txtColor}`)}
+        {@render defaultBody()}
     {/snippet}
 </BaseEvent>

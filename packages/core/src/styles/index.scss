@@ -284,6 +284,13 @@
     top: 0;
     z-index: 2;
   }
+  .ec-day.ec-today .ec-day-head:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--ec-today-bg-color);
+  }
 
   .ec-day:first-child .ec-day-head {
     border-top: none;

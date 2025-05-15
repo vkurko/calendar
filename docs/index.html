@@ -12,12 +12,20 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="global.css?20231021">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.1.0/dist/event-calendar.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.1.0/dist/event-calendar.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.2.0/dist/event-calendar.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.2.0/dist/event-calendar.min.js"></script>
 
     <style>
         .ec-timeline .ec-time, .ec-timeline .ec-line {
-            width: 80px;
+            width: 16px;
+        }
+        .ec-timeline .ec-time {
+            overflow: visible;
+        }
+        .ec-timeline .ec-time time {
+            display: inline-block;
+            width: 64px;
+            text-align: center;
         }
     </style>
 </head>
@@ -53,10 +61,9 @@
             timeGridWeek: {pointer: true},
             resourceTimeGridWeek: {pointer: true},
             resourceTimelineWeek: {
-                pointer: true,
                 slotMinTime: '09:00',
                 slotMaxTime: '21:00',
-                slotWidth: 80,
+                slotWidth: 16,
                 resources: [
                     {id: 1, title: 'Resource A'},
                     {id: 2, title: 'Resource B'},
