@@ -3,11 +3,11 @@
 
     let {slotDuration, slotHeight, theme, _now, _today, _slotTimeLimits} = getContext('state');
 
-    let start = $derived(($_now - $_today) / 1000 / 60);
+    let start = $derived(($_now - $_today) / 1000);
     // Style
     let top = $derived.by(() => {
-        let step = $slotDuration.seconds / 60;
-        let offset = $_slotTimeLimits.min.seconds / 60;
+        let step = $slotDuration.seconds;
+        let offset = $_slotTimeLimits.min.seconds;
         return (start - offset) / step * $slotHeight;
     });
 </script>

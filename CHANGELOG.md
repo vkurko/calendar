@@ -1,5 +1,9 @@
 # Event Calendar changelog
 
+## 4.3.0
+May 16, 2025
+* Added `nowIndicator` in `resourceTimeline` views ([427](https://github.com/vkurko/calendar/issues/427))
+
 ## 4.2.0
 May 15, 2025
 * Added CSS class `ec-today` to the current day header ([492](https://github.com/vkurko/calendar/issues/492))

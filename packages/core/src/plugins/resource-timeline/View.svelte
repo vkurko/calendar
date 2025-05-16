@@ -3,8 +3,9 @@
     import Sidebar from './Sidebar.svelte';
     import Header from './Header.svelte';
     import Body from './Body.svelte';
+    import NowIndicator from './NowIndicator.svelte';
 
-    let {theme} = getContext('state');
+    let {nowIndicator, theme} = getContext('state');
 </script>
 
 <div class="{$theme.container}">
@@ -12,5 +13,8 @@
     <div class="{$theme.main}">
         <Header/>
         <Body/>
+        {#if $nowIndicator}
+            <NowIndicator/>
+        {/if}
     </div>
 </div>

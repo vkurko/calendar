@@ -497,19 +497,28 @@
 .ec-now-indicator {
   position: absolute;
   z-index: 1005;
-  width: 100%;
-  border-top: var(--ec-now-indicator-color) solid 2px;
   pointer-events: none;
+  .ec-time-grid & {
+    width: 100%;
+    border-top: var(--ec-now-indicator-color) solid 2px;
+  }
+  .ec-timeline & {
+    height: 100%;
+    border-left: var(--ec-now-indicator-color) solid 2px;
+    will-change: transform;
+  }
 
   &:before {
     background: var(--ec-now-indicator-color);
     border-radius: 50%;
     content: "";
-    position: absolute;
+    display: block;
     height: 12px;
     margin-top: -7px;
     width: 12px;
-    pointer-events: none;
+    .ec-timeline & {
+      margin-left: -7px;
+    }
   }
 }
 

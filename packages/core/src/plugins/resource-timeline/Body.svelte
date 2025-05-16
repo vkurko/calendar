@@ -4,19 +4,15 @@
     import {getSlotTimeLimits} from './lib.js';
     import Days from './Days.svelte';
 
-    let {_bodyEl, _headerEl, _events, _sidebarEl, _dayTimes, _dayTimeLimits, _resHs, _viewResources, _viewDates,
-        _recheckScrollable, scrollTime, slotDuration, slotWidth, theme} = getContext('state');
+    let {_bodyEl, _bodyHeight, _bodyWidth, _bodyScrollLeft, _headerEl, _events, _sidebarEl, _dayTimes, _dayTimeLimits,
+        _recheckScrollable, _resHs, _viewResources, _viewDates, scrollTime, slotDuration, slotWidth, theme} = getContext('state');
 
-    let el = $state();
     let refs = [];
-
-    $effect(() => {
-        $_bodyEl = el;
-    });
 
     function scrollToTime() {
         let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, $_viewDates[0]);
-        el.scrollLeft = (toSeconds($scrollTime) - toSeconds(slotTimeLimits.min)) / toSeconds($slotDuration) * $slotWidth;
+        $_bodyEl.scrollLeft = (toSeconds($scrollTime) - toSeconds(slotTimeLimits.min)) / toSeconds($slotDuration) * $slotWidth;
+        $_bodyScrollLeft = $_bodyEl.scrollLeft;
     }
     $effect(() => {
         $_viewDates;
@@ -37,14 +33,21 @@
     function onscroll() {
         $_headerEl.scrollLeft = $_bodyEl.scrollLeft;
         $_sidebarEl.scrollTop = $_bodyEl.scrollTop;
+        $_bodyScrollLeft = $_bodyEl.scrollLeft;
+    }
+
+    function onresize() {
+        $_bodyHeight = $_bodyEl.clientHeight;
+        $_bodyWidth = $_bodyEl.clientWidth;
+        $_recheckScrollable = true;
     }
 </script>
 
 <div
-    bind:this={el}
+    bind:this={$_bodyEl}
     class="{$theme.body}"
     {onscroll}
-    use:observeResize={() => $_recheckScrollable = true}
+    use:observeResize={onresize}
 >
     <div class="{$theme.content}">
         <div class="{$theme.lines}">

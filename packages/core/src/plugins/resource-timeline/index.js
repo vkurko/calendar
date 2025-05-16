@@ -51,6 +51,9 @@ export default {
 		if (!('_viewResources' in state)) {
 			state._viewResources = viewResources(state);
 		}
+		state._bodyHeight = writable(0);
+		state._bodyWidth = writable(0);
+		state._bodyScrollLeft = writable(0);
 		state._headerEl = writable(undefined);
 		state._headerHeight = writable(0);
 		state._dayTimeLimits = dayTimeLimits(state);  // flexible time limits per day

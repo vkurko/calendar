@@ -1,14 +1,15 @@
 <script>
     import {getContext} from 'svelte';
-    import {setContent, toISOString, toSeconds, observeResize} from '#lib';
+    import {datesEqual, setContent, toISOString, toSeconds, observeResize} from '#lib';
 
-    let {_headerEl, _headerHeight,_intlDayHeader, _intlDayHeaderAL, _dayTimes, _viewDates, slotDuration, theme} = getContext('state');
+    let {_headerEl, _headerHeight, _intlDayHeader, _intlDayHeaderAL, _dayTimes, _today, _viewDates,
+        slotDuration, theme} = getContext('state');
 </script>
 
 <div class="{$theme.header}" bind:this={$_headerEl} use:observeResize={() => $_headerHeight = $_headerEl.clientHeight}>
     <div class="{$theme.days}" role="row">
         {#each $_viewDates as date}
-            <div class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}">
+            <div class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{datesEqual(date, $_today) ? ' ' + $theme.today : ''}">
                 {#if toSeconds($slotDuration)}
                     <div class="{$theme.dayHead}">
                         <time
