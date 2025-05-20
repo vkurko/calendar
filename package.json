@@ -4,7 +4,7 @@
   "version": "4.3.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite local-dev",
     "build": "vite build && vite build --mode iife",
     "preview": "vite preview",
     "set-version": "node ./scripts/set-version.cjs",
