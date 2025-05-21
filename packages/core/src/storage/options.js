@@ -40,6 +40,7 @@ export function createOptions(plugins) {
         },
         filterEventsWithResources: false,
         filterResourcesWithEvents: false,
+        filterEvents: undefined,
         firstDay: 0,
         flexibleSlotTimeLimits: false,  // ec option
         headerToolbar: {

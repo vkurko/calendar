@@ -192,3 +192,16 @@ export function now() {
 export function today(state) {
     return derived(state._now, $_now => setMidnight(cloneDate($_now)));
 }
+
+export function filteredEvents(state){
+
+    return derived( [state._events, state.filterEvents], ([$_events,$filter]) => {
+
+        if( $filter ){
+            return $_events.filter($filter);
+        }
+
+        return $_events;
+    });
+
+}

@@ -10,7 +10,7 @@
     let {resource} = $props();
 
     let {
-        _viewDates, _events, _iEvents, _resHs, _dayTimeLimits, slotDuration, theme, validRange
+        _viewDates, _filtered, _iEvents, _resHs, _dayTimeLimits, slotDuration, theme, validRange
     } = getContext('state');
 
     let refs = [];
@@ -34,7 +34,7 @@
         let chunks = [];
         let bgChunks = [];
         let longChunks;
-        for (let event of $_events) {
+        for (let event of $_filtered) {
             if (eventIntersects(event, start, end, resource)) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {

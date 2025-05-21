@@ -7,7 +7,7 @@
 
     let {dates, resource = undefined} = $props();
 
-    let {_events, _iEvents, hiddenDays, resources, filterEventsWithResources, validRange} = getContext('state');
+    let {_filtered, _iEvents, hiddenDays, resources, filterEventsWithResources, validRange } = getContext('state');
 
     let refs = [];
 
@@ -21,7 +21,7 @@
     let [chunks, bgChunks, longChunks] = $derived.by(() => {
         let chunks = [];
         let bgChunks = [];
-        for (let event of $_events) {
+        for (let event of $_filtered) {
             if (event.allDay && eventIntersects(event, start, end, resourceFilter)) {
                 let chunk = createEventChunk(event, start, end);
                 if (bgEvent(event.display)) {
