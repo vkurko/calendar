@@ -10,8 +10,8 @@
 
     let {date, resource = undefined} = $props();
 
-    let {_events, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, filterEventsWithResources, theme,
-        resources, validRange, _interaction, _today, _slotTimeLimits} = getContext('state');
+    let {_filtered, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, filterEventsWithResources, theme,
+        resources, validRange, _interaction, _today, _slotTimeLimits  } = getContext('state');
 
     let el = $state();
 
@@ -30,7 +30,7 @@
         }
         let chunks = [];
         let bgChunks = [];
-        for (let event of $_events) {
+        for (let event of $_filtered) {
             if ((!event.allDay || bgEvent(event.display)) && eventIntersects(event, start, end, resourceFilter)) {
                 let chunk = createEventChunk(event, start, end);
                 switch (event.display) {

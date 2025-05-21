@@ -1,7 +1,7 @@
 import {get, writable} from 'svelte/store';
 import {tick} from 'svelte';
 import {createOptions, createParsers} from './options.js';
-import {activeRange, currentRange, dayGrid, events, now, today, view as view2, viewDates, viewTitle} from './stores.js';
+import {activeRange, currentRange, dayGrid, events, now, today, view as view2, viewDates, viewTitle, filteredEvents} from './stores.js';
 import {identity, intl, intlRange, isFunction, keys} from '#lib';
 
 export default class {
@@ -30,6 +30,7 @@ export default class {
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = events(this);
+        this._filtered = filteredEvents(this);
         this._now = now();
         this._today = today(this);
         this._intlEventTime = intlRange(this.locale, this.eventTimeFormat);

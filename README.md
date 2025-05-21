@@ -65,6 +65,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventStartEditable](#eventstarteditable)
   - [eventTextColor](#eventtextcolor)
   - [eventTimeFormat](#eventtimeformat)
+  - [filterEvents](#filterevents)
   - [filterEventsWithResources](#filtereventswithresources)
   - [filterResourcesWithEvents](#filterresourceswithevents)
   - [firstDay](#firstday)
@@ -1555,6 +1556,12 @@ function (start, end) {
 Sets the default text color for calendar events (except for `list` view).
 
 You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+
+### filterEvents
+- Type `function`
+- Default `undefined`
+
+A function to determine whether a given event should be hidden.
 
 ### filterEventsWithResources
 - Type `boolean`
