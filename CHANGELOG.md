@@ -1,4 +1,8 @@
-# Event Calendar changelog
+# EventCalendar changelog
+
+## 4.4.0
+June 5, 2025
+* Added `eventFilter` option ([500](https://github.com/vkurko/calendar/pull/500))
 
 ## 4.3.1
 June 3, 2025

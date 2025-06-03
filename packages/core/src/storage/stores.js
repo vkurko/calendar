@@ -179,6 +179,29 @@ export function events(state) {
     return _events;
 }
 
+export function filteredEvents(state){
+    let view;
+    state._view.subscribe($_view => view = $_view);
+    let debounceHandle = {};
+    return derived(
+        [state._events, state.eventFilter],
+        (values, set) => debounce(() => {
+            let [$_events, $eventFilter] = values;
+            set(
+                isFunction($eventFilter)
+                    ? $_events.filter((event, index, events) => $eventFilter({
+                        event,
+                        index,
+                        events,
+                        view
+                    }))
+                    : $_events
+            );
+        }, debounceHandle, state._queue),
+        []
+    );
+}
+
 export function now() {
     return readable(createDate(), set => {
         let interval = setInterval(() => {

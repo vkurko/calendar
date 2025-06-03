@@ -54,6 +54,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   </td><td>
 
   - [eventDurationEditable](#eventdurationeditable)
+  - [eventFilter](#eventfilter)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -227,8 +228,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.3.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.3.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.4.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.4.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1114,6 +1115,58 @@ The current [View](#view-object) object
 - Requires `Interaction` plugin
 
 Determines whether calendar events can be resized.
+
+### eventFilter
+- Type `function`
+- Default `undefined`
+
+A function for filtering the array of events before displaying them in the calendar. It allows, for example, to display only specific events for each view.
+
+```js
+function (info) {
+    // return true to keep the event, false to exclude it
+}
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The current [Event](#event-object) object being processed in the array
+</td>
+</tr>
+<tr>
+<td>
+
+`index`
+</td>
+<td>The index of the current event being processed in the array</td>
+</tr>
+<tr>
+<td>
+
+`events`
+</td>
+<td>
+
+The array of all events `eventFilter` was called upon
+</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
 
 ### eventLongPressDelay
 - Type `integer`

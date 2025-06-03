@@ -25,15 +25,16 @@ export function createOptions(plugins) {
         events: [],
         eventAllUpdated: undefined,
         eventBackgroundColor: undefined,
-        eventTextColor: undefined,
         eventClassNames: undefined,
         eventClick: undefined,
         eventColor: undefined,
         eventContent: undefined,
         eventDidMount: undefined,
+        eventFilter: undefined,    // ec option
         eventMouseEnter: undefined,
         eventMouseLeave: undefined,
         eventSources: [],
+        eventTextColor: undefined,
         eventTimeFormat: {
             hour: 'numeric',
             minute: '2-digit'

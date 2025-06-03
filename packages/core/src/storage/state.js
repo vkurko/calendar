@@ -1,7 +1,7 @@
 import {get, writable} from 'svelte/store';
 import {tick} from 'svelte';
 import {createOptions, createParsers} from './options.js';
-import {activeRange, currentRange, dayGrid, events, now, today, view as view2, viewDates, viewTitle} from './stores.js';
+import {activeRange, currentRange, dayGrid, events, now, today, view as view2, viewDates, viewTitle, filteredEvents} from './stores.js';
 import {identity, intl, intlRange, isFunction, keys} from '#lib';
 
 export default class {
@@ -44,6 +44,7 @@ export default class {
         this._viewDates = viewDates(this);
         this._view = view2(this);
         this._viewComponent = writable(undefined);
+        this._filteredEvents = filteredEvents(this);
         // Interaction
         this._interaction = writable({});
         this._iEvents = writable([null, null]);  // interaction events: [drag/resize, pointer]
