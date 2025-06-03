@@ -1,5 +1,10 @@
 # Event Calendar changelog
 
+## 4.3.1
+June 3, 2025
+* Fixed error with `svelte >= 5.33.0` ([505](https://github.com/vkurko/calendar/issues/505), [507](https://github.com/vkurko/calendar/issues/507))
+* Fixed infinite recursion when using calendar in Lit component ([142](https://github.com/vkurko/calendar/issues/142#issuecomment-2894606865))
+
 ## 4.3.0
 May 16, 2025
 * Added `nowIndicator` in `resourceTimeline` views ([427](https://github.com/vkurko/calendar/issues/427))

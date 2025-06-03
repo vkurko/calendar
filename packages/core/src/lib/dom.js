@@ -35,14 +35,15 @@ export function height(el) {
     return rect(el).height;
 }
 
-export function getElementWithPayload(x, y, root = document) {
+export function getElementWithPayload(x, y, root = document, processed = []) {
+    processed.push(root);
     for (let el of root.elementsFromPoint(x, y)) {
         if (hasPayload(el)) {
             return el;
         }
         /** @see https://github.com/vkurko/calendar/issues/142 */
-        if (el.shadowRoot && el.shadowRoot !== root) {
-            let shadowEl = getElementWithPayload(x, y, el.shadowRoot);
+        if (el.shadowRoot && !processed.includes(el.shadowRoot)) {
+            let shadowEl = getElementWithPayload(x, y, el.shadowRoot, processed);
             if (shadowEl) {
                 return shadowEl;
             }
