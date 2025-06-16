@@ -4,7 +4,7 @@
     import Week from './Week.svelte';
 
     let {
-        _bodyEl, _viewDates, _events, _hiddenEvents, _recheckScrollable, dayMaxEvents, hiddenDays, theme
+        _bodyEl, _viewDates, _filteredEvents, _hiddenEvents, _recheckScrollable, dayMaxEvents, hiddenDays, theme
     } = getContext('state');
 
     let refs = [];
@@ -31,7 +31,7 @@
         runReposition(refs, weeks);
     }
     $effect(() => {
-        $_events;
+        $_filteredEvents;
         $_hiddenEvents;
         $dayMaxEvents;
         untrack(reposition);

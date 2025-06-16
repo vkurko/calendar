@@ -4,7 +4,7 @@
     import {getSlotTimeLimits} from './lib.js';
     import Days from './Days.svelte';
 
-    let {_bodyEl, _bodyHeight, _bodyWidth, _bodyScrollLeft, _headerEl, _events, _sidebarEl, _dayTimes, _dayTimeLimits,
+    let {_bodyEl, _bodyHeight, _bodyWidth, _bodyScrollLeft, _headerEl, _filteredEvents, _sidebarEl, _dayTimes, _dayTimeLimits,
         _recheckScrollable, _resHs, _viewResources, _viewDates, scrollTime, slotDuration, slotWidth, theme} = getContext('state');
 
     let refs = [];
@@ -25,7 +25,7 @@
         runReposition(refs, $_viewResources);
     }
     $effect(() => {
-        $_events;
+        $_filteredEvents;
         $_viewResources;
         untrack(reposition);
     });

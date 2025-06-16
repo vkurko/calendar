@@ -31,7 +31,7 @@ export function createTimes(date, $slotDuration, $slotLabelInterval, $_slotTimeL
     return times;
 }
 
-export function createSlotTimeLimits($slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_viewDates, $_events) {
+export function createSlotTimeLimits($slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_viewDates, $_filteredEvents) {
     let min = createDuration($slotMinTime);
     let max = createDuration($slotMaxTime);
 
@@ -47,7 +47,7 @@ export function createSlotTimeLimits($slotMinTime, $slotMaxTime, $flexibleSlotTi
             let end = addDuration(cloneDate(date), max);
             let minStart = addDuration(cloneDate(date), minMin);
             let maxEnd = addDuration(cloneDate(date), maxMax);
-            for (let event of $_events) {
+            for (let event of $_filteredEvents) {
                 if (!event.allDay && filter(event) && event.start < maxEnd && event.end > minStart) {
                     if (event.start < start) {
                         let seconds = maxFn((event.start - date) / 1000, toSeconds(minMin));

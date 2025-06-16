@@ -4,8 +4,8 @@ import {createSlotTimeLimits, createTimes, getPayload} from '#lib';
 // slotTimeLimits per day
 export function dayTimeLimits(state) {
     return derived(
-        [state.slotMinTime, state.slotMaxTime, state.flexibleSlotTimeLimits, state._viewDates, state._events],
-        ([$slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_viewDates, $_events]) => {
+        [state.slotMinTime, state.slotMaxTime, state.flexibleSlotTimeLimits, state._viewDates, state._filteredEvents],
+        ([$slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_viewDates, $_filteredEvents]) => {
             let dayTimeLimits = {};
             for (let date of $_viewDates) {
                 dayTimeLimits[date.getTime()] = createSlotTimeLimits(
@@ -13,7 +13,7 @@ export function dayTimeLimits(state) {
                     $slotMaxTime,
                     $flexibleSlotTimeLimits,
                     [date],
-                    $_events
+                    $_filteredEvents
                 );
             }
 

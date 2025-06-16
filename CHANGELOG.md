@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 4.4.1
+June 16, 2025
+* Fixed event positioning issue ([511](https://github.com/vkurko/calendar/issues/511))
+
 ## 4.4.0
 June 5, 2025
 * Added `eventFilter` option ([500](https://github.com/vkurko/calendar/pull/500))

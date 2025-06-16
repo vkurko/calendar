@@ -3,14 +3,14 @@
     import {addDay, cloneDate, toViewWithLocalDates, setContent, bgEvent, isFunction} from '#lib';
     import Day from './Day.svelte';
 
-    let {_bodyEl, _events, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
+    let {_bodyEl, _filteredEvents, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
 
     let noEvents = $derived.by(() => {
         let noEvents = true;
         if ($_viewDates.length) {
             let start = $_viewDates[0];
             let end = addDay(cloneDate($_viewDates.at(-1)));
-            for (let event of $_events) {
+            for (let event of $_filteredEvents) {
                 if (!bgEvent(event.display) && event.start < end && event.end > start) {
                     noEvents = false;
                     break;

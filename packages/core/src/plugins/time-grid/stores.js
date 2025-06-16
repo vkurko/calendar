@@ -10,7 +10,7 @@ export function times(state) {
 
 export function slotTimeLimits(state) {
     return derived(
-        [state.slotMinTime, state.slotMaxTime, state.flexibleSlotTimeLimits, state._viewDates, state._events],
+        [state.slotMinTime, state.slotMaxTime, state.flexibleSlotTimeLimits, state._viewDates, state._filteredEvents],
         args => createSlotTimeLimits(...args)
     );
 }

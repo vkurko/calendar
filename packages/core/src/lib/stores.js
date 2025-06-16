@@ -66,13 +66,13 @@ function _getParts(source, parts) {
 
 export function viewResources(state) {
     return derived(
-        [state.resources, state.filterResourcesWithEvents, state._events, state._activeRange],
-        ([$resources, $filterResourcesWithEvents, $_events, $_activeRange]) => {
+        [state.resources, state.filterResourcesWithEvents, state._filteredEvents, state._activeRange],
+        ([$resources, $filterResourcesWithEvents, $_filteredEvents, $_activeRange]) => {
             let result = $resources.filter(resource => !getPayload(resource).hidden);
 
             if ($filterResourcesWithEvents) {
                 result = $resources.filter(resource => {
-                    for (let event of $_events) {
+                    for (let event of $_filteredEvents) {
                         if (
                             event.display !== 'background' &&
                             event.resourceIds.includes(resource.id) &&

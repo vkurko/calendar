@@ -5,7 +5,7 @@
     } from '#lib';
 
     let {
-        datesSet, eventAllUpdated, _auxiliary, _activeRange, _events, _scrollable, _bodyEl, _tasks, _recheckScrollable,
+        datesSet, eventAllUpdated, _auxiliary, _activeRange, _filteredEvents, _scrollable, _bodyEl, _tasks, _recheckScrollable,
         _queue, _view
     } = getContext('state');
 
@@ -27,7 +27,7 @@
 
     // eventAllUpdated callback
     $effect(() => {
-        $_events;
+        $_filteredEvents;
         untrack(() => {
             if (isFunction($eventAllUpdated)) {
                 task(() => $eventAllUpdated({view: toViewWithLocalDates($_view)}), 'eau', _tasks);
