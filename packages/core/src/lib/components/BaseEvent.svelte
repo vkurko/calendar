@@ -1,7 +1,7 @@
 <script>
     import {getContext, onMount} from 'svelte';
     import {
-        bgEvent, createEventClasses, createEventContent, entries, helperEvent, identity, isFunction, keyEnter,
+        bgEvent, createEventClasses, createEventContent, entries, fromEntries, helperEvent, identity, isFunction, keyEnter,
         resourceBackgroundColor, resourceTextColor, setContent, toEventWithLocalDates, toViewWithLocalDates
     } from '#lib';
 
@@ -26,7 +26,7 @@
     let bgColor = $derived(event.backgroundColor ?? resourceBackgroundColor(event, $resources) ?? $eventBackgroundColor ?? $eventColor);
     let txtColor = $derived(event.textColor ?? resourceTextColor(event, $resources) ?? $eventTextColor);
     let style = $derived(entries(styles(
-        {'background-color': bgColor, 'color': txtColor}
+        {'background-color': bgColor, 'color': txtColor, ...fromEntries(event.styles.map(style => style.split(':')))}
     )).map(entry => `${entry[0]}:${entry[1]}`).join(';'));
 
     // Class

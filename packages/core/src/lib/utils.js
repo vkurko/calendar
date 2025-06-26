@@ -10,6 +10,10 @@ export function entries(object) {
     return Object.entries(object);
 }
 
+export function fromEntries(array) {
+    return Object.fromEntries(array);
+}
+
 export function floor(value) {
     return Math.floor(value);
 }
