@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 4.4.2
+June 26, 2025
+* Fixed an issue with `updateEvent()` producing an error ([516](https://github.com/vkurko/calendar/issues/516))
+
 ## 4.4.1
 June 16, 2025
 * Fixed event positioning issue ([511](https://github.com/vkurko/calendar/issues/511))

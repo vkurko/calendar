@@ -71,7 +71,8 @@
         let id = String(event.id);
         let idx = $_events.findIndex(event => event.id === id);
         if (idx >= 0) {
-            $_events[idx] = createEvents([event])[0];
+            event = createEvents([event])[0];
+            $_events[idx] = event;
             return toEventWithLocalDates(event);
         }
         return null;
