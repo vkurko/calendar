@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 4.5.0
+June 27, 2025
+* `viewDidMount` input parameter has been adjusted to match documentation ([522](https://github.com/vkurko/calendar/issues/522))
+* Fixed event styles not being applied ([520](https://github.com/vkurko/calendar/issues/520), [521](https://github.com/vkurko/calendar/pull/521))
+
 ## 4.4.2
 June 26, 2025
 * Fixed an issue with `updateEvent()` producing an error ([516](https://github.com/vkurko/calendar/issues/516))

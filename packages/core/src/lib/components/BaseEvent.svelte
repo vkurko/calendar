@@ -27,7 +27,7 @@
     let txtColor = $derived(event.textColor ?? resourceTextColor(event, $resources) ?? $eventTextColor);
     let style = $derived(entries(styles(
         {'background-color': bgColor, 'color': txtColor}
-    )).map(entry => `${entry[0]}:${entry[1]}`).join(';'));
+    )).map(entry => `${entry[0]}:${entry[1]}`).concat(event.styles).join(';'));
 
     // Class
     let classNames = $derived(classes([
