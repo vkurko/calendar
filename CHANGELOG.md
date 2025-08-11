@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 4.5.1
+August 11, 2025
+* Attempt to fix `Svelte error: await_outside_boundary` ([530](https://github.com/vkurko/calendar/issues/530))
+
 ## 4.5.0
 June 27, 2025
 * `viewDidMount` input parameter has been adjusted to match documentation ([522](https://github.com/vkurko/calendar/issues/522))
