@@ -73,6 +73,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
+  - [eventOrder](#eventorder)
   - [eventResizableFromStart](#eventresizablefromstart)
   - [eventResize](#eventresize)
   - [eventResizeStart](#eventresizestart)
@@ -1282,6 +1283,42 @@ The associated [Event](#event-object) object
 <td>
 
 The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventOrder
+- Type `function`
+- Default `undefined`
+
+A function that determines the order of the events within the same day. When `eventOrder` is not specified, events are sorted by start time with all-day events appearing first.
+
+```js
+function(a, b) {
+    // Return a negative value if 'a' should come before 'b'
+    // Return a positive value if 'a' should come after 'b'
+    // Return zero if 'a' and 'b' are equal
+}
+```
+<table>
+<tr>
+<td>
+
+`a`
+</td>
+<td>
+
+The first [Event](#event-object) object for comparison
+</td>
+</tr>
+<tr>
+<td>
+
+`b`
+</td>
+<td>
+
+The second [Event](#event-object) object for comparison
 </td>
 </tr>
 </table>

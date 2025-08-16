@@ -1,11 +1,11 @@
 import {isFunction, sortEventChunks} from '#lib';
 
-export function groupEventChunks(chunks) {
+export function groupEventChunks(chunks, $eventOrder) {
     if (!chunks.length) {
         return;
     }
 
-    sortEventChunks(chunks);
+    sortEventChunks(chunks, $eventOrder);
 
     // Group
     let group = {

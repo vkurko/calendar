@@ -10,7 +10,7 @@
     let {resource} = $props();
 
     let {
-        _viewDates, _filteredEvents, _iEvents, _resHs, _dayTimeLimits, slotDuration, theme, validRange
+        _viewDates, _filteredEvents, _iEvents, _resHs, _dayTimeLimits, eventOrder, slotDuration, theme, validRange
     } = getContext('state');
 
     let refs = [];
@@ -44,8 +44,8 @@
                 }
             }
         }
-        [bgChunks] = prepareEventChunks(bgChunks, $_viewDates, $_dayTimeLimits, $slotDuration);
-        [chunks, longChunks] = prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration);
+        [bgChunks] = prepareEventChunks(bgChunks, $_viewDates, $_dayTimeLimits, $slotDuration, $eventOrder);
+        [chunks, longChunks] = prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration, $eventOrder);
         return [chunks, bgChunks, longChunks];
     });
 
@@ -53,7 +53,7 @@
         let chunk;
         if (event && eventIntersects(event, start, end, resource)) {
             chunk = createEventChunk(event, start, end);
-            [[chunk]] = prepareEventChunks([chunk], $_viewDates, $_dayTimeLimits, $slotDuration);
+            [[chunk]] = prepareEventChunks([chunk], $_viewDates, $_dayTimeLimits, $slotDuration, $eventOrder);
         } else {
             chunk = null;
         }
