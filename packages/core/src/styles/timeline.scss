@@ -139,9 +139,6 @@
         flex-grow: 0;
         border-bottom: 1px solid var(--ec-border-color);
       }
-      &:last-child {
-        flex-basis: 100%!important;  // for vertical scroll needs
-      }
 
       span {
         padding-top: 8px;

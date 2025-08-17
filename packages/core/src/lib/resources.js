@@ -16,7 +16,8 @@ function _createResources(input, level, flat) {
             level,
             children: [],
             expanded: true,
-            hidden: false
+            hidden: false,
+            height: 0
         };
         setPayload(resource, payload);
         if (item.children) {

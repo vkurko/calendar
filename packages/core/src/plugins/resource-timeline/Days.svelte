@@ -2,7 +2,7 @@
     import {getContext} from 'svelte';
     import {
         addDay, addDuration, bgEvent, ceil, cloneDate, createEventChunk, DAY_IN_SECONDS, eventIntersects,
-        limitToRange, max, runReposition
+        getPayload, limitToRange, max, runReposition
     } from '#lib';
     import {getSlotTimeLimits, prepareEventChunks} from './lib.js';
     import Day from './Day.svelte';
@@ -61,7 +61,10 @@
     }));
 
     export function reposition() {
-        height = ceil(max(...runReposition(refs, $_viewDates))) + 10;
+        let payload = getPayload(resource);
+        let resourceLabelHeight = ceil(payload.height ?? 0);
+        let daysRowHeight = ceil(max(...runReposition(refs, $_viewDates)));
+        height = max(resourceLabelHeight, daysRowHeight) + 10;
         $_resHs.set(resource, height);
         $_resHs = $_resHs;
     }
