@@ -7,7 +7,7 @@
 
     let {dates, resource = undefined} = $props();
 
-    let {_filteredEvents, _iEvents, hiddenDays, resources, filterEventsWithResources, validRange } = getContext('state');
+    let {_filteredEvents, _iEvents, eventOrder, hiddenDays, resources, filterEventsWithResources, validRange } = getContext('state');
 
     let refs = [];
 
@@ -31,8 +31,8 @@
                 }
             }
         }
-        prepareEventChunks(bgChunks, $hiddenDays);
-        let longChunks = prepareEventChunks(chunks, $hiddenDays);
+        prepareEventChunks(bgChunks, $hiddenDays, $eventOrder);
+        let longChunks = prepareEventChunks(chunks, $hiddenDays, $eventOrder);
         return [chunks, bgChunks, longChunks];
     });
 
@@ -48,7 +48,7 @@
         let chunk;
         if (event && event.allDay && eventIntersects(event, start, end, resource)) {
             chunk = createEventChunk(event, start, end);
-            prepareEventChunks([chunk], $hiddenDays);
+            prepareEventChunks([chunk], $hiddenDays, $eventOrder);
         } else {
             chunk = null;
         }

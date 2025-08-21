@@ -33,6 +33,7 @@ export function createOptions(plugins) {
         eventFilter: undefined,    // ec option
         eventMouseEnter: undefined,
         eventMouseLeave: undefined,
+        eventOrder: undefined,
         eventSources: [],
         eventTextColor: undefined,
         eventTimeFormat: {

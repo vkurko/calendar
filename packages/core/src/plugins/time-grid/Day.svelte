@@ -11,7 +11,7 @@
     let {date, resource = undefined} = $props();
 
     let {_filteredEvents, _iEvents, highlightedDates, nowIndicator, slotDuration, slotHeight, filterEventsWithResources,
-        theme, resources, validRange, _interaction, _today, _slotTimeLimits} = getContext('state');
+        eventOrder, theme, resources, validRange, _interaction, _today, _slotTimeLimits} = getContext('state');
 
     let el = $state();
 
@@ -39,7 +39,7 @@
                 }
             }
         }
-        groupEventChunks(chunks);
+        groupEventChunks(chunks, $eventOrder);
         return [chunks, bgChunks];
     });
 

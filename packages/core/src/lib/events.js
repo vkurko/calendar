@@ -66,7 +66,13 @@ export function createEventChunk(event, start, end) {
     return chunk;
 }
 
-export function sortEventChunks(chunks) {
+export function sortEventChunks(chunks, eventOrder) {
+    if (isFunction(eventOrder)) {
+        chunks.sort((a, b) => eventOrder(a.event, b.event));
+
+        return;
+    }
+
     // Sort by start date (all-day events always on top)
     chunks.sort((a, b) => a.start - b.start || b.event.allDay - a.event.allDay);
 }
@@ -156,11 +162,11 @@ function _cloneEvent(event, dateFn) {
 /**
  * Prepare event chunks for month view and all-day slot in week view
  */
-export function prepareEventChunks(chunks, hiddenDays) {
+export function prepareEventChunks(chunks, hiddenDays, eventOrder) {
     let longChunks = {};
 
     if (chunks.length) {
-        sortEventChunks(chunks);
+        sortEventChunks(chunks, eventOrder);
 
         let prevChunk;
         for (let chunk of chunks) {
