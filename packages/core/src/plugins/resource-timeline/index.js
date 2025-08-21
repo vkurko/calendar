@@ -58,6 +58,7 @@ export default {
 		state._headerHeight = writable(0);
 		state._dayTimeLimits = dayTimeLimits(state);  // flexible time limits per day
 		state._dayTimes = dayTimes(state);
+		state._daysHs = writable(new Map());  // days row heights
 		state._nestedResources = nestedResources(state);
 		state._resHs = writable(new Map());  // resource row heights
 		state._sidebarEl = writable(undefined);
