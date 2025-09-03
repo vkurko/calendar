@@ -1,8 +1,12 @@
 # EventCalendar changelog
 
+## 4.5.2
+August 21, 2025
+* Fixed row height issue in `resourceTimeline` views ([401](https://github.com/vkurko/calendar/issues/401))
+
 ## 4.5.1
 August 11, 2025
-* Attempt to fix `Svelte error: await_outside_boundary` ([530](https://github.com/vkurko/calendar/issues/530))
+* Fixed `Svelte error: await_outside_boundary` ([530](https://github.com/vkurko/calendar/issues/530))
 
 ## 4.5.0
 June 27, 2025

@@ -10,11 +10,10 @@
     let {resource} = $props();
 
     let {
-        _viewDates, _filteredEvents, _iEvents, _resHs, _dayTimeLimits, eventOrder, slotDuration, theme, validRange
+        _viewDates, _filteredEvents, _iEvents, _dayTimeLimits, _daysHs, _resHs, eventOrder, slotDuration, theme, validRange
     } = getContext('state');
 
     let refs = [];
-    let height = $state(0);
 
     let [start, end] = $derived.by(() => {
         let start = cloneDate(limitToRange($_viewDates[0], $validRange));
@@ -61,13 +60,12 @@
     }));
 
     export function reposition() {
-        height = ceil(max(...runReposition(refs, $_viewDates))) + 10;
-        $_resHs.set(resource, height);
-        $_resHs = $_resHs;
+        $_daysHs.set(resource, ceil(max(...runReposition(refs, $_viewDates))) + 10);
+        $_daysHs = $_daysHs;
     }
 </script>
 
-<div class="{$theme.days}" style="flex-basis: {max(height, 34)}px" role="row">
+<div class="{$theme.days}" style="flex-basis: {max($_daysHs.get(resource) ?? 0, $_resHs.get(resource) ?? 0, 34)}px" role="row">
     {#each $_viewDates as date, i}
         <!-- svelte-ignore binding_property_non_reactive -->
         <Day {date} {resource} {chunks} {bgChunks} {longChunks} {iChunks} bind:this={refs[i]}/>
