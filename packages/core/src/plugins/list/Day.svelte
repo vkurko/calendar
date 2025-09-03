@@ -9,7 +9,7 @@
     let {date} = $props();
 
     let {_filteredEvents, _interaction, _intlListDay, _intlListDaySide, _today,
-        resources, filterEventsWithResources, highlightedDates, theme, validRange} = getContext('state');
+        resources, eventOrder, filterEventsWithResources, highlightedDates, theme, validRange} = getContext('state');
 
     let el = $state();
     let isToday = $derived(datesEqual(date, $_today));
@@ -28,7 +28,7 @@
                     chunks.push(chunk);
                 }
             }
-            sortEventChunks(chunks);
+            sortEventChunks(chunks, $eventOrder);
         }
         return chunks;
     });

@@ -66,13 +66,14 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
+  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
-  - [eventDurationEditable](#eventdurationeditable)
   - [eventFilter](#eventfilter)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
+  - [eventOrder](#eventorder)
   - [eventResizableFromStart](#eventresizablefromstart)
   - [eventResize](#eventresize)
   - [eventResizeStart](#eventresizestart)
@@ -243,8 +244,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.5.2/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.5.2/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.6.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.6.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1282,6 +1283,51 @@ The associated [Event](#event-object) object
 <td>
 
 The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### eventOrder
+- Type `function`
+- Default `undefined`
+
+A function that determines the order in which events that visually intersect in the current view are displayed.
+
+When `eventOrder` is not specified, events are ordered by start time with all-day events appearing first.
+
+```js
+function (a, b) {
+    // Return a negative value if 'a' should come before 'b'
+    // Return a positive value if 'a' should come after 'b'
+    // Return zero if 'a' and 'b' are equal
+}
+```
+
+`a` and `b` are objects (so called `event chunks`) with the following properties:
+
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>JavaScript Date object holding the event chunk’s start time</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object holding the event chunk’s end time</td>
+</tr>
+<tr>
+<td>
+
+`event`
+</td>
+<td>
+
+The [Event](#event-object) object associated with this chunk
 </td>
 </tr>
 </table>

@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 4.6.0
+September 4, 2025
+* Added `eventOrder` option ([549](https://github.com/vkurko/calendar/issues/549))
+
 ## 4.5.2
 August 21, 2025
 * Fixed row height issue in `resourceTimeline` views ([401](https://github.com/vkurko/calendar/issues/401))

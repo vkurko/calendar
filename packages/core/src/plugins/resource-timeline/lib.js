@@ -1,11 +1,11 @@
 import {addDay, addDuration, cloneDate, createDuration, datesEqual, sortEventChunks, toSeconds} from '#lib';
 
-export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration) {
+export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration, $eventOrder) {
     let longChunks = {};
     let filteredChunks = [];
 
     if (chunks.length) {
-        sortEventChunks(chunks);
+        sortEventChunks(chunks, $eventOrder);
 
         let step = toSeconds($slotDuration);
         let prevChunk;

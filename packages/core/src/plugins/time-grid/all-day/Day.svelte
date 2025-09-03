@@ -1,6 +1,6 @@
 <script>
     import {getContext, onMount} from 'svelte';
-    import {datesEqual, outsideRange, runReposition, setPayload} from '../../../lib';
+    import {datesEqual, outsideRange, runReposition, setPayload} from '#lib';
     import Event from './Event.svelte';
 
     let {date, chunks, bgChunks, longChunks, iChunks = [], resource = undefined} = $props();
