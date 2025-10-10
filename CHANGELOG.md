@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 4.7.0
+October 10, 2025
+* Added ability to set `customButtons` as function ([499](https://github.com/vkurko/calendar/issues/499))
+
 ## 4.6.0
 September 4, 2025
 * Added `eventOrder` option ([549](https://github.com/vkurko/calendar/issues/549))

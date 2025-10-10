@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (33kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (37kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * 100% human-coded
 * Zero-dependency (standalone bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
@@ -244,8 +244,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.6.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.6.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.7.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.7.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -370,7 +370,7 @@ function (text) {
 </table>
 
 ### customButtons
-- Type `object`
+- Type `object` or `function`
 - Default `{}`
 
 Defines custom buttons that can be used in the [headerToolbar](#headertoolbar).
@@ -427,6 +427,23 @@ The text to be display on the button itself. See [Content](#content)
 
 If `true`, the button will appear pressed/active
 </td>
+</tr>
+</table>
+
+This option can also be set as a callback function that receives default custom button object and should return a new one:
+
+```js
+function (customButtons) {
+  // return new custom buttons object
+}
+```
+<table>
+<tr>
+<td>
+
+`customButtons`
+</td>
+<td>An object with default custom buttons</td>
 </tr>
 </table>
 

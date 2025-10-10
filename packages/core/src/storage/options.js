@@ -2,6 +2,9 @@ import {
     createDate, createDuration, createEvents, createEventSources, createResources, createDateRange, keys, setMidnight
 } from '#lib';
 
+// Options where initial value is passed to the function
+export const specialOptions = ['buttonText', 'customButtons', 'theme'];
+
 export function createOptions(plugins) {
     let options = {
         allDayContent: undefined,

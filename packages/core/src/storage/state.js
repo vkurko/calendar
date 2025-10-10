@@ -1,6 +1,6 @@
 import {get, writable} from 'svelte/store';
 import {tick} from 'svelte';
-import {createOptions, createParsers} from './options.js';
+import {createOptions, createParsers, specialOptions} from './options.js';
 import {activeRange, currentRange, dayGrid, events, now, today, view as view2, viewDates, viewTitle, filteredEvents} from './stores.js';
 import {identity, intl, intlRange, isFunction, keys, toViewWithLocalDates} from '#lib';
 
@@ -86,7 +86,7 @@ export default class {
 
                 this[key] = {
                     // Set value in all views
-                    set: ['buttonText', 'theme'].includes(key)
+                    set: specialOptions.includes(key)
                         ? value => {
                             if (isFunction(value)) {
                                 let result = value(defOpts[key]);
@@ -145,7 +145,7 @@ function mergeOpts(...args) {
     let result = {};
     for (let opts of args) {
         let override = {};
-        for (let key of ['buttonText', 'theme']) {
+        for (let key of specialOptions) {
             if (isFunction(opts[key])) {
                 override[key] = opts[key](result[key]);
             }
