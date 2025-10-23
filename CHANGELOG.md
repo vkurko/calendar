@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 4.7.1
+October 23, 2025
+* Fixed dragging events on mobile devices ([573](https://github.com/vkurko/calendar/issues/573))
+
 ## 4.7.0
 October 10, 2025
 * Added ability to set `customButtons` as function ([499](https://github.com/vkurko/calendar/issues/499))

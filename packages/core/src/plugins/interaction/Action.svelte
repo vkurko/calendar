@@ -1,5 +1,5 @@
 <script>
-    import {getContext} from 'svelte';
+    import {getContext, onMount} from 'svelte';
     import {
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, getElementWithPayload,
         getPayload, isFunction, listen, listView, max, min, noop, rect, runAll, subtractDay, subtractDuration,
@@ -582,7 +582,6 @@
             let target = jsEvent.target;
             let stops = [];
             let stop = () => runAll(stops);
-            stops.push(listen(window, 'touchmove', noop, {passive: false}))
             stops.push(listen(target, 'touchmove', createPreventDefaultHandler(() => interacting)));
             stops.push(listen(target, 'touchend', stop));
             stops.push(listen(target, 'touchcancel', stop));
@@ -596,6 +595,8 @@
             }
         };
     }
+
+    onMount(() => listen(window, 'touchmove', noop, {passive: false}));
 </script>
 
 <svelte:window
