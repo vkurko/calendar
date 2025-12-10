@@ -16,10 +16,6 @@ export function createElement(tag, className, content, attrs = []) {
     return el;
 }
 
-export function hasYScroll(el) {
-    return el.scrollHeight > el.clientHeight;
-}
-
 export function rect(el) {
     return el.getBoundingClientRect();
 }

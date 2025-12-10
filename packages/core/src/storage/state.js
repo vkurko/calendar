@@ -30,16 +30,13 @@ export default class {
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = events(this);
+        this._mainEl = writable(undefined);
         this._now = now();
         this._today = today(this);
         this._intlEventTime = intlRange(this.locale, this.eventTimeFormat);
-        this._intlSlotLabel = intl(this.locale, this.slotLabelFormat);
         this._intlDayHeader = intl(this.locale, this.dayHeaderFormat);
         this._intlDayHeaderAL = intl(this.locale, this.dayHeaderAriaLabelFormat);
         this._intlTitle = intlRange(this.locale, this.titleFormat);
-        this._bodyEl = writable(undefined);
-        this._scrollable = writable(false);
-        this._recheckScrollable = writable(false);
         this._viewTitle = viewTitle(this);
         this._viewDates = viewDates(this);
         this._view = view2(this);

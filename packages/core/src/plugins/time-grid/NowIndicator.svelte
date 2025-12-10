@@ -1,18 +1,40 @@
 <script>
     import {getContext} from 'svelte';
+    import {datesEqual, toSeconds, intersectionObserver} from '#lib';
 
-    let {slotDuration, slotHeight, theme, _now, _today, _slotTimeLimits} = getContext('state');
+    let {days, fullwidth = false} = $props();
 
-    let start = $derived(($_now - $_today) / 1000);
-    // Style
-    let top = $derived.by(() => {
-        let step = $slotDuration.seconds;
-        let offset = $_slotTimeLimits.min.seconds;
-        return (start - offset) / step * $slotHeight;
+    let {_mainEl, _now, _today, _sidebarWidth, slotDuration, slotHeight, theme} = getContext('state');
+
+    // Layout
+    let {gridColumn, start} = $derived.by(() => {
+        for (let day of days) {
+            if (datesEqual(day.dayStart, $_today)) {
+                return day;
+            }
+        }
+        return {};
     });
+    let top = $derived.by(() => {
+        let step = toSeconds($slotDuration);
+        return ($_now - start) / 1000 / step * $slotHeight;
+    });
+
+    // Observe intersections
+    let observerOptions = $derived({
+        root: $_mainEl,
+        rootMargin: `0px 0px 0px -${$_sidebarWidth + 5.5}px`,
+        threshold: 0.0,
+    });
+    function onIntersect(el, entry) {
+        el.classList.toggle($theme.hidden, !entry.isIntersecting);
+    }
 </script>
 
-<div
-    class="{$theme.nowIndicator}"
-    style="top:{top}px"
-></div>
+{#if gridColumn}
+    <div {@attach intersectionObserver(onIntersect, observerOptions)}
+        class="{$theme.nowIndicator}"
+        style:grid-column="{gridColumn + 1}{fullwidth ? ` / span ${days.length}` : ''}"
+        style:inset-block-start="{top}px"
+    ></div>
+{/if}

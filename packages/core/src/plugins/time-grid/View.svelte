@@ -1,43 +1,135 @@
 <script>
-    import {getContext} from 'svelte';
-    import {datesEqual, setContent, toISOString} from '#lib';
-    import Section from './Section.svelte';
-    import Body from './Body.svelte';
+    import {getContext, tick} from 'svelte';
+    import {contentFrom, resizeObserver, runReposition, toSeconds} from '#lib';
+    import {createAllDayContent, createGrid, createEventChunks, createIEventChunks} from './lib.js';
+    import {ColHead, DayHeader} from '#components';
     import Day from './Day.svelte';
-    import Week from './all-day/Week.svelte';
+    import Event from './Event.svelte';
+    import AllDayEvent from './AllDayEvent.svelte';
+    import NowIndicator from './NowIndicator.svelte';
 
-    let {_viewDates, _intlDayHeader, _intlDayHeaderAL, _today, allDaySlot, theme} = getContext('state');
+    let {header, createGridFn, fullwidthNowIndicator} = $props();
+
+    let {_mainEl, _filteredEvents, _iEvents, _sidebarWidth, _slotLabelPeriodicity, _slotTimeLimits, _slots,
+        _viewDates, allDayContent, allDaySlot, columnWidth, highlightedDates, nowIndicator, scrollTime, slotHeight,
+        slotDuration, theme, validRange} = getContext('state');
+
+    let headerHeight = $state(0);
+    let allDayText = $derived(createAllDayContent($allDayContent));
+
+    let grid = $derived(createGridFn?.() ?? createGrid($_viewDates, $_slotTimeLimits, $validRange, $highlightedDates));
+    let {chunks, bgChunks, allDayChunks, allDayBgChunks} = $derived(createEventChunks($_filteredEvents, grid));
+    let {iChunks, allDayIChunks} = $derived(createIEventChunks($_iEvents, grid));
+
+    // Handle scrollTime
+    $effect(() => {
+        $_viewDates;
+        $scrollTime;
+        tick().then(scrollToTime);
+    });
+    function scrollToTime() {
+        $_mainEl.scrollTop = (
+            (toSeconds($scrollTime) - toSeconds($_slotTimeLimits.min)) / toSeconds($slotDuration) - 0.5
+        ) * $slotHeight;
+    }
+
+    // Events reposition
+    let refs = [];
+    function reposition() {
+        runReposition(refs, allDayChunks);
+    }
+    $effect(reposition);
 </script>
 
-<div class="{$theme.header}">
-    <Section>
-        {#each $_viewDates as date}
-            <div
-                class="{$theme.day} {$theme.weekdays?.[date.getUTCDay()]}{datesEqual(date, $_today) ? ' ' + $theme.today : ''}"
-                role="columnheader"
-            >
-                <time
-                    datetime="{toISOString(date, 10)}"
-                    aria-label="{$_intlDayHeaderAL.format(date)}"
-                    use:setContent={$_intlDayHeader.format(date)}
-                ></time>
+<section
+    bind:this={$_mainEl}
+    class="{$theme.main}"
+    style:--ec-grid-cols="{grid.length * grid[0].length}"
+    style:--ec-col-group-span="{grid[0].length}"
+    style:--ec-col-width="{$columnWidth ?? 'minmax(0, 1fr)'}"
+    style:--ec-slot-label-periodicity="{$_slotLabelPeriodicity}"
+    style:--ec-slot-height="{$slotHeight}px"
+    style:--ec-header-height="{headerHeight}px"
+    style:--ec-sidebar-width="{$_sidebarWidth}px"
+    {@attach resizeObserver(reposition)}
+>
+    <header bind:offsetHeight={headerHeight} class="{$theme.header}">
+        <aside class="{$theme.sidebar}" bind:offsetWidth={$_sidebarWidth}></aside>
+        <div class="{$theme.grid}" role="row">
+            {#if header}
+                {@render header(grid)}
+            {:else}
+                {#each grid[0] as {dayStart: date, disabled, highlight}, i}
+                    <ColHead {date} colIndex={1 + i} {disabled} {highlight}>
+                        <DayHeader {date}/>
+                    </ColHead>
+                {/each}
+            {/if}
+        </div>
+
+        {#if $allDaySlot}
+            <div class="{$theme.allDay}">
+                <aside class="{$theme.sidebar}" {@attach contentFrom(allDayText)}></aside>
+                <div class="{$theme.grid}" role="row">
+                    {#each grid as days}
+                        {#each days as day}
+                            <Day {day} allDay/>
+                        {/each}
+                    {/each}
+                </div>
+                <div class="{$theme.events}">
+                    {#each allDayChunks as chunk, i}
+                        <!-- svelte-ignore binding_property_non_reactive -->
+                        <AllDayEvent bind:this={refs[i]} {chunk}/>
+                    {/each}
+                    {#each allDayBgChunks as chunk}
+                        <AllDayEvent {chunk}/>
+                    {/each}
+                    {#each allDayIChunks as chunk}
+                        <AllDayEvent {chunk}/>
+                    {/each}
+                </div>
             </div>
-        {/each}
-    </Section>
-    <div class="{$theme.hiddenScroll}"></div>
-</div>
-{#if $allDaySlot}
-    <div class="{$theme.allDay}">
-        <div class="{$theme.content}">
-            <Section>
-                <Week dates={$_viewDates}/>
-            </Section>
-            <div class="{$theme.hiddenScroll}"></div>
+        {/if}
+    </header>
+
+    <div class="{$theme.body}" role="rowgroup">
+        <aside class="{$theme.sidebar}" aria-hidden="true">
+            {#each $_slots as slot, i}
+                <div
+                    class={[$theme.slot, !i && $theme.hidden]}
+                    style:--ec-slot-label-periodicity={slot[2]}
+                >
+                    <time
+                        datetime="{slot[0]}"
+                        {@attach contentFrom(slot[1])}
+                    ></time>
+                </div>
+            {/each}
+        </aside>
+        <div class="{$theme.grid}" role="row">
+            {#each grid as days}
+                {#each days as day}
+                    <Day {day}/>
+                {/each}
+            {/each}
+        </div>
+        <div class="{$theme.events}">
+            {#each chunks as chunk}
+                <Event {chunk}/>
+            {/each}
+            {#each bgChunks as chunk}
+                <Event {chunk}/>
+            {/each}
+            {#each iChunks as chunk}
+                <Event {chunk}/>
+            {/each}
         </div>
     </div>
-{/if}
-<Body>
-{#each $_viewDates as date}
-    <Day {date}/>
-{/each}
-</Body>
+
+    {#if $nowIndicator}
+        {#each grid as days}
+            <NowIndicator {days} fullwidth={fullwidthNowIndicator}/>
+        {/each}
+    {/if}
+</section>

@@ -22,9 +22,7 @@
 
     function createDragHandler(event) {
         return $_interaction.action?.draggable(event)
-            ? jsEvent => $_interaction.action.drag(
-                event, jsEvent, forceDate?.(), forceMargin?.()
-            )
+            ? jsEvent => $_interaction.action.drag(event, jsEvent, forceDate, forceMargin)
             : $_interaction.action?.noAction;
     }
     let onpointerdown = $derived(!bgEvent(display) && !helperEvent(display) ? createDragHandler(event) : undefined);

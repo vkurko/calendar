@@ -1,0 +1,30 @@
+.ec-popup {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    block-size: max-content;
+    inline-size: 110%;
+    min-block-size: 6em;
+    min-inline-size: 10em;
+    padding: .375rem .75rem .75rem;
+    background-color: var(--ec-popup-bg-color);
+    border: 1px solid var(--ec-border-color);
+    border-radius: .25rem;
+    box-shadow: var(--ec-color-300) 0 10px 15px -3px, var(--ec-color-300) 0 4px 6px -4px;
+
+    .ec-day-head {
+        flex-direction: row;
+        padding-inline: 0;
+
+        a {
+            cursor: pointer;
+            font-size: 1.5em;
+            line-height: .8;
+        }
+    }
+
+    .ec-events {
+        --ec-event-col-gap: 0;
+        display: block;
+    }
+}

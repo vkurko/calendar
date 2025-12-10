@@ -1,0 +1,180 @@
+.ec-events {
+    grid-area: 1 / 2 / -1 / -1;
+    display: grid;
+    grid-template: subgrid / subgrid;
+    isolation: isolate;
+    pointer-events: none;
+
+    .ec-day-grid & {
+        grid-column-start: 1;
+    }
+}
+
+.ec-event {
+    display: flex;
+    position: relative;
+    padding: 2px;
+    color: var(--ec-event-text-color);
+    box-sizing: border-box;
+    box-shadow: 0 0 1px 0 var(--ec-border-color);
+    background-color: var(--ec-event-bg-color);
+    border-radius: 3px;
+    font-size: .85em;
+    line-height: 1.5;
+    z-index: 1;
+    pointer-events: all;
+    inline-size: calc(100% - var(--ec-event-col-gap));
+
+    .ec-time-grid & {
+        grid-row: 1;
+    }
+
+    .ec-day-grid &,
+    .ec-all-day &,
+    .ec-timeline & {
+        block-size: fit-content;
+        margin-block-end: var(--ec-event-col-gap);
+    }
+
+    .ec-list & {
+        flex-direction: row;
+        padding: .5em 1.5em;
+        color: inherit;
+        background-color: var(--ec-day-bg-color);
+        border-radius: 0;
+    }
+
+    &.ec-preview {
+        z-index: 1000;
+        user-select: none;
+        opacity: .8;
+    }
+
+    &.ec-pointer {
+        color: inherit;
+        pointer-events: none;
+        user-select: none;
+        z-index: 0;
+        box-shadow: none;
+    }
+}
+
+.ec-bg-event {
+    grid-row: 1;
+    position: relative;
+    background-color: var(--ec-bg-event-color);
+    opacity: var(--ec-bg-event-opacity);
+}
+
+.ec-draggable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.ec-ghost {
+    opacity: .5;
+    user-select: none;
+    pointer-events: none;
+}
+
+.ec-event-body {
+    display: flex;
+    flex-direction: column;
+    inline-size: 100%;
+
+    .ec-day-grid &,
+    .ec-all-day &,
+    .ec-timeline & {
+        flex-direction: row;
+    }
+}
+
+.ec-event-tag {
+    inline-size: 4px;
+    border-radius: 2px;
+    margin-inline-end: 8px;
+}
+
+.ec-event-time {
+    overflow: hidden;
+    white-space: nowrap;
+    margin: 0 0 1px 0;
+    flex-shrink: 0;
+    max-block-size: 100%;
+
+    .ec-day-grid &,
+    .ec-timeline & {
+        margin: 0 3px 0 0;
+        max-inline-size: 100%;
+        text-overflow: ellipsis;
+    }
+}
+
+.ec-event-title {
+    overflow: hidden;
+    margin: 0;
+    font-weight: inherit;
+
+    .ec-time-grid & {
+        position: sticky;
+        inset-block-start: var(--ec-header-height);
+    }
+
+    .ec-day-grid &,
+    .ec-all-day &,
+    .ec-timeline & {
+        min-block-size: 1.5em;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        position: sticky;
+        inset-inline-start: calc(var(--ec-sidebar-width) + .18em);
+    }
+
+    .ec-list & {
+        font-size: 1rem;
+    }
+}
+
+.ec-resizer {
+    position: absolute;
+    user-select: none;
+
+    .ec-time-grid .ec-body & {
+        inset: auto 0 0 0;
+        block-size: 50%;
+        max-block-size: 8px;
+        cursor: ns-resize;
+
+        &.ec-start {
+            inset: 0 0 auto 0;
+        }
+    }
+    .ec-day-grid &,
+    .ec-all-day &,
+    .ec-timeline & {
+        inset: 0 0 0 auto;
+        inline-size: 50%;
+        max-inline-size: 8px;
+        cursor: ew-resize;
+
+        &.ec-start {
+            inset: 0 auto 0 0;
+        }
+    }
+}
+
+.ec-dragging, .ec-dragging * {
+    cursor: pointer!important;
+}
+.ec-resizing-y, .ec-resizing-y * {
+    cursor: ns-resize!important;
+}
+.ec-resizing-x, .ec-resizing-x * {
+    cursor: ew-resize!important;
+}
+
+.ec-no-events {
+    text-align: center;
+    padding: 5em 0;
+    background-color: var(--ec-bg-color);
+}

@@ -1,69 +1,82 @@
 <script>
-    import {getContext, tick, untrack} from 'svelte';
-    import {ancestor, rect, setContent, outsideEvent, keyEnter, toISOString, stopPropagation} from '#lib';
+    import {getContext, onMount, untrack} from 'svelte';
+    import {
+        assign, contentFrom, createEventChunk, outsideEvent, keyEnter, rect, stopPropagation, toISOString
+    } from '#lib';
     import Event from './Event.svelte';
 
-    let {buttonText, theme, _interaction, _intlDayPopover, _popupDate, _popupChunks} = getContext('state');
+    let {gridEl, chunks} = $props();
+
+    let {_colsCount, _interaction, _intlDayPopover, _popupDay, buttonText, theme} = getContext('state');
 
     let el = $state();
     let style = $state('');
 
-    function position() {
-        let dayEl = ancestor(el, 1);
-        let bodyEl = ancestor(dayEl, 3);
-        let popupRect = rect(el);
-        let dayRect = rect(dayEl);
-        let bodyRect = rect(bodyEl);
-        style = '';
+    let {gridColumn, gridRow, dayStart, dayEnd} = $derived($_popupDay);
 
-        let left;
-        if (popupRect.width >= bodyRect.width) {
-            left = bodyRect.left - dayRect.left;
-            let right = dayRect.right - bodyRect.right;
-            style += `right:${right}px;`;
-        } else {
-            left = (dayRect.width - popupRect.width) / 2;
-            if (dayRect.left + left < bodyRect.left) {
-                left = bodyRect.left - dayRect.left;
-            } else if (dayRect.left + left + popupRect.width > bodyRect.right) {
-                left = bodyRect.right - dayRect.left - popupRect.width;
+    let popupChunks = $derived.by(() => {
+        let result = [];
+        for (let chunk of chunks) {
+            if (chunk.gridRow === gridRow && chunk.gridColumn <= gridColumn && chunk.gridColumn + chunk.dates.length > gridColumn) {
+                result.push(assign({}, chunk, createEventChunk(chunk.event, dayStart, dayEnd)));
             }
         }
-        style += `left:${left}px;`;
+        result.sort((a, b) => a.top - b.top);
+        return result;
+    });
 
-        let top;
-        if (popupRect.height >= bodyRect.height) {
-            top = bodyRect.top - dayRect.top;
-            let bottom = dayRect.bottom - bodyRect.bottom;
-            style += `bottom:${bottom}px;`;
-        } else {
-            top = (dayRect.height - popupRect.height) / 2;
-            if (dayRect.top + top < bodyRect.top) {
-                top = bodyRect.top - dayRect.top;
-            } else if (dayRect.top + top + popupRect.height > bodyRect.bottom) {
-                top = bodyRect.bottom - dayRect.top - popupRect.height;
-            }
-        }
-        style += `top:${top}px;`;
-    }
+    onMount(() => {
+        el.show();
+    });
 
     $effect(() => {
-        // Fire reposition only on popup chunks change
-        $_popupChunks;
-        // Let chunks to update/mount then position the popup
-        tick().then(reposition);
-    });
-    function reposition() {
-        if ($_popupChunks.length) {
-            position();
+        if (popupChunks.length) {
+            untrack(position);
         } else {
             close();
         }
+    });
+
+    function position() {
+        let dayEl = gridEl.children.item((gridRow - 1) * $_colsCount + gridColumn - 1);
+        let popupRect = rect(el);
+        let dayRect = rect(dayEl);
+        let gridRect = rect(gridEl);
+        style = '';
+
+        let left;
+        if (popupRect.width >= gridRect.width) {
+            left = gridRect.left - dayRect.left;
+            let right = dayRect.right - gridRect.right;
+            style += `inset-inline-end:${right}px;`;
+        } else {
+            left = (dayRect.width - popupRect.width) / 2;
+            if (dayRect.left + left < gridRect.left) {
+                left = gridRect.left - dayRect.left;
+            } else if (dayRect.left + left + popupRect.width > gridRect.right) {
+                left = gridRect.right - dayRect.left - popupRect.width;
+            }
+        }
+        style += `inset-inline-start:${left}px;`;
+
+        let top;
+        if (popupRect.height >= gridRect.height) {
+            top = gridRect.top - dayRect.top;
+            let bottom = dayRect.bottom - gridRect.bottom;
+            style += `inset-block-end:${bottom}px;`;
+        } else {
+            top = (dayRect.height - popupRect.height) / 2;
+            if (dayRect.top + top < gridRect.top) {
+                top = gridRect.top - dayRect.top;
+            } else if (dayRect.top + top + popupRect.height > gridRect.bottom) {
+                top = gridRect.bottom - dayRect.top - popupRect.height;
+            }
+        }
+        style += `inset-block-start:${top}px;`;
     }
 
     function close() {
-        $_popupDate = null;
-        $_popupChunks = [];
+        $_popupDay = null;
     }
 
     function handlePointerDownOutside() {
@@ -72,28 +85,32 @@
     }
 </script>
 
-<div
+<dialog
     bind:this={el}
     class="{$theme.popup}"
+    closedby="closerequest"
     {style}
-    use:outsideEvent={'pointerdown'}
-    onpointerdown={stopPropagation()}
+    style:grid-area="{`${gridRow + 1} / ${gridColumn}`}"
+    {@attach outsideEvent('pointerdown')}
     onpointerdownoutside={handlePointerDownOutside}
+    onclose={close}
 >
-    <div class="{$theme.dayHead}">
-        <time datetime="{toISOString($_popupDate, 10)}" use:setContent={$_intlDayPopover.format($_popupDate)}></time>
+    <header class="{$theme.dayHead}">
+        <time datetime="{toISOString(dayStart, 10)}" {@attach contentFrom($_intlDayPopover.format(dayStart))}></time>
         <!-- svelte-ignore a11y_missing_attribute -->
+        <!-- svelte-ignore a11y_autofocus -->
         <a
+            autofocus
             role="button"
             tabindex="0"
             aria-label={$buttonText.close}
             onclick={stopPropagation(close)}
             onkeydown={keyEnter(close)}
         >&times;</a>
-    </div>
+    </header>
     <div class="{$theme.events}">
-        {#each $_popupChunks as chunk (chunk.event)}
+        {#each popupChunks as chunk}
             <Event {chunk} inPopup />
         {/each}
     </div>
-</div>
+</dialog>

@@ -1,37 +1,32 @@
 import {addDuration, cloneDate, createDuration, DAY_IN_SECONDS, toISOString, toSeconds} from './date.js';
-import {max as maxFn, min as minFn, isFunction} from './utils.js';
+import {max as maxFn, min as minFn, isFunction, floor} from './utils.js';
 import {bgEvent} from './events.js';
 
-export function createTimes(date, $slotDuration, $slotLabelInterval, $_slotTimeLimits, $_intlSlotLabel) {
+export function createSlots(date, $slotDuration, $_slotLabelPeriodicity, $_slotTimeLimits, $_intlSlotLabel) {
+    let slots = [];
     date = cloneDate(date);
-    let times = [];
     let end = cloneDate(date);
     addDuration(date, $_slotTimeLimits.min);
     addDuration(end, $_slotTimeLimits.max);
-    // Labels
-    if ($slotLabelInterval === undefined) {
-        $slotLabelInterval = $slotDuration.seconds < 3600
-            ? createDuration($slotDuration.seconds * 2)
-            : $slotDuration;
-    }
-    let label = cloneDate(date);
-    // Build times
+    // Build slots
     while (date < end) {
-        times.push([
+        slots.push([
             toISOString(date),
-            $_intlSlotLabel.format(date),
-            date >= label
+            $_intlSlotLabel.format(date)
         ]);
-        while ($slotLabelInterval.seconds && date >= label) {
-            addDuration(label, $slotLabelInterval);
-        }
-        addDuration(date, $slotDuration);
+        addDuration(date, $slotDuration, $_slotLabelPeriodicity);
+    }
+    // Calculate span for last slot
+    let span = floor((date - end) / 1000 / toSeconds($slotDuration));
+    if (span && span !== $_slotLabelPeriodicity) {
+        slots.at(-1)[2] = $_slotLabelPeriodicity - span;
     }
 
-    return times;
+    return slots;
 }
 
 export function createSlotTimeLimits($slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_viewDates, $_filteredEvents) {
+    // Copy values
     let min = createDuration($slotMinTime);
     let max = createDuration($slotMaxTime);
 

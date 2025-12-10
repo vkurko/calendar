@@ -1,12 +1,11 @@
 <script>
     import {getContext, untrack} from 'svelte';
     import {
-        toISOString, toLocalDate, toViewWithLocalDates, isFunction, task, flushDebounce, hasYScroll
+        toISOString, toLocalDate, toViewWithLocalDates, isFunction, task, flushDebounce
     } from '#lib';
 
     let {
-        datesSet, eventAllUpdated, _auxiliary, _activeRange, _filteredEvents, _scrollable, _bodyEl, _tasks, _recheckScrollable,
-        _queue, _view
+        datesSet, eventAllUpdated, _auxiliary, _activeRange, _filteredEvents, _tasks, _queue, _view
     } = getContext('state');
 
     // datesSet callback
@@ -39,16 +38,6 @@
         $_queue;
         untrack(() => {
             flushDebounce($_queue);
-        });
-    });
-
-    $effect(() => {
-        $_recheckScrollable;
-        untrack(() => {
-            if ($_bodyEl) {
-                $_scrollable = hasYScroll($_bodyEl);
-            }
-            $_recheckScrollable = false;
         });
     });
 </script>

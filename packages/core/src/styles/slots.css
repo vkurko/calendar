@@ -1,0 +1,42 @@
+.ec-slot {
+    white-space: nowrap;
+
+    .ec-time-grid & {
+        block-size: calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity));
+        position: relative;
+        inset-block-start: -.5em;
+    }
+
+    .ec-timeline & {
+        grid-column: span var(--ec-slot-label-periodicity);
+        font-size: .95em;
+        padding: .18rem 0;
+        overflow: clip;
+        text-overflow: ellipsis;
+    }
+}
+
+.ec-slots {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--ec-slot-width);
+    text-align: center;
+
+    --ec-day-bg-color: var(--ec-bg-color);
+    background-color: var(--ec-day-bg-color);
+
+    &.ec-today {
+        --ec-day-bg-color: var(--ec-today-bg-color);
+    }
+
+    &.ec-highlight {
+        --ec-day-bg-color: var(--ec-highlight-color);
+    }
+
+    background-image:
+            linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
+            linear-gradient(to right, var(--ec-border-color) 1px, transparent 1px);
+    background-size:
+            100% 100%,
+            calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity)) 100%;
+}

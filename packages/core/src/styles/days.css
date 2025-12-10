@@ -1,0 +1,91 @@
+.ec-day {
+    --ec-day-bg-color: var(--ec-bg-color);
+    background-color: var(--ec-day-bg-color);
+
+    &.ec-today {
+        --ec-day-bg-color: var(--ec-today-bg-color);
+    }
+
+    &.ec-highlight {
+        --ec-day-bg-color: var(--ec-highlight-color);
+    }
+
+    .ec-time-grid .ec-body & {
+        background-image:
+                linear-gradient(var(--ec-day-bg-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-border-color) 1px, transparent 1px),
+                linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-border-color) 1px, transparent 1px);
+        background-size:
+                100% 100%,
+                100% calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity)),
+                2px 100%,
+                100% var(--ec-slot-height);
+    }
+
+    .ec-timeline:not(.ec-month-view) .ec-body & {
+        background-image:
+                linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
+                linear-gradient(to right, var(--ec-border-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-day-bg-color) 1px, transparent 1px),
+                linear-gradient(to right, var(--ec-border-color) 1px, transparent 1px);
+        background-size:
+                100% 100%,
+                calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity)) 100%,
+                100% 2px,
+                var(--ec-slot-width) 100%;
+    }
+
+    .ec-day-grid & {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-block-size: 5em;
+    }
+
+    .ec-day-grid .ec-uniform & {
+        min-block-size: auto;
+    }
+}
+
+.ec-day-head {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    padding: .375rem;
+
+    .ec-day.ec-other-month & time {
+        opacity: .3;
+    }
+
+    .ec-list & {
+        background-color: var(--ec-day-bg-color);
+        border-block-end: 1px solid var(--ec-border-color);
+        flex-direction: unset;
+        margin: 0 0 -1px;
+        padding: .5em 1.5em;
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 2;
+    }
+}
+
+.ec-day-foot {
+    padding: .18rem;
+    font-size: .85em;
+
+    a {
+        cursor: pointer;
+    }
+}
+
+.ec-disabled {
+    position: relative;
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0 0 0 0;
+        background-color: var(--ec-bg-event-color);
+        opacity: var(--ec-bg-event-opacity);
+    }
+}

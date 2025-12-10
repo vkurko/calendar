@@ -1,5 +1,12 @@
 # EventCalendar changelog
 
+## 5.0.0
+December 10, 2025
+* :warning: A new layout based on [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) has been implemented
+* :warning: Please review the new layout **carefully** before using it in production
+* Added `columnWidth` option ([317](https://github.com/vkurko/calendar/issues/317), [574](https://github.com/vkurko/calendar/issues/574))
+* Added automatic scrolling to today's date in `resourceTimelineWeek` view ([319](https://github.com/vkurko/calendar/issues/319))
+
 ## 4.7.1
 October 23, 2025
 * Fixed dragging events on mobile devices ([573](https://github.com/vkurko/calendar/issues/573))

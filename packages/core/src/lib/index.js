@@ -1,5 +1,6 @@
 export * from './a11y.js';
-export * from './actions.js';
+export * from './attachments.js';
+export * from './chunks.js';
 export * from './date.js';
 export * from './debounce.js';
 export * from './dom.js';
@@ -8,7 +9,7 @@ export * from './options.js';
 export * from './payload.js';
 export * from './range.js';
 export * from './resources.js';
+export * from './slots.js';
 export * from './stores.js';
-export * from './times.js';
 export * from './utils.js';
 export * from './view.js';

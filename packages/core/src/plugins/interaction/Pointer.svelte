@@ -18,14 +18,13 @@
         if (dayEl) {
             let {allDay, date, resource, disabled} = getPayload(dayEl)(x, y);
             if (!disabled) {
-                let idx = allDay ? 2 : 1;
-
-                if (!$_iEvents[idx]) {
-                    createPointerEvent(idx);
+                if (!$_iEvents[1]) {
+                    createPointerEvent();
                 }
-                $_iEvents[idx].start = date;
-                $_iEvents[idx].end = addDuration(cloneDate(date), $slotDuration);
-                $_iEvents[idx].resourceIds = resource ? [resource.id] : [];
+                $_iEvents[1].allDay = allDay;
+                $_iEvents[1].start = date;
+                $_iEvents[1].end = addDuration(cloneDate(date), $slotDuration);
+                $_iEvents[1].resourceIds = resource ? [resource.id] : [];
 
                 return;
             }
@@ -46,8 +45,8 @@
         }
     }
 
-    function createPointerEvent(idx) {
-        $_iEvents[idx] = {
+    function createPointerEvent() {
+        $_iEvents[1] = {
             id: '{pointer}',
             title: '',
             display: 'pointer',
@@ -61,9 +60,6 @@
     function removePointerEvent() {
         if ($_iEvents[1]) {
             $_iEvents[1] = null;
-        }
-        if ($_iEvents[2]) {
-            $_iEvents[2] = null;
         }
     }
 

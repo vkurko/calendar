@@ -1,6 +1,6 @@
 import {writable} from 'svelte/store';
 import {btnTextMonth, intl, themeView} from '#lib';
-import {days} from './stores.js';
+import {colsCount} from './stores.js';
 import View from './View.svelte';
 
 export default {
@@ -16,6 +16,7 @@ export default {
         options.buttonText.close = 'Close';
         options.theme.uniform = 'ec-uniform';
         options.theme.dayFoot = 'ec-day-foot';
+        options.theme.otherMonth = 'ec-other-month';
         options.theme.popup = 'ec-popup';
         options.theme.weekNumber = 'ec-week-number';
         options.view = 'dayGridMonth';
@@ -32,11 +33,10 @@ export default {
     },
 
     createStores(state) {
-        state._days = days(state);
+        state._colsCount = colsCount(state);
         state._intlDayCell = intl(state.locale, state.dayCellFormat);
         state._intlDayPopover = intl(state.locale, state.dayPopoverFormat);
-        state._hiddenEvents = writable({});
-        state._popupDate = writable(null);
-        state._popupChunks = writable([]);
+        state._hiddenChunks = writable({});
+        state._popupDay = writable(null);
     }
 }

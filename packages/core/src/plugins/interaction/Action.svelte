@@ -3,16 +3,15 @@
     import {
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, getElementWithPayload,
         getPayload, isFunction, listen, listView, max, min, noop, rect, runAll, subtractDay, subtractDuration,
-        timelineView, toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
+        toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import {animate, limit, eventDraggable} from './lib';
 
-    let {_iEvents, _iClass, _events, _view, _dayGrid, _bodyEl, datesAboveResources, dateClick, dragConstraint,
-        dragScroll, editable, eventStartEditable, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop,
+    let {_iEvents, _iClass, _events, _view, _mainEl, dateClick, dragConstraint, dragScroll, editable,
+        eventStartEditable, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop,
         eventLongPressDelay, eventResizeStart, eventResizeStop, eventResize, longPressDelay, resizeConstraint,
         selectable, select: selectFn, selectBackgroundColor, selectConstraint, selectLongPressDelay, selectMinDistance,
-        slotDuration, slotHeight, slotWidth, unselect: unselectFn, unselectAuto, unselectCancel, validRange,
-        view} = getContext('state');
+        slotDuration, unselect: unselectFn, unselectAuto, unselectCancel, validRange, view} = getContext('state');
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE_END = 2;
@@ -28,7 +27,7 @@
     let resource, newResource;
     let fromX, fromY;
     let toX, toY;
-    let bodyEl, bodyRect, clipEl, clipRect;
+    let gridEl, scrollable;
     let delta;
     let allDay;
     let iClass;
@@ -181,12 +180,8 @@
         let dayEl = getElementWithPayload(toX, toY);
         ({allDay, date, resource} = getPayload(dayEl)(toX, toY));
 
-        if (timelineView($view)) {
-            bodyEl = clipEl = $_bodyEl;
-        } else {
-            bodyEl = ancestor(dayEl, resource ? 4 : 3);
-            clipEl = ancestor(dayEl, resource && (dragging() || $datesAboveResources) ? 2 : 1);
-        }
+        scrollable = $_mainEl === ancestor(dayEl, 3);  // test for "all-day" slot
+        gridEl = ancestor(dayEl, 1);
         calcViewport();
 
         if (jsEvent.pointerType !== 'mouse') {
@@ -286,31 +281,31 @@
         }
 
         if ($dragScroll) {
-            let thresholdY = $slotHeight * 2;
-            let thresholdX = $slotWidth;
+            let thresholdY = 24;
+            let thresholdX = 24;
             animate(() => {
-                if (bodyEl) {
-                    if (toY < thresholdY) {
-                        window.scrollBy(0, max(-10, (toY - thresholdY) / 3));
+                if (viewport) {
+                    if (scrollable) {
+                        if (toY < viewport.top + thresholdY) {
+                            $_mainEl.scrollTop += max(-8, (toY - viewport.top - thresholdY) / 3);
+                        }
+                        if (toY > viewport.bottom - thresholdY) {
+                            $_mainEl.scrollTop += min(8, (toY - viewport.bottom + thresholdY) / 3);
+                        }
+                        if (toX < viewport.left + thresholdX) {
+                            $_mainEl.scrollLeft += max(-8, (toX - viewport.left - thresholdX) / 3);
+                        }
+                        if (toX > viewport.right - thresholdX) {
+                            $_mainEl.scrollLeft += min(8, (toX - viewport.right + thresholdX) / 3);
+                        }
                     }
-                    if (toY < bodyRect.top + thresholdY) {
-                        bodyEl.scrollTop += max(-10, (toY - bodyRect.top - thresholdY) / 3);
+                    if (toY < thresholdY) {
+                        window.scrollBy(0, max(-8, (toY - thresholdY) / 3));
                     }
                     if (toY > window.innerHeight - thresholdY) {
-                        window.scrollBy(0, min(10, (toY - window.innerHeight + thresholdY) / 3));
-                    }
-                    if (toY > bodyRect.bottom - thresholdY) {
-                        bodyEl.scrollTop += min(10, (toY - bodyRect.bottom + thresholdY) / 3);
+                        window.scrollBy(0, min(8, (toY - window.innerHeight + thresholdY) / 3));
                     }
 
-                    if (timelineView($view)) {
-                        if (toX < bodyRect.left + thresholdX) {
-                            bodyEl.scrollLeft += max(-10, (toX - bodyRect.left - thresholdX) / 3);
-                        }
-                        if (toX > bodyRect.right - thresholdX) {
-                            bodyEl.scrollLeft += min(10, (toX - bodyRect.right + thresholdX) / 3);
-                        }
-                    }
                 }
             });
         }
@@ -392,8 +387,7 @@
 
             interacting = false;
             action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
-                extraDuration = allDay = $_iClass = minResize = selectStep = margin = undefined;
-            bodyEl = clipEl = bodyRect = clipRect = undefined;
+                extraDuration = allDay = $_iClass = minResize = selectStep = margin = gridEl = viewport = undefined;
 
             if (timer) {
                 clearTimeout(timer);
@@ -407,8 +401,8 @@
     function findDayEl() {
         // Limit coordinates to viewport
         return getElementWithPayload(
-            limit(toX, viewport[0], viewport[1]),
-            limit(toY, viewport[2], viewport[3])
+            limit(toX, viewport.left, viewport.right),
+            limit(toY, viewport.top, viewport.bottom)
         );
     }
 
@@ -430,14 +424,14 @@
     }
 
     function calcViewport() {
-        bodyRect = rect(bodyEl);
-        clipRect = rect(clipEl);
-        viewport = [
-            max(0, clipRect.left + (timelineView($view) ? 1 : ($_dayGrid ? 0 : 8))),  // left
-            min(document.documentElement.clientWidth, clipRect.left + clipEl.clientWidth) - 2,  // right
-            max(0, bodyRect.top),  // top
-            min(document.documentElement.clientHeight, bodyRect.top + bodyEl.clientHeight) - 2  // bottom
-        ];
+        let mainRect = rect($_mainEl);
+        let gridRect = rect(gridEl);
+        viewport = {
+            left: max(0, gridRect.left + $_mainEl.scrollLeft),
+            right: min(document.documentElement.clientWidth, mainRect.left + $_mainEl.clientWidth) - 2,
+            top: max(0, gridRect.top + (scrollable ? $_mainEl.scrollTop : 0)),
+            bottom: min(document.documentElement.clientHeight, scrollable ? mainRect.top + $_mainEl.clientHeight : gridRect.bottom) - 2
+        };
     }
 
     function createIEvent(jsEvent, callback) {

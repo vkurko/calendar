@@ -1,39 +1,44 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDuration, cloneDate, datesEqual} from '#lib';
-    import {getSlotTimeLimits} from './lib.js';
+    import {datesEqual, toSeconds, intersectionObserver} from '#lib';
 
-    let {slotDuration, slotWidth, theme, _bodyHeight, _bodyWidth, _bodyScrollLeft,
-        _headerHeight, _dayTimeLimits, _now, _today, _viewDates} = getContext('state');
+    let {grid} = $props();
 
-    // Style
-    let left = $derived.by(() => {
-        let offset = 0;
-        for (let i = 0; i < $_viewDates.length; ++i) {
-            let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, $_viewDates[i]);
-            if (datesEqual($_viewDates[i], $_today)) {
-                let dayStart = addDuration(cloneDate($_viewDates[i]), slotTimeLimits.min);
-                let dayEnd = addDuration(cloneDate($_viewDates[i]), slotTimeLimits.max);
-                if ($_now >= dayStart && $_now <= dayEnd) {
-                    offset += ($_now - dayStart) / 1000;
-                    break;
-                } else {
-                    return null;
-                }
-            } else {
-                offset += slotTimeLimits.max.seconds - slotTimeLimits.min.seconds;
+    let {_mainEl, _now, _today, _sidebarWidth, slotDuration, slotWidth, theme} = getContext('state');
+
+    // Layout
+    let {gridColumn, start, end} = $derived.by(() => {
+        for (let day of grid[0]) {
+            if (datesEqual(day.dayStart, $_today)) {
+                return day;
             }
         }
-        let step = $slotDuration.seconds;
-        return offset / step * $slotWidth - $_bodyScrollLeft;
+        return {};
     });
+    let left = $derived.by(() => {
+        if ($_now < start || $_now > end) {
+            return null;
+        }
+        let step = toSeconds($slotDuration);
+        return ($_now - start) / 1000 / step * $slotWidth;
+    });
+
+    // Observe intersections
+    let observerOptions = $derived({
+        root: $_mainEl,
+        rootMargin: `0px 0px 0px -${$_sidebarWidth + 1}px`,
+        threshold: 0.0,
+    });
+    function onIntersect(el, entry) {
+        el.classList.toggle($theme.hidden, !entry.isIntersecting);
+    }
 </script>
 
-{#if left !== null && left >= 3 && left <= $_bodyWidth - 3}
-    <div
-        class="{$theme.nowIndicator}"
-        style:top="{$_headerHeight+2}px"
-        style:left="{left}px"
-        style:height="{$_bodyHeight-1}px"
+{#if gridColumn && left !== null}
+    <div {@attach intersectionObserver(onIntersect, observerOptions)}
+         class="{$theme.nowIndicator}"
+         style:grid-column="{gridColumn + 1}"
+         style:grid-row="2 / span {grid.length}"
+         style:inset-inline-start="{left}px"
     ></div>
 {/if}

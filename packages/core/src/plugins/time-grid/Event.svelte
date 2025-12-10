@@ -1,31 +1,29 @@
 <script>
     import {getContext} from 'svelte';
-    import {bgEvent, ghostEvent, helperEvent} from '#lib';
+    import {toSeconds} from '#lib';
     import {InteractableEvent} from '#components';
 
-    let {date, chunk} = $props();
+    let {chunk} = $props();
 
-    let {slotEventOverlap, slotDuration, slotHeight, _slotTimeLimits} = getContext('state');
-
-    let display = $derived(chunk.event.display);
+    let {slotEventOverlap, slotDuration, slotHeight} = getContext('state');
 
     // Style
     let styles = $derived(style => {
-        let step = $slotDuration.seconds;
-        let offset = $_slotTimeLimits.min.seconds;
-        let start = (chunk.start - date) / 1000;
-        let end = (chunk.end - date) / 1000;
-        let top = (start - offset) / step * $slotHeight;
-        let height = (end - start) / step * $slotHeight || $slotHeight;
-        let maxHeight = ($_slotTimeLimits.max.seconds - start) / step * $slotHeight;
-        style['top'] = `${top}px`;
-        style['min-height'] = `${height}px`;
-        style['height'] = `${height}px`;
-        style['max-height'] = `${maxHeight}px`;
-        if (!bgEvent(display) && !helperEvent(display) || ghostEvent(display)) {
-            style['z-index'] = `${chunk.column + 1}`;
-            style['left'] = `${100 / chunk.group.columns.length * chunk.column}%`;
-            style['width'] = `${100 / chunk.group.columns.length * ($slotEventOverlap ? 0.5 * (1 + chunk.group.columns.length - chunk.column) : 1)}%`;
+        let step = toSeconds($slotDuration);
+        let top = chunk.top / step * $slotHeight;
+        let height = chunk.height / step * $slotHeight || $slotHeight;
+        let maxHeight = chunk.maxHeight / step * $slotHeight;
+        style['grid-column'] = chunk.gridColumn;
+        style['inset-block-start'] = `${top}px`;
+        style['min-block-size'] = `${height}px`;
+        style['block-size'] = `${height}px`;
+        style['max-block-size'] = `${maxHeight}px`;
+        let maxWidth = '100% - var(--ec-event-col-gap)';
+        if (chunk.group) {
+            let groupColumns = chunk.group.columns.length;
+            style['z-index'] = `${chunk.groupColumn + 1}`;
+            style['inset-inline-start'] = `calc((${maxWidth}) / ${groupColumns} * ${chunk.groupColumn})`;
+            style['inline-size'] = `calc((${maxWidth}) / ${groupColumns} * ${($slotEventOverlap ? 0.5 * (1 + groupColumns - chunk.groupColumn) : 1)})`;
         }
         return style;
     });

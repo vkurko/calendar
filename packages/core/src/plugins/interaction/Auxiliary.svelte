@@ -6,7 +6,7 @@
     import Pointer from './Pointer.svelte';
     import Resizer from './Resizer.svelte';
 
-    let {theme, editable, eventStartEditable, pointer, _bodyEl,
+    let {theme, editable, eventStartEditable, pointer, _mainEl,
         _interaction, _iClasses} = getContext('state');
 
     $_interaction.resizer = Resizer;
@@ -31,12 +31,12 @@
     });
 
     $effect(() => {
-        if ($_bodyEl) {
-            return listen($_bodyEl, 'scroll', bodyScrollHandler);
+        if ($_mainEl) {
+            return listen($_mainEl, 'scroll', mainElScrollHandler);
         }
     });
 
-    function bodyScrollHandler() {
+    function mainElScrollHandler() {
         for (let component of Object.values($_interaction)) {
             component?.handleScroll?.();
         }

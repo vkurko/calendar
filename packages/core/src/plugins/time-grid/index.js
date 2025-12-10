@@ -1,14 +1,12 @@
 import {btnTextDay, btnTextWeek, themeView} from '#lib';
-import {slotTimeLimits, times} from './stores.js';
+import {createTROptions, createTRROptions, createTRRParsers} from './options.js';
+import {createTRRStores, createTRStores} from './stores.js';
 import View from './View.svelte';
-
-export {default as Section} from './Section.svelte';
-export {default as Body} from './Body.svelte';
-export {default as Day} from './Day.svelte';
-export {default as Week} from './all-day/Week.svelte';
 
 export default {
     createOptions(options) {
+        createTROptions(options);
+        createTRROptions(options);
         // Common options
         options.buttonText.timeGridDay = 'day';
         options.buttonText.timeGridWeek = 'week';
@@ -29,8 +27,12 @@ export default {
         };
     },
 
+    createParsers(parsers) {
+        createTRRParsers(parsers);
+    },
+
     createStores(state) {
-        state._slotTimeLimits = slotTimeLimits(state);  // flexible limits
-        state._times = times(state);
+        createTRRStores(state);
+        createTRStores(state);
     }
 }

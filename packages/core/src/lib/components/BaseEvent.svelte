@@ -2,7 +2,7 @@
     import {getContext, onMount} from 'svelte';
     import {
         bgEvent, createEventClasses, createEventContent, entries, helperEvent, identity, isFunction, keyEnter,
-        resourceBackgroundColor, resourceTextColor, setContent, toEventWithLocalDates, toViewWithLocalDates
+        resourceBackgroundColor, resourceTextColor, contentFrom, toEventWithLocalDates, toViewWithLocalDates
     } from '#lib';
 
     let {
@@ -33,7 +33,7 @@
     let classNames = $derived(classes([
         bgEvent(display) ? $theme.bgEvent : $theme.event,
         ...createEventClasses($eventClassNames, event, $_view)
-    ]).join(' '));
+    ]));
 
     // Content
     let [timeText, content] = $derived(createEventContent(
@@ -78,7 +78,7 @@
     {onpointerdown}
 >
     {#snippet defaultBody()}
-        <div class={$theme.eventBody} use:setContent={content}></div>
+        <div class={$theme.eventBody} {@attach contentFrom(content)}></div>
     {/snippet}
     {#if body}
         {@render body(defaultBody, bgColor, txtColor)}

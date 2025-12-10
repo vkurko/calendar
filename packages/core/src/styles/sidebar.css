@@ -1,0 +1,59 @@
+.ec-sidebar {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 1;
+    background-color: var(--ec-bg-color);
+    border-inline-end: 1px solid var(--ec-border-color);
+    margin-inline-end: -1px;
+    text-align: end;
+    overflow: clip;
+
+    .ec-header & {
+        padding-block: .375rem;
+    }
+
+    .ec-time-grid & {
+        padding-inline: .75rem;
+    }
+
+    .ec-time-grid .ec-body & {
+        background-image:
+                linear-gradient(to left, transparent .375rem, var(--ec-bg-color) .375rem),
+                linear-gradient(var(--ec-bg-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-border-color) 1px, transparent 1px),
+                linear-gradient(to right, var(--ec-bg-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-border-color) 1px, transparent 1px);
+        background-size:
+                100% 100%,
+                100% 100%,
+                100% calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity)),
+                2px 100%,
+                100% var(--ec-slot-height);
+    }
+
+    .ec-timeline .ec-body & {
+        grid-area: 1 / 1 / -1 / 2;
+        display: grid;
+        grid-template-rows: subgrid;
+        background-color: var(--ec-border-color);
+    }
+}
+
+.ec-row-head {
+    display: flex;
+    background-color: var(--ec-bg-color);
+    padding: .375em .75rem;
+    min-block-size: 1.5em;
+}
+
+.ec-expander {
+    margin-right: .25em;
+    width: 1.25em;
+
+    .ec-button {
+        line-height: normal;
+        padding: 0;
+        aspect-ratio: 1;
+        height: 1.25em;
+    }
+}

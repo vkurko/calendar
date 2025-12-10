@@ -1,49 +1,55 @@
 <script>
-    import {getContext, tick} from 'svelte';
-    import {createDate, cloneDate, setContent, setMidnight, nextDate, prevDate, outsideRange} from '#lib';
+    import {getContext, tick, untrack} from 'svelte';
+    import {cloneDate, contentFrom, nextDate, prevDate, outsideRange} from '#lib';
 
-    export let buttons;
+    let {buttons} = $props();
 
     let {
-        _currentRange, _viewTitle, _viewDates, buttonText, customButtons, date, duration, hiddenDays, theme, validRange,
-        view
+        _currentRange, _today, _viewTitle, _viewDates, buttonText, customButtons, date, duration, hiddenDays, theme,
+        validRange, view
     } = getContext('state');
 
-    let today = setMidnight(createDate());
-    let prevDisabled, nextDisabled, todayDisabled;
+    let prevDisabled = $state(false);
+    let nextDisabled = $state(false);
+    let todayDisabled = $state(false);
 
     let running = false;
-    function isRunning() {
-        return running;
-    }
-    $: if (!isRunning()) {
-        running = true;
-        prevDisabled = false;
-        nextDisabled = false;
-        if ($validRange.start) {
-            let currentDate = cloneDate($date);
-            $date = prevDate($date, $duration, $hiddenDays);
-            prevDisabled = test();
-            $date = currentDate;
-        }
-        if ($validRange.end) {
-            let currentDate = cloneDate($date);
-            $date = nextDate($date, $duration);
-            nextDisabled = test();
-            $date = currentDate;
-        }
-        todayDisabled = today >= $_currentRange.start && today < $_currentRange.end;
-        if (!todayDisabled && ($validRange.start || $validRange.end)) {
-            let currentDate = cloneDate($date);
-            $date = cloneDate(today);
-            todayDisabled = test();
-            $date = currentDate;
-        }
-        tick().then(() => running = false);
-    }
+    $effect.pre(() => {
+        $_viewDates;
+        $validRange;
+        buttons;
+        untrack(() => {
+            if (!running) {
+                running = true;
+                if (buttons.includes('prev')) {
+                    prevDisabled = false;
+                    if ($validRange.start) {
+                        prevDisabled = test(prev);
+                    }
+                }
+                if (buttons.includes('next')) {
+                    nextDisabled = false;
+                    if ($validRange.end) {
+                        nextDisabled = test(next);
+                    }
+                }
+                if (buttons.includes('today')) {
+                    todayDisabled = $_today >= $_currentRange.start && $_today < $_currentRange.end;
+                    if (!todayDisabled && ($validRange.start || $validRange.end)) {
+                        todayDisabled = test(today);
+                    }
+                }
+                tick().then(() => running = false);
+            }
+        });
+    });
 
-    function test() {
-        return $_viewDates.every(date => outsideRange(date, $validRange));
+    function test(fn) {
+        let currentDate = cloneDate($date);
+        fn();
+        let result = $_viewDates.every(date => outsideRange(date, $validRange));
+        $date = currentDate;
+        return result;
     }
 
     function prev() {
@@ -53,45 +59,49 @@
     function next() {
         $date = nextDate($date, $duration);
     }
+
+    function today() {
+        $date = cloneDate($_today);
+    }
 </script>
 
 {#each buttons as button}
-    {#if button == 'title'}
-        <!-- svelte-ignore a11y-missing-content -->
-        <h2 class="{$theme.title}" use:setContent={$_viewTitle}></h2>
-    {:else if button == 'prev'}
+    {#if button === 'title'}
+        <!-- svelte-ignore a11y_missing_content -->
+        <h2 class="{$theme.title}" {@attach contentFrom($_viewTitle)}></h2>
+    {:else if button === 'prev'}
         <button
             class="{$theme.button} ec-{button}"
             aria-label={$buttonText.prev}
             title={$buttonText.prev}
-            on:click={prev}
+            onclick={prev}
             disabled={prevDisabled}
         ><i class="{$theme.icon} ec-{button}"></i></button>
-    {:else if button == 'next'}
+    {:else if button === 'next'}
         <button
             class="{$theme.button} ec-{button}"
             aria-label={$buttonText.next}
             title={$buttonText.next}
-            on:click={next}
+            onclick={next}
             disabled={nextDisabled}
         ><i class="{$theme.icon} ec-{button}"></i></button>
-    {:else if button == 'today'}
+    {:else if button === 'today'}
         <button
             class="{$theme.button} ec-{button}"
-            on:click={() => $date = cloneDate(today)}
+            onclick={today}
             disabled={todayDisabled}
         >{$buttonText[button]}</button>
     {:else if $customButtons[button]}
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button
-            class="{$theme.button} ec-{button}{$customButtons[button].active ? ' ' + $theme.active : ''}"
-            on:click={$customButtons[button].click}
-            use:setContent={$customButtons[button].text}
+            class={[$theme.button, `ec-${button}`, $customButtons[button].active && $theme.active]}
+            onclick={$customButtons[button].click}
+            {@attach contentFrom($customButtons[button].text)}
         ></button>
-    {:else if button != ''}
+    {:else if button !== ''}
         <button
-            class="{$theme.button}{$view === button ? ' ' + $theme.active : ''} ec-{button}"
-            on:click={() => $view = button}
+            class={[$theme.button, `ec-${button}`, $view === button && $theme.active]}
+            onclick={() => $view = button}
         >{$buttonText[button]}</button>
     {/if}
 {/each}

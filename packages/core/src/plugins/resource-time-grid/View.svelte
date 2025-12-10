@@ -1,95 +1,51 @@
 <script>
     import {getContext} from 'svelte';
-    import {datesEqual, setContent, toISOString} from '#lib';
-    import {Section, Body, Day, Week} from '../time-grid/index.js';
+    import {createGrid} from './lib.js';
+    import {ColHead, DayHeader} from '#components';
     import Label from './Label.svelte';
+    import View from '../time-grid/View.svelte';
 
-    let {
-        datesAboveResources, _today, _viewDates, _viewResources, _intlDayHeader, _intlDayHeaderAL, allDaySlot, theme
-    } = getContext('state');
-
-    let loops = $derived($datesAboveResources ? [$_viewDates, $_viewResources] : [$_viewResources, $_viewDates]);
+    let {_viewDates, _viewResources, _slotTimeLimits, datesAboveResources, highlightedDates, validRange, theme} = getContext('state');
 
     let resourceLabels = $state([]);
 </script>
 
-<div class="{$theme.header}">
-    <Section>
-        {#each loops[0] as item0, i}
-            <div class="{$theme.resource}">
+<View
+    createGridFn={() => createGrid(
+        $_viewDates, $_viewResources, $_slotTimeLimits, $datesAboveResources, $validRange, $highlightedDates
+    )}
+    fullwidthNowIndicator={$datesAboveResources}
+>
+    {#snippet header(grid)}
+        {#each grid as days, i}
+            {@const {dayStart: date, resource, disabled, highlight} = days[0]}
+            <ColHead
+                {date}
+                className={$theme.colGroup}
+                weekday={$datesAboveResources}
+                colSpan={days.length}
+                colIndex={1 + i * days.length}
+                disabled={$datesAboveResources && disabled}
+                highlight={$datesAboveResources && highlight}
+            >
                 {#if $datesAboveResources}
-                    <div class="{$theme.day} {$theme.weekdays?.[item0.getUTCDay()]}{datesEqual(item0, $_today) ? ' ' + $theme.today : ''}">
-                        <time
-                            datetime="{toISOString(item0, 10)}"
-                            aria-label="{$_intlDayHeaderAL.format(item0)}"
-                            use:setContent={$_intlDayHeader.format(item0)}
-                        ></time>
-                    </div>
+                    <DayHeader {date}/>
                 {:else}
-                    <div class="{$theme.day}">
-                        <Label resource={item0} setLabel={e => resourceLabels[i] = e.detail + ', '} />
-                    </div>
+                    <Label {resource} setLabel={label => resourceLabels[i] = label + ', '}/>
                 {/if}
-                {#if loops[1].length > 1}
-                    <div class="{$theme.days}">
-                        {#each loops[1] as item1}
-                            {#if $datesAboveResources}
-                                <div class="{$theme.day}" role="columnheader">
-                                    <Label resource={item1} date={item0} />
-                                </div>
-                            {:else}
-                                <div
-                                    class="{$theme.day} {$theme.weekdays?.[item1.getUTCDay()]}{datesEqual(item1, $_today) ? ' ' + $theme.today : ''}"
-                                    role="columnheader"
-                                >
-                                    <time
-                                        datetime="{toISOString(item1, 10)}"
-                                        aria-label="{resourceLabels[i]}{$_intlDayHeaderAL.format(item1)}"
-                                        use:setContent={$_intlDayHeader.format(item1)}
-                                    ></time>
-                                </div>
-                            {/if}
-                        {/each}
-                    </div>
-                {/if}
-            </div>
+            </ColHead>
         {/each}
-    </Section>
-    <div class="{$theme.hiddenScroll}"></div>
-</div>
-{#if $allDaySlot}
-    <div class="{$theme.allDay}">
-        <div class="{$theme.content}">
-            <Section>
-                {#if $datesAboveResources}
-                    {#each $_viewDates as date}
-                        <div class="{$theme.resource}">
-                            {#each $_viewResources as resource}
-                                <Week dates={[date]} {resource}/>
-                            {/each}
-                        </div>
-                    {/each}
-                {:else}
-                    {#each $_viewResources as resource}
-                        <div class="{$theme.resource}">
-                            <Week dates={$_viewDates} {resource}/>
-                        </div>
-                    {/each}
-                {/if}
-            </Section>
-            <div class="{$theme.hiddenScroll}"></div>
-        </div>
-    </div>
-{/if}
-<Body>
-{#each loops[0] as item0}
-    <div class="{$theme.resource}">
-        {#each loops[1] as item1}
-            <Day
-                date={$datesAboveResources ? item0 : item1}
-                resource={$datesAboveResources ? item1 : item0}
-            />
+        {#each grid as days, i}
+            {#each days as day, j}
+                {@const {dayStart: date, resource, disabled, highlight} = day}
+                <ColHead {date} colIndex={1 + j + i * days.length} {disabled} {highlight}>
+                    {#if $datesAboveResources}
+                        <Label {resource} {date}/>
+                    {:else}
+                        <DayHeader {date} alPrefix={resourceLabels[i]}/>
+                    {/if}
+                </ColHead>
+            {/each}
         {/each}
-    </div>
-{/each}
-</Body>
+    {/snippet}
+</View>

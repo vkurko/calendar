@@ -14,7 +14,3 @@ export function animate(fn) {
 export function limit(value, minLimit, maxLimit) {
     return max(minLimit, min(maxLimit, value));
 }
-
-export function draggable(event) {
-
-}

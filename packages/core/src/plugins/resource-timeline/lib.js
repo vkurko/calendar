@@ -1,139 +1,136 @@
-import {addDay, addDuration, cloneDate, createDuration, datesEqual, sortEventChunks, toSeconds} from '#lib';
+import {
+    addDay, addDuration, assign, bgEvent, cloneDate, createDuration, createEventChunk, datesEqual, eventIntersects, max,
+    min, outsideRange
+} from '#lib';
 
-export function prepareEventChunks(chunks, $_viewDates, $_dayTimeLimits, $slotDuration, $eventOrder) {
-    let longChunks = {};
-    let filteredChunks = [];
-
-    if (chunks.length) {
-        sortEventChunks(chunks, $eventOrder);
-
-        let step = toSeconds($slotDuration);
-        let prevChunk;
-        for (let chunk of chunks) {
-            let prevDayEnd;
-            if (step) {
-                let slots = 0;
-                for (let i = 0; i < $_viewDates.length; ++i) {
-                    let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, $_viewDates[i]);
-                    let dayStart = addDuration(cloneDate($_viewDates[i]), slotTimeLimits.min);
-                    let dayEnd = addDuration(cloneDate($_viewDates[i]), slotTimeLimits.max);
-                    if (!chunk.date) {
-                        if (chunk.start < dayEnd && chunk.end > dayStart) {
-                            // The first day is found
-                            chunk.date = $_viewDates[i];
-                            if (chunk.start < dayStart) {
-                                // Adjust chunk start
-                                chunk.start = dayStart;
-                            }
-                            // Calculate offset
-                            chunk.offset = (chunk.start - dayStart) / 1000 / step;
-                            // Calculate slots
-                            if (chunk.end > dayEnd) {
-                                slots += dayEnd - chunk.start;
-                            } else {
-                                slots += chunk.end - chunk.start || step * 1000;
-                                break;
-                            }
-                        }
-                    } else {
-                        if (chunk.end <= dayStart) {
-                            // Adjust chunk end
-                            chunk.end = prevDayEnd;
-                            break;
-                        }
-                        // The chunk is long one
-                        let key = $_viewDates[i].getTime();
-                        if (longChunks[key]) {
-                            longChunks[key].push(chunk);
-                        } else {
-                            longChunks[key] = [chunk];
-                        }
-                        // Calculate slots
-                        if (chunk.end > dayEnd) {
-                            slots += dayEnd - dayStart;
-                        } else {
-                            slots += chunk.end - dayStart;
-                            break;
-                        }
-                    }
-                    prevDayEnd = dayEnd;
-                }
-                chunk.slots = slots / 1000 / step;
-            } else {
-                // Month view
-                let days = 0;
-                for (let i = 0; i < $_viewDates.length; ++i) {
-                    let dayStart = $_viewDates[i];
-                    let dayEnd = addDay(cloneDate(dayStart));
-                    if (!chunk.date) {
-                        if (chunk.start < dayEnd) {
-                            // The first day is found
-                            chunk.date = dayStart;
-                            if (chunk.start < dayStart) {
-                                // Adjust chunk start
-                                chunk.start = dayStart;
-                            }
-                            ++days;
-                        }
-                    } else {
-                        if (chunk.end <= dayStart) {
-                            // Adjust chunk end
-                            chunk.end = prevDayEnd;
-                            break;
-                        }
-                        // The chunk is long one
-                        let key = dayStart.getTime();
-                        if (longChunks[key]) {
-                            longChunks[key].push(chunk);
-                        } else {
-                            longChunks[key] = [chunk];
-                        }
-                        ++days;
-                    }
-                    prevDayEnd = dayEnd;
-                }
-                chunk.days = days;
-            }
-
-            if (!chunk.date) {
-                // Chunk is outside the slot time limits, so skip it
-                continue;
-            }
-
-            if (prevChunk && datesEqual(prevChunk.date, chunk.date)) {
-                chunk.prev = prevChunk;
-            }
-            prevChunk = chunk;
-            filteredChunks.push(chunk);
+export function createGrid($_viewDates, $_viewResources, $_dayTimeLimits, $validRange, $highlightedDates) {
+    let grid = [];
+    let gridRow = 1
+    for (let resource of $_viewResources) {
+        let days = [];
+        let gridColumn = 1;
+        for (let date of $_viewDates) {
+            let slotTimeLimits = $_dayTimeLimits[date.getTime()];
+            days.push({
+                gridColumn,
+                gridRow,
+                resource,
+                start: addDuration(cloneDate(date), slotTimeLimits.min),
+                end: addDuration(cloneDate(date), slotTimeLimits.max),
+                dayStart: date,
+                dayEnd: addDay(cloneDate(date)),
+                disabled: outsideRange(date, $validRange),
+                highlight: $highlightedDates.some(d => datesEqual(d, date))
+            });
+            ++ gridColumn;
         }
+        grid.push(days);
+        ++ gridRow;
     }
-
-    return [filteredChunks, longChunks];
+    return grid;
 }
 
-export function repositionEvent(chunk, dayChunks, longChunks, height, allDay) {
-    chunk.top = 0;
-    chunk.bottom = height;
-    let margin = 1;
-    let key = chunk.date.getTime();
-    longChunks = longChunks?.[key] ?? [];
-    let chunks = [...dayChunks, ...longChunks];
-    chunks.sort((a, b) => (a.top ?? 0) - (b.top ?? 0) || a.start - b.start || b.event.allDay - a.event.allDay);
-    for (let dayChunk of chunks) {
-        if (dayChunk === chunk) {
+export function createEventChunks($_filteredEvents, grid) {
+    let chunks = [];
+    let bgChunks = [];
+    for (let event of $_filteredEvents) {
+        for (let days of grid) {
+            if (bgEvent(event.display)) {
+                bgChunks = bgChunks.concat(createChunks(event, days));
+            } else {
+                chunks = chunks.concat(createChunks(event, days));
+            }
+        }
+    }
+    prepareChunks(chunks);
+
+    return {chunks, bgChunks};
+}
+
+export function createIEventChunks($_iEvents, grid) {
+    let iChunks = [];
+    for (let event of $_iEvents) {
+        if (!event) {
             continue;
         }
-        if ((allDay || chunk.start < dayChunk.end && chunk.end > dayChunk.start) && chunk.top < dayChunk.bottom && chunk.bottom > dayChunk.top) {
-            let offset = dayChunk.bottom - chunk.top + 1;
-            margin += offset;
-            chunk.top += offset;
-            chunk.bottom += offset;
+        for (let days of grid) {
+            iChunks = iChunks.concat(createChunks(event, days));
         }
     }
 
-    return margin;
+    return iChunks;
+}
+
+function createChunks(event, days) {
+    let dates = [];
+    let firstStart;
+    let lastEnd;
+    let gridColumn;
+    let gridRow;
+    let left;
+    let width = 0;
+    for (let {gridColumn: column, gridRow: row, resource, dayStart, start, end, disabled} of days) {
+        if (!disabled && eventIntersects(event, start, end, resource)) {
+            if (!dates.length) {
+                firstStart = start;
+                gridColumn = column;
+                gridRow = row;
+                left = max(event.start - start, 0) / 1000;
+            }
+            dates.push(dayStart);
+            lastEnd = end;
+            width += (min(end, event.end) - max(start, event.start)) / 1000;
+        }
+    }
+    if (dates.length) {
+        let chunk = createEventChunk(event, firstStart, lastEnd);
+        // Chunk layout
+        assign(chunk, {gridColumn, gridRow, dates, left, width});
+
+        return [chunk];
+    }
+
+    return [];
+}
+
+export function prepareChunks(chunks) {
+    let dayChunks = {};
+    for (let chunk of chunks) {
+        let {gridColumn, gridRow} = chunk;
+        // Prepare day chunks
+        for (let i = 0; i < chunk.dates.length; ++ i) {
+            let key = `${gridRow}_${gridColumn + i}`;
+            if (dayChunks[key]) {
+                dayChunks[key].push(chunk);
+            } else {
+                dayChunks[key] = [chunk];
+            }
+        }
+        let key = `${gridRow}_${gridColumn}`;
+        chunk.day = dayChunks[key];
+    }
+}
+
+export function repositionEvent(chunk, height, monthView) {
+    let top = 1;
+    let bottom = top + height;
+    let dayChunks = chunk.day;
+    dayChunks.sort((a, b) => (a.top ?? Number.POSITIVE_INFINITY) - (b.top ?? Number.POSITIVE_INFINITY));
+    for (let dayChunk of dayChunks) {
+        if (dayChunk === chunk || !('top' in dayChunk)) {
+            continue;
+        }
+        if ((monthView || chunk.start < dayChunk.end && chunk.end > dayChunk.start) && top < dayChunk.bottom && bottom > dayChunk.top) {
+            let offset = dayChunk.bottom - top + 1;
+            top += offset;
+            bottom += offset;
+        }
+    }
+    assign(chunk, {top, bottom});
+
+    return top;
 }
 
 export function getSlotTimeLimits($_dayTimeLimits, date) {
-    return $_dayTimeLimits[date.getTime()] ?? {min: createDuration(0), max: createDuration(0)};
+    return $_dayTimeLimits[date.getTime()] ?? {min: createDuration(0), max: createDuration('24:00:00')};
 }

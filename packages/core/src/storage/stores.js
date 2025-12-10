@@ -1,7 +1,8 @@
 import {derived, get, readable, writable} from 'svelte/store';
 import {
-    addDay, addDuration, assign, cloneDate, createDate, createEvents, createView, DAY_IN_SECONDS, debounce,
-    isFunction, nextClosestDay, prevClosestDay, setMidnight, subtractDay, toISOString, toLocalDate
+    addDay, addDuration, assign, cloneDate, createDate, createEvents, createView, datesEqual, DAY_IN_SECONDS, debounce,
+    isFunction, nextClosestDay, prevClosestDay, setMidnight, subtractDay, toEventWithLocalDates, toISOString,
+    toLocalDate
 } from '#lib';
 
 export function dayGrid(state) {
@@ -184,19 +185,40 @@ export function filteredEvents(state){
     state._view.subscribe($_view => view = $_view);
     let debounceHandle = {};
     return derived(
-        [state._events, state.eventFilter],
+        [state._events, state.eventFilter, state.eventOrder, state.filterEventsWithResources, state.resources],
         (values, set) => debounce(() => {
-            let [$_events, $eventFilter] = values;
-            set(
-                isFunction($eventFilter)
-                    ? $_events.filter((event, index, events) => $eventFilter({
+            let [$_events, $eventFilter, $eventOrder, $filterEventsWithResources, $resources] = values;
+
+            let result = [...$_events];
+
+            // Filter events
+            if (isFunction($eventFilter)) {
+                result = result
+                    .map(toEventWithLocalDates)
+                    .filter((event, index, events) => $eventFilter({
                         event,
                         index,
                         events,
                         view
-                    }))
-                    : $_events
-            );
+                    }));
+            }
+            if ($filterEventsWithResources) {
+                result = result.filter(event => $resources.some(resource => event.resourceIds.includes(resource.id)));
+            }
+
+            // Sort events
+            if (isFunction($eventOrder)) {
+                result.sort((a, b) => $eventOrder(
+                    toEventWithLocalDates(a),
+                    toEventWithLocalDates(b)
+                ));
+            } else {
+                // Sort by start date (all-day events always on top)
+                result.sort((a, b) => a.start - b.start || b.allDay - a.allDay);
+            }
+
+            set(result);
+
         }, debounceHandle, state._queue),
         []
     );
@@ -213,5 +235,14 @@ export function now() {
 }
 
 export function today(state) {
-    return derived(state._now, $_now => setMidnight(cloneDate($_now)));
+    let $today = createDate();
+    let today = writable($today);
+    derived(state._now, $_now => setMidnight(cloneDate($_now))).subscribe(newToday => {
+        if (!datesEqual($today, newToday)) {
+            $today = newToday;
+            today.set(newToday);
+        }
+    });
+
+    return today;
 }

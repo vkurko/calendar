@@ -1,34 +1,42 @@
-import {btnTextDay, btnTextWeek, themeView, viewResources} from '#lib';
-import TimeGrid from '../time-grid/index.js';
+import {btnTextDay, btnTextWeek, themeView} from '#lib';
+import {createTROptions, createTRROptions, createTRRParsers} from '../time-grid/options.js';
+import {createTRRStores, createTRStores} from '../time-grid/stores.js';
+import {createRROptions} from './options.js';
+import {createRRStores} from './stores.js';
 import View from './View.svelte';
 
 export default {
     createOptions(options) {
+        createTROptions(options);
+        createTRROptions(options);
+        createRROptions(options);
         options.datesAboveResources = false;
         // Common options
         options.buttonText.resourceTimeGridDay = 'resources';
         options.buttonText.resourceTimeGridWeek = 'resources';
+        options.theme.colGroup = 'ec-col-group';
         options.view = 'resourceTimeGridWeek';
         options.views.resourceTimeGridDay = {
             buttonText: btnTextDay,
             component: View,
             duration: {days: 1},
-            theme: themeView('ec-time-grid ec-resource-day-view')
+            theme: themeView('ec-resource ec-time-grid ec-day-view')
         };
         options.views.resourceTimeGridWeek = {
             buttonText: btnTextWeek,
             component: View,
             duration: {weeks: 1},
-            theme: themeView('ec-time-grid ec-resource-week-view')
+            theme: themeView('ec-resource ec-time-grid ec-week-view')
         };
     },
 
+    createParsers(parsers) {
+        createTRRParsers(parsers);
+    },
+
     createStores(state) {
-        if (!('_times' in state)) {
-            TimeGrid.createStores(state);
-        }
-        if (!('_viewResources' in state)) {
-            state._viewResources = viewResources(state);
-        }
+        createTRRStores(state);
+        createTRStores(state);
+        createRRStores(state);
     }
 }

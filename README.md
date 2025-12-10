@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (37kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (35kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * 100% human-coded
 * Zero-dependency (standalone bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
@@ -39,6 +39,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [allDayContent](#alldaycontent)
   - [allDaySlot](#alldayslot)
   - [buttonText](#buttontext)
+  - [columnWidth](#columnwidth)
   - [customButtons](#custombuttons)
   - [date](#date)
   - [dateClick](#dateclick)
@@ -244,8 +245,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.7.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.7.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.0.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.0.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -368,6 +369,16 @@ function (text) {
 <td>An object with default button text</td>
 </tr>
 </table>
+
+### columnWidth
+- Type `string`
+- Default `undefined`
+
+Defines the column width in `timeGrid`/`resourceTimeGrid` views.
+
+This option accepts a CSS [length](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-columns#values) value, so be sure to include `px` if you specify the value in pixels.
+
+If this option is `undefined`, the column width will adjust to the calendar width.
 
 ### customButtons
 - Type `object` or `function`
@@ -1320,34 +1331,7 @@ function (a, b) {
 }
 ```
 
-`a` and `b` are objects (so called `event chunks`) with the following properties:
-
-<table>
-<tr>
-<td>
-
-`start`
-</td>
-<td>JavaScript Date object holding the event chunk’s start time</td>
-</tr>
-<tr>
-<td>
-
-`end`
-</td>
-<td>JavaScript Date object holding the event chunk’s end time</td>
-</tr>
-<tr>
-<td>
-
-`event`
-</td>
-<td>
-
-The [Event](#event-object) object associated with this chunk
-</td>
-</tr>
-</table>
+`a` and `b` are [Event](#event-object) objects.
 
 ### eventResizableFromStart
 - Type `boolean`
@@ -2234,13 +2218,7 @@ If set to `false`, then intersecting events will be placed next to each other.
 - Type `integer`
 - Default `24`
 
-Defines the time slot height in pixels in the `timeGrid`/`resourceTimeGrid` views. When changing the setting, you must additionally override the following CSS styles:
-
-```css
-.ec-time-grid .ec-time, .ec-time-grid .ec-line {
-  height: 24px;  /* override this value */
-}
-```
+Defines the time slot height in pixels in the `timeGrid`/`resourceTimeGrid` views.
 
 ### slotLabelFormat
 - Type `object` or `function`
@@ -2295,19 +2273,18 @@ This should be a value that can be parsed into a [Duration](#duration-object) ob
 
 ### slotWidth
 - Type `integer`
-- Default `72`
+- Default `16`
 
-Defines the time slot width in pixels in `resourceTimeline` views. When changing the setting, you must additionally override the following CSS styles:
-
-```css
-.ec-timeline .ec-time, .ec-timeline .ec-line {
-  width: 72px;  /* override this value */
-}
-```
+Defines the time slot width in pixels in `resourceTimeline` views.
 
 ### theme
 - Type `object` or `function`
-- Default `{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', container: 'ec-container', content: 'ec-content', day: 'ec-day', dayHead: 'ec-day-head', dayFoot: 'ec-day-foot', days: 'ec-days', daySide: 'ec-day-side', draggable: 'ec-draggable', dragging: 'ec-dragging', event: 'ec-event', eventBody: 'ec-event-body', eventTag: 'ec-event-tag', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', expander: 'ec-expander', extra: 'ec-extra', ghost: 'ec-ghost', handle: 'ec-handle', header: 'ec-header', hiddenScroll: 'ec-hidden-scroll', highlight: 'ec-highlight', icon: 'ec-icon', line: 'ec-line', lines: 'ec-lines', main: 'ec-main', minor: 'ec-minor', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', otherMonth: 'ec-other-month', pointer: 'ec-pointer', popup: 'ec-popup', preview: 'ec-preview', resizer: 'ec-resizer', resizingX: 'ec-resizing-x', resizingY: 'ec-resizing-y', resource: 'ec-resource', selecting: 'ec-selecting', sidebar: 'ec-sidebar', sidebarTitle: 'ec-sidebar-title', today: 'ec-today', time: 'ec-time', times: 'ec-times', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-timeline ec-resource-week-view', weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'], withScroll: 'ec-with-scroll', uniform: 'ec-uniform'}`
+<ul>
+<li>
+<details>
+    <summary>Default</summary>
+
+`'{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', colHead: 'ec-col-head', day: 'ec-day', dayHead: 'ec-day-head', disabled: 'ec-disabled', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', grid: 'ec-grid', header: 'ec-header', hidden: 'ec-hidden', highlight: 'ec-highlight', icon: 'ec-icon', main: 'ec-main', today: 'ec-today', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-list ec-week-view', weekdays":["ec-sun', ec-mon', ec-tue', ec-wed', ec-thu', ec-fri', ec-sat"],"draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', start: 'ec-start', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x', selecting: 'ec-selecting', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', otherMonth: 'ec-other-month', popup: 'ec-popup', weekNumber: 'ec-week-number', daySide: 'ec-day-side', eventTag: 'ec-event-tag', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', sidebar: 'ec-sidebar', slot: 'ec-slot', colGroup: 'ec-col-group', expander: 'ec-expander', rowHead: 'ec-row-head', slots: 'ec-slots}'`
 > Views override the default value as follows:
 > - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`
 > - listDay `theme => ({...theme, view: 'ec-list ec-day-view'})`
@@ -2321,6 +2298,9 @@ Defines the time slot width in pixels in `resourceTimeline` views. When changing
 > - resourceTimelineWeek `theme => ({...theme, view: 'ec-timeline ec-resource-week-view'})`
 > - timeGridDay `theme => ({...theme, view: 'ec-time-grid ec-day-view'})`
 > - timeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-week-view'})`
+</details>
+</li>
+</ul>
 
 Defines the CSS classes that EventCalendar uses to generate HTML markup.
 
@@ -3248,16 +3228,14 @@ The library provides a built-in dark theme. You can activate it by adding the `e
 
 If you want the dark theme to be activated automatically based on the [preferred color scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme), then use the `ec-auto-dark` CSS class instead.
 
-Please note that the dark theme does not change the background and font color in the calendar. These are assumed to be set by the page styles, and the calendar inherits these styles.
-
-If you do need to set the background or font color of the calendar, use local CSS variables for this:
+You can also customize the colors in the calendar by overriding CSS variables, for example:
 ```css
 .ec {
   --ec-bg-color: #22272e;
   --ec-text-color: #adbac7;
 }
 ```
-A list of all available CSS variables can be found [here](packages/core/src/styles/theme.scss).
+A list of all available CSS variables can be found [here](packages/core/src/styles/theme.css).
 
 ## Browser support
 

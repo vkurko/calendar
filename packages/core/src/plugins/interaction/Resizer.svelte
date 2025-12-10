@@ -20,8 +20,8 @@
             jsEvent,
             start,
             axis,
-            forceDate?.(),
-            forceMargin?.(),
+            forceDate,
+            forceMargin,
             chunk.zeroDuration
         );
     }

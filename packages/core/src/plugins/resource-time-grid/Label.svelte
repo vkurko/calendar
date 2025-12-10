@@ -1,6 +1,6 @@
 <script>
     import {getContext, onMount, untrack} from 'svelte';
-    import {setContent, toLocalDate, isFunction} from '#lib';
+    import {contentFrom, toLocalDate, isFunction} from '#lib';
 
     let {resource, date = undefined, setLabel = undefined} = $props();
 
@@ -48,5 +48,5 @@
 <span
     bind:this={el}
     aria-label="{ariaLabel}"
-    use:setContent={content}
+    {@attach contentFrom(content)}
 ></span>

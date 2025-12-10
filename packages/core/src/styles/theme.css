@@ -1,0 +1,68 @@
+.ec {
+    color-scheme: light;
+
+    /* Main colors */
+    --ec-color-400: oklch(70.8% 0 0);
+    --ec-color-300: oklch(87% 0 0);
+    --ec-color-200: oklch(92.2% 0 0);
+    --ec-color-100: oklch(97% 0 0);
+    --ec-color-50: oklch(98.5% 0 0);
+
+    /* General props */
+    --ec-bg-color: #fff;
+    --ec-text-color: currentcolor;
+    --ec-border-color: var(--ec-color-300);
+
+    /* Buttons */
+    --ec-button-bg-color: var(--ec-bg-color);
+    --ec-button-border-color: var(--ec-border-color);
+    --ec-button-text-color: var(--ec-text-color);
+    --ec-button-active-bg-color: var(--ec-color-200);
+    --ec-button-active-border-color: var(--ec-color-400);
+    --ec-button-active-text-color: var(--ec-button-text-color);
+
+    /* Days */
+    --ec-today-bg-color: oklch(98.7% 0.026 102.212);
+    --ec-highlight-color: oklch(98.4% 0.019 200.873);
+
+    /* Events */
+    --ec-event-bg-color: oklch(70.7% 0.165 254.624);
+    --ec-event-text-color: #fff;
+    --ec-bg-event-color: var(--ec-color-300);
+    --ec-bg-event-opacity: 0.3;
+    --ec-event-col-gap: .375rem;
+
+    /* Now Indicator */
+    --ec-now-indicator-color: oklch(63.7% 0.237 25.331);
+
+    /* Popup */
+    --ec-popup-bg-color: var(--ec-bg-color);
+
+    .ec-dark & {
+        color-scheme: dark;
+        --ec-color-400: oklch(43.9% 0 0);
+        --ec-color-300: oklch(37.1% 0 0);
+        --ec-color-200: oklch(26.9% 0 0);
+        --ec-color-100: oklch(20.5% 0 0);
+        --ec-color-50: oklch(14.5% 0 0);
+        --ec-bg-color: var(--ec-color-100);
+        --ec-today-bg-color: oklch(28.6% 0.066 53.813);
+        --ec-highlight-color: oklch(30.2% 0.056 229.695);
+        --ec-bg-event-opacity: 0.5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .ec-auto-dark & {
+            color-scheme: dark;
+            --ec-color-400: oklch(43.9% 0 0);
+            --ec-color-300: oklch(37.1% 0 0);
+            --ec-color-200: oklch(26.9% 0 0);
+            --ec-color-100: oklch(20.5% 0 0);
+            --ec-color-50: oklch(14.5% 0 0);
+            --ec-bg-color: var(--ec-color-100);
+            --ec-today-bg-color: oklch(28.6% 0.066 53.813);
+            --ec-highlight-color: oklch(30.2% 0.056 229.695);
+            --ec-bg-event-opacity: 0.5;
+        }
+    }
+}

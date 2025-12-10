@@ -10,24 +10,10 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="global.css?20231021">
+    <link rel="stylesheet" href="global.css?20251210">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.7.1/dist/event-calendar.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@4.7.1/dist/event-calendar.min.js"></script>
-
-    <style>
-        .ec-timeline .ec-time, .ec-timeline .ec-line {
-            width: 16px;
-        }
-        .ec-timeline .ec-time {
-            overflow: visible;
-        }
-        .ec-timeline .ec-time time {
-            display: inline-block;
-            width: 64px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.0.0/dist/event-calendar.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.0.0/dist/event-calendar.min.js"></script>
 </head>
 
 <body>
@@ -53,38 +39,41 @@
         },
         resources: [
             {id: 1, title: 'Resource A'},
-            {id: 2, title: 'Resource B'}
-        ],
-        scrollTime: '09:00:00',
-        events: createEvents(),
-        views: {
-            timeGridWeek: {pointer: true},
-            resourceTimeGridWeek: {pointer: true},
-            resourceTimelineWeek: {
-                slotDuration: '00:15',
-                slotLabelInterval: '01:00',
-                slotMinTime: '09:00',
-                slotMaxTime: '21:00',
-                slotWidth: 16,
-                resources: [
-                    {id: 1, title: 'Resource A'},
-                    {id: 2, title: 'Resource B'},
-                    {id: 3, title: 'Resource C'},
-                    {id: 4, title: 'Resource D'},
-                    {id: 5, title: 'Resource E'},
-                    {id: 6, title: 'Resource F'},
-                    {id: 7, title: 'Resource G'},
-                    {id: 8, title: 'Resource H'},
-                    {id: 9, title: 'Resource I', children: [
-                        {id: 10, title: 'Resource J'},
-                        {id: 11, title: 'Resource K'},
-                        {id: 12, title: 'Resource L', children: [
+            {id: 2, title: 'Resource B'},
+            {id: 3, title: 'Resource C'},
+            {id: 4, title: 'Resource D'},
+            {id: 5, title: 'Resource E'},
+            {id: 6, title: 'Resource F'},
+            {id: 7, title: 'Resource G'},
+            {id: 8, title: 'Resource H'},
+            {
+                id: 9, title: 'Resource I', children: [
+                    {id: 10, title: 'Resource J'},
+                    {id: 11, title: 'Resource K'},
+                    {
+                        id: 12, title: 'Resource L', children: [
                             {id: 13, title: 'Resource M'},
                             {id: 14, title: 'Resource N'},
                             {id: 15, title: 'Resource O'}
-                        ]}
-                    ]}
+                        ]
+                    }
                 ]
+            }
+        ],
+        scrollTime: '09:00',
+        events: createEvents(),
+        views: {
+            timeGridWeek: {pointer: true},
+            resourceTimeGridWeek: {
+                columnWidth: '6em',
+                pointer: true
+            },
+            resourceTimelineWeek: {
+                slotDuration: '00:30',
+                slotLabelInterval: '02:00',
+                slotMinTime: '08:00',
+                slotMaxTime: '20:00',
+                scrollTime: '08:00'
             }
         },
         dayMaxEvents: true,

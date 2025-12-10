@@ -1,6 +1,7 @@
 body {
 	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 	padding: 0 40px;
+    max-width: 1024px;
 }
 @media (max-width: 575.98px) {
 	body {
@@ -23,7 +24,7 @@ body {
 }
 
 .ec {
-	height: 640px;
+	height: 600px;
 }
 .ec.ec-day-grid {
 	height: 400px;
@@ -52,8 +53,8 @@ body {
 
 /* Dark theme */
 body.ec-dark {
-	background: #22272e;
-	color: #adbac7;
+	background: oklch(20.5% 0 0);
+	color: #fff;
 }
 body:not(.ec-dark) svg.dark {
 	display: none;

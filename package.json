@@ -1,7 +1,7 @@
 {
   "name": "event-calendar",
   "private": true,
-  "version": "4.7.1",
+  "version": "5.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,9 +12,8 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "sass": "^1.93.2",
-    "svelte": "5.41.2",
-    "vite": "^7.1.12",
+    "svelte": "^5.45.8",
+    "vite": "^7.2.7",
     "vite-plugin-banner": "^0.8.1"
   }
 }

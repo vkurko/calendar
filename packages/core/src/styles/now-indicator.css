@@ -1,0 +1,35 @@
+.ec-now-indicator {
+    grid-row: 2;
+    position: relative;
+    pointer-events: none;
+    will-change: inset;
+
+    .ec-time-grid & {
+        inline-size: 100%;
+        block-size: 0;
+        border-block-start: var(--ec-now-indicator-color) solid 2px;
+    }
+
+    .ec-timeline & {
+        inline-size: 0;
+        border-inline-start: var(--ec-now-indicator-color) solid 2px;
+
+        &:before {
+            inset-block-start: calc(var(--ec-header-height) - 6.5px);
+            z-index: 2;
+        }
+    }
+
+    &:before {
+        background: var(--ec-now-indicator-color);
+        border-radius: 50%;
+        content: "";
+        display: block;
+        block-size: 12px;
+        inline-size: 12px;
+        margin: -7px 0 0 -7px;
+        position: sticky;
+        inset-inline-start: calc(var(--ec-sidebar-width) - 6.5px);
+        z-index: 1;
+    }
+}

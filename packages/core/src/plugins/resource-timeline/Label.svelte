@@ -1,10 +1,10 @@
 <script>
-    import {getContext, onMount, untrack} from 'svelte';
-    import {ceil, height, setContent, toLocalDate, isFunction} from '#lib';
+    import {getContext, onMount} from 'svelte';
+    import {contentFrom, toLocalDate, isFunction} from '#lib';
 
     let {resource, date = undefined} = $props();
 
-    let {resourceLabelContent, resourceLabelDidMount, _resHs} = getContext('state');
+    let {resourceLabelContent, resourceLabelDidMount} = getContext('state');
 
     let el = $state();
     // Content
@@ -21,14 +21,6 @@
         }
     });
 
-    $effect(() => {
-        content;
-        untrack(() => {
-            $_resHs.set(resource, ceil(height(el) + 10));
-            $_resHs = $_resHs;
-        });
-    });
-
     onMount(() => {
         if (isFunction($resourceLabelDidMount)) {
             $resourceLabelDidMount({
@@ -42,5 +34,5 @@
 
 <span
     bind:this={el}
-    use:setContent={content}
+    {@attach contentFrom(content)}
 ></span>

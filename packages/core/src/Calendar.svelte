@@ -1,5 +1,5 @@
 <script>
-    import './styles/index.scss';
+    import './styles/index.css';
     import {setContext, untrack} from 'svelte';
     import {get} from 'svelte/store';
     import {diff} from './storage/options.js';
@@ -13,15 +13,17 @@
 
     let {plugins = [], options = {}} = $props();
 
+    // svelte-ignore state_referenced_locally
     let state = new State(plugins, options);
     setContext('state', state);
 
     let {
-        _viewComponent, _interaction, _iClass, _events, _scrollable,
+        _viewComponent, _interaction, _iClass, _events,
         date, duration, hiddenDays, height, theme, view
     } = state;
 
     // Reactively update options that did change
+    // svelte-ignore state_referenced_locally
     let prevOptions = {...options};
     $effect(() => {
         for (let [name, value] of diff(options, prevOptions)) {
@@ -122,7 +124,11 @@
 </script>
 
 <div
-    class="{$theme.calendar} {$theme.view}{$_scrollable ? ' ' + $theme.withScroll : ''}{$_iClass ? ' ' + $theme[$_iClass] : ''}"
+    class={[
+        $theme.calendar,
+        $theme.view,
+        $_iClass && $theme[$_iClass]
+    ]}
     style:height={$height}
     role="{listView($view) ? 'list' : 'table'}"
 >

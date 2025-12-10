@@ -38,6 +38,15 @@ export function isFunction(value) {
     return typeof value === 'function';
 }
 
+export function isEmpty(obj) {
+    for (let prop in obj) {
+        if (Object.hasOwn(obj, prop)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 export function run(fn) {
     return fn();
 }
@@ -50,11 +59,11 @@ export function noop() {}
 
 export const identity = (x) => x;
 
-export function stopPropagation(fn) {
+export function stopPropagation(fn, _this = undefined) {
     return function (event) {
         event.stopPropagation();
         if (fn) {
-            fn.call(this, event);
+            fn.call(_this, event);
         }
     };
 }

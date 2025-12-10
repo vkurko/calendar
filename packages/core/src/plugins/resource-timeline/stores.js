@@ -1,5 +1,5 @@
 import {derived} from 'svelte/store';
-import {createSlotTimeLimits, createTimes, getPayload} from '#lib';
+import {createSlotTimeLimits, createSlots, getPayload, toSeconds} from '#lib';
 
 // slotTimeLimits per day
 export function dayTimeLimits(state) {
@@ -22,15 +22,15 @@ export function dayTimeLimits(state) {
     );
 }
 
-export function dayTimes(state) {
+export function daySlots(state) {
     return derived(
-        [state._viewDates, state.slotDuration, state.slotLabelInterval, state._dayTimeLimits, state._intlSlotLabel],
-        ([$_viewDates, $slotDuration, $slotLabelInterval, $_dayTimeLimits, $_intlSlotLabel]) => {
+        [state._viewDates, state.slotDuration, state._slotLabelPeriodicity, state._dayTimeLimits, state._intlSlotLabel],
+        ([$_viewDates, $slotDuration, $_slotLabelPeriodicity, $_dayTimeLimits, $_intlSlotLabel]) => {
             let dayTimes = {};
             for (let date of $_viewDates) {
-                let time = date.getTime();
-                dayTimes[time] = time in $_dayTimeLimits
-                    ? createTimes(date, $slotDuration, $slotLabelInterval, $_dayTimeLimits[time], $_intlSlotLabel)
+                let key = date.getTime();
+                dayTimes[key] = key in $_dayTimeLimits
+                    ? createSlots(date, $slotDuration, $_slotLabelPeriodicity, $_dayTimeLimits[key], $_intlSlotLabel)
                     : [];
             }
 
@@ -41,4 +41,8 @@ export function dayTimes(state) {
 
 export function nestedResources(state) {
     return derived(state.resources, $resources => $resources.some(resource => getPayload(resource).children.length));
+}
+
+export function monthView(state) {
+    return derived(state.slotDuration, $slotDuration => !toSeconds($slotDuration));
 }
