@@ -2,12 +2,12 @@
     import {getContext} from 'svelte';
     import {datesEqual, toSeconds, intersectionObserver} from '#lib';
 
-    let {days, fullwidth = false} = $props();
+    let {days, span = 1} = $props();
 
     let {_mainEl, _now, _today, _sidebarWidth, slotDuration, slotHeight, theme} = getContext('state');
 
     // Layout
-    let {gridColumn, start} = $derived.by(() => {
+    let {gridColumn, start, end} = $derived.by(() => {
         for (let day of days) {
             if (datesEqual(day.dayStart, $_today)) {
                 return day;
@@ -16,6 +16,9 @@
         return {};
     });
     let top = $derived.by(() => {
+        if ($_now < start || $_now > end) {
+            return null;
+        }
         let step = toSeconds($slotDuration);
         return ($_now - start) / 1000 / step * $slotHeight;
     });
@@ -31,10 +34,10 @@
     }
 </script>
 
-{#if gridColumn}
+{#if gridColumn && top !== null}
     <div {@attach intersectionObserver(onIntersect, observerOptions)}
         class="{$theme.nowIndicator}"
-        style:grid-column="{gridColumn + 1}{fullwidth ? ` / span ${days.length}` : ''}"
+        style:grid-column="{gridColumn + 1} / span {span}"
         style:inset-block-start="{top}px"
     ></div>
 {/if}

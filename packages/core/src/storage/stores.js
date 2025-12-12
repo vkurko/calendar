@@ -193,10 +193,10 @@ export function filteredEvents(state){
 
             // Filter events
             if (isFunction($eventFilter)) {
+                let events = $_events.map(toEventWithLocalDates);
                 result = result
-                    .map(toEventWithLocalDates)
-                    .filter((event, index, events) => $eventFilter({
-                        event,
+                    .filter((event, index) => $eventFilter({
+                        event: toEventWithLocalDates(event),
                         index,
                         events,
                         view

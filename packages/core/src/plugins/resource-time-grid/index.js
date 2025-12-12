@@ -19,6 +19,7 @@ export default {
         options.views.resourceTimeGridDay = {
             buttonText: btnTextDay,
             component: View,
+            dayHeaderFormat: {weekday: 'long'},
             duration: {days: 1},
             theme: themeView('ec-resource ec-time-grid ec-day-view')
         };

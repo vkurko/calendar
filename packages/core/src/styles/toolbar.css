@@ -57,7 +57,7 @@
 
 .ec-icon {
     display: inline-block;
-    width: 1em;
+    inline-size: 1em;
 
     &.ec-prev:after,
     &.ec-next:after {
@@ -71,10 +71,18 @@
     }
 
     &.ec-prev:after {
-        transform: rotate(-135deg) translate(-2px, 2px);
+        inset-inline-start: 3px;
+        rotate: -135deg;
+    }
+    [dir="rtl"] &.ec-prev:after {
+        rotate: 135deg;
     }
 
     &.ec-next:after {
-        transform: rotate(45deg) translate(-2px, 2px);
+        inset-inline-start: -3px;
+        rotate: 45deg;
+    }
+    [dir="rtl"] &.ec-next:after {
+        rotate: -45deg;
     }
 }

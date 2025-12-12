@@ -47,13 +47,14 @@
 }
 
 .ec-expander {
-    margin-right: .25em;
-    width: 1.25em;
+    inline-size: 1.25em;
+    margin-inline-end: .25em;
+    margin-block-start: -1px;
 
     .ec-button {
         line-height: normal;
         padding: 0;
         aspect-ratio: 1;
-        height: 1.25em;
+        block-size: 1.25em;
     }
 }

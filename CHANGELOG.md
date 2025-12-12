@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.0.1
+December 12, 2025
+* Fixed some RTL issues ([552](https://github.com/vkurko/calendar/issues/552))
+* Fixed other minor issues
+
 ## 5.0.0
 December 10, 2025
 * :warning: A new layout based on [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) has been implemented

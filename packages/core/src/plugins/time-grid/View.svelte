@@ -8,11 +8,11 @@
     import AllDayEvent from './AllDayEvent.svelte';
     import NowIndicator from './NowIndicator.svelte';
 
-    let {header, createGridFn, fullwidthNowIndicator} = $props();
+    let {header, nowIndicator, createGridFn} = $props();
 
     let {_mainEl, _filteredEvents, _iEvents, _sidebarWidth, _slotLabelPeriodicity, _slotTimeLimits, _slots,
-        _viewDates, allDayContent, allDaySlot, columnWidth, highlightedDates, nowIndicator, scrollTime, slotHeight,
-        slotDuration, theme, validRange} = getContext('state');
+        _viewDates, allDayContent, allDaySlot, columnWidth, highlightedDates, nowIndicator: showNowIndicator,
+        scrollTime, slotHeight, slotDuration, theme, validRange} = getContext('state');
 
     let headerHeight = $state(0);
     let allDayText = $derived(createAllDayContent($allDayContent));
@@ -127,9 +127,11 @@
         </div>
     </div>
 
-    {#if $nowIndicator}
-        {#each grid as days}
-            <NowIndicator {days} fullwidth={fullwidthNowIndicator}/>
-        {/each}
+    {#if $showNowIndicator}
+        {#if nowIndicator}
+            {@render nowIndicator(grid)}
+        {:else}
+            <NowIndicator days={grid[0]}/>
+        {/if}
     {/if}
 </section>

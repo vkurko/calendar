@@ -27,7 +27,7 @@
     let resource, newResource;
     let fromX, fromY;
     let toX, toY;
-    let gridEl, scrollable;
+    let gridEl, allDaySlot;
     let delta;
     let allDay;
     let iClass;
@@ -180,7 +180,7 @@
         let dayEl = getElementWithPayload(toX, toY);
         ({allDay, date, resource} = getPayload(dayEl)(toX, toY));
 
-        scrollable = $_mainEl === ancestor(dayEl, 3);  // test for "all-day" slot
+        allDaySlot = $_mainEl !== ancestor(dayEl, 3);
         gridEl = ancestor(dayEl, 1);
         calcViewport();
 
@@ -285,19 +285,19 @@
             let thresholdX = 24;
             animate(() => {
                 if (viewport) {
-                    if (scrollable) {
+                    if (!allDaySlot) {
                         if (toY < viewport.top + thresholdY) {
                             $_mainEl.scrollTop += max(-8, (toY - viewport.top - thresholdY) / 3);
                         }
                         if (toY > viewport.bottom - thresholdY) {
                             $_mainEl.scrollTop += min(8, (toY - viewport.bottom + thresholdY) / 3);
                         }
-                        if (toX < viewport.left + thresholdX) {
-                            $_mainEl.scrollLeft += max(-8, (toX - viewport.left - thresholdX) / 3);
-                        }
-                        if (toX > viewport.right - thresholdX) {
-                            $_mainEl.scrollLeft += min(8, (toX - viewport.right + thresholdX) / 3);
-                        }
+                    }
+                    if (toX < viewport.left + thresholdX) {
+                        $_mainEl.scrollLeft += max(-8, (toX - viewport.left - thresholdX) / 3);
+                    }
+                    if (toX > viewport.right - thresholdX) {
+                        $_mainEl.scrollLeft += min(8, (toX - viewport.right + thresholdX) / 3);
                     }
                     if (toY < thresholdY) {
                         window.scrollBy(0, max(-8, (toY - thresholdY) / 3));
@@ -417,6 +417,13 @@
                     return findPayload(dayEl.previousElementSibling);
                 }
             } else {
+                if (selecting() && payload.resource && !$_iEvents[0].resourceIds.includes(payload.resource.id)) {
+                    if (toX > fromX) {
+                        return findPayload(dayEl.previousElementSibling);
+                    } else {
+                        return findPayload(dayEl.nextElementSibling);
+                    }
+                }
                 return payload;
             }
         }
@@ -429,8 +436,8 @@
         viewport = {
             left: max(0, gridRect.left + $_mainEl.scrollLeft),
             right: min(document.documentElement.clientWidth, mainRect.left + $_mainEl.clientWidth) - 2,
-            top: max(0, gridRect.top + (scrollable ? $_mainEl.scrollTop : 0)),
-            bottom: min(document.documentElement.clientHeight, scrollable ? mainRect.top + $_mainEl.clientHeight : gridRect.bottom) - 2
+            top: max(0, gridRect.top + (!allDaySlot ? $_mainEl.scrollTop : 0)),
+            bottom: min(document.documentElement.clientHeight, !allDaySlot ? mainRect.top + $_mainEl.clientHeight : gridRect.bottom) - 2
         };
     }
 
