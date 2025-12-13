@@ -9,7 +9,7 @@
     let {slotDuration, slotWidth, _monthView} = getContext('state');
 
     let el = $state();
-    let margin = $state(1);
+    let margin = $state(0);
     let event = $derived(chunk.event);
     // Style
     let styles = $derived(style => {
@@ -18,7 +18,7 @@
         if (!$_monthView) {
             let left = chunk.left / toSeconds($slotDuration) * $slotWidth;
             style['inset-inline-start'] = `${left}px`;
-            style['inline-size'] = `${chunk.width / toSeconds($slotDuration) * $slotWidth + chunk.dates.length - 1}px`;
+            style['inline-size'] = `${chunk.width / toSeconds($slotDuration) * $slotWidth}px`;
         }
         let marginTop = margin;
         if (event._margin) {

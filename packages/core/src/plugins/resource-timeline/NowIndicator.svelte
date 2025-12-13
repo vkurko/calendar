@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {datesEqual, toSeconds, intersectionObserver} from '#lib';
+    import {datesEqual, toSeconds, intersectionObserver, isRtl} from '#lib';
 
     let {grid} = $props();
 
@@ -26,7 +26,7 @@
     // Observe intersections
     let observerOptions = $derived({
         root: $_mainEl,
-        rootMargin: `0px 0px 0px -${$_sidebarWidth + 1}px`,
+        rootMargin: isRtl() ? `0px -${$_sidebarWidth + 1}px 0px 0px` : `0px 0px 0px -${$_sidebarWidth + 1}px`,
         threshold: 0.0,
     });
     function onIntersect(el, entry) {

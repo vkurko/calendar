@@ -3,7 +3,7 @@
     import {addDuration, cloneDate, floor, rect} from '#lib';
     import {BaseDay} from '#components';
 
-    let {day, allDay = false} = $props();
+    let {day, allDay = false, noIeb, noBeb} = $props();
 
     let {slotDuration, slotHeight} = getContext('state');
 
@@ -18,4 +18,4 @@
     }
 </script>
 
-<BaseDay bind:el {date} {allDay} {resource} {dateFromPoint} {disabled} {highlight}/>
+<BaseDay bind:el {date} {allDay} {resource} {dateFromPoint} {disabled} {highlight} {noIeb} {noBeb}/>

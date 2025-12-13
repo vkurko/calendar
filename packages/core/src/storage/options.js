@@ -80,6 +80,8 @@ export function createOptions(plugins) {
             highlight: 'ec-highlight',
             icon: 'ec-icon',
             main: 'ec-main',
+            noBeb: 'ec-no-beb',  // no block end border
+            noIeb: 'ec-no-ieb',  // no inline end border
             today: 'ec-today',
             title: 'ec-title',
             toolbar: 'ec-toolbar',

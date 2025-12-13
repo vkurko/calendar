@@ -30,7 +30,6 @@
             return;
         }
         let scrollLeft = 0;
-        let gaps = 0;
         let todayOutOfView = $_today < $_viewDates[0] || $_today > $_viewDates.at(-1);
         for (let date of $_viewDates) {
             let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
@@ -42,10 +41,9 @@
                 break;
             } else {
                 scrollLeft += toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min);
-                ++ gaps;
             }
         }
-        $_mainEl.scrollLeft = scrollLeft / toSeconds($slotDuration) * $slotWidth + gaps;
+        $_mainEl.scrollLeft = scrollLeft / toSeconds($slotDuration) * $slotWidth * (document.dir === 'rtl' ? -1 : 1);
     }
 
     // Events reposition
@@ -109,9 +107,9 @@
             {/each}
         </aside>
         <div class="{$theme.grid}" role="row">
-            {#each grid as days}
-                {#each days as day}
-                    <Day {day}/>
+            {#each grid as days, i}
+                {#each days as day, j}
+                    <Day {day} noIeb={j + 1 === days.length} noBeb={i + 1 === grid.length}/>
                 {/each}
             {/each}
         </div>

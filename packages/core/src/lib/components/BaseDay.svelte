@@ -12,6 +12,8 @@
         disabled = false,
         highlight = false,
         role = 'cell',
+        noIeb = false,
+        noBeb = false,
         children
     } = $props();
 
@@ -25,7 +27,9 @@
         $theme.weekdays?.[date.getUTCDay()],
         isToday && $theme.today,
         highlight && $theme.highlight,
-        disabled && $theme.disabled
+        disabled && $theme.disabled,
+        noIeb && $theme.noIeb,
+        noBeb && $theme.noBeb
     ]));
 
     // dateFromPoint

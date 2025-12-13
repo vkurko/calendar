@@ -14,8 +14,6 @@
 
 .ec-main {
     display: grid;
-    gap: 1px;
-    background-color: var(--ec-border-color);
     border: 1px solid var(--ec-border-color);
     overflow: auto;
     /*scrollbar-width: thin;*/
@@ -56,20 +54,15 @@
     grid-area: 1 / 1 / 2 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    gap: 1px;
-    background-color: var(--ec-border-color);
     position: sticky;
     inset-block-start: 0;
     z-index: 2;
-    border-block-end: 1px solid var(--ec-border-color);
-    margin-block-end: -1px;
 }
 
 .ec-grid {
     grid-area: 1 / 1 / -1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    gap: 1px;
 
     .ec-body & {
         grid-template-rows: subgrid;
@@ -97,6 +90,9 @@
     text-align: center;
     padding: .375rem .18em;
     background-color: var(--ec-bg-color);
+    border: 1px solid var(--ec-border-color);
+    border-block-start: none;
+    border-inline-start: none;
     overflow: clip;
     text-overflow: ellipsis;
 
@@ -107,6 +103,11 @@
     &.ec-highlight {
         background-color: var(--ec-highlight-color);
     }
+}
+
+.ec-col-group:nth-last-child(1 of .ec-col-group),
+.ec-col-head:nth-last-child(1 of .ec-col-head) {
+    border-inline-end: none;
 }
 
 .ec-col-group > *,

@@ -1,6 +1,9 @@
 .ec-day {
     --ec-day-bg-color: var(--ec-bg-color);
     background-color: var(--ec-day-bg-color);
+    border: 1px solid var(--ec-border-color);
+    border-block-start: none;
+    border-inline-start: none;
 
     &.ec-today {
         --ec-day-bg-color: var(--ec-today-bg-color);
@@ -12,10 +15,10 @@
 
     .ec-time-grid .ec-body & {
         background-image:
-                linear-gradient(var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-border-color) 1px, transparent 1px),
+                linear-gradient(to top, var(--ec-day-bg-color) 1px, transparent 1px),
+                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px),
                 linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-border-color) 1px, transparent 1px);
+                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px);
         background-size:
                 100% 100%,
                 100% calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity)),
@@ -24,16 +27,26 @@
     }
 
     .ec-timeline:not(.ec-month-view) .ec-body & {
+        --ec-last-line-color: transparent;
+        --ec-direction: to left;
+        [dir="rtl"] & {
+            --ec-direction: to right;
+        }
         background-image:
-                linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(to right, var(--ec-border-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-direction), var(--ec-last-line-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-direction), var(--ec-border-color) 1px, transparent 1px),
                 linear-gradient(var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(to right, var(--ec-border-color) 1px, transparent 1px);
+                linear-gradient(var(--ec-direction), var(--ec-border-color) 1px, transparent 1px);
         background-size:
                 100% 100%,
                 calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity)) 100%,
                 100% 2px,
                 var(--ec-slot-width) 100%;
+        border-inline: none;
+
+        &.ec-no-ieb {
+            --ec-last-line-color: var(--ec-day-bg-color);
+        }
     }
 
     .ec-day-grid & {
@@ -45,6 +58,22 @@
 
     .ec-day-grid .ec-uniform & {
         min-block-size: auto;
+    }
+
+    .ec-list & {
+        border-inline: none;
+
+        &:last-child {
+            border: none;
+        }
+    }
+
+    &.ec-no-ieb {
+        border-inline-end: none;
+    }
+
+    &.ec-no-beb {
+        border-block-end: none;
     }
 }
 

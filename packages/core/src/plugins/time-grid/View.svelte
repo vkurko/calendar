@@ -71,9 +71,9 @@
             <div class="{$theme.allDay}">
                 <aside class="{$theme.sidebar}" {@attach contentFrom(allDayText)}></aside>
                 <div class="{$theme.grid}" role="row">
-                    {#each grid as days}
-                        {#each days as day}
-                            <Day {day} allDay/>
+                    {#each grid as days, i}
+                        {#each days as day, j}
+                            <Day {day} allDay noIeb={i + 1 === grid.length && j + 1 === days.length}/>
                         {/each}
                     {/each}
                 </div>
@@ -108,9 +108,9 @@
             {/each}
         </aside>
         <div class="{$theme.grid}" role="row">
-            {#each grid as days}
-                {#each days as day}
-                    <Day {day}/>
+            {#each grid as days, i}
+                {#each days as day, j}
+                    <Day {day} noIeb={i + 1 === grid.length && j + 1 === days.length} noBeb/>
                 {/each}
             {/each}
         </div>

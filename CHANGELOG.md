@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.0.2
+December 13, 2025
+* CSS Grid gaps didn't look good, so replaced them with borders
+* Better RTL support
+
 ## 5.0.1
 December 12, 2025
 * Fixed some RTL issues ([552](https://github.com/vkurko/calendar/issues/552))

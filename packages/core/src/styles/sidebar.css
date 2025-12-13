@@ -3,12 +3,14 @@
     inset-inline-start: 0;
     z-index: 1;
     background-color: var(--ec-bg-color);
-    border-inline-end: 1px solid var(--ec-border-color);
-    margin-inline-end: -1px;
+    border-color: var(--ec-border-color);
+    border-width: 1px;
+    border-inline-end-style: solid;
     text-align: end;
     overflow: clip;
 
     .ec-header & {
+        border-block-end-style: solid;
         padding-block: .375rem;
     }
 
@@ -17,12 +19,16 @@
     }
 
     .ec-time-grid .ec-body & {
+        --ec-direction: to left;
+        [dir="rtl"] & {
+            --ec-direction: to right;
+        }
         background-image:
-                linear-gradient(to left, transparent .375rem, var(--ec-bg-color) .375rem),
-                linear-gradient(var(--ec-bg-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-border-color) 1px, transparent 1px),
+                linear-gradient(var(--ec-direction), transparent .375rem, var(--ec-bg-color) .375rem),
+                linear-gradient(to top, var(--ec-bg-color) 1px, transparent 1px),
+                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px),
                 linear-gradient(to right, var(--ec-bg-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-border-color) 1px, transparent 1px);
+                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px);
         background-size:
                 100% 100%,
                 100% 100%,
@@ -35,15 +41,18 @@
         grid-area: 1 / 1 / -1 / 2;
         display: grid;
         grid-template-rows: subgrid;
-        background-color: var(--ec-border-color);
     }
 }
 
 .ec-row-head {
     display: flex;
-    background-color: var(--ec-bg-color);
+    border-block-end: 1px solid var(--ec-border-color);
     padding: .375em .75rem;
     min-block-size: 1.5em;
+
+    &:last-child {
+        border: none;
+    }
 }
 
 .ec-expander {

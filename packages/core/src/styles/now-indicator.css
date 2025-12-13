@@ -27,7 +27,8 @@
         display: block;
         block-size: 12px;
         inline-size: 12px;
-        margin: -7px 0 0 -7px;
+        margin-block-start: -7px;
+        margin-inline-start: -7px;
         position: sticky;
         inset-inline-start: calc(var(--ec-sidebar-width) - 6.5px);
         z-index: 1;

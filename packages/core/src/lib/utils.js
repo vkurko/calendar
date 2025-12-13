@@ -67,3 +67,7 @@ export function stopPropagation(fn, _this = undefined) {
         }
     };
 }
+
+export function isRtl() {
+    return window.getComputedStyle(document.documentElement).direction === 'rtl';
+}

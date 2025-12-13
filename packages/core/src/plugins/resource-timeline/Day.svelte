@@ -3,7 +3,7 @@
     import {addDuration, cloneDate, floor, rect} from '#lib';
     import {BaseDay} from '#components';
 
-    let {day} = $props();
+    let {day, noIeb, noBeb} = $props();
 
     let {_monthView, slotDuration, slotWidth} = getContext('state');
 
@@ -18,4 +18,4 @@
     }
 </script>
 
-<BaseDay bind:el allDay={$_monthView} {date} {resource} {dateFromPoint} {disabled} {highlight}/>
+<BaseDay bind:el allDay={$_monthView} {date} {resource} {dateFromPoint} {disabled} {highlight} {noIeb} {noBeb}/>

@@ -53,9 +53,9 @@
 
     <div class="{$theme.body}">
         <div bind:this={gridEl} class="{$theme.grid}">
-            {#each grid as days}
-                {#each days as day}
-                    <Day {day}/>
+            {#each grid as days, i}
+                {#each days as day, j}
+                    <Day {day} noIeb={j + 1 === days.length} noBeb={i + 1 === grid.length}/>
                 {/each}
             {/each}
         </div>

@@ -112,7 +112,7 @@ export function prepareChunks(chunks) {
 }
 
 export function repositionEvent(chunk, height, monthView) {
-    let top = 1;
+    let top = 0;
     let bottom = top + height;
     let dayChunks = chunk.day;
     dayChunks.sort((a, b) => (a.top ?? Number.POSITIVE_INFINITY) - (b.top ?? Number.POSITIVE_INFINITY));

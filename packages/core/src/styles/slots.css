@@ -24,6 +24,7 @@
 
     --ec-day-bg-color: var(--ec-bg-color);
     background-color: var(--ec-day-bg-color);
+    border-block-end: 1px solid var(--ec-border-color);
 
     &.ec-today {
         --ec-day-bg-color: var(--ec-today-bg-color);
@@ -33,10 +34,19 @@
         --ec-day-bg-color: var(--ec-highlight-color);
     }
 
+    --ec-last-line-color: transparent;
+    --ec-direction: to left;
+    [dir="rtl"] & {
+        --ec-direction: to right;
+    }
     background-image:
-            linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
-            linear-gradient(to right, var(--ec-border-color) 1px, transparent 1px);
+            linear-gradient(var(--ec-direction), var(--ec-last-line-color) 1px, transparent 1px),
+            linear-gradient(var(--ec-direction), var(--ec-border-color) 1px, transparent 1px);
     background-size:
             100% 100%,
             calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity)) 100%;
+
+    &:last-child {
+        --ec-last-line-color: var(--ec-day-bg-color);
+    }
 }

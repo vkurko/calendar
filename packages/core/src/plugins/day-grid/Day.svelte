@@ -5,7 +5,7 @@
     } from '#lib';
     import {BaseDay} from '#components';
 
-    let {day} = $props();
+    let {day, noIeb, noBeb} = $props();
 
     let {
         date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent, _hiddenChunks, _intlDayCell, _popupDay
@@ -55,7 +55,7 @@
     }
 </script>
 
-<BaseDay date={dayStart} allDay {classes} {disabled} {highlight}>
+<BaseDay date={dayStart} allDay {classes} {disabled} {highlight} {noIeb} {noBeb}>
     <div class="{$theme.dayHead}">
         <time
             datetime="{toISOString(dayStart, 10)}"
