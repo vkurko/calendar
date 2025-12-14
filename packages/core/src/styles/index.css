@@ -1,11 +1,11 @@
-@import "theme.css";
-@import "days.css";
-@import "toolbar.css";
-@import "sidebar.css";
-@import "slots.css";
-@import "events.css";
-@import "now-indicator.css";
-@import "popup.css";
+@import "./theme.css";
+@import "./days.css";
+@import "./toolbar.css";
+@import "./sidebar.css";
+@import "./slots.css";
+@import "./events.css";
+@import "./now-indicator.css";
+@import "./popup.css";
 
 .ec {
     display: flex;

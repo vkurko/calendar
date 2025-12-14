@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.0.3
+December 14, 2025
+* Fixed an issue with `@tailwindcss/vite` ([584](https://github.com/vkurko/calendar/issues/584))
+
 ## 5.0.2
 December 13, 2025
 * CSS Grid gaps didn't look good, so replaced them with borders
