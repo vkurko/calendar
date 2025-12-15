@@ -17,7 +17,7 @@
         children
     } = $props();
 
-    let {_interaction, _today, highlightedDates, theme} = getContext('state');
+    let {_interaction, _today, theme} = getContext('state');
 
     let isToday = $derived(datesEqual(date, $_today));
 

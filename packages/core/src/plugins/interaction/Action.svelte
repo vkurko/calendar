@@ -2,8 +2,8 @@
     import {getContext, onMount} from 'svelte';
     import {
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, getElementWithPayload,
-        getPayload, isFunction, listen, listView, max, min, noop, rect, runAll, subtractDay, subtractDuration,
-        toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
+        getPayload, isFunction, isRtl, listen, listView, max, min, noop, rect, runAll, subtractDay, subtractDuration,
+        timelineView, toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import {animate, limit, eventDraggable} from './lib';
 
@@ -417,7 +417,7 @@
                     return findPayload(dayEl.previousElementSibling);
                 }
             } else {
-                if (selecting() && payload.resource && !$_iEvents[0].resourceIds.includes(payload.resource.id)) {
+                if (selecting() && payload.resource && !$_iEvents[0].resourceIds.includes(payload.resource.id) && !timelineView($view)) {
                     if (toX > fromX) {
                         return findPayload(dayEl.previousElementSibling);
                     } else {
@@ -433,11 +433,14 @@
     function calcViewport() {
         let mainRect = rect($_mainEl);
         let gridRect = rect(gridEl);
+        let scaleX = mainRect.width / $_mainEl.offsetWidth;
+        let scaleY = mainRect.height / $_mainEl.offsetHeight;
+        let rtl = isRtl();
         viewport = {
-            left: max(0, gridRect.left + $_mainEl.scrollLeft),
-            right: min(document.documentElement.clientWidth, mainRect.left + $_mainEl.clientWidth) - 2,
-            top: max(0, gridRect.top + (!allDaySlot ? $_mainEl.scrollTop : 0)),
-            bottom: min(document.documentElement.clientHeight, !allDaySlot ? mainRect.top + $_mainEl.clientHeight : gridRect.bottom) - 2
+            left: max(0, rtl ? mainRect.right - $_mainEl.clientWidth * scaleX : gridRect.left + $_mainEl.scrollLeft * scaleX),
+            right: min(document.documentElement.clientWidth, rtl ? gridRect.right + $_mainEl.scrollLeft * scaleX : mainRect.left + $_mainEl.clientWidth * scaleX) - 2,
+            top: max(0, gridRect.top + (!allDaySlot ? $_mainEl.scrollTop : 0) * scaleY),
+            bottom: min(document.documentElement.clientHeight, !allDaySlot ? mainRect.top + $_mainEl.clientHeight * scaleY : gridRect.bottom) - 2
         };
     }
 

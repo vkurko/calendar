@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.0.4
+December 15, 2025
+* Fixed pointer position when CSS scaling is applied ([421](https://github.com/vkurko/calendar/issues/421))
+* Better RTL support
+
 ## 5.0.3
 December 14, 2025
 * Fixed an issue with `@tailwindcss/vite` ([584](https://github.com/vkurko/calendar/issues/584))

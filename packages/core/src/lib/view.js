@@ -26,3 +26,7 @@ export function toViewWithLocalDates(view) {
 export function listView(view) {
     return view.startsWith('list');
 }
+
+export function timelineView(view) {
+    return view.includes('Timeline');
+}

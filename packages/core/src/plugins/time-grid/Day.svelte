@@ -12,9 +12,13 @@
     let el = $state();
 
     function dateFromPoint(x, y) {
-        return allDay
-            ? date
-            : addDuration(cloneDate(start), $slotDuration, floor((y - rect(el).top) / $slotHeight));
+        if (allDay) {
+            return date;
+        } else {
+            let dayRect = rect(el);
+            let scaleY = dayRect.height / el.offsetHeight;
+            return addDuration(cloneDate(start), $slotDuration, floor((y - dayRect.top) / ($slotHeight * scaleY)));
+        }
     }
 </script>
 

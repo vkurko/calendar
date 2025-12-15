@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDuration, cloneDate, floor, rect} from '#lib';
+    import {addDuration, cloneDate, floor, isRtl, rect} from '#lib';
     import {BaseDay} from '#components';
 
     let {day, noIeb, noBeb} = $props();
@@ -12,9 +12,13 @@
     let el = $state();
 
     function dateFromPoint(x, y) {
-        return $_monthView
-            ? date
-            : addDuration(cloneDate(start), $slotDuration, floor((x - rect(el).left)/ $slotWidth));
+        if ($_monthView) {
+            return date;
+        } else {
+            let dayRect = rect(el);
+            let scaleX = dayRect.width / el.offsetWidth;
+            return addDuration(cloneDate(start), $slotDuration, floor((isRtl() ? dayRect.right - x : x - dayRect.left) / ($slotWidth * scaleX)));
+        }
     }
 </script>
 

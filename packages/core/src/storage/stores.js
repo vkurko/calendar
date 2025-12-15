@@ -235,9 +235,10 @@ export function now() {
 }
 
 export function today(state) {
-    let $today = createDate();
+    let $today = setMidnight(createDate());
     let today = writable($today);
-    derived(state._now, $_now => setMidnight(cloneDate($_now))).subscribe(newToday => {
+    state._now.subscribe($_now => {
+        let newToday = setMidnight(cloneDate($_now));
         if (!datesEqual($today, newToday)) {
             $today = newToday;
             today.set(newToday);
