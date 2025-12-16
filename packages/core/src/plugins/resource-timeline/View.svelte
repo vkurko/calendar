@@ -1,6 +1,9 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min} from "#lib";
+    import {
+        max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl, DAY_IN_SECONDS, addDuration,
+        subtractDay, cloneDate, identity
+    } from "#lib";
     import {createGrid, createEventChunks, createIEventChunks, getSlotTimeLimits} from './lib.js';
     import {ColHead, DayHeader} from '#components';
     import Day from './Day.svelte';
@@ -9,15 +12,31 @@
     import Expander from './Expander.svelte';
     import NowIndicator from './NowIndicator.svelte';
 
-    let {_daySlots, _dayTimeLimits, _filteredEvents, _iEvents, _mainEl, _monthView, _nestedResources, _sidebarWidth,
+    let {_activeRangeExt, _daySlots, _dayTimeLimits, _filteredEvents, _iEvents, _mainEl, _monthView, _nestedResources, _sidebarWidth,
         _slotLabelPeriodicity, _today, _viewResources, _viewDates, columnWidth, highlightedDates, nowIndicator, scrollTime,
-        slotDuration, slotHeight, slotWidth, theme, validRange} = getContext('state');
+        slotDuration, slotHeight, slotMaxTime, slotWidth, theme, validRange} = getContext('state');
 
     let headerHeight = $state(0);
 
     let grid = $derived(createGrid($_viewDates, $_viewResources, $_dayTimeLimits, $validRange, $highlightedDates));
     let {chunks, bgChunks} = $derived(createEventChunks($_filteredEvents, grid));
     let iChunks = $derived(createIEventChunks($_iEvents, grid));
+
+    $effect.pre(() => {
+        $_activeRangeExt = ({start, end}) => {
+            if ($slotMaxTime.days || $slotMaxTime.seconds > DAY_IN_SECONDS) {
+                addDuration(subtractDay(end), $slotMaxTime);
+                let start2 = subtractDay(cloneDate(end));
+                if (start2 < start) {
+                    start = start2;
+                }
+            }
+            return {start, end};
+        };
+        return () => {
+            $_activeRangeExt = identity;
+        };
+    });
 
     // Handle scrollTime
     $effect(() => {
@@ -43,7 +62,7 @@
                 scrollLeft += toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min);
             }
         }
-        $_mainEl.scrollLeft = scrollLeft / toSeconds($slotDuration) * $slotWidth * (document.dir === 'rtl' ? -1 : 1);
+        $_mainEl.scrollLeft = scrollLeft / toSeconds($slotDuration) * $slotWidth * (isRtl() ? -1 : 1);
     }
 
     // Events reposition
@@ -58,7 +77,7 @@
     bind:this={$_mainEl}
     class="{$theme.main}"
     style:--ec-grid-cols="{grid[0].length}"
-    style:--ec-grid-rows="{grid.length}"
+    style:--ec-grid-rows="{grid.length > 1 ? `repeat(${grid.length - 1}, auto)` : ''} minmax(auto, 1fr)"
     style:--ec-col-width="{$columnWidth ?? 'minmax(4em, 1fr)'}"
     style:--ec-slot-label-periodicity="{$_slotLabelPeriodicity}"
     style:--ec-slot-height="{$slotHeight}px"

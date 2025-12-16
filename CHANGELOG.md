@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.0.5
+December 19, 2025
+* Fixed some conflicts with Tailwind ([586](https://github.com/vkurko/calendar/issues/586))
+* Fixed display in timeline view when there is only one resource
+
 ## 5.0.4
 December 15, 2025
 * Fixed pointer position when CSS scaling is applied ([421](https://github.com/vkurko/calendar/issues/421))

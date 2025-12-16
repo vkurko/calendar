@@ -3,14 +3,12 @@
     inset-inline-start: 0;
     z-index: 1;
     background-color: var(--ec-bg-color);
-    border-color: var(--ec-border-color);
-    border-width: 1px;
-    border-inline-end-style: solid;
+    border-inline-end: 1px solid var(--ec-border-color);
     text-align: end;
     overflow: clip;
 
     .ec-header & {
-        border-block-end-style: solid;
+        border-block-end: 1px solid var(--ec-border-color);
         padding-block: .375rem;
     }
 

@@ -1,6 +1,9 @@
 <script>
     import {getContext, tick} from 'svelte';
-    import {contentFrom, resizeObserver, runReposition, toSeconds} from '#lib';
+    import {
+        addDuration, cloneDate, contentFrom, DAY_IN_SECONDS, identity, resizeObserver, runReposition, subtractDay,
+        toSeconds
+    } from '#lib';
     import {createAllDayContent, createGrid, createEventChunks, createIEventChunks} from './lib.js';
     import {ColHead, DayHeader} from '#components';
     import Day from './Day.svelte';
@@ -10,9 +13,9 @@
 
     let {header, nowIndicator, createGridFn} = $props();
 
-    let {_mainEl, _filteredEvents, _iEvents, _sidebarWidth, _slotLabelPeriodicity, _slotTimeLimits, _slots,
+    let {_activeRangeExt, _mainEl, _filteredEvents, _iEvents, _sidebarWidth, _slotLabelPeriodicity, _slotTimeLimits, _slots,
         _viewDates, allDayContent, allDaySlot, columnWidth, highlightedDates, nowIndicator: showNowIndicator,
-        scrollTime, slotHeight, slotDuration, theme, validRange} = getContext('state');
+        scrollTime, slotHeight, slotDuration, slotMaxTime, theme, validRange} = getContext('state');
 
     let headerHeight = $state(0);
     let allDayText = $derived(createAllDayContent($allDayContent));
@@ -20,6 +23,22 @@
     let grid = $derived(createGridFn?.() ?? createGrid($_viewDates, $_slotTimeLimits, $validRange, $highlightedDates));
     let {chunks, bgChunks, allDayChunks, allDayBgChunks} = $derived(createEventChunks($_filteredEvents, grid));
     let {iChunks, allDayIChunks} = $derived(createIEventChunks($_iEvents, grid));
+
+    $effect.pre(() => {
+        $_activeRangeExt = ({start, end}) => {
+            if ($slotMaxTime.days || $slotMaxTime.seconds > DAY_IN_SECONDS) {
+                addDuration(subtractDay(end), $slotMaxTime);
+                let start2 = subtractDay(cloneDate(end));
+                if (start2 < start) {
+                    start = start2;
+                }
+            }
+            return {start, end};
+        };
+        return () => {
+            $_activeRangeExt = identity;
+        };
+    });
 
     // Handle scrollTime
     $effect(() => {

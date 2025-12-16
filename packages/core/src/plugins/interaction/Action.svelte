@@ -417,7 +417,10 @@
                     return findPayload(dayEl.previousElementSibling);
                 }
             } else {
-                if (selecting() && payload.resource && !$_iEvents[0].resourceIds.includes(payload.resource.id) && !timelineView($view)) {
+                if (
+                    (selecting() || resizing()) &&
+                    payload.resource && !$_iEvents[0].resourceIds.includes(payload.resource.id) && !timelineView($view)
+                ) {
                     if (toX > fromX) {
                         return findPayload(dayEl.previousElementSibling);
                     } else {

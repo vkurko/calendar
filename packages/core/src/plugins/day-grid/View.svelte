@@ -1,18 +1,29 @@
 <script>
     import {getContext} from 'svelte';
-    import {contentFrom, resizeObserver, runReposition} from '#lib';
+    import {contentFrom, identity, nextClosestDay, prevClosestDay, resizeObserver, runReposition} from '#lib';
     import Day from './Day.svelte';
     import Event from './Event.svelte';
     import Popup from './Popup.svelte';
     import {createEventChunks, createIEventChunks, createGrid} from './lib.js';
 
-    let {_mainEl, _colsCount, _filteredEvents, _hiddenChunks, _iEvents, _intlDayHeader, _intlDayHeaderAL, _popupDay,
-        _viewDates, dayMaxEvents, highlightedDates, theme, validRange} = getContext('state');
+    let {_activeRangeExt, _mainEl, _colsCount, _filteredEvents, _hiddenChunks, _iEvents, _intlDayHeader,
+        _intlDayHeaderAL, _popupDay, _viewDates, dayMaxEvents, firstDay, highlightedDates, theme,
+        validRange} = getContext('state');
 
     let gridEl = $state();
     let grid = $derived(createGrid($_viewDates, $_colsCount, $validRange, $highlightedDates));
     let {chunks, bgChunks} = $derived(createEventChunks($_filteredEvents, grid));
     let iChunks = $derived(createIEventChunks($_iEvents, grid));
+
+    $effect.pre(() => {
+        $_activeRangeExt = ({start, end}) => ({
+            start: prevClosestDay(start, $firstDay),
+            end: nextClosestDay(end, $firstDay)
+        });
+        return () => {
+            $_activeRangeExt = identity;
+        };
+    });
 
     // Events reposition
     let refs = [];

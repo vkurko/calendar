@@ -27,6 +27,7 @@ export default class {
         this._auxiliary = writable([]);  // auxiliary components
         this._dayGrid = dayGrid(this);
         this._currentRange = currentRange(this);
+        this._activeRangeExt = writable(identity);
         this._activeRange = activeRange(this);
         this._fetchedRange = writable({start: undefined, end: undefined});
         this._events = events(this);

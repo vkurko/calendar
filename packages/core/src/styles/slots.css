@@ -4,7 +4,7 @@
     .ec-time-grid & {
         block-size: calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity));
         position: relative;
-        inset-block-start: -.5em;
+        inset-block-start: -.5lh;
     }
 
     .ec-timeline & {

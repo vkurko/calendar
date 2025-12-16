@@ -11,24 +11,9 @@ export function dayGrid(state) {
 
 export function activeRange(state) {
     return derived(
-        [state._currentRange, state.firstDay, state.slotMaxTime, state._dayGrid],
-        ([$_currentRange, $firstDay, $slotMaxTime, $_dayGrid]) => {
-            let start = cloneDate($_currentRange.start);
-            let end = cloneDate($_currentRange.end);
-
-            if ($_dayGrid) {
-                // First day of week
-                prevClosestDay(start, $firstDay);
-                nextClosestDay(end, $firstDay);
-            } else if ($slotMaxTime.days || $slotMaxTime.seconds > DAY_IN_SECONDS) {
-                addDuration(subtractDay(end), $slotMaxTime);
-                let start2 = subtractDay(cloneDate(end));
-                if (start2 < start) {
-                    start = start2;
-                }
-            }
-
-            return {start, end};
+        [state._currentRange, state._activeRangeExt],
+        ([$_currentRange, $_activeRangeExt]) => {
+            return $_activeRangeExt({start: cloneDate($_currentRange.start), end: cloneDate($_currentRange.end)});
         }
     );
 }
