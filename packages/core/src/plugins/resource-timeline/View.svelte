@@ -33,9 +33,6 @@
             }
             return {start, end};
         };
-        return () => {
-            $_activeRangeExt = identity;
-        };
     });
 
     // Handle scrollTime

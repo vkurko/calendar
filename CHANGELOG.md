@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.0.6
+December 23, 2025
+* Fixed incorrect display of `dayGrid` when switching from another view
+
 ## 5.0.5
 December 19, 2025
 * Fixed some conflicts with Tailwind ([586](https://github.com/vkurko/calendar/issues/586))

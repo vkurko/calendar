@@ -1,8 +1,7 @@
 <script>
     import {getContext, tick} from 'svelte';
     import {
-        addDuration, cloneDate, contentFrom, DAY_IN_SECONDS, identity, resizeObserver, runReposition, subtractDay,
-        toSeconds
+        addDuration, cloneDate, contentFrom, DAY_IN_SECONDS, resizeObserver, runReposition, subtractDay, toSeconds
     } from '#lib';
     import {createAllDayContent, createGrid, createEventChunks, createIEventChunks} from './lib.js';
     import {ColHead, DayHeader} from '#components';
@@ -34,9 +33,6 @@
                 }
             }
             return {start, end};
-        };
-        return () => {
-            $_activeRangeExt = identity;
         };
     });
 

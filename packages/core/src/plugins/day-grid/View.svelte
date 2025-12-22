@@ -20,9 +20,6 @@
             start: prevClosestDay(start, $firstDay),
             end: nextClosestDay(end, $firstDay)
         });
-        return () => {
-            $_activeRangeExt = identity;
-        };
     });
 
     // Events reposition

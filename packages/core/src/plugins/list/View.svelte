@@ -1,9 +1,13 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDay, cloneDate, toViewWithLocalDates, contentFrom, bgEvent, isFunction} from '#lib';
+    import {addDay, cloneDate, identity, contentFrom, bgEvent, isFunction, toViewWithLocalDates} from '#lib';
     import Day from './Day.svelte';
 
-    let {_mainEl, _filteredEvents, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
+    let {_activeRangeExt, _mainEl, _filteredEvents, _view, _viewDates, noEventsClick, noEventsContent, theme} = getContext('state');
+
+    $effect.pre(() => {
+        $_activeRangeExt = identity;
+    });
 
     let noEvents = $derived.by(() => {
         let noEvents = true;
