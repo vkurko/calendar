@@ -10,6 +10,10 @@ export function entries(object) {
     return Object.entries(object);
 }
 
+export function hasOwn(object, property) {
+    return Object.hasOwn(object, property);
+}
+
 export function floor(value) {
     return Math.floor(value);
 }
@@ -36,15 +40,6 @@ export function isArray(value) {
 
 export function isFunction(value) {
     return typeof value === 'function';
-}
-
-export function isEmpty(obj) {
-    for (let prop in obj) {
-        if (Object.hasOwn(obj, prop)) {
-            return false;
-        }
-    }
-    return true;
 }
 
 export function run(fn) {

@@ -1,38 +1,44 @@
-import {btnTextDay, btnTextWeek, themeView} from '#lib';
+import {assign, btnTextDay, btnTextWeek, themeView} from '#lib';
+import {setExtensions} from './lib.js';
 import {createTROptions, createTRROptions, createTRRParsers} from './options.js';
-import {createTRRStores, createTRStores} from './stores.js';
 import View from './View.svelte';
 
 export default {
     createOptions(options) {
-        createTROptions(options);
         createTRROptions(options);
+        createTROptions(options);
         // Common options
-        options.buttonText.timeGridDay = 'day';
-        options.buttonText.timeGridWeek = 'week';
-        options.view = 'timeGridWeek';
-        options.views.timeGridDay = {
-            buttonText: btnTextDay,
-            component: View,
-            dayHeaderFormat: {weekday: 'long'},
-            duration: {days: 1},
-            theme: themeView('ec-time-grid ec-day-view'),
-            titleFormat: {year: 'numeric', month: 'long', day: 'numeric'}
-        };
-        options.views.timeGridWeek = {
-            buttonText: btnTextWeek,
-            component: View,
-            duration: {weeks: 1},
-            theme: themeView('ec-time-grid ec-week-view')
-        };
+        assign(options.buttonText, {
+            timeGridDay:  'day',
+            timeGridWeek: 'week'
+        });
+        assign(options, {
+            view: 'timeGridWeek'
+        });
+        assign(options.views, {
+            timeGridDay: {
+                buttonText: btnTextDay,
+                component: initViewComponent,
+                dayHeaderFormat: {weekday: 'long'},
+                duration: {days: 1},
+                theme: themeView('ec-time-grid ec-day-view'),
+                titleFormat: {year: 'numeric', month: 'long', day: 'numeric'}
+            },
+            timeGridWeek: {
+                buttonText: btnTextWeek,
+                component: initViewComponent,
+                duration: {weeks: 1},
+                theme: themeView('ec-time-grid ec-week-view')
+            }
+        });
     },
 
     createParsers(parsers) {
         createTRRParsers(parsers);
-    },
-
-    createStores(state) {
-        createTRRStores(state);
-        createTRStores(state);
     }
+}
+
+function initViewComponent(mainState) {
+    setExtensions(mainState);
+    return View;
 }

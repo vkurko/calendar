@@ -1,57 +1,42 @@
 <script>
-    import {getContext, tick} from 'svelte';
-    import {
-        max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl, DAY_IN_SECONDS, addDuration,
-        subtractDay, cloneDate, identity
-    } from "#lib";
-    import {createGrid, createEventChunks, createIEventChunks, getSlotTimeLimits} from './lib.js';
+    import {getContext, setContext, tick} from 'svelte';
+    import {max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl} from '#lib';
+    import {getSlotTimeLimits} from './lib.js';
+    import ViewState from './state.svelte.js';
     import {ColHead, DayHeader} from '#components';
+    import Label from '../resource-time-grid/Label.svelte';
     import Day from './Day.svelte';
     import Event from './Event.svelte';
-    import Label from './Label.svelte';
     import Expander from './Expander.svelte';
     import NowIndicator from './NowIndicator.svelte';
 
-    let {_activeRangeExt, _daySlots, _dayTimeLimits, _filteredEvents, _iEvents, _mainEl, _monthView, _nestedResources, _sidebarWidth,
-        _slotLabelPeriodicity, _today, _viewResources, _viewDates, columnWidth, highlightedDates, nowIndicator, scrollTime,
-        slotDuration, slotHeight, slotMaxTime, slotWidth, theme, validRange} = getContext('state');
+    let mainState = getContext('state');
+    let viewState = new ViewState(mainState);
+    setContext('view-state', viewState);
+
+    let {mainEl, today, viewDates, options: {columnWidth, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme}} = $derived(mainState);
+    let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, monthView, nestedResources, sidebarWidth,
+        slotLabelPeriodicity, viewResources} = $derived(viewState);
 
     let headerHeight = $state(0);
 
-    let grid = $derived(createGrid($_viewDates, $_viewResources, $_dayTimeLimits, $validRange, $highlightedDates));
-    let {chunks, bgChunks} = $derived(createEventChunks($_filteredEvents, grid));
-    let iChunks = $derived(createIEventChunks($_iEvents, grid));
-
-    $effect.pre(() => {
-        $_activeRangeExt = ({start, end}) => {
-            if ($slotMaxTime.days || $slotMaxTime.seconds > DAY_IN_SECONDS) {
-                addDuration(subtractDay(end), $slotMaxTime);
-                let start2 = subtractDay(cloneDate(end));
-                if (start2 < start) {
-                    start = start2;
-                }
-            }
-            return {start, end};
-        };
-    });
-
     // Handle scrollTime
     $effect(() => {
-        $_viewDates;
-        $scrollTime;
+        viewDates;
+        scrollTime;
         tick().then(scrollToTime);
     });
     function scrollToTime() {
-        if ($_monthView) {
+        if (monthView) {
             return;
         }
         let scrollLeft = 0;
-        let todayOutOfView = $_today < $_viewDates[0] || $_today > $_viewDates.at(-1);
-        for (let date of $_viewDates) {
-            let slotTimeLimits = getSlotTimeLimits($_dayTimeLimits, date);
-            if (todayOutOfView || datesEqual(date, $_today)) {
+        let todayOutOfView = today < viewDates[0] || today > viewDates.at(-1);
+        for (let date of viewDates) {
+            let slotTimeLimits = getSlotTimeLimits(dayTimeLimits, date);
+            if (todayOutOfView || datesEqual(date, today)) {
                 scrollLeft += max(
-                    min(toSeconds($scrollTime), toSeconds(slotTimeLimits.max)) - toSeconds(slotTimeLimits.min),
+                    min(toSeconds(scrollTime), toSeconds(slotTimeLimits.max)) - toSeconds(slotTimeLimits.min),
                     0
                 );
                 break;
@@ -59,7 +44,7 @@
                 scrollLeft += toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min);
             }
         }
-        $_mainEl.scrollLeft = scrollLeft / toSeconds($slotDuration) * $slotWidth * (isRtl() ? -1 : 1);
+        mainEl.scrollLeft = scrollLeft / toSeconds(slotDuration) * slotWidth * (isRtl() ? -1 : 1);
     }
 
     // Events reposition
@@ -71,32 +56,32 @@
 </script>
 
 <section
-    bind:this={$_mainEl}
-    class="{$theme.main}"
+    bind:this={mainState.mainEl}
+    class="{theme.main}"
     style:--ec-grid-cols="{grid[0].length}"
-    style:--ec-grid-rows="{grid.length > 1 ? `repeat(${grid.length - 1}, auto)` : ''} minmax(auto, 1fr)"
-    style:--ec-col-width="{$columnWidth ?? 'minmax(4em, 1fr)'}"
-    style:--ec-slot-label-periodicity="{$_slotLabelPeriodicity}"
-    style:--ec-slot-height="{$slotHeight}px"
-    style:--ec-slot-width="{$slotWidth}px"
+    style:--ec-grid-rows="{grid.length > 1 ? `repeat(${grid.length - 1}, auto)` : ''} 1fr"
+    style:--ec-col-width="{columnWidth ?? 'minmax(4em, 1fr)'}"
+    style:--ec-slot-label-periodicity="{slotLabelPeriodicity}"
+    style:--ec-slot-height="{slotHeight}px"
+    style:--ec-slot-width="{slotWidth}px"
     style:--ec-header-height="{headerHeight}px"
-    style:--ec-sidebar-width="{$_sidebarWidth}px"
+    style:--ec-sidebar-width="{sidebarWidth}px"
     {@attach resizeObserver(reposition)}
 >
-    <header bind:offsetHeight={headerHeight} class="{$theme.header}">
-        <aside class="{$theme.sidebar}" bind:offsetWidth={$_sidebarWidth}></aside>
-        <div class="{$theme.grid}" role="row">
+    <header bind:offsetHeight={headerHeight} class="{theme.header}">
+        <aside class="{theme.sidebar}" bind:offsetWidth={viewState.sidebarWidth}></aside>
+        <div class="{theme.grid}" role="row">
             {#each grid[0] as {dayStart: date, disabled, highlight}, i}
                 <ColHead {date} colIndex={1 + i} {disabled} {highlight}>
                     <DayHeader {date}/>
                 </ColHead>
             {/each}
-            {#if !$_monthView}
+            {#if !monthView}
                 {#each grid[0] as {dayStart: date, disabled, highlight}}
-                    <ColHead {date} className={$theme.slots} {disabled} {highlight} ariaHidden>
-                        {#each $_daySlots[date.getTime()] as slot}
+                    <ColHead {date} className={theme.slots} {disabled} {highlight} ariaHidden>
+                        {#each daySlots[date.getTime()] as slot}
                             <div
-                                class="{$theme.slot}"
+                                class="{theme.slot}"
                                 style:--ec-slot-label-periodicity={slot[2]}
                             >
                                 <time
@@ -111,25 +96,25 @@
         </div>
     </header>
 
-    <div class="{$theme.body}" role="rowgroup">
-        <aside class="{$theme.sidebar}">
-            {#each $_viewResources as resource}
-                <div class="{$theme.rowHead}" role="rowheader">
-                    {#if $_nestedResources}
+    <div class="{theme.body}" role="rowgroup">
+        <aside class="{theme.sidebar}">
+            {#each viewResources as resource}
+                <div class="{theme.rowHead}" role="rowheader">
+                    {#if nestedResources}
                         <Expander {resource} />
                     {/if}
                     <Label {resource}/>
                 </div>
             {/each}
         </aside>
-        <div class="{$theme.grid}" role="row">
+        <div class="{theme.grid}" role="row">
             {#each grid as days, i}
                 {#each days as day, j}
                     <Day {day} noIeb={j + 1 === days.length} noBeb={i + 1 === grid.length}/>
                 {/each}
             {/each}
         </div>
-        <div class="{$theme.events}">
+        <div class="{theme.events}">
             {#each chunks as chunk, i}
                 <!-- svelte-ignore binding_property_non_reactive -->
                 <Event bind:this={refs[i]} {chunk}/>
@@ -143,7 +128,7 @@
         </div>
     </div>
 
-    {#if $nowIndicator && !$_monthView}
-        <NowIndicator {grid} />
+    {#if nowIndicator && !monthView}
+        <NowIndicator/>
     {/if}
 </section>

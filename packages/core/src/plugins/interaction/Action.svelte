@@ -2,16 +2,18 @@
     import {getContext, onMount} from 'svelte';
     import {
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, getElementWithPayload,
-        getPayload, isFunction, isRtl, listen, listView, max, min, noop, rect, runAll, subtractDay, subtractDuration,
-        timelineView, toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
+        getPayload, isFunction, isRtl, listen, max, min, noop, rect, runAll, subtractDay, subtractDuration,
+        toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import {animate, limit, eventDraggable} from './lib';
 
-    let {_iEvents, _iClass, _events, _view, _mainEl, dateClick, dragConstraint, dragScroll, editable,
+    let mainState = getContext('state');
+    let {events, iEvents, features, view, mainEl, options: {dateClick, dragConstraint, dragScroll, editable,
         eventStartEditable, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop,
         eventLongPressDelay, eventResizeStart, eventResizeStop, eventResize, longPressDelay, resizeConstraint,
         selectable, select: selectFn, selectBackgroundColor, selectConstraint, selectLongPressDelay, selectMinDistance,
-        slotDuration, unselect: unselectFn, unselectAuto, unselectCancel, validRange, view} = getContext('state');
+        unselect: unselectFn, unselectAuto, unselectCancel, validRange}
+    } = $derived(mainState);
 
     const ACTION_DRAG = 1;
     const ACTION_RESIZE_END = 2;
@@ -22,6 +24,7 @@
     let action;
     let interacting;
     let event;
+    let iEvent;
     let display;
     let date, newDate;
     let resource, newResource;
@@ -38,20 +41,21 @@
     let timer;  // timer for long press delays
     let viewport;
     let margin;
+    let snapDuration;  // step for timeGrid views
     let extraDuration;  // extra duration for zero duration events
 
     export function draggable(event) {
-        return eventDraggable(event, $eventStartEditable, $editable);
+        return eventDraggable(event, eventStartEditable, editable);
     }
 
-    export function drag(eventToDrag, jsEvent, forceDate, forceMargin) {
+    export function drag(eventToDrag, jsEvent, forceDate, forceMargin, snap) {
         if (!action) {
             action = validJsEvent(jsEvent) ? ACTION_DRAG : ACTION_NO_ACTION;
 
             if (complexAction()) {
                 event = eventToDrag;
 
-                common(jsEvent);
+                common(jsEvent, snap);
 
                 if (forceDate) {
                     // Force date in popup
@@ -69,7 +73,7 @@
         }
     }
 
-    export function resize(eventToResize, jsEvent, start, axis, forceDate, forceMargin, zeroDuration) {
+    export function resize(eventToResize, jsEvent, start, axis, forceDate, forceMargin, zeroDuration, snap) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
                 start ? ACTION_RESIZE_START : ACTION_RESIZE_END
@@ -78,7 +82,7 @@
             if (complexAction()) {
                 event = eventToResize;
 
-                common(jsEvent);
+                common(jsEvent, snap);
 
                 if (forceDate) {
                     // Force date in popup
@@ -100,7 +104,7 @@
                             subtractDay(minResize);
                         }
                     } else {
-                        subtractDuration(minResize, $slotDuration);
+                        subtractDuration(minResize, snapDuration);
                         if (minResize < event.start) {
                             minResize = event.start;
                         }
@@ -116,7 +120,7 @@
                             addDay(minResize);
                         }
                     } else {
-                        addDuration(minResize, $slotDuration);
+                        addDuration(minResize, snapDuration);
                         if (minResize > event.end) {
                             minResize = event.end;
                         }
@@ -124,13 +128,13 @@
                         // and resizer coordinates in browser
                         date = event.end;
                         if (!zeroDuration) {
-                            date = subtractDuration(cloneDate(date), $slotDuration);
+                            date = subtractDuration(cloneDate(date), snapDuration);
                         }
                     }
 
                     // Handle zero duration events
                     if (zeroDuration && !allDay) {
-                        extraDuration = $slotDuration;
+                        extraDuration = snapDuration;
                     }
                 }
 
@@ -139,18 +143,18 @@
         }
     }
 
-    export function select(jsEvent) {
+    export function select(jsEvent, snap) {
         if (!action) {
             action = validJsEvent(jsEvent) ? (
-                $selectable && !listView($view) ? ACTION_SELECT : ACTION_CLICK
+                selectable && !features.includes('list') ? ACTION_SELECT : ACTION_CLICK
             ) : ACTION_NO_ACTION;
 
             if (complexAction()) {
-                common(jsEvent);
+                common(jsEvent, snap);
 
                 iClass = 'selecting';
 
-                selectStep = allDay ? createDuration({day: 1}) : $slotDuration;
+                selectStep = allDay ? createDuration({day: 1}) : snapDuration;
 
                 // Create dummy source event
                 event = {
@@ -171,16 +175,18 @@
         }
     }
 
-	function common(jsEvent) {
+	function common(jsEvent, snap) {
         window.getSelection().removeAllRanges();
 
         fromX = toX = jsEvent.clientX;
         fromY = toY = jsEvent.clientY;
 
+        snapDuration = snap?.duration;
+
         let dayEl = getElementWithPayload(toX, toY);
         ({allDay, date, resource} = getPayload(dayEl)(toX, toY));
 
-        allDaySlot = $_mainEl !== ancestor(dayEl, 3);
+        allDaySlot = mainEl !== ancestor(dayEl, 3);
         gridEl = ancestor(dayEl, 1);
         calcViewport();
 
@@ -191,24 +197,24 @@
                     interacting = true;
                     move(jsEvent);
                 }
-            }, (selecting() ? $selectLongPressDelay : $eventLongPressDelay) ?? $longPressDelay);
+            }, (selecting() ? selectLongPressDelay : eventLongPressDelay) ?? longPressDelay);
         }
     }
 
     function move(jsEvent) {
         if (
             interacting ||
-            jsEvent && jsEvent.pointerType === 'mouse' && distance() >= (selecting() ? $selectMinDistance : $eventDragMinDistance)
+            jsEvent && jsEvent.pointerType === 'mouse' && distance() >= (selecting() ? selectMinDistance : eventDragMinDistance)
         ) {
             interacting = true;
             unselect(jsEvent);
-            $_iClass = iClass;
+            mainState.iClass = iClass;
 
-            if (!$_iEvents[0]) {
+            if (!iEvent) {
                 if (selecting()) {
                     createIEventSelect();
                 } else {
-                    createIEvent(jsEvent, resizing() ? $eventResizeStart : $eventDragStart);
+                    createIEvent(jsEvent, resizing() ? eventResizeStart : eventDragStart);
                 }
             }
 
@@ -218,8 +224,8 @@
                 ({allDay: newAllDay, date: newDate, resource: newResource} = payload);
 
                 if (newAllDay === allDay) {
-                    let candidate = copyIEventData({}, $_iEvents[0]);
-                    let constraintFn = $resizeConstraint;
+                    let candidate = copyIEventData({}, iEvent);
+                    let constraintFn = resizeConstraint;
                     delta = createDuration((newDate - date) / 1000);
                     if (resizingStart()) {
                         // Resizing start
@@ -247,7 +253,7 @@
                             } else {
                                 candidate.start = event.start;
                             }
-                            constraintFn = $selectConstraint;
+                            constraintFn = selectConstraint;
                         } else {
                             // Dragging
                             candidate.start = addDuration(cloneDate(event.start), delta);
@@ -255,7 +261,7 @@
                                 candidate.resourceIds = event.resourceIds.filter(id => id !== resource.id);
                                 candidate.resourceIds.push(newResource.id);
                             }
-                            constraintFn = $dragConstraint;
+                            constraintFn = dragConstraint;
                         }
                     }
                     // Check constraint
@@ -269,35 +275,35 @@
                             );
                             if (result === false) {
                                 // Revert preview event
-                                $_iEvents[0] = copyIEventData($_iEvents[0], event);
+                                updateIEvent(event);
                                 break;
                             }
                         }
                         // Update preview event
-                        $_iEvents[0] = copyIEventData($_iEvents[0], candidate);
+                        updateIEvent(candidate);
                     } while (0);
                 }
             }
         }
 
-        if ($dragScroll) {
+        if (dragScroll) {
             let thresholdY = 24;
             let thresholdX = 24;
             animate(() => {
                 if (viewport) {
                     if (!allDaySlot) {
                         if (toY < viewport.top + thresholdY) {
-                            $_mainEl.scrollTop += max(-8, (toY - viewport.top - thresholdY) / 3);
+                            mainEl.scrollTop += max(-8, (toY - viewport.top - thresholdY) / 3);
                         }
                         if (toY > viewport.bottom - thresholdY) {
-                            $_mainEl.scrollTop += min(8, (toY - viewport.bottom + thresholdY) / 3);
+                            mainEl.scrollTop += min(8, (toY - viewport.bottom + thresholdY) / 3);
                         }
                     }
                     if (toX < viewport.left + thresholdX) {
-                        $_mainEl.scrollLeft += max(-8, (toX - viewport.left - thresholdX) / 3);
+                        mainEl.scrollLeft += max(-8, (toX - viewport.left - thresholdX) / 3);
                     }
                     if (toX > viewport.right - thresholdX) {
-                        $_mainEl.scrollLeft += min(8, (toX - viewport.right + thresholdX) / 3);
+                        mainEl.scrollLeft += min(8, (toX - viewport.right + thresholdX) / 3);
                     }
                     if (toY < thresholdY) {
                         window.scrollBy(0, max(-8, (toY - thresholdY) / 3));
@@ -305,7 +311,6 @@
                     if (toY > window.innerHeight - thresholdY) {
                         window.scrollBy(0, min(8, (toY - window.innerHeight + thresholdY) / 3));
                     }
-
                 }
             });
         }
@@ -327,31 +332,35 @@
     }
 
     function handlePointerUp(jsEvent) {
-        if (selected && $unselectAuto && !($unselectCancel && jsEvent.target.closest($unselectCancel))) {
+        if (selected && unselectAuto && !(unselectCancel && jsEvent.target.closest(unselectCancel))) {
             unselect(jsEvent);
         }
         if (action && jsEvent.isPrimary) {
             if (interacting) {
                 if (selecting()) {
                     selected = true;
-                    if (isFunction($selectFn)) {
-                        let info = createSelectCallbackInfo($_iEvents[0], jsEvent);
-                        $selectFn(info);
+                    if (isFunction(selectFn)) {
+                        let info = createSelectCallbackInfo(iEvent, jsEvent);
+                        selectFn(info);
                     }
                 } else {
                     event.display = display;
 
-                    let callback = resizing() ? $eventResizeStop : $eventDragStop;
+                    let callback = resizing() ? eventResizeStop : eventDragStop;
                     if (isFunction(callback)) {
-                        callback({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
+                        callback({
+                            event: toEventWithLocalDates(event),
+                            jsEvent,
+                            view: toViewWithLocalDates(view)
+                        });
                     }
 
                     let oldEvent = cloneEvent(event);
-                    updateEvent(event, $_iEvents[0]);
+                    updateEvent(event, iEvent);
 
                     destroyIEvent();
 
-                    callback = resizing() ? $eventResize : $eventDrop;
+                    callback = resizing() ? eventResize : eventDrop;
                     if (isFunction(callback)) {
                         let eventRef = event;
                         let info = createCallbackInfo(event, oldEvent, jsEvent);
@@ -365,19 +374,19 @@
             } else {
                 if (clicking() || selecting()) {
                     // Perform date click
-                    if (isFunction($dateClick) && !noDateClick) {
+                    if (isFunction(dateClick) && !noDateClick) {
                         toX = jsEvent.clientX;
                         toY = jsEvent.clientY;
                         let dayEl = getElementWithPayload(toX, toY);
                         if (dayEl) {
                             let {allDay, date, resource} = getPayload(dayEl)(toX, toY);
-                            $dateClick({
+                            dateClick({
                                 allDay,
                                 date: toLocalDate(date),
                                 dateStr: toISOString(date),
                                 dayEl,
                                 jsEvent,
-                                view: toViewWithLocalDates($_view),
+                                view: toViewWithLocalDates(view),
                                 resource
                             });
                         }
@@ -387,7 +396,8 @@
 
             interacting = false;
             action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
-                extraDuration = allDay = $_iClass = minResize = selectStep = margin = gridEl = viewport = undefined;
+                extraDuration = allDay = minResize = selectStep = margin = gridEl = viewport = snapDuration = undefined;
+            mainState.iClass = undefined;
 
             if (timer) {
                 clearTimeout(timer);
@@ -410,16 +420,16 @@
         if (dayEl) {
             let payload = getPayload(dayEl)(toX, toY);
             if (payload.disabled) {
-                if (!$validRange.end || payload.date < $validRange.end) {
+                if (!validRange.end || payload.date < validRange.end) {
                     return findPayload(dayEl.nextElementSibling);
                 }
-                if (!$validRange.start || payload.date > $validRange.start) {
+                if (!validRange.start || payload.date > validRange.start) {
                     return findPayload(dayEl.previousElementSibling);
                 }
             } else {
                 if (
                     (selecting() || resizing()) &&
-                    payload.resource && !$_iEvents[0].resourceIds.includes(payload.resource.id) && !timelineView($view)
+                    payload.resource && !iEvent.resourceIds.includes(payload.resource.id) && !features.includes('timeline')
                 ) {
                     if (toX > fromX) {
                         return findPayload(dayEl.previousElementSibling);
@@ -434,45 +444,58 @@
     }
 
     function calcViewport() {
-        let mainRect = rect($_mainEl);
+        let mainRect = rect(mainEl);
         let gridRect = rect(gridEl);
-        let scaleX = mainRect.width / $_mainEl.offsetWidth;
-        let scaleY = mainRect.height / $_mainEl.offsetHeight;
+        let scaleX = mainRect.width / mainEl.offsetWidth;
+        let scaleY = mainRect.height / mainEl.offsetHeight;
         let rtl = isRtl();
         viewport = {
-            left: max(0, rtl ? mainRect.right - $_mainEl.clientWidth * scaleX : gridRect.left + $_mainEl.scrollLeft * scaleX),
-            right: min(document.documentElement.clientWidth, rtl ? gridRect.right + $_mainEl.scrollLeft * scaleX : mainRect.left + $_mainEl.clientWidth * scaleX) - 2,
-            top: max(0, gridRect.top + (!allDaySlot ? $_mainEl.scrollTop : 0) * scaleY),
-            bottom: min(document.documentElement.clientHeight, !allDaySlot ? mainRect.top + $_mainEl.clientHeight * scaleY : gridRect.bottom) - 2
+            left: max(0, rtl
+                ? mainRect.right - mainEl.clientWidth * scaleX
+                : gridRect.left + mainEl.scrollLeft * scaleX
+            ),
+            right: min(document.documentElement.clientWidth, rtl
+                ? gridRect.right + mainEl.scrollLeft * scaleX
+                : mainRect.left + mainEl.clientWidth * scaleX
+            ) - 2,
+            top: max(0, gridRect.top + (!allDaySlot ? mainEl.scrollTop : 0) * scaleY),
+            bottom: min(document.documentElement.clientHeight, !allDaySlot
+                ? mainRect.top + mainEl.clientHeight * scaleY
+                : gridRect.bottom
+            ) - 2
         };
     }
 
     function createIEvent(jsEvent, callback) {
         if (isFunction(callback)) {
-            callback({event: toEventWithLocalDates(event), jsEvent, view: toViewWithLocalDates($_view)});
+            callback({
+                event: toEventWithLocalDates(event),
+                jsEvent,
+                view: toViewWithLocalDates(view)
+            });
         }
         display = event.display;
         event.display = 'preview';
-        $_iEvents[0] = cloneEvent(event);
+        iEvent = cloneEvent(event);
         if (margin !== undefined) {
-            $_iEvents[0]._margin = margin;
+            iEvent._margin = margin;
         }
         if (extraDuration) {
-            addDuration($_iEvents[0].end, extraDuration);
+            addDuration(iEvent.end, extraDuration);
         }
         event.display = 'ghost';
-        $_events = $_events;
+        mainState.events = [...events];
     }
 
     function createIEventSelect() {
-        $_iEvents[0] = {
+        iEvent = {
             id: '{select}',
             allDay: event.allDay,
             start: event.start,
             title: '',
             display: 'preview',
             extendedProps: {},
-            backgroundColor: $selectBackgroundColor,
+            backgroundColor: selectBackgroundColor,
             resourceIds: event.resourceIds,
             classNames: [],
             styles: []
@@ -480,19 +503,25 @@
     }
 
     function destroyIEvent() {
-        $_iEvents[0] = null;
+        iEvent = undefined;
+        iEvents.delete('action');
     }
 
     function copyIEventData(target, source) {
         target.start = source.start;
         target.end = source.end;
         target.resourceIds = source.resourceIds;
-        return target;
+        return {...target};
     }
 
     function updateEvent(target, source) {
         copyIEventData(target, source);
-        $_events = $_events;
+        mainState.events = [...events];
+    }
+
+    function updateIEvent(source) {
+        iEvent = copyIEventData(iEvent, source);
+        iEvents.set('action', iEvent);
     }
 
     function createSelectCallbackInfo(event, jsEvent) {
@@ -503,7 +532,7 @@
             startStr: toISOString(event.start),
             endStr: toISOString(event.end),
             allDay,
-            view: toViewWithLocalDates($_view),
+            view: toViewWithLocalDates(view),
             resource,
             jsEvent
         };
@@ -525,7 +554,7 @@
         assign(info, {
             event: toEventWithLocalDates(event),
             oldEvent: toEventWithLocalDates(oldEvent),
-            view: toViewWithLocalDates($_view),
+            view: toViewWithLocalDates(view),
             jsEvent
         });
 
@@ -568,21 +597,24 @@
         if (selected) {
             selected = false;
             destroyIEvent();
-            if (isFunction($unselectFn)) {
-                $unselectFn({
+            if (isFunction(unselectFn)) {
+                unselectFn({
                     jsEvent,
-                    view: toViewWithLocalDates($_view)
+                    view: toViewWithLocalDates(view)
                 });
             }
         }
     }
 
+    // Clear selection when view changes
+    $effect.pre(() => {
+        view;
+        unselect();
+    });
+
     export function noClick() {
         noDateClick = true;
     }
-
-    // Clear selection on view params change
-    _view.subscribe(unselect);
 
     function handleTouchStart(jsEvent) {
         if (complexAction()) {

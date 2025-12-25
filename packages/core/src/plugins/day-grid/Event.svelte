@@ -1,11 +1,12 @@
 <script>
     import {getContext} from 'svelte';
-    import {bgEvent, height, isEmpty, max, repositionEvent} from '#lib';
+    import {bgEvent, height, max, repositionEvent} from '#lib';
     import {InteractableEvent} from '#components';
 
-    let {chunk, gridEl, inPopup = false} = $props();
+    let {chunk, inPopup = false} = $props();
 
-    let {_colsCount, _hiddenChunks, _popupDay, dayMaxEvents} = getContext('state');
+    let {options: {dayMaxEvents}} = $derived(getContext('state'));
+    let {colsCount, gridEl, hiddenChunks, popupDay} = $derived(getContext('view-state'));
 
     let el = $state();
     let margin = $state(0);
@@ -13,10 +14,10 @@
 
     let event = $derived(chunk.event);
     let display = $derived(chunk.event.display);
-    let dayEl = $derived(gridEl?.children.item((chunk.gridRow - 1) * $_colsCount + chunk.gridColumn - 1));
+    let dayEl = $derived(gridEl.children.item((chunk.gridRow - 1) * colsCount + chunk.gridColumn - 1));
 
     $effect(() => {
-        if (dayEl) {
+        if (!inPopup) {
             margin = height(dayEl.firstElementChild);
         }
     });
@@ -47,26 +48,27 @@
     }
 
     export function hide() {
-        if ($dayMaxEvents === true) {
+        if (dayMaxEvents === true) {
             let h = height(dayEl) - footHeight(dayEl);
             hidden = chunk.bottom > h;
             if (hidden) {
                 // Hide the event throughout all days
                 for (let date of chunk.dates) {
                     let key = date.getTime();
-                    if ($_hiddenChunks[key]) {
-                        if (!$_hiddenChunks[key].includes(chunk)) {
-                            $_hiddenChunks[key] = [...$_hiddenChunks[key], chunk];
+                    if (hiddenChunks.has(key)) {
+                        let chunks = hiddenChunks.get(key);
+                        if (!chunks.includes(chunk)) {
+                            hiddenChunks.set(key, [...chunks, chunk]);
                         }
                     } else {
-                        $_hiddenChunks[key] = [chunk];
+                        hiddenChunks.set(key, [chunk]);
                     }
                 }
             }
         } else {
             hidden = false;
-            if (!isEmpty($_hiddenChunks)) {
-                $_hiddenChunks = {};
+            if (hiddenChunks.size) {
+                hiddenChunks.clear();
             }
         }
     }
@@ -89,6 +91,6 @@
     {chunk}
     {styles}
     axis="x"
-    forceDate={inPopup && $_popupDay.dayStart}
+    forceDate={inPopup && popupDay.dayStart}
     forceMargin={[margin, chunk.gridRow]}
 />

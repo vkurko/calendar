@@ -4,11 +4,11 @@
 
     let {date, alPrefix = ''} = $props();
 
-    let {_intlDayHeader, _intlDayHeaderAL} = getContext('state');
+    let {intlDayHeader, intlDayHeaderAL} = $derived(getContext('state'));
 </script>
 
 <time
     datetime="{toISOString(date, 10)}"
-    aria-label="{alPrefix}{$_intlDayHeaderAL.format(date)}"
-    {@attach contentFrom($_intlDayHeader.format(date))}
+    aria-label="{alPrefix}{intlDayHeaderAL.format(date)}"
+    {@attach contentFrom(intlDayHeader.format(date))}
 ></time>

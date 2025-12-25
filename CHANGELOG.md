@@ -1,5 +1,11 @@
 # EventCalendar changelog
 
+## 5.1.0
+December 25, 2025
+* Added `snapDuration` option ([226](https://github.com/vkurko/calendar/issues/226))
+* Added automatic scrolling to today's date when `datesAboveResources` is set to `true`
+* :warning: The code has been rewritten to use Svelte 5 `runes` instead of Svelte 4 `stores`
+
 ## 5.0.6
 December 23, 2025
 * Fixed incorrect display of `dayGrid` when switching from another view

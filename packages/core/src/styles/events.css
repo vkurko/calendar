@@ -32,7 +32,7 @@
     .ec-day-grid &,
     .ec-all-day &,
     .ec-timeline & {
-        block-size: fit-content;
+        block-size: max-content;
         margin-block-end: var(--ec-event-col-gap);
     }
 

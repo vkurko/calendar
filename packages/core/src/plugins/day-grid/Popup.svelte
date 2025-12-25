@@ -5,14 +5,14 @@
     } from '#lib';
     import Event from './Event.svelte';
 
-    let {gridEl, chunks} = $props();
-
-    let {_colsCount, _interaction, _intlDayPopover, _popupDay, buttonText, theme} = getContext('state');
+    let viewState = getContext('view-state');
+    let {interaction, options: {buttonText, theme}} = $derived(getContext('state'));
+    let {colsCount, chunks, gridEl, intlDayPopover, popupDay} = $derived(viewState);
 
     let el = $state();
     let style = $state('');
 
-    let {gridColumn, gridRow, dayStart, dayEnd} = $derived($_popupDay);
+    let {gridColumn, gridRow, dayStart, dayEnd} = $derived(popupDay);
 
     let popupChunks = $derived.by(() => {
         let result = [];
@@ -38,7 +38,7 @@
     });
 
     function position() {
-        let dayEl = gridEl.children.item((gridRow - 1) * $_colsCount + gridColumn - 1);
+        let dayEl = gridEl.children.item((gridRow - 1) * colsCount + gridColumn - 1);
         let popupRect = rect(el);
         let dayRect = rect(dayEl);
         let gridRect = rect(gridEl);
@@ -76,18 +76,18 @@
     }
 
     function close() {
-        $_popupDay = null;
+        viewState.popupDay = null;
     }
 
     function handlePointerDownOutside() {
         close();
-        $_interaction.action?.noClick();
+        interaction.action?.noClick();
     }
 </script>
 
 <dialog
     bind:this={el}
-    class="{$theme.popup}"
+    class="{theme.popup}"
     closedby="closerequest"
     {style}
     style:grid-area="{`${gridRow + 1} / ${gridColumn}`}"
@@ -95,20 +95,20 @@
     onpointerdownoutside={handlePointerDownOutside}
     onclose={close}
 >
-    <header class="{$theme.dayHead}">
-        <time datetime="{toISOString(dayStart, 10)}" {@attach contentFrom($_intlDayPopover.format(dayStart))}></time>
+    <header class="{theme.dayHead}">
+        <time datetime="{toISOString(dayStart, 10)}" {@attach contentFrom(intlDayPopover.format(dayStart))}></time>
         <!-- svelte-ignore a11y_missing_attribute -->
         <!-- svelte-ignore a11y_autofocus -->
         <a
             autofocus
             role="button"
             tabindex="0"
-            aria-label={$buttonText.close}
+            aria-label={buttonText.close}
             onclick={stopPropagation(close)}
             onkeydown={keyEnter(close)}
         >&times;</a>
     </header>
-    <div class="{$theme.events}">
+    <div class="{theme.events}">
         {#each popupChunks as chunk}
             <Event {chunk} inPopup />
         {/each}

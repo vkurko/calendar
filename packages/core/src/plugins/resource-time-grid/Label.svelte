@@ -4,18 +4,18 @@
 
     let {resource, date = undefined, setLabel = undefined} = $props();
 
-    let {resourceLabelContent, resourceLabelDidMount, _intlDayHeaderAL} = getContext('state');
+    let {intlDayHeaderAL, options: {resourceLabelContent, resourceLabelDidMount}} = $derived(getContext('state'));
 
     let el = $state();
     // Content
     let content = $derived.by(() => {
-        if ($resourceLabelContent) {
-            return isFunction($resourceLabelContent)
-                ? $resourceLabelContent({
+        if (resourceLabelContent) {
+            return isFunction(resourceLabelContent)
+                ? resourceLabelContent({
                     resource,
                     date: date ? toLocalDate(date) : undefined,
                 })
-                : $resourceLabelContent;
+                : resourceLabelContent;
         } else {
             return resource.title;
         }
@@ -26,7 +26,7 @@
         content;
         untrack(() => {
             if (date) {
-                ariaLabel = $_intlDayHeaderAL.format(date) + ', ' + el.innerText;
+                ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText;
             } else if (setLabel) {
                 ariaLabel = undefined;
                 setLabel(el.innerText);
@@ -35,8 +35,8 @@
     });
 
     onMount(() => {
-        if (isFunction($resourceLabelDidMount)) {
-            $resourceLabelDidMount({
+        if (isFunction(resourceLabelDidMount)) {
+            resourceLabelDidMount({
                 resource,
                 date: date ? toLocalDate(date) : undefined,
                 el

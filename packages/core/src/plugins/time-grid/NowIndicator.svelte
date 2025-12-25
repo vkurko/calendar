@@ -4,39 +4,40 @@
 
     let {days, span = 1} = $props();
 
-    let {_mainEl, _now, _today, _sidebarWidth, slotDuration, slotHeight, theme} = getContext('state');
+    let {mainEl, now, today, options: {slotDuration, slotHeight, theme}} = $derived(getContext('state'));
+    let {sidebarWidth} = $derived(getContext('view-state'));
 
     // Layout
     let {gridColumn, start, end} = $derived.by(() => {
         for (let day of days) {
-            if (datesEqual(day.dayStart, $_today)) {
+            if (datesEqual(day.dayStart, today)) {
                 return day;
             }
         }
         return {};
     });
     let top = $derived.by(() => {
-        if ($_now < start || $_now > end) {
+        if (now < start || now > end) {
             return null;
         }
-        let step = toSeconds($slotDuration);
-        return ($_now - start) / 1000 / step * $slotHeight;
+        let step = toSeconds(slotDuration);
+        return (now - start) / 1000 / step * slotHeight;
     });
 
     // Observe intersections
     let observerOptions = $derived({
-        root: $_mainEl,
-        rootMargin: isRtl() ? `0px -${$_sidebarWidth + 5.5}px 0px 0px` : `0px 0px 0px -${$_sidebarWidth + 5.5}px`,
+        root: mainEl,
+        rootMargin: isRtl() ? `0px -${sidebarWidth + 5.5}px 0px 0px` : `0px 0px 0px -${sidebarWidth + 5.5}px`,
         threshold: 0.0,
     });
     function onIntersect(el, entry) {
-        el.classList.toggle($theme.hidden, !entry.isIntersecting);
+        el.classList.toggle(theme.hidden, !entry.isIntersecting);
     }
 </script>
 
 {#if gridColumn && top !== null}
     <div {@attach intersectionObserver(onIntersect, observerOptions)}
-        class="{$theme.nowIndicator}"
+        class="{theme.nowIndicator}"
         style:grid-column="{gridColumn + 1} / span {span}"
         style:inset-block-start="{top}px"
     ></div>

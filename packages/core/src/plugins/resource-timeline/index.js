@@ -1,16 +1,14 @@
-import {btnTextDay, btnTextMonth, btnTextWeek, themeView} from '#lib';
-import {dayTimeLimits, daySlots, nestedResources, monthView} from './stores.js';
+import {btnTextDay, btnTextMonth, btnTextWeek, getPayload, themeView} from '#lib';
+import {setExtensions} from '../time-grid/lib.js';
 import {createTRROptions, createTRRParsers} from '../time-grid/options.js';
-import {createTRRStores} from '../time-grid/stores.js';
 import {createRROptions} from '../resource-time-grid/options.js';
-import {createRRStores} from '../resource-time-grid/stores.js';
 import View from './View.svelte';
 
 export default {
 	createOptions(options) {
         createTRROptions(options);
         createRROptions(options);
-        options.slotWidth = 16;
+        options.slotWidth = 32;
 		// Common options
 		options.buttonText.resourceTimelineDay = 'timeline';
 		options.buttonText.resourceTimelineWeek = 'timeline';
@@ -21,27 +19,23 @@ export default {
 		options.view = 'resourceTimelineWeek';
 		options.views.resourceTimelineDay = {
 			buttonText: btnTextDay,
-			component: View,
+			component: initViewComponent,
 			displayEventEnd: false,
 			dayHeaderFormat: {weekday: 'long'},
 			duration: {days: 1},
-            slotLabelInterval: '01:00',
-			slotDuration: '00:15',
 			theme: themeView('ec-resource ec-timeline ec-day-view'),
 			titleFormat: {year: 'numeric', month: 'long', day: 'numeric'}
 		};
 		options.views.resourceTimelineWeek = {
 			buttonText: btnTextWeek,
-			component: View,
+			component: initViewComponent,
 			displayEventEnd: false,
 			duration: {weeks: 1},
-            slotLabelInterval: '01:00',
-			slotDuration: '00:15',
 			theme: themeView('ec-resource ec-timeline ec-week-view')
 		};
 		options.views.resourceTimelineMonth = {
 			buttonText: btnTextMonth,
-			component: View,
+			component: initMonthViewComponent,
 			displayEventEnd: false,
 			dayHeaderFormat: {
 				weekday: 'short',
@@ -56,14 +50,16 @@ export default {
 
     createParsers(parsers) {
         createTRRParsers(parsers);
-    },
+    }
+}
 
-	createStores(state) {
-		createTRRStores(state);
-        createRRStores(state);
-		state._dayTimeLimits = dayTimeLimits(state);  // flexible time limits per day
-        state._daySlots = daySlots(state);
-        state._monthView = monthView(state);
-		state._nestedResources = nestedResources(state);
-	}
+function initViewComponent(mainState) {
+	setExtensions(mainState);
+	return initMonthViewComponent(mainState);
+}
+
+function initMonthViewComponent(mainState) {
+	mainState.features = ['timeline'];
+	mainState.extensions.viewResources = resources => resources.filter(resource => !getPayload(resource).hidden);
+	return View;
 }

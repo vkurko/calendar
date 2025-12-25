@@ -2,47 +2,47 @@ import {addDuration, cloneDate, createDuration, DAY_IN_SECONDS, toISOString, toS
 import {max as maxFn, min as minFn, isFunction, floor} from './utils.js';
 import {bgEvent} from './events.js';
 
-export function createSlots(date, $slotDuration, $_slotLabelPeriodicity, $_slotTimeLimits, $_intlSlotLabel) {
+export function createSlots(date, slotDuration, slotLabelPeriodicity, slotTimeLimits, intlSlotLabel) {
     let slots = [];
     date = cloneDate(date);
     let end = cloneDate(date);
-    addDuration(date, $_slotTimeLimits.min);
-    addDuration(end, $_slotTimeLimits.max);
+    addDuration(date, slotTimeLimits.min);
+    addDuration(end, slotTimeLimits.max);
     // Build slots
     while (date < end) {
         slots.push([
             toISOString(date),
-            $_intlSlotLabel.format(date)
+            intlSlotLabel.format(date)
         ]);
-        addDuration(date, $slotDuration, $_slotLabelPeriodicity);
+        addDuration(date, slotDuration, slotLabelPeriodicity);
     }
     // Calculate span for last slot
-    let span = floor((date - end) / 1000 / toSeconds($slotDuration));
-    if (span && span !== $_slotLabelPeriodicity) {
-        slots.at(-1)[2] = $_slotLabelPeriodicity - span;
+    let span = floor((date - end) / 1000 / toSeconds(slotDuration));
+    if (span && span !== slotLabelPeriodicity) {
+        slots.at(-1)[2] = slotLabelPeriodicity - span;
     }
 
     return slots;
 }
 
-export function createSlotTimeLimits($slotMinTime, $slotMaxTime, $flexibleSlotTimeLimits, $_viewDates, $_filteredEvents) {
+export function createSlotTimeLimits(slotMinTime, slotMaxTime, flexibleSlotTimeLimits, viewDates, filteredEvents) {
     // Copy values
-    let min = createDuration($slotMinTime);
-    let max = createDuration($slotMaxTime);
+    let min = createDuration(slotMinTime);
+    let max = createDuration(slotMaxTime);
 
-    if ($flexibleSlotTimeLimits) {
+    if (flexibleSlotTimeLimits) {
         // If slotMaxTime goes past midnight, then extend it back by a maximum of 24 hours
         let minMin = createDuration(minFn(toSeconds(min), maxFn(0, toSeconds(max) - DAY_IN_SECONDS)));
         let maxMax = createDuration(maxFn(toSeconds(max), toSeconds(minMin) + DAY_IN_SECONDS));
-        let filter = isFunction($flexibleSlotTimeLimits?.eventFilter)
-            ? $flexibleSlotTimeLimits.eventFilter
+        let filter = isFunction(flexibleSlotTimeLimits?.eventFilter)
+            ? flexibleSlotTimeLimits.eventFilter
             : event => !bgEvent(event.display);
-        loop: for (let date of $_viewDates) {
+        loop: for (let date of viewDates) {
             let start = addDuration(cloneDate(date), min);
             let end = addDuration(cloneDate(date), max);
             let minStart = addDuration(cloneDate(date), minMin);
             let maxEnd = addDuration(cloneDate(date), maxMax);
-            for (let event of $_filteredEvents) {
+            for (let event of filteredEvents) {
                 if (!event.allDay && filter(event) && event.start < maxEnd && event.end > minStart) {
                     if (event.start < start) {
                         let seconds = maxFn((event.start - date) / 1000, toSeconds(minMin));

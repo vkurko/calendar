@@ -5,14 +5,14 @@
 
     let {chunk} = $props();
 
-    let {slotEventOverlap, slotDuration, slotHeight} = getContext('state');
+    let {options: {slotEventOverlap, slotDuration, slotHeight}} = $derived(getContext('state'));
 
     // Style
     let styles = $derived(style => {
-        let step = toSeconds($slotDuration);
-        let top = chunk.top / step * $slotHeight;
-        let height = chunk.height / step * $slotHeight || $slotHeight;
-        let maxHeight = chunk.maxHeight / step * $slotHeight;
+        let step = toSeconds(slotDuration);
+        let top = chunk.top / step * slotHeight;
+        let height = chunk.height / step * slotHeight || slotHeight;
+        let maxHeight = chunk.maxHeight / step * slotHeight;
         style['grid-column'] = chunk.gridColumn;
         style['inset-block-start'] = `${top}px`;
         style['min-block-size'] = `${height}px`;
@@ -23,7 +23,7 @@
             let groupColumns = chunk.group.columns.length;
             style['z-index'] = `${chunk.groupColumn + 1}`;
             style['inset-inline-start'] = `calc((${maxWidth}) / ${groupColumns} * ${chunk.groupColumn})`;
-            style['inline-size'] = `calc((${maxWidth}) / ${groupColumns} * ${($slotEventOverlap ? 0.5 * (1 + groupColumns - chunk.groupColumn) : 1)})`;
+            style['inline-size'] = `calc((${maxWidth}) / ${groupColumns} * ${(slotEventOverlap ? 0.5 * (1 + groupColumns - chunk.groupColumn) : 1)})`;
         }
         return style;
     });

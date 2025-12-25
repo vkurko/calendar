@@ -14,16 +14,16 @@
         children
     } = $props();
 
-    let {_today, theme} = getContext('state');
+    let {today, options: {theme}} = $derived(getContext('state'));
 </script>
 
 <div
     class={[
-        className ?? $theme.colHead,
-        weekday && $theme.weekdays?.[date.getUTCDay()],
-        weekday && datesEqual(date, $_today) && $theme.today,
-        highlight && $theme.highlight,
-        disabled && $theme.disabled
+        className ?? theme.colHead,
+        weekday && theme.weekdays?.[date.getUTCDay()],
+        weekday && datesEqual(date, today) && theme.today,
+        highlight && theme.highlight,
+        disabled && theme.disabled
     ]}
     role="{ariaHidden ? null : 'columnheader'}"
     aria-colspan="{ariaHidden || colSpan <= 1 ? null : colSpan}"

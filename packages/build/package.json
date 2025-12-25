@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/build",
-  "version": "5.0.6",
+  "version": "5.1.0",
   "title": "Event Calendar",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [

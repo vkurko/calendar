@@ -7,24 +7,26 @@
 
     let {day, noIeb, noBeb} = $props();
 
-    let {
-        date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent, _hiddenChunks, _intlDayCell, _popupDay
-    } = getContext('state');
+    let mainState = getContext('state');
+    let viewState = getContext('view-state');
+
+    let {options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
+    let {hiddenChunks, intlDayCell} = $derived(viewState);
 
     let {dayStart, disabled, highlight} = $derived(day);
-    let otherMonth = $derived(dayStart.getUTCMonth() !== $date.getUTCMonth());
-    let classes = $derived(classNames => [...classNames, otherMonth && $theme.otherMonth]);
+    let otherMonth = $derived(dayStart.getUTCMonth() !== date.getUTCMonth());
+    let classes = $derived(classNames => [...classNames, otherMonth && theme.otherMonth]);
 
     // Week numbers
-    let showWeekNumber = $derived($weekNumbers && dayStart.getUTCDay() === ($firstDay ? 1 : 0));
+    let showWeekNumber = $derived(weekNumbers && dayStart.getUTCDay() === (firstDay ? 1 : 0));
     let weekNumber = $derived.by(() => {
         let weekNumber;
         if (showWeekNumber) {
             let week = getWeekNumber(dayStart, $firstDay);
-            if ($weekNumberContent) {
-                weekNumber = isFunction($weekNumberContent)
-                    ? $weekNumberContent({date: toLocalDate(dayStart), week})
-                    : $weekNumberContent;
+            if (weekNumberContent) {
+                weekNumber = isFunction(weekNumberContent)
+                    ? weekNumberContent({date: toLocalDate(dayStart), week})
+                    : weekNumberContent;
             } else {
                 weekNumber = 'W' + String(week).padStart(2, '0');
             }
@@ -33,15 +35,15 @@
     });
 
     // More link
-    let hiddenChunks = $derived($_hiddenChunks[dayStart.getTime()]);
+    let dayHiddenChunks = $derived(hiddenChunks.get(dayStart.getTime()));
     let moreLink = $derived.by(() => {
         let moreLink = '';
-        if (hiddenChunks) {
-            let text = '+' + hiddenChunks.length + ' more';
-            if ($moreLinkContent) {
-                moreLink = isFunction($moreLinkContent)
-                    ? $moreLinkContent({num: hiddenChunks.length, text})
-                    : $moreLinkContent;
+        if (dayHiddenChunks) {
+            let text = '+' + dayHiddenChunks.length + ' more';
+            if (moreLinkContent) {
+                moreLink = isFunction(moreLinkContent)
+                    ? moreLinkContent({num: dayHiddenChunks.length, text})
+                    : moreLinkContent;
             } else {
                 moreLink = text;
             }
@@ -51,26 +53,26 @@
 
     // Popup
     function showMore() {
-        $_popupDay = day;
+        viewState.popupDay = day;
     }
 </script>
 
 <BaseDay date={dayStart} allDay {classes} {disabled} {highlight} {noIeb} {noBeb}>
-    <div class="{$theme.dayHead}">
+    <div class="{theme.dayHead}">
         <time
             datetime="{toISOString(dayStart, 10)}"
-            {@attach contentFrom($_intlDayCell.format(dayStart))}
+            {@attach contentFrom(intlDayCell.format(dayStart))}
         ></time>
         {#if showWeekNumber}
             <span
-                class="{$theme.weekNumber}"
+                class="{theme.weekNumber}"
                 {@attach contentFrom(weekNumber)}
             ></span>
         {/if}
     </div>
 
-    <div class="{$theme.dayFoot}">
-        {#if hiddenChunks}
+    <div class="{theme.dayFoot}">
+        {#if dayHiddenChunks}
             <!-- svelte-ignore a11y_missing_attribute -->
             <!-- svelte-ignore a11y_missing_content -->
             <!-- svelte-ignore a11y_consider_explicit_label -->

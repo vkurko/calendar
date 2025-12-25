@@ -5,21 +5,26 @@
 
     let {day, noIeb, noBeb} = $props();
 
-    let {_monthView, slotDuration, slotWidth} = getContext('state');
+    let {options: {slotWidth}} = $derived(getContext('state'));
+    let {monthView, snap} = $derived(getContext('view-state'));
 
     let {dayStart: date, start, resource, disabled, highlight} = $derived(day);
 
     let el = $state();
 
     function dateFromPoint(x, y) {
-        if ($_monthView) {
+        if (monthView) {
             return date;
         } else {
             let dayRect = rect(el);
             let scaleX = dayRect.width / el.offsetWidth;
-            return addDuration(cloneDate(start), $slotDuration, floor((isRtl() ? dayRect.right - x : x - dayRect.left) / ($slotWidth * scaleX)));
+            return addDuration(
+                cloneDate(start),
+                snap.duration,
+                floor((isRtl() ? dayRect.right - x : x - dayRect.left) / (slotWidth * snap.ratio * scaleX))
+            );
         }
     }
 </script>
 
-<BaseDay bind:el allDay={$_monthView} {date} {resource} {dateFromPoint} {disabled} {highlight} {noIeb} {noBeb}/>
+<BaseDay bind:el allDay={monthView} {date} {resource} {dateFromPoint} {disabled} {highlight} {noIeb} {noBeb}/>

@@ -5,7 +5,8 @@
 
     let {day, allDay = false, noIeb, noBeb} = $props();
 
-    let {slotDuration, slotHeight} = getContext('state');
+    let {options: {slotHeight}} = $derived(getContext('state'));
+    let {snap} = $derived(getContext('view-state'));
 
     let {dayStart: date, start, resource, disabled, highlight} = $derived(day);
 
@@ -17,7 +18,11 @@
         } else {
             let dayRect = rect(el);
             let scaleY = dayRect.height / el.offsetHeight;
-            return addDuration(cloneDate(start), $slotDuration, floor((y - dayRect.top) / ($slotHeight * scaleY)));
+            return addDuration(
+                cloneDate(start),
+                snap.duration,
+                floor((y - dayRect.top) / (slotHeight * snap.ratio * scaleY))
+            );
         }
     }
 </script>
