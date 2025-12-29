@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.1.2
+December 29, 2025
+* Added support for custom views ([504](https://github.com/vkurko/calendar/issues/504))
+
 ## 5.1.1
 December 29, 2025
 * Fixed regression bug related to event manipulation ([589](https://github.com/vkurko/calendar/issues/589))
