@@ -157,8 +157,9 @@ export function optionsState(mainState, plugins, userOptions) {
         // Set options for each view
         let views = new Set([...keys(defViewOptions), ...keys(userViewOptions)]);
         for (let view of views) {
-            let defOpts = mergeOpts(defOptions, defViewOptions[view] ?? {});
-            let opts = mergeOpts(defOpts, userOptions, userViewOptions[view] ?? {});
+            let userViewDef = userViewOptions[view] ?? {};
+            let defOpts = mergeOpts(defOptions, defViewOptions[view] ?? defViewOptions[userViewDef.type] ?? {});
+            let opts = mergeOpts(defOpts, userOptions, userViewDef);
             let component = extractOption(opts, 'component');
             // View has been set
             delete opts.view;
