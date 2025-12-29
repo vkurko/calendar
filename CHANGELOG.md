@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.1.1
+December 29, 2025
+* Fixed regression bug related to event manipulation ([589](https://github.com/vkurko/calendar/issues/589))
+
 ## 5.1.0
 December 25, 2025
 * Added `snapDuration` option ([226](https://github.com/vkurko/calendar/issues/226))
