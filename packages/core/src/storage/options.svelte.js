@@ -139,8 +139,8 @@ export function optionsState(mainState, plugins, userOptions) {
     userOptions = parseOptions(userOptions, parsers);
 
     // Extract view-specific options
-    let defViewOptions = extractOption(defOptions, 'views') ?? {};
-    let userViewOptions = extractOption(userOptions, 'views') ?? {};
+    let defViewsOptions = extractOption(defOptions, 'views') ?? {};
+    let userViewsOptions = extractOption(userOptions, 'views') ?? {};
 
     // Create options state
     let options = new SvelteMap();
@@ -155,10 +155,11 @@ export function optionsState(mainState, plugins, userOptions) {
             options.set('view', userOptions.view);
         }
         // Set options for each view
-        let views = new Set([...keys(defViewOptions), ...keys(userViewOptions)]);
+        let views = new Set([...keys(defViewsOptions), ...keys(userViewsOptions)]);
         for (let view of views) {
-            let defOpts = mergeOpts(defOptions, defViewOptions[view] ?? {});
-            let opts = mergeOpts(defOpts, userOptions, userViewOptions[view] ?? {});
+            let userViewOptions = userViewsOptions[view] ?? {};
+            let defOpts = mergeOpts(defOptions, defViewsOptions[view] ?? defViewsOptions[userViewOptions.type] ?? {});
+            let opts = mergeOpts(defOpts, userOptions, userViewOptions);
             let component = extractOption(opts, 'component');
             // View has been set
             delete opts.view;

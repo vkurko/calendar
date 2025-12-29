@@ -131,7 +131,9 @@
     role="{features.includes('list') ? 'list' : 'table'}"
 >
     <Toolbar/>
-    <View/>
+    {#if View} <!-- temporary fix for https://github.com/sveltejs/kit/issues/15109 -->
+        <View/>
+    {/if}
     {#each auxComponents as AuxComponent}
         <AuxComponent/>
     {/each}

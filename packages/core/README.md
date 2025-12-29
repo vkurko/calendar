@@ -246,8 +246,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.1.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.1.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.1.2/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.1.2/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2489,6 +2489,18 @@ The mounted [View](#view-object) object
 - Default `{}`
 
 You can specify options that apply only to specific views. To do so provide separate options objects within the `views` option, keyed by the name of the view.
+
+If you want to create a custom view, you can use the `type` property to inherit options from a standard view.
+
+```js
+views: {
+    resourceTimelineThreeDays: {
+        type: 'resourceTimelineDay',
+        duration: {days: 3}
+    }
+}
+```
+
 
 ### weekNumberContent
 - Type `Content` or `function`
