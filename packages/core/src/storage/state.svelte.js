@@ -18,7 +18,7 @@ export default class State {
         this.auxComponents = $state([]);
         this.currentRange = $derived.by(currentRange(this));
         this.activeRange = $derived.by(activeRange(this));
-        this.fetchedRange = $state({start: undefined, end: undefined});
+        this.fetchedRange = $state.raw({start: undefined, end: undefined});
         this.events = $state.raw([]);
         this.filteredEvents = $derived.by(filteredEvents(this));
         this.mainEl = $state();

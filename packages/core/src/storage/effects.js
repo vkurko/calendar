@@ -80,7 +80,7 @@ export function loadEvents(mainState) {
                     ++fetching;
                 }
                 // Save current range for future requests
-                mainState.fetchedRange = activeRange;
+                assign(fetchedRange, activeRange);
             }
         });
     };

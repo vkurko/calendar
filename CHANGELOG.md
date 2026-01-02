@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.1.3
+January 2, 2026
+* Fixed an issue with loading data via the URL version of event sources
+
 ## 5.1.2
 December 29, 2025
 * Added support for custom views ([504](https://github.com/vkurko/calendar/issues/504))
