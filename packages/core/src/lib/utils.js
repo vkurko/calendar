@@ -10,10 +10,6 @@ export function entries(object) {
     return Object.entries(object);
 }
 
-export function hasOwn(object, property) {
-    return Object.hasOwn(object, property);
-}
-
 export function floor(value) {
     return Math.floor(value);
 }
@@ -40,6 +36,18 @@ export function isArray(value) {
 
 export function isFunction(value) {
     return typeof value === 'function';
+}
+
+export function isPlainObject(value) {
+    if (typeof value !== 'object' || value === null) {
+        return false;
+    }
+    const prototype = Object.getPrototypeOf(value);
+    return prototype === null || prototype === Object.prototype;
+}
+
+export function isDate(value) {
+    return value instanceof Date;
 }
 
 export function run(fn) {

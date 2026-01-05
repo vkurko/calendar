@@ -1,8 +1,10 @@
+import {isDate} from './utils.js';
+
 export const DAY_IN_SECONDS = 86400;
 
 export function createDate(input = undefined) {
     if (input !== undefined) {
-        return input instanceof Date ? _fromLocalDate(input) : _fromISOString(input);
+        return isDate(input) ? _fromLocalDate(input) : _fromISOString(input);
     }
 
     return _fromLocalDate(new Date());
@@ -18,7 +20,7 @@ export function createDuration(input) {
             seconds += parseInt(part, 10) * Math.pow(60, exp--);
         }
         input = {seconds};
-    } else if (input instanceof Date) {
+    } else if (isDate(input)) {
         input = {hours: input.getUTCHours(), minutes: input.getUTCMinutes(), seconds: input.getUTCSeconds()};
     }
 

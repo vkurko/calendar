@@ -1,5 +1,11 @@
 # EventCalendar changelog
 
+## 5.1.4
+January 5, 2026
+* Added automatic scrolling to today's date in `resourceTimelineMonth` view
+* Fixed an issue with no effect when using a value obtained from `getOption` in `setOption`
+* Fixed minor regression bugs in `dayGrid` and `resourceTimelineMonth` views
+
 ## 5.1.3
 January 2, 2026
 * Fixed an issue with loading data via the URL version of event sources

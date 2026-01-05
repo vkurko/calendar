@@ -62,8 +62,7 @@
         let top;
         if (popupRect.height >= gridRect.height) {
             top = gridRect.top - dayRect.top;
-            let bottom = dayRect.bottom - gridRect.bottom;
-            style += `inset-block-end:${bottom}px;`;
+            style += `block-size:${gridRect.height}px;`;
         } else {
             top = (dayRect.height - popupRect.height) / 2;
             if (dayRect.top + top < gridRect.top) {

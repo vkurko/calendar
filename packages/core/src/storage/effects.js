@@ -143,7 +143,7 @@ export function runEventAllUpdated(mainState) {
 export function runViewDidMount(mainState) {
     return () => {
         // Dependencies
-        let {viewComponent, options: {viewDidMount}} = mainState;
+        let {options: {view, viewDidMount}} = mainState;
 
         untrack(() => {
             if (isFunction(viewDidMount)) {

@@ -27,24 +27,33 @@
         tick().then(scrollToTime);
     });
     function scrollToTime() {
-        if (monthView) {
-            return;
-        }
         let scrollLeft = 0;
         let todayOutOfView = today < viewDates[0] || today > viewDates.at(-1);
-        for (let date of viewDates) {
-            let slotTimeLimits = getSlotTimeLimits(dayTimeLimits, date);
-            if (todayOutOfView || datesEqual(date, today)) {
-                scrollLeft += max(
-                    min(toSeconds(scrollTime), toSeconds(slotTimeLimits.max)) - toSeconds(slotTimeLimits.min),
-                    0
-                );
-                break;
-            } else {
-                scrollLeft += toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min);
+        if (monthView) {
+            if (!todayOutOfView) {
+                let days = grid[0];
+                for (let day of days) {
+                    if (datesEqual(day.dayStart, today)) {
+                        mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / days.length * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
+                        break;
+                    }
+                }
             }
+        } else {
+            for (let date of viewDates) {
+                let slotTimeLimits = getSlotTimeLimits(dayTimeLimits, date);
+                if (todayOutOfView || datesEqual(date, today)) {
+                    scrollLeft += max(
+                        min(toSeconds(scrollTime), toSeconds(slotTimeLimits.max)) - toSeconds(slotTimeLimits.min),
+                        0
+                    );
+                    break;
+                } else {
+                    scrollLeft += toSeconds(slotTimeLimits.max) - toSeconds(slotTimeLimits.min);
+                }
+            }
+            mainEl.scrollLeft = scrollLeft / toSeconds(slotDuration) * slotWidth * (isRtl() ? -1 : 1);
         }
-        mainEl.scrollLeft = scrollLeft / toSeconds(slotDuration) * slotWidth * (isRtl() ? -1 : 1);
     }
 
     // Events reposition

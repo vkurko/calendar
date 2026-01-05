@@ -2,10 +2,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
     block-size: max-content;
-    inline-size: 110%;
-    min-block-size: 6em;
-    min-inline-size: 10em;
+    inline-size: 125%;
+    min-block-size: 8em;
+    min-inline-size: 12em;
     padding: .375rem .75rem .75rem;
     background-color: var(--ec-popup-bg-color);
     border: 1px solid var(--ec-border-color);
@@ -26,5 +27,7 @@
     .ec-events {
         --ec-event-col-gap: 0;
         display: block;
+        overflow-y: auto;
+        pointer-events: auto;
     }
 }

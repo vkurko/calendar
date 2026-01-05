@@ -46,7 +46,7 @@ export function eventChunks(mainState, viewState) {
     return () => {
         // Dependencies
         let {filteredEvents} = mainState;
-        let {grid} = viewState;
+        let {grid, monthView} = viewState;
 
         let chunks = [];
         let bgChunks = [];
@@ -55,9 +55,11 @@ export function eventChunks(mainState, viewState) {
             for (let event of filteredEvents) {
                 for (let days of grid) {
                     if (bgEvent(event.display)) {
-                        bgChunks = bgChunks.concat(createChunks(event, days));
+                        if (!monthView || event.allDay) {
+                            bgChunks = bgChunks.concat(createChunks(event, days, monthView));
+                        }
                     } else {
-                        chunks = chunks.concat(createChunks(event, days));
+                        chunks = chunks.concat(createChunks(event, days, monthView));
                     }
                 }
             }

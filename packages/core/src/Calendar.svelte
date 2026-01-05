@@ -2,7 +2,7 @@
     import './styles/index.css';
     import {setContext, untrack} from 'svelte';
     import {
-        assign, cloneDate, createEvents, getElementWithPayload, getPayload, nextDate,
+        assign, cloneDate, createEvents, getElementWithPayload, getPayload, isArray, isDate, isPlainObject, nextDate,
         prevDate, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import MainState from './storage/state.svelte.js';
@@ -33,13 +33,19 @@
     });
 
     export function setOption(name, value) {
+        if (isPlainObject(value)) {
+            value = {...value};
+        }
+        if (isArray(value)) {
+            value = [...value];
+        }
         mainState.setOption(name, value, false);
         return this;
     }
 
     export function getOption(name) {
         let value = mainState.options[name];
-        return value instanceof Date ? toLocalDate(value) : value;
+        return isDate(value) ? toLocalDate(value) : value;
     }
 
     export function refetchEvents() {

@@ -1,6 +1,6 @@
 import {assign, createDuration, createEventChunk, eventIntersects, max, min} from '#lib';
 
-export function createChunks(event, days) {
+export function createChunks(event, days, monthView) {
     let dates = [];
     let firstStart;
     let lastEnd;
@@ -8,17 +8,31 @@ export function createChunks(event, days) {
     let gridRow;
     let left;
     let width = 0;
-    for (let {gridColumn: column, gridRow: row, resource, dayStart, start, end, disabled} of days) {
-        if (!disabled && eventIntersects(event, start, end, resource)) {
-            if (!dates.length) {
-                firstStart = start;
-                gridColumn = column;
-                gridRow = row;
-                left = max(event.start - start, 0) / 1000;
+    for (let {gridColumn: column, gridRow: row, resource, dayStart, dayEnd, start, end, disabled} of days) {
+        if (!disabled) {
+            if (monthView) {
+                if (eventIntersects(event, dayStart, dayEnd, resource)) {
+                    if (!dates.length) {
+                        firstStart = dayStart;
+                        gridColumn = column;
+                        gridRow = row;
+                    }
+                    dates.push(dayStart);
+                    lastEnd = end;
+                }
+            } else {
+                if (eventIntersects(event, start, end, resource)) {
+                    if (!dates.length) {
+                        firstStart = start;
+                        gridColumn = column;
+                        gridRow = row;
+                        left = max(event.start - start, 0) / 1000;
+                    }
+                    dates.push(dayStart);
+                    lastEnd = end;
+                    width += (min(end, event.end) - max(start, event.start)) / 1000;
+                }
             }
-            dates.push(dayStart);
-            lastEnd = end;
-            width += (min(end, event.end) - max(start, event.start)) / 1000;
         }
     }
     if (dates.length) {
