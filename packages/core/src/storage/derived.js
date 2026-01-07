@@ -1,6 +1,6 @@
 import {untrack} from 'svelte';
 import {
-    addDay, addDuration, cloneDate, createView, isFunction, prevClosestDay, setMidnight, subtractDay,
+    addDay, addDuration, cloneDate, createView, isFunction, prevClosestDay, subtractDay,
     toEventWithLocalDates, toViewWithLocalDates
 } from '#lib';
 
@@ -91,8 +91,8 @@ export function viewDates(mainState) {
         let dates = [];
 
         untrack(() => {
-            let date = setMidnight(cloneDate(activeRange.start));
-            let end = setMidnight(cloneDate(activeRange.end));
+            let date = cloneDate(activeRange.start);
+            let end = cloneDate(activeRange.end);
             while (date < end) {
                 if (!hiddenDays.includes(date.getUTCDay())) {
                     dates.push(cloneDate(date));
@@ -114,14 +114,12 @@ export function viewDates(mainState) {
 export function viewTitle(mainState) {
     return () => {
         // Dependencies
-        let {activeRange, intlTitle, features, options: {date}} = mainState;
+        let {currentRange, intlTitle} = mainState;
 
         let title;
 
         untrack(() => {
-            title = features.includes('day-grid')
-                ? intlTitle.formatRange(date, date)
-                : intlTitle.formatRange(activeRange.start, subtractDay(cloneDate(activeRange.end)));
+            title = intlTitle.formatRange(currentRange.start, subtractDay(cloneDate(currentRange.end)));
         });
 
         return title;

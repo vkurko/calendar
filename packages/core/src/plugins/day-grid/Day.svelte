@@ -10,7 +10,7 @@
     let mainState = getContext('state');
     let viewState = getContext('view-state');
 
-    let {options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
+    let {features, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
     let {hiddenChunks, intlDayCell} = $derived(viewState);
 
     let {dayStart, disabled, highlight} = $derived(day);
@@ -59,10 +59,12 @@
 
 <BaseDay date={dayStart} allDay {classes} {disabled} {highlight} {noIeb} {noBeb}>
     <div class="{theme.dayHead}">
-        <time
-            datetime="{toISOString(dayStart, 10)}"
-            {@attach contentFrom(intlDayCell.format(dayStart))}
-        ></time>
+        {#if features.includes('dayNumber')}
+            <time
+                datetime="{toISOString(dayStart, 10)}"
+                {@attach contentFrom(intlDayCell.format(dayStart))}
+            ></time>
+        {/if}
         {#if showWeekNumber}
             <span
                 class="{theme.weekNumber}"

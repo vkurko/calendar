@@ -9,7 +9,7 @@
     let {colsCount, gridEl, hiddenChunks, popupDay} = $derived(getContext('view-state'));
 
     let el = $state();
-    let margin = $state(0);
+    let margin = $state(1);
     let hidden = $state(false);
 
     let event = $derived(chunk.event);
@@ -18,7 +18,7 @@
 
     $effect(() => {
         if (!inPopup) {
-            margin = height(dayEl.firstElementChild);
+            margin = height(dayEl.firstElementChild) || 1;
         }
     });
 
@@ -44,7 +44,7 @@
     });
 
     export function reposition() {
-        margin = repositionEvent(chunk, height(el), height(dayEl.firstElementChild));
+        margin = repositionEvent(chunk, height(el), height(dayEl.firstElementChild) || 1);
     }
 
     export function hide() {

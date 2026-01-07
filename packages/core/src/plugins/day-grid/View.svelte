@@ -1,5 +1,5 @@
 <script>
-    import {getContext, setContext} from 'svelte';
+    import {getContext, setContext, tick} from 'svelte';
     import {contentFrom, resizeObserver, runReposition} from '#lib';
     import ViewState from './state.svelte.js';
     import Day from './Day.svelte';
@@ -16,14 +16,16 @@
     // Events reposition
     let refs = [];
     function reposition() {
-        hiddenChunks.clear();
         runReposition(refs, chunks);
+        hiddenChunks.clear();
+        tick().then(hide);
+    }
+    function hide() {
+        hiddenChunks.size;
+        refs.forEach(ref => ref.hide());
     }
     $effect(reposition);
-    $effect(() => {
-        chunks;
-        refs.forEach(ref => ref.hide());
-    });
+    $effect(hide);
 </script>
 
 <section
@@ -59,11 +61,11 @@
             {/each}
         </div>
         <div class="{theme.events}">
-            {#each chunks as chunk, i}
+            {#each chunks as chunk, i (chunk.id)}
                 <!-- svelte-ignore binding_property_non_reactive -->
                 <Event bind:this={refs[i]} {chunk}/>
             {/each}
-            {#each bgChunks as chunk}
+            {#each bgChunks as chunk (chunk.id)}
                 <Event {chunk}/>
             {/each}
             {#each iChunks as chunk}

@@ -81,7 +81,10 @@
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
-    padding: .375rem;
+
+    .ec-day-grid.ec-month-view & {
+        padding: .375rem;
+    }
 
     .ec-day.ec-other-month & time {
         opacity: .3;

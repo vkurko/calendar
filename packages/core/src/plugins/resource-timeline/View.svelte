@@ -124,11 +124,11 @@
             {/each}
         </div>
         <div class="{theme.events}">
-            {#each chunks as chunk, i}
+            {#each chunks as chunk, i (chunk.id)}
                 <!-- svelte-ignore binding_property_non_reactive -->
                 <Event bind:this={refs[i]} {chunk}/>
             {/each}
-            {#each bgChunks as chunk}
+            {#each bgChunks as chunk (chunk.id)}
                 <Event {chunk}/>
             {/each}
             {#each iChunks as chunk}

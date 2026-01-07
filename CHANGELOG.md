@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.2.0
+January 7, 2026
+* Added `dayGridDay` and `dayGridWeek` views ([593](https://github.com/vkurko/calendar/issues/593))
+* Fixed a regression with `eventDidMount` ([594](https://github.com/vkurko/calendar/issues/594))
+
 ## 5.1.4
 January 5, 2026
 * Added automatic scrolling to today's date in `resourceTimelineMonth` view

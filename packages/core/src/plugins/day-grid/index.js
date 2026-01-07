@@ -1,4 +1,4 @@
-import {assign, btnTextMonth, nextClosestDay, prevClosestDay, themeView} from '#lib';
+import {assign, btnTextDay, btnTextMonth, btnTextWeek, nextClosestDay, prevClosestDay, themeView} from '#lib';
 import View from './View.svelte';
 
 export default {
@@ -14,7 +14,9 @@ export default {
             view: 'dayGridMonth'
         });
         assign(options.buttonText, {
+            dayGridDay: 'day',
             dayGridMonth: 'month',
+            dayGridWeek: 'week',
             close: 'Close'
         });
         assign(options.theme, {
@@ -25,9 +27,23 @@ export default {
             weekNumber: 'ec-week-number'
         });
         assign(options.views, {
+            dayGridDay: {
+                buttonText: btnTextDay,
+                component: () => View,
+                dayHeaderFormat: {weekday: 'long'},
+                displayEventEnd: false,
+                duration: {days: 1},
+                theme: themeView('ec-day-grid ec-day-view')
+            },
+            dayGridWeek: {
+                buttonText: btnTextWeek,
+                component: () => View,
+                displayEventEnd: false,
+                theme: themeView('ec-day-grid ec-week-view')
+            },
             dayGridMonth: {
                 buttonText: btnTextMonth,
-                component: initViewComponent,
+                component: initMonthViewComponent,
                 dayHeaderFormat: {weekday: 'short'},
                 dayHeaderAriaLabelFormat: {weekday: 'long'},
                 displayEventEnd: false,
@@ -39,8 +55,8 @@ export default {
     }
 }
 
-function initViewComponent(mainState) {
-    mainState.features = ['day-grid'];
+function initMonthViewComponent(mainState) {
+    mainState.features = ['dayNumber'];
     mainState.extensions.activeRange = (start, end) => {
         // Dependencies
         let {options: {firstDay}} = mainState;

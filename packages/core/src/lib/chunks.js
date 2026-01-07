@@ -2,12 +2,17 @@ import {datesEqual} from './date.js';
 import {eventIntersects} from './events.js';
 import {assign} from './utils.js';
 
+// Storage of unique event identifiers for generating chunk ids
+const ids = new WeakMap();
+let idCounter = 1;
+
 /**
  * @returns {{
+ *   id: String,  // this can be used as key in Svelte keyed each block
  *   start: Date,
  *   end: Date,
  *   event: Object,
- *   zeroDuration?: boolean,
+ *   zeroDuration: boolean,
  *   gridColumn?: Number,
  *   gridRow?: Number,
  *   group?: Object,
@@ -25,14 +30,25 @@ import {assign} from './utils.js';
  * }}
  */
 export function createEventChunk(event, start, end) {
-    let chunk = {
-        start: event.start > start ? event.start : start,
-        end: event.end < end ? event.end : end,
-        event
-    };
-    chunk.zeroDuration = datesEqual(chunk.start, chunk.end);
+    start = event.start > start ? event.start : start;
+    end = event.end < end ? event.end : end;
 
-    return chunk;
+    return {
+        start,
+        end,
+        event,
+        get id() {
+            let id = ids.get(event);
+            if (!id) {
+                id = idCounter++;
+                ids.set(event, id);
+            }
+            delete this.id;
+            this.id = `${id}-${start.getTime()}`;
+            return this.id;
+        },
+        zeroDuration: datesEqual(start, end)
+    };
 }
 
 /**
@@ -92,7 +108,7 @@ export function prepareAllDayChunks(chunks) {
     }
 }
 
-export function repositionEvent(chunk, height, top = 0) {
+export function repositionEvent(chunk, height, top = 1) {
     if (chunk.prev) {
         top = chunk.prev.bottom + 1;
     }

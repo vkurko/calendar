@@ -84,11 +84,11 @@
                     {/each}
                 </div>
                 <div class="{theme.events}">
-                    {#each allDayChunks as chunk, i}
+                    {#each allDayChunks as chunk, i (chunk.id)}
                         <!-- svelte-ignore binding_property_non_reactive -->
                         <AllDayEvent bind:this={refs[i]} {chunk}/>
                     {/each}
-                    {#each allDayBgChunks as chunk}
+                    {#each allDayBgChunks as chunk (chunk.id)}
                         <AllDayEvent {chunk}/>
                     {/each}
                     {#each allDayIChunks as chunk}
@@ -121,10 +121,10 @@
             {/each}
         </div>
         <div class="{theme.events}">
-            {#each chunks as chunk}
+            {#each chunks as chunk (chunk.id)}
                 <Event {chunk}/>
             {/each}
-            {#each bgChunks as chunk}
+            {#each bgChunks as chunk (chunk.id)}
                 <Event {chunk}/>
             {/each}
             {#each iChunks as chunk}

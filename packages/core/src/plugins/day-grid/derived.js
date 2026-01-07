@@ -4,11 +4,11 @@ import {addDay, bgEvent, cloneDate, createAllDayChunks, datesEqual, outsideRange
 export function colsCount(mainState) {
     return () => {
         // Dependencies
-        let {options: {hiddenDays}} = mainState;
+        let {viewDates, options: {duration, hiddenDays}} = mainState;
 
         let count;
 
-        untrack(() => count = 7 - hiddenDays.length);
+        untrack(() => count = duration.months || duration.inWeeks ? 7 - hiddenDays.length : viewDates.length);
 
         return count;
     };

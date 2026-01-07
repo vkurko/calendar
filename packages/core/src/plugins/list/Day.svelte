@@ -38,7 +38,7 @@
             <time {datetime} {@attach contentFrom(intlListDay.format(date))}></time>
             <time class="{theme.daySide}" {datetime} {@attach contentFrom(intlListDaySide.format(date))}></time>
         </h4>
-        {#each chunks as chunk (chunk.event)}
+        {#each chunks as chunk (chunk.id)}
             <Event {chunk}/>
         {/each}
     </BaseDay>

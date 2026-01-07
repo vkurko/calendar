@@ -246,8 +246,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.1.4/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.1.4/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -337,9 +337,16 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 
 ### buttonText
 - Type `object` or `function`
-- Default `{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', resourceTimelineDay: 'timeline', resourceTimelineMonth: 'timeline', resourceTimelineWeek: 'timeline', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
+<ul>
+<li>
+<details>
+    <summary>Default</summary>
+
+`{close: 'Close', dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', resourceTimelineDay: 'timeline', resourceTimelineMonth: 'timeline', resourceTimelineWeek: 'timeline', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
 > Views override the default value as follows:
+> - dayGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - dayGridMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
+> - dayGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - listDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - listMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
 > - listWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
@@ -351,6 +358,10 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 > - resourceTimelineWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 > - timeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - timeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
+
+</details>
+</li>
+</ul>
 
 Text that is displayed in buttons of the header toolbar.
 
@@ -465,7 +476,7 @@ function (customButtons) {
 
 Date that is currently displayed on the calendar.
 
-This value can be either a JavaScript Date object, or an ISO8601 date string like `'2022-12-31'`.
+This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`.
 
 ### dateClick
 - Type `function`
@@ -599,7 +610,7 @@ The current [View](#view-object) object
 - Type `object` or `function`
 - Default `{day: 'numeric'}`
 
-Defines the text that is displayed inside the day cell in the `dayGrid` view.
+Defines the text that is displayed inside the day cell in the `dayGridMonth` view.
 
 This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 
@@ -647,6 +658,7 @@ function (date) {
 - Type `object` or `function`
 - Default `{weekday: 'short', month: 'numeric', day: 'numeric'}`
 > Views override the default value as follows:
+> - dayGridDay `{weekday: 'long'}`
 > - dayGridMonth `{weekday: 'short'}`
 > - resourceTimelineMonth `{weekday: 'short', day: 'numeric'}`
 > - timeGridDay `{weekday: 'long'}`
@@ -697,7 +709,9 @@ function (date) {
 - Type `boolean`
 - Default `true`
 > Views override the default value as follows:
+> - dayGridDay `false`
 > - dayGridMonth `false`
+> - dayGridWeek `false`
 > - resourceTimelineDay `false`
 > - resourceTimelineMonth `false`
 > - resourceTimelineWeek `false`
@@ -724,6 +738,7 @@ Determines whether the calendar should automatically scroll during the event dra
 - Type `string`, `integer` or `object`
 - Default `{weeks: 1}`
 > Views override the default value as follows:
+> - dayGridDay `{days: 1}`
 > - dayGridMonth `{months: 1}`
 > - listDay `{days: 1}`
 > - listMonth `{months: 1}`
@@ -1799,7 +1814,7 @@ Exclude certain days-of-the-week from being displayed, where Sunday is `0`, Mond
 
 Array of dates that need to be highlighted in the calendar.
 
-Each date can be either an ISO8601 date string like `'2022-12-31'`, or a JavaScript Date object.
+Each date can be either an ISO8601 date string like `'2026-12-31'`, or a JavaScript Date object.
 
 ### lazyFetching
 - Type `boolean`
@@ -2297,7 +2312,9 @@ If not specified, then equal to [slotDuration](#slotduration).
 
 `'{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', colHead: 'ec-col-head', day: 'ec-day', dayHead: 'ec-day-head', disabled: 'ec-disabled', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', grid: 'ec-grid', header: 'ec-header', hidden: 'ec-hidden', highlight: 'ec-highlight', icon: 'ec-icon', main: 'ec-main', noIeb: 'ec-no-ieb', noBeb: 'ec-no-beb', today: 'ec-today', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-list ec-week-view', weekdays: ['ec-sun', ec-mon', ec-tue', ec-wed', ec-thu', ec-fri', ec-sat'], draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', start: 'ec-start', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x', selecting: 'ec-selecting', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', otherMonth: 'ec-other-month', popup: 'ec-popup', weekNumber: 'ec-week-number', daySide: 'ec-day-side', eventTag: 'ec-event-tag', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', sidebar: 'ec-sidebar', slot: 'ec-slot', colGroup: 'ec-col-group', expander: 'ec-expander', rowHead: 'ec-row-head', slots: 'ec-slots}'`
 > Views override the default value as follows:
+> - dayGridDay `theme => ({...theme, view: 'ec-day-grid ec-day-view'})`
 > - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`
+> - dayGridWeek `theme => ({...theme, view: 'ec-day-grid ec-week-view'})`
 > - listDay `theme => ({...theme, view: 'ec-list ec-day-view'})`
 > - listMonth `theme => ({...theme, view: 'ec-list ec-month-view'})`
 > - listWeek `theme => ({...theme, view: 'ec-list ec-week-view'})`
@@ -2438,7 +2455,7 @@ The range should be an object with the following properties:
 </td>
 <td>
 
-`string` or `Date` This should be either an ISO8601 date string like `'2025-12-31'`, or a JavaScript Date object holding the range start date
+`string` or `Date` This should be either an ISO8601 date string like `'2026-12-31'`, or a JavaScript Date object holding the range start date
 </td>
 </tr>
 <tr>
@@ -2448,7 +2465,7 @@ The range should be an object with the following properties:
 </td>
 <td>
 
-`string` or `Date` This should be either an ISO8601 date string like `'2025-12-31'`, or a JavaScript Date object holding the range end date
+`string` or `Date` This should be either an ISO8601 date string like `'2026-12-31'`, or a JavaScript Date object holding the range end date
 </td>
 </tr>
 </table>
@@ -2457,9 +2474,25 @@ It is not necessary to specify both properties. The range may have only `start` 
 
 ### view
 - Type `string`
-- Default `'resourceTimeGridWeek'`
+- Default `'timeGridWeek'`
 
-The view that is displayed in the calendar. Can be `'dayGridMonth'`, `'listDay'`, `'listWeek'`, `'listMonth'`, `'listYear'`, `'resourceTimeGridDay'`, `'resourceTimeGridWeek'`, `'resourceTimelineDay'`, `'resourceTimelineWeek'`, `'resourceTimelineMonth'`, `'timeGridDay'` or `'timeGridWeek'`.
+The view that is displayed in the calendar.
+
+The following values are available:
+- `'dayGridDay'`
+- `'dayGridWeek'`
+- `'dayGridMonth'`
+- `'listDay'`
+- `'listWeek'`
+- `'listMonth'`
+- `'listYear'`
+- `'resourceTimeGridDay'`
+- `'resourceTimeGridWeek'`
+- `'resourceTimelineDay'`
+- `'resourceTimelineWeek'`
+- `'resourceTimelineMonth'`
+- `'timeGridDay'`
+- `'timeGridWeek'`
 
 ### viewDidMount
 - Type `function`
@@ -2878,7 +2911,7 @@ Here are all admissible fields for the event’s input object:
 </td>
 <td>
 
-`string` or `Date` This should be either an ISO8601 datetime string like `'2022-12-31 09:00:00'`, or a JavaScript Date object holding the event’s start time
+`string` or `Date` This should be either an ISO8601 datetime string like `'2026-12-31 09:00:00'`, or a JavaScript Date object holding the event’s start time
 </td>
 </tr>
 <tr>
@@ -2888,7 +2921,7 @@ Here are all admissible fields for the event’s input object:
 </td>
 <td>
 
-`string` or `Date` This should be either an ISO8601 datetime string like `'2022-12-31 13:00:00'`, or a JavaScript Date object holding the event’s end time
+`string` or `Date` This should be either an ISO8601 datetime string like `'2026-12-31 13:00:00'`, or a JavaScript Date object holding the event’s end time
 </td>
 </tr>
 <tr>
