@@ -2,13 +2,9 @@ import {datesEqual} from './date.js';
 import {eventIntersects} from './events.js';
 import {assign} from './utils.js';
 
-// Storage of unique event identifiers for generating chunk ids
-const ids = new WeakMap();
-let idCounter = 1;
-
 /**
  * @returns {{
- *   id: String,  // this can be used as key in Svelte keyed each block
+ *   id?: String,  // this can be used as key in Svelte keyed each block
  *   start: Date,
  *   end: Date,
  *   event: Object,
@@ -32,21 +28,10 @@ let idCounter = 1;
 export function createEventChunk(event, start, end) {
     start = event.start > start ? event.start : start;
     end = event.end < end ? event.end : end;
-
     return {
         start,
         end,
         event,
-        get id() {
-            let id = ids.get(event);
-            if (!id) {
-                id = idCounter++;
-                ids.set(event, id);
-            }
-            delete this.id;
-            this.id = `${id}-${start.getTime()}`;
-            return this.id;
-        },
         zeroDuration: datesEqual(start, end)
     };
 }
@@ -54,7 +39,7 @@ export function createEventChunk(event, start, end) {
 /**
  * Create event chunk for month view and all-day slot in week view
  */
-export function createAllDayChunks(event, days) {
+export function createAllDayChunks(event, days, withId = true) {
     let dates = [];
     let lastEnd;
     let gridColumn;
@@ -73,6 +58,9 @@ export function createAllDayChunks(event, days) {
         let chunk = createEventChunk(event, dates[0], lastEnd);
         // Chunk layout
         assign(chunk, {gridColumn, gridRow, dates});
+        if (withId) {
+            assignChunkId(chunk);
+        }
 
         return [chunk];
     }
@@ -130,4 +118,18 @@ export function repositionEvent(chunk, height, top = 1) {
     assign(chunk, {top, bottom});
 
     return top;
+}
+
+// Storage of unique event identifiers for generating chunk ids
+const ids = new WeakMap();
+let idCounter = 1;
+
+export function assignChunkId(chunk) {
+    let {event, gridColumn, gridRow} = chunk;
+    let id = ids.get(event);
+    if (!id) {
+        id = idCounter++;
+        ids.set(event, id);
+    }
+    chunk.id = `${id}-${gridColumn}-${gridRow}`;
 }

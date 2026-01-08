@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.2.1
+January 8, 2026
+* Fixed a regression bug ([598](https://github.com/vkurko/calendar/issues/598))
+
 ## 5.2.0
 January 7, 2026
 * Added `dayGridDay` and `dayGridWeek` views ([593](https://github.com/vkurko/calendar/issues/593))

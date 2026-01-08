@@ -1,6 +1,6 @@
-import {assign, createDuration, createEventChunk, eventIntersects, max, min} from '#lib';
+import {assign, assignChunkId, createDuration, createEventChunk, eventIntersects, max, min} from '#lib';
 
-export function createChunks(event, days, monthView) {
+export function createChunks(event, days, monthView, withId = true) {
     let dates = [];
     let firstStart;
     let lastEnd;
@@ -39,6 +39,9 @@ export function createChunks(event, days, monthView) {
         let chunk = createEventChunk(event, firstStart, lastEnd);
         // Chunk layout
         assign(chunk, {gridColumn, gridRow, dates, left, width});
+        if (withId) {
+            assignChunkId(chunk);
+        }
 
         return [chunk];
     }

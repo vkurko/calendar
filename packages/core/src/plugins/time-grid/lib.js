@@ -1,8 +1,9 @@
 import {
-    addDuration, assign, cloneDate, createEventChunk, DAY_IN_SECONDS, eventIntersects, isFunction, subtractDay
+    addDuration, assign, assignChunkId, cloneDate, createEventChunk, DAY_IN_SECONDS, eventIntersects, isFunction,
+    subtractDay
 } from '#lib';
 
-export function createChunks(event, days) {
+export function createChunks(event, days, withId = true) {
     let chunks = [];
     for (let {gridColumn, gridRow, resource, start, end, disabled} of days) {
         if (!disabled && eventIntersects(event, start, end, resource)) {
@@ -15,6 +16,9 @@ export function createChunks(event, days) {
                 height: (chunk.end - chunk.start) / 1000,
                 maxHeight: (end - chunk.start) / 1000
             });
+            if (withId) {
+                assignChunkId(chunk);
+            }
             chunks.push(chunk);
         }
     }

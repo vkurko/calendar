@@ -92,7 +92,7 @@ export function iEventChunks(mainState, viewState) {
             }
             untrack(() => {
                 for (let days of grid) {
-                    iChunks = iChunks.concat(createAllDayChunks(event, days));
+                    iChunks = iChunks.concat(createAllDayChunks(event, days, false));
                 }
             });
         }

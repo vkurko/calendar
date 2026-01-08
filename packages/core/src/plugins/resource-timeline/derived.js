@@ -74,7 +74,7 @@ export function iEventChunks(mainState, viewState) {
     return () => {
         // Dependencies
         let {iEvents} = mainState;
-        let {grid} = viewState;
+        let {grid, monthView} = viewState;
 
         let iChunks = [];
 
@@ -84,7 +84,7 @@ export function iEventChunks(mainState, viewState) {
             }
             untrack(() => {
                 for (let days of grid) {
-                    iChunks = iChunks.concat(createChunks(event, days));
+                    iChunks = iChunks.concat(createChunks(event, days, monthView, false));
                 }
             });
         }
