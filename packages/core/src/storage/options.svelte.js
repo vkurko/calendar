@@ -11,6 +11,7 @@ function createOptions(plugins) {
             today: 'today',
         },
         customButtons: {},
+        customScrollbars: false,  // ec option
         date: new Date(),
         datesSet: undefined,
         dayHeaderFormat: {
@@ -31,7 +32,7 @@ function createOptions(plugins) {
         eventColor: undefined,
         eventContent: undefined,
         eventDidMount: undefined,
-        eventFilter: undefined,    // ec option
+        eventFilter: undefined,  // ec option
         eventMouseEnter: undefined,
         eventMouseLeave: undefined,
         eventOrder: undefined,
@@ -65,6 +66,7 @@ function createOptions(plugins) {
             buttonGroup: 'ec-button-group',
             calendar: 'ec',
             colHead: 'ec-col-head',
+            customScrollbars: 'ec-custom-scrollbars',
             day: 'ec-day',
             dayHead: 'ec-day-head',
             disabled: 'ec-disabled',

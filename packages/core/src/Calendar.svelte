@@ -17,7 +17,7 @@
 
     let {
         auxComponents, features, events, interaction, iClass, view, viewComponent: View,
-        options: {date, duration, height, hiddenDays, theme}
+        options: {date, duration, height, hiddenDays, customScrollbars, theme}
     } = $derived(mainState);
 
     // Reactively update options that did change
@@ -131,7 +131,8 @@
     class={[
         theme.calendar,
         theme.view,
-        iClass && theme[iClass]
+        iClass && theme[iClass],
+        customScrollbars && theme.customScrollbars
     ]}
     style:height
     role="{features.includes('list') ? 'list' : 'table'}"

@@ -41,6 +41,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [buttonText](#buttontext)
   - [columnWidth](#columnwidth)
   - [customButtons](#custombuttons)
+  - [customScrollbars](#customscrollbars)
   - [date](#date)
   - [dateClick](#dateclick)
   - [datesAboveResources](#datesaboveresources)
@@ -67,9 +68,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
-  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
+  - [eventDurationEditable](#eventdurationeditable)
   - [eventFilter](#eventfilter)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
@@ -246,8 +247,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.2/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.2/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -469,6 +470,14 @@ function (customButtons) {
 <td>An object with default custom buttons</td>
 </tr>
 </table>
+
+### customScrollbars
+- Type `boolean`
+- Default `false`
+
+Enables scrollbars styling, which in turn prevents the scrollbars from being hidden in [supported](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-scrollbar#browser_compatibility) browsers.
+
+This option can be useful, for example, for macOS users in `resourceTimeline` views to indicate that the calendar can be scrolled horizontally. On macOS, scrollbars can be hidden completely, and this option ensures they are always visible in [supported](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-scrollbar#browser_compatibility) browsers.
 
 ### date
 - Type `Date` or `string`

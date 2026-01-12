@@ -6,6 +6,7 @@
 @import "./events.css";
 @import "./now-indicator.css";
 @import "./popup.css";
+@import "./scrollbars.css";
 
 .ec {
     display: flex;

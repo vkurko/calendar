@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.2.2
+January 12, 2026
+* Added `customScrollbars` option ([600](https://github.com/vkurko/calendar/issues/600))
+
 ## 5.2.1
 January 8, 2026
 * Fixed a regression bug ([598](https://github.com/vkurko/calendar/issues/598))
