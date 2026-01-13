@@ -56,7 +56,7 @@
     }
 
     function next() {
-        mainState.setOption('date', nextDate(cloneDate(date), duration));
+        mainState.setOption('date', nextDate(cloneDate(date), duration, hiddenDays));
     }
 
     function setToday() {

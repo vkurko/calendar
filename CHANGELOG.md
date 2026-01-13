@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.2.3
+January 13, 2026
+* Fixed a bug with `hiddenDays` ([601](https://github.com/vkurko/calendar/issues/601))
+
 ## 5.2.2
 January 12, 2026
 * Added `customScrollbars` option ([600](https://github.com/vkurko/calendar/issues/600))

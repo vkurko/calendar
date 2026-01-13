@@ -10,7 +10,7 @@
     let {monthView} = $derived(getContext('view-state'));
 
     let el = $state();
-    let margin = $state(0);
+    let margin = $state(1);
     let event = $derived(chunk.event);
     // Style
     let styles = $derived(style => {

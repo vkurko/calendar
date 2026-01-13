@@ -1,4 +1,4 @@
-import {untrack} from 'svelte';
+import {tick, untrack} from 'svelte';
 import {
     addDay, addDuration, cloneDate, createView, isFunction, prevClosestDay, subtractDay,
     toEventWithLocalDates, toViewWithLocalDates
@@ -101,9 +101,12 @@ export function viewDates(mainState) {
             }
             if (!dates.length && hiddenDays.length && hiddenDays.length < 7) {
                 // Try to move the date
-                while (hiddenDays.includes(options.date.getUTCDay())) {
-                    mainState.setOption('date', addDay(cloneDate(options.date)));
+                while (hiddenDays.includes(date.getUTCDay())) {
+                    addDay(date);
                 }
+                tick().then(() => {
+                    mainState.setOption('date', date);
+                });
             }
         });
 

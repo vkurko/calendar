@@ -135,8 +135,10 @@ export function toSeconds(duration) {
 /**
  * Move the date forward (when pressing the next button)
  */
-export function nextDate(date, duration) {
+export function nextDate(date, duration, hiddenDays) {
     addDuration(date, duration);
+    _skipHiddenDays(date, hiddenDays, addDay);
+
     return date;
 }
 
@@ -145,12 +147,17 @@ export function nextDate(date, duration) {
  */
 export function prevDate(date, duration, hiddenDays) {
     subtractDuration(date, duration);
+    _skipHiddenDays(date, hiddenDays, subtractDay);
+
+    return date;
+}
+
+function _skipHiddenDays(date, hiddenDays, dateFn) {
     if (hiddenDays.length && hiddenDays.length < 7) {
         while (hiddenDays.includes(date.getUTCDay())) {
-            subtractDay(date);
+            dateFn(date);
         }
     }
-    return date;
 }
 
 /**
