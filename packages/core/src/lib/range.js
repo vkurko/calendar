@@ -17,13 +17,3 @@ export function createDateRange(input) {
 export function outsideRange(date, range) {
     return range.start && date < range.start || range.end && date > range.end;
 }
-
-export function limitToRange(date, range) {
-    if (range.start && date < range.start) {
-        date = range.start;
-    }
-    if (range.end && date > range.end) {
-        date = range.end;
-    }
-    return date;
-}

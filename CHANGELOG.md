@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.2.4
+January 20, 2026
+* `filterResourcesWithEvents` now, as in v4.x.x, does not take `background` events into account
+* `eventFilter` now is triggered when the view changes ([557](https://github.com/vkurko/calendar/discussions/557))
+
 ## 5.2.3
 January 13, 2026
 * Fixed a bug with `hiddenDays` ([601](https://github.com/vkurko/calendar/issues/601))

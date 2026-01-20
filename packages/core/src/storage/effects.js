@@ -8,9 +8,12 @@ export function loadEvents(mainState) {
     let fetching = 0;
     return () => {
         // Dependencies
-        let {activeRange, fetchedRange, options: {events, eventSources, lazyFetching, loading}} = mainState;
+        let {activeRange, fetchedRange, viewDates, options: {events, eventSources, lazyFetching, loading}} = mainState;
 
         untrack(() => {
+            if (!viewDates.length) {
+                return;
+            }
             if (!eventSources.length) {
                 mainState.events = events;
             }

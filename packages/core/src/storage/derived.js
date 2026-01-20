@@ -45,7 +45,7 @@ export function activeRange(mainState) {
 export function filteredEvents(mainState) {
     return () => {
         // Dependencies
-        let {events, options: {eventFilter, eventOrder, filterEventsWithResources, resources}} = mainState;
+        let {events, options: {eventFilter, eventOrder, filterEventsWithResources, resources, view}} = mainState;
 
         let result = [...events];
 

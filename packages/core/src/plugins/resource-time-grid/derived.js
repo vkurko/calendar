@@ -1,6 +1,6 @@
 import {untrack} from 'svelte';
 import {
-    addDay, addDuration, cloneDate, createResources, datesEqual, eventIntersects, outsideRange
+    addDay, addDuration, bgEvent, cloneDate, createResources, datesEqual, eventIntersects, outsideRange
 } from '#lib';
 
 export function viewResources(mainState) {
@@ -16,7 +16,7 @@ export function viewResources(mainState) {
             if (filterResourcesWithEvents) {
                 result = resources.filter(
                     resource => filteredEvents.some(
-                        event => eventIntersects(event, activeRange.start, activeRange.end, resource)
+                        event => !bgEvent(event.display) && eventIntersects(event, activeRange.start, activeRange.end, resource)
                     )
                 );
             }
