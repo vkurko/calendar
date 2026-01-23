@@ -6,26 +6,29 @@ export function createChunks(event, days, monthView, withId = true) {
     let lastEnd;
     let gridColumn;
     let gridRow;
+    let resource;
     let left;
     let width = 0;
-    for (let {gridColumn: column, gridRow: row, resource, dayStart, dayEnd, start, end, disabled} of days) {
+    for (let {gridColumn: column, gridRow: row, resource: dayResource, dayStart, dayEnd, start, end, disabled} of days) {
         if (!disabled) {
             if (monthView) {
-                if (eventIntersects(event, dayStart, dayEnd, resource)) {
+                if (eventIntersects(event, dayStart, dayEnd, dayResource)) {
                     if (!dates.length) {
                         firstStart = dayStart;
                         gridColumn = column;
                         gridRow = row;
+                        resource = dayResource;
                     }
                     dates.push(dayStart);
                     lastEnd = end;
                 }
             } else {
-                if (eventIntersects(event, start, end, resource)) {
+                if (eventIntersects(event, start, end, dayResource)) {
                     if (!dates.length) {
                         firstStart = start;
                         gridColumn = column;
                         gridRow = row;
+                        resource = dayResource;
                         left = max(event.start - start, 0) / 1000;
                     }
                     dates.push(dayStart);
@@ -38,7 +41,7 @@ export function createChunks(event, days, monthView, withId = true) {
     if (dates.length) {
         let chunk = createEventChunk(event, firstStart, lastEnd);
         // Chunk layout
-        assign(chunk, {gridColumn, gridRow, dates, left, width});
+        assign(chunk, {gridColumn, gridRow, resource, dates, left, width});
         if (withId) {
             assignChunkId(chunk);
         }

@@ -1,7 +1,7 @@
 <script>
     import {getContext, tick} from 'svelte';
     import {ColHead, DayHeader} from '#components';
-    import {datesEqual, isRtl} from '#lib';
+    import {datesEqual, isRtl, length} from '#lib';
     import ViewState from './state.svelte.js';
     import Label from './Label.svelte';
     import View from '../time-grid/View.svelte';
@@ -28,7 +28,7 @@
             for (let days of grid) {
                 let day = days[0];
                 if (datesEqual(day.dayStart, today)) {
-                    mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / (grid.length * days.length) * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
+                    mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / (length(grid) * length(days)) * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
                     break;
                 }
             }
@@ -42,10 +42,10 @@
             {@const {dayStart: date, resource, disabled, highlight} = days[0]}
             <ColHead
                 {date}
-                className={grid[0].length > 1 ? theme.colGroup : undefined}
+                className={length(grid[0]) > 1 ? theme.colGroup : undefined}
                 weekday={datesAboveResources}
-                colSpan={days.length}
-                colIndex={1 + i * days.length}
+                colSpan={length(days)}
+                colIndex={1 + i * length(days)}
                 disabled={datesAboveResources && disabled}
                 highlight={datesAboveResources && highlight}
             >
@@ -56,11 +56,11 @@
                 {/if}
             </ColHead>
         {/each}
-        {#if grid[0].length > 1}
+        {#if length(grid[0]) > 1}
             {#each grid as days, i}
                 {#each days as day, j}
                     {@const {dayStart: date, resource, disabled, highlight} = day}
-                    <ColHead {date} colIndex={1 + j + i * days.length} {disabled} {highlight}>
+                    <ColHead {date} colIndex={1 + j + i * length(days)} {disabled} {highlight}>
                         {#if datesAboveResources}
                             <Label {resource} {date}/>
                         {:else}
@@ -74,14 +74,14 @@
 
     {#snippet nowIndicator()}
         {#if datesAboveResources}
-            <NowIndicator days={grid.flat()} span={grid[0].length}/>
+            <NowIndicator days={grid.flat()} span={length(grid[0])}/>
         {:else}
-            {#if grid[0].length > 1}
+            {#if length(grid[0]) > 1}
                 {#each grid as days}
                     <NowIndicator {days} />
                 {/each}
             {:else}
-                <NowIndicator days={grid.flat()} span={grid.length}/>
+                <NowIndicator days={grid.flat()} span={length(grid)}/>
             {/if}
         {/if}
     {/snippet}

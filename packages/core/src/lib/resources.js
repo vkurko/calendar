@@ -1,4 +1,5 @@
 import {setPayload} from './payload.js';
+import {empty} from './utils.js';
 
 export function createResources(input) {
     let result = [];
@@ -30,20 +31,20 @@ export function createResource(input) {
     return {
         id: String(input.id),
         title: input.title || '',
-        eventBackgroundColor: input.eventBackgroundColor,
-        eventTextColor: input.eventTextColor,
+        eventBackgroundColor: eventBackgroundColor(input),
+        eventTextColor: eventTextColor(input),
         extendedProps: input.extendedProps ?? {}
     };
 }
 
-export function resourceBackgroundColor(event, resources) {
-    return findResource(event, resources)?.eventBackgroundColor;
+export function eventBackgroundColor(resource) {
+    return resource?.eventBackgroundColor;
 }
 
-export function resourceTextColor(event, resources) {
-    return findResource(event, resources)?.eventTextColor;
+export function eventTextColor(resource) {
+    return resource?.eventTextColor;
 }
 
-function findResource(event, resources) {
-    return resources.find(resource => event.resourceIds.includes(resource.id));
+export function findFirstResource(event, resources) {
+    return empty(event.resourceIds) ? undefined : resources.find(resource => event.resourceIds.includes(resource.id));
 }

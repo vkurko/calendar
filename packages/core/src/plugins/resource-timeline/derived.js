@@ -141,7 +141,7 @@ export function daySlots(mainState, viewState) {
 export function nestedResources(mainState) {
     return () => {
         // Dependencies
-        let {options: {resources}} = mainState;
+        let {resources} = mainState;
 
         let nested;
 

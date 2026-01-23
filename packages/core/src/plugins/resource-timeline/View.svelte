@@ -1,6 +1,8 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
-    import {max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl} from '#lib';
+    import {
+        max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl, empty, length
+    } from '#lib';
     import {getSlotTimeLimits} from './lib.js';
     import ViewState from './state.svelte.js';
     import {ColHead, DayHeader} from '#components';
@@ -23,7 +25,7 @@
     // Handle scrollTime
     $effect(() => {
         scrollTime;
-        if (viewDates.length) {
+        if (!empty(viewDates)) {
             tick().then(scrollToTime);
         }
     });
@@ -35,7 +37,7 @@
                 let days = grid[0];
                 for (let day of days) {
                     if (datesEqual(day.dayStart, today)) {
-                        mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / days.length * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
+                        mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / length(days) * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
                         break;
                     }
                 }
@@ -65,12 +67,12 @@
     $effect(reposition);
 </script>
 
-{#if grid.length && grid[0].length}
+{#if !empty(grid) && !empty(grid[0])}
     <section
         bind:this={mainState.mainEl}
         class="{theme.main}"
-        style:--ec-grid-cols="{grid[0].length}"
-        style:--ec-grid-rows="{grid.length > 1 ? `repeat(${grid.length - 1}, auto)` : ''} 1fr"
+        style:--ec-grid-cols="{length(grid[0])}"
+        style:--ec-grid-rows="{length(grid) > 1 ? `repeat(${length(grid) - 1}, auto)` : ''} 1fr"
         style:--ec-col-width="{columnWidth ?? 'minmax(4em, 1fr)'}"
         style:--ec-slot-label-periodicity="{slotLabelPeriodicity}"
         style:--ec-slot-height="{slotHeight}px"
@@ -121,7 +123,7 @@
             <div class="{theme.grid}" role="row">
                 {#each grid as days, i}
                     {#each days as day, j}
-                        <Day {day} noIeb={j + 1 === days.length} noBeb={i + 1 === grid.length}/>
+                        <Day {day} noIeb={j + 1 === length(days)} noBeb={i + 1 === length(grid)}/>
                     {/each}
                 {/each}
             </div>

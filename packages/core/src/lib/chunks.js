@@ -11,6 +11,7 @@ import {assign} from './utils.js';
  *   zeroDuration: boolean,
  *   gridColumn?: Number,
  *   gridRow?: Number,
+ *   resource?: Object,
  *   group?: Object,
  *   groupColumn?: Number,
  *   dates?: Array
@@ -44,20 +45,22 @@ export function createAllDayChunks(event, days, withId = true) {
     let lastEnd;
     let gridColumn;
     let gridRow;
-    for (let {gridColumn: column, gridRow: row, resource, dayStart, dayEnd, disabled} of days) {
-        if (!disabled && eventIntersects(event, dayStart, dayEnd, resource)) {
+    let resource;
+    for (let {gridColumn: column, gridRow: row, resource: dayResource, dayStart, dayEnd, disabled} of days) {
+        if (!disabled && eventIntersects(event, dayStart, dayEnd, dayResource)) {
             dates.push(dayStart);
             lastEnd = dayEnd;
             if (!gridColumn) {
                 gridColumn = column;
                 gridRow = row;
+                resource = dayResource;
             }
         }
     }
     if (dates.length) {
         let chunk = createEventChunk(event, dates[0], lastEnd);
         // Chunk layout
-        assign(chunk, {gridColumn, gridRow, dates});
+        assign(chunk, {gridColumn, gridRow, resource, dates});
         if (withId) {
             assignChunkId(chunk);
         }

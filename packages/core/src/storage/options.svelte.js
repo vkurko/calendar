@@ -1,6 +1,6 @@
 import {untrack} from 'svelte';
 import {
-    createDate, createDateRange, createDuration, createEvents, createEventSources, createResources, entries,
+    createDate, createDateRange, createDuration, createEvents, createEventSources, createResources, entries, isArray,
     isFunction, keys, setMidnight
 } from '#lib';
 import {SvelteMap} from "svelte/reactivity";
@@ -55,6 +55,7 @@ function createOptions(plugins) {
         lazyFetching: true,
         loading: undefined,
         locale: undefined,
+        refetchResourcesOnNavigate: false,
         resources: [],
         selectable: false,
         theme: {
@@ -110,13 +111,13 @@ function createOptions(plugins) {
 
 function createParsers(plugins) {
     let parsers = {
-        date: date => setMidnight(createDate(date)),
+        date: input => setMidnight(createDate(input)),
         duration: createDuration,
         events: createEvents,
         eventSources: createEventSources,
-        hiddenDays: days => [...new Set(days)],
-        highlightedDates: dates => dates.map(date => setMidnight(createDate(date))),
-        resources: createResources,
+        hiddenDays: input => [...new Set(input)],
+        highlightedDates: input => input.map(item => setMidnight(createDate(item))),
+        resources: input => isArray(input) ? createResources(input) : input,
         validRange: createDateRange
     };
 

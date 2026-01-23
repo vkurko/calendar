@@ -105,6 +105,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   </td><td>
 
   - [pointer](#pointer)
+  - [refetchResourcesOnNavigate](#refetchresourcesonnavigate)
   - [resizeConstraint](#resizeconstraint)
   - [resources](#resources)
   - [resourceLabelContent](#resourcelabelcontent)
@@ -151,7 +152,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [getEvents](#getevents)
   - [removeEventById](#removeeventbyid-id-)
   - [updateEvent](#updateevent-event-)
+  </td><td>
+
   - [refetchEvents](#refetchevents)
+  - [refetchResources](#refetchresources)
   </td><td>
 
   - [dateFromPoint](#datefrompoint-x-y-)
@@ -247,8 +251,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.4/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.2.4/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -774,7 +778,7 @@ If you don't need both, use the more specific [eventStartEditable](#eventstarted
 - Type `array`
 - Default `[]`
 
-Array of plain objects that will be parsed into [Event](#event-object) objects and displayed on the calendar.
+Array of plain objects that will be [parsed](#parsing-event-from-a-plain-object) into [Event](#event-object) objects and displayed on the calendar.
 
 This option is not used if the `eventSources` option is provided.
 
@@ -1542,7 +1546,7 @@ This option is used instead of the `events` option.
 
 `EventSource` should be an object with one of the following sets of properties:
 
-#### 1. Fetch events from a URL
+#### 1. Fetch events JSON from a URL
 <table>
 <tr>
 <td>
@@ -1551,7 +1555,7 @@ This option is used instead of the `events` option.
 </td>
 <td>
 
-A URL that the calendar will fetch [Event](#event-object) objects from. HTTP requests with the following parameters will be sent to this URL whenever the calendar needs new event data:
+A URL from which the calendar will fetch an array of [parsable](#parsing-event-from-a-plain-object) [Event](#event-object) objects in JSON format. HTTP requests with the following parameters will be sent to this URL whenever the calendar needs new event data:
 <table>
 <tr>
 <td>
@@ -1642,7 +1646,7 @@ function(fetchInfo, successCallback, failureCallback) { }
 </tr>
 </table>
 
-The `successCallback` function must be called by the custom function with an array of parsable [Event](#event-object) objects.
+The `successCallback` function must be called by the custom function with an array of [parsable](#parsing-event-from-a-plain-object) [Event](#event-object) objects.
 
 If there is any failure (e.g., if an AJAX request fails), then call the `failureCallback` instead. It accepts an argument with information about the failure.
 
@@ -1706,7 +1710,7 @@ Determines whether events that do not belong to the current array of [resources]
 - Type `boolean`
 - Default `false`
 
-Determines whether resources with no events for the current range should be hidden in the resource view.
+Determines whether resources with no events for the current range should be hidden in the resource view. Background events are not taken into account.
 
 ### firstDay
 - Type `integer`
@@ -1829,11 +1833,13 @@ Each date can be either an ISO8601 date string like `'2026-12-31'`, or a JavaScr
 - Type `boolean`
 - Default `true`
 
-Determines when event fetching should occur.
+Determines when event and resource fetching should occur.
 
 When set to `true` (the default), the calendar will only fetch events when it absolutely needs to, minimizing HTTP requests. For example, say your calendar starts out in month view, in February. EventCalendar will fetch events for the entire month of February and store them in its internal storage. Then, say the user switches to week view and begins browsing the weeks in February. The calendar will avoid fetching events because it already has this information stored.
 
-When set to `false`, the calendar will fetch events any time the view is switched, or any time the current date changes (for example, as a result of the user clicking prev/next).
+When set to `false`, the calendar will fetch events any time the current date changes (for example, as a result of the user clicking prev/next).
+
+This also applies to resources if [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled.
 
 ### listDayFormat
 - Type `object` or `function`
@@ -1885,7 +1891,7 @@ function (date) {
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when event fetching starts/stops.
+Callback function that is triggered when event or resource fetching starts/stops.
 
 ```js
 function (isLoading) { }
@@ -1898,7 +1904,7 @@ function (isLoading) { }
 </td>
 <td>
 
-`true` when the calendar begins fetching events, `false` when it’s done.
+`true` when the calendar begins fetching events or resources, `false` when it’s done.
 </td>
 </tr>
 </table>
@@ -2008,6 +2014,12 @@ Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` vi
 
 Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` and other views.
 
+### refetchResourcesOnNavigate
+- Type `boolean`
+- Default `false`
+
+Determines whether to refetch [resources](#resources) when the user navigates to a different date.
+
 ### resizeConstraint
 - Type `function`
 - Default `undefined`
@@ -2018,10 +2030,112 @@ Callback function that limits the date/time range within which the event is allo
 The function is triggered during resizing for each cursor movement and takes the same parameters as [eventResize](#eventresize). The function should return `true` if the new size is allowed, and `false` otherwise.
 
 ### resources
-- Type `array`
+- Type `array`, `object` or `function`
 - Default `[]`
 
-Array of plain objects that will be parsed into [Resource](#resource-object) objects for displaying in the resource view.
+The source of resource data displayed in resource views. It can be provided in one of three ways:
+
+#### 1. Array of plain objects
+The provided plain objects will be parsed into [Resource](#resource-object) objects.
+
+#### 2. Fetch resources JSON from a URL
+For this option, provide an object with the following properties:
+<table>
+<tr>
+<td>
+
+`url`
+</td>
+<td>
+
+A URL from which the calendar will fetch an array of [parsable](#parsing-resource-from-a-plain-object) [Resource](#resource-object) objects in JSON format. If [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled then HTTP requests with the following parameters will be sent to the URL whenever the user navigates to a different date:
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>
+Start date of the range the calendar needs events for
+</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>
+End date of the range the calendar needs events for
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+
+`method`
+</td>
+<td>
+
+HTTP request method. Default `'GET'`
+</td>
+</tr>
+<tr>
+<td>
+
+`extraParams`
+</td>
+<td>
+
+Other GET/POST data you want to send to the server. Can be a plain object or a function that returns an object. Default `{}`
+</td>
+</tr>
+</table>
+
+#### 3. Execute custom function
+You can also provide a custom function that returns an array of resources.
+```js
+function(fetchInfo, successCallback, failureCallback) { }
+```
+If [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled, the function will be called every time the user navigates to a different date. In this case,
+`fetchInfo` will be an object with the following properties (otherwise, it is an empty object):
+<table>
+<tr>
+<td>
+
+`start`
+</td>
+<td>JavaScript Date object for the beginning of the range the calendar needs events for</td>
+</tr>
+<tr>
+<td>
+
+`end`
+</td>
+<td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
+</tr>
+<tr>
+<td>
+
+`startStr`
+</td>
+<td>ISO8601 string representation of the start date</td>
+</tr>
+<tr>
+<td>
+
+`endStr`
+</td>
+<td>ISO8601 string representation of the end date</td>
+</tr>
+</table>
+
+The `successCallback` function must be called by the custom function with an array of [parsable](#parsing-resource-from-a-plain-object) [Resource](#resource-object) objects.
+
+If there is any failure (e.g., if an AJAX request fails), then call the `failureCallback` instead. It accepts an argument with information about the failure.
+
+Instead of calling `successCallback` and `failureCallback`, you may return the resulting array of resources or return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) (or [thenable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)) object instead.
 
 ### resourceLabelContent
 - Type `string`, `object`or `function`
@@ -2670,7 +2784,12 @@ Updates a single event with the matching `event`.`id`.
 ### refetchEvents()
 - Return value `EventCalendar` The calendar instance for chaining
 
-Refetches events from all sources.
+Refetches events from all [sources](#eventsources).
+
+### refetchResources()
+- Return value `EventCalendar` The calendar instance for chaining
+
+Refetches [resources](#resources) from URL or custom function.
 
 ### dateFromPoint( x, y )
 - Return value `object` or `null`

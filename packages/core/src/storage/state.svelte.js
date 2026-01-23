@@ -1,7 +1,9 @@
 import {SvelteMap} from 'svelte/reactivity';
 import {createDate, identity, intl, intlRange, setMidnight} from '#lib';
 import {optionsState} from './options.svelte.js';
-import {loadEvents, runDatesSet, runEventAllUpdated, runViewDidMount, setNowAndToday} from './effects.js';
+import {
+    createLoadingInvoker, loadEvents, loadResources, runDatesSet, runEventAllUpdated, runViewDidMount, setNowAndToday
+} from './effects.js';
 import {activeRange, currentRange, filteredEvents, view, viewDates, viewTitle} from './derived.js';
 
 export default class State {
@@ -18,11 +20,12 @@ export default class State {
         this.auxComponents = $state([]);
         this.currentRange = $derived.by(currentRange(this));
         this.activeRange = $derived.by(activeRange(this));
-        this.fetchedRange = $state.raw({start: undefined, end: undefined});
+        this.fetchedRange = $state({events: {}, resources: {}});
         this.events = $state.raw([]);
         this.filteredEvents = $derived.by(filteredEvents(this));
         this.mainEl = $state();
         this.now = $state(createDate());
+        this.resources = $state.raw([]);
         this.today = $state(setMidnight(createDate()));
         this.intlEventTime = $derived.by(intlRange(this, 'eventTimeFormat'));
         this.intlDayHeader = $derived.by(intl(this, 'dayHeaderFormat'));
@@ -50,8 +53,10 @@ export default class State {
     }
 
     #initEffects() {
+        let loading = createLoadingInvoker(this.options);
         $effect.pre(setNowAndToday(this));
-        $effect(loadEvents(this));
+        $effect(loadEvents(this, loading));
+        $effect(loadResources(this, loading));
         $effect(runDatesSet(this));
         $effect(runEventAllUpdated(this));
         $effect(runViewDidMount(this));

@@ -7,7 +7,7 @@ export function viewResources(mainState) {
     return () => {
         // Dependencies
         let {
-            activeRange, filteredEvents, options: {filterResourcesWithEvents, resources}, extensions: {viewResources}
+            activeRange, filteredEvents, resources, options: {filterResourcesWithEvents}, extensions: {viewResources}
         } = mainState;
 
         let result = viewResources ? viewResources(resources) : resources;

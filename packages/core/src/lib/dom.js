@@ -52,3 +52,12 @@ export function listen(node, event, handler, options) {
     node.addEventListener(event, handler, options);
     return () => node.removeEventListener(event, handler, options);
 }
+
+export function stopPropagation(fn, _this = undefined) {
+    return function (jsEvent) {
+        jsEvent.stopPropagation();
+        if (fn) {
+            fn.call(_this, jsEvent);
+        }
+    };
+}

@@ -1,6 +1,6 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
-    import {contentFrom, resizeObserver, runReposition, toSeconds} from '#lib';
+    import {contentFrom, empty, length, resizeObserver, runReposition, toSeconds} from '#lib';
     import {createAllDayContent} from './lib.js';
     import ViewState from './state.svelte.js';
     import {ColHead, DayHeader} from '#components';
@@ -30,7 +30,7 @@
     // Handle scrollTime
     $effect(() => {
         scrollTime;
-        if (viewDates.length) {
+        if (!empty(viewDates)) {
             tick().then(scrollToTime);
         }
     });
@@ -48,12 +48,12 @@
     $effect(reposition);
 </script>
 
-{#if grid.length && grid[0].length}
+{#if !empty(grid) && !empty(grid[0])}
     <section
         bind:this={mainState.mainEl}
         class="{theme.main}"
-        style:--ec-grid-cols="{grid.length * grid[0].length}"
-        style:--ec-col-group-span="{grid[0].length}"
+        style:--ec-grid-cols="{length(grid) * length(grid[0])}"
+        style:--ec-col-group-span="{length(grid[0])}"
         style:--ec-col-width="{columnWidth ?? 'minmax(0, 1fr)'}"
         style:--ec-slot-label-periodicity="{slotLabelPeriodicity}"
         style:--ec-slot-height="{slotHeight}px"
@@ -81,7 +81,7 @@
                     <div class="{theme.grid}" role="row">
                         {#each grid as days, i}
                             {#each days as day, j}
-                                <Day {day} allDay noIeb={i + 1 === grid.length && j + 1 === days.length}/>
+                                <Day {day} allDay noIeb={i + 1 === length(grid) && j + 1 === length(days)}/>
                             {/each}
                         {/each}
                     </div>
@@ -118,7 +118,7 @@
             <div class="{theme.grid}" role="row">
                 {#each grid as days, i}
                     {#each days as day, j}
-                        <Day {day} noIeb={i + 1 === grid.length && j + 1 === days.length} noBeb/>
+                        <Day {day} noIeb={i + 1 === length(grid) && j + 1 === length(days)} noBeb/>
                     {/each}
                 {/each}
             </div>

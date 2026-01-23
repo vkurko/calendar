@@ -1,5 +1,11 @@
 # EventCalendar changelog
 
+## 5.3.0
+January 23, 2026
+* Added ability to provide resources as a function ([565](https://github.com/vkurko/calendar/issues/565))
+* Added `refetchResources()` method ([376](https://github.com/vkurko/calendar/issues/376))
+* Added `refetchResourcesOnNavigate` option
+
 ## 5.2.4
 January 20, 2026
 * `filterResourcesWithEvents` now, as in v4.x.x, does not take `background` events into account

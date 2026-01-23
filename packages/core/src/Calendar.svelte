@@ -48,8 +48,13 @@
         return isDate(value) ? toLocalDate(value) : value;
     }
 
+    export function refetchResources() {
+        mainState.fetchedRange.resources = {};
+        return this;
+    }
+
     export function refetchEvents() {
-        mainState.fetchedRange = {start: undefined, end: undefined};
+        mainState.fetchedRange.events = {};
         return this;
     }
 

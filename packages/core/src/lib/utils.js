@@ -30,6 +30,14 @@ export function symbol() {
     return Symbol('ec');
 }
 
+export function length(array) {
+    return array.length;
+}
+
+export function empty(array) {
+    return !length(array);
+}
+
 export function isArray(value) {
     return Array.isArray(value);
 }
@@ -61,15 +69,6 @@ export function runAll(fns) {
 export function noop() {}
 
 export const identity = (x) => x;
-
-export function stopPropagation(fn, _this = undefined) {
-    return function (event) {
-        event.stopPropagation();
-        if (fn) {
-            fn.call(_this, event);
-        }
-    };
-}
 
 export function isRtl() {
     return window.getComputedStyle(document.documentElement).direction === 'rtl';

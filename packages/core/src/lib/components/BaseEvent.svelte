@@ -2,7 +2,8 @@
     import {getContext, onMount} from 'svelte';
     import {
         bgEvent, createEventClasses, createEventContent, entries, helperEvent, identity, isFunction, keyEnter,
-        resourceBackgroundColor, resourceTextColor, contentFrom, toEventWithLocalDates, toViewWithLocalDates
+        findFirstResource, contentFrom, toEventWithLocalDates, toViewWithLocalDates, eventBackgroundColor as getEventBackgroundColor,
+        eventTextColor as getEventTextColor
     } from '#lib';
 
     let {
@@ -14,17 +15,22 @@
         body
     } = $props();
 
-    let {intlEventTime, view, options: {
+    let {intlEventTime, resources, view, options: {
         displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount, eventClassNames,
-        eventMouseEnter, eventMouseLeave, eventTextColor, resources, theme
+        eventMouseEnter, eventMouseLeave, eventTextColor, theme
     }} = $derived(getContext('state'));
 
     let event = $derived(chunk.event);
     let display = $derived(chunk.event.display);
 
     // Style
-    let bgColor = $derived(event.backgroundColor ?? resourceBackgroundColor(event, resources) ?? eventBackgroundColor ?? eventColor);
-    let txtColor = $derived(event.textColor ?? resourceTextColor(event, resources) ?? eventTextColor);
+    let bgColor = $derived(
+        event.backgroundColor ?? getEventBackgroundColor(chunk.resource ?? findFirstResource(event, resources)) ??
+        eventBackgroundColor ?? eventColor
+    );
+    let txtColor = $derived(
+        event.textColor ?? getEventTextColor(chunk.resource ?? findFirstResource(event, resources)) ?? eventTextColor
+    );
     let style = $derived(entries(styles(
         {'background-color': bgColor, 'color': txtColor}
     )).map(entry => `${entry[0]}:${entry[1]}`).concat(event.styles).join(';'));

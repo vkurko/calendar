@@ -1,6 +1,6 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
-    import {contentFrom, resizeObserver, runReposition} from '#lib';
+    import {contentFrom, empty, length, resizeObserver, runReposition} from '#lib';
     import ViewState from './state.svelte.js';
     import Day from './Day.svelte';
     import Event from './Event.svelte';
@@ -28,12 +28,12 @@
     $effect(hide);
 </script>
 
-{#if grid.length && grid[0].length}
+{#if !empty(grid) && !empty(grid[0])}
     <section
         bind:this={mainState.mainEl}
         class={[theme.main, dayMaxEvents === true && theme.uniform]}
-        style:--ec-grid-cols="{grid[0].length}"
-        style:--ec-grid-rows="{grid.length}"
+        style:--ec-grid-cols="{length(grid[0])}"
+        style:--ec-grid-rows="{length(grid)}"
         {@attach resizeObserver(reposition)}
     >
         <header class="{theme.header}">
@@ -57,7 +57,7 @@
             <div bind:this={viewState.gridEl} class="{theme.grid}">
                 {#each grid as days, i}
                     {#each days as day, j}
-                        <Day {day} noIeb={j + 1 === days.length} noBeb={i + 1 === grid.length}/>
+                        <Day {day} noIeb={j + 1 === length(days)} noBeb={i + 1 === length(grid)}/>
                     {/each}
                 {/each}
             </div>

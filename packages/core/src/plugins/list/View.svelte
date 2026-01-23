@@ -1,6 +1,6 @@
 <script>
     import {getContext, setContext} from 'svelte';
-    import {addDay, cloneDate, contentFrom, bgEvent, isFunction, toViewWithLocalDates} from '#lib';
+    import {addDay, cloneDate, contentFrom, bgEvent, isFunction, toViewWithLocalDates, empty} from '#lib';
     import ViewState from './state.svelte.js';
     import Day from './Day.svelte';
 
@@ -12,7 +12,7 @@
 
     let noEvents = $derived.by(() => {
         let noEvents = true;
-        if (viewDates.length) {
+        if (!empty(viewDates)) {
             let start = viewDates[0];
             let end = addDay(cloneDate(viewDates.at(-1)));
             for (let event of filteredEvents) {

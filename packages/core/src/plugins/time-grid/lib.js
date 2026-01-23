@@ -12,6 +12,7 @@ export function createChunks(event, days, withId = true) {
             assign(chunk, {
                 gridColumn,
                 gridRow,
+                resource,
                 top: (chunk.start - start) / 1000,
                 height: (chunk.end - chunk.start) / 1000,
                 maxHeight: (end - chunk.start) / 1000
