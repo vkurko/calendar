@@ -30,9 +30,11 @@
 </script>
 
 {#if resizable && eventResizableFromStart}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="{theme.resizer} {theme.start}" onpointerdown={createResizeHandler(true)}></div>
 {/if}
 {@render children()}
 {#if resizable}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div class="{theme.resizer}" onpointerdown={createResizeHandler(false)}></div>
 {/if}

@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.3.1
+January 29, 2026
+* Fixed an issue with `pointercancel` JS event in the mobile version of Firefox ([606](https://github.com/vkurko/calendar/issues/606))
+
 ## 5.3.0
 January 23, 2026
 * Added ability to provide resources as a function ([565](https://github.com/vkurko/calendar/issues/565))

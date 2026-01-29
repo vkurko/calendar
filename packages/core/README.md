@@ -251,8 +251,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.1/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.1/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1546,7 +1546,7 @@ This option is used instead of the `events` option.
 
 `EventSource` should be an object with one of the following sets of properties:
 
-#### 1. Fetch events JSON from a URL
+#### 1. Fetch events from a URL
 <table>
 <tr>
 <td>
@@ -2033,13 +2033,13 @@ The function is triggered during resizing for each cursor movement and takes the
 - Type `array`, `object` or `function`
 - Default `[]`
 
-The source of resource data displayed in resource views. It can be provided in one of three ways:
+Defines the source of resource data displayed in resource views. It can be provided in one of three ways:
 
 #### 1. Array of plain objects
-The provided plain objects will be parsed into [Resource](#resource-object) objects.
+If the resources are predefined and do not change, then pass them as an array of plain objects. The provided plain objects will be [parsed]((#parsing-resource-from-a-plain-object)) into [Resource](#resource-object) objects.
 
-#### 2. Fetch resources JSON from a URL
-For this option, provide an object with the following properties:
+#### 2. Fetch resources from a URL
+To make the calendar load resources from a URL, specify `resources` option as an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2056,7 +2056,7 @@ A URL from which the calendar will fetch an array of [parsable](#parsing-resourc
 `start`
 </td>
 <td>
-Start date of the range the calendar needs events for
+Start date of the range the calendar needs resources for
 </td>
 </tr>
 <tr>
@@ -2065,7 +2065,7 @@ Start date of the range the calendar needs events for
 `end`
 </td>
 <td>
-End date of the range the calendar needs events for
+End date of the range the calendar needs resources for
 </td>
 </tr>
 </table>
@@ -2094,26 +2094,26 @@ Other GET/POST data you want to send to the server. Can be a plain object or a f
 </table>
 
 #### 3. Execute custom function
-You can also provide a custom function that returns an array of resources.
+You can also specify `resources` as a custom function that provides resource data.
 ```js
 function(fetchInfo, successCallback, failureCallback) { }
 ```
 If [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled, the function will be called every time the user navigates to a different date. In this case,
-`fetchInfo` will be an object with the following properties (otherwise, it is an empty object):
+`fetchInfo` will be an object with the following properties (it is an empty object otherwise):
 <table>
 <tr>
 <td>
 
 `start`
 </td>
-<td>JavaScript Date object for the beginning of the range the calendar needs events for</td>
+<td>JavaScript Date object for the beginning of the range the calendar needs resources for</td>
 </tr>
 <tr>
 <td>
 
 `end`
 </td>
-<td>JavaScript Date object for the end of the range the calendar needs events for. Note: This value is exclusive</td>
+<td>JavaScript Date object for the end of the range the calendar needs resources for. Note: This value is exclusive</td>
 </tr>
 <tr>
 <td>

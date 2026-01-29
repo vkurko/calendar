@@ -393,19 +393,22 @@
                     }
                 }
             }
-
-            interacting = false;
-            action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
-                extraDuration = allDay = minResize = selectStep = margin = gridEl = viewport = snapDuration = undefined;
-            mainState.iClass = undefined;
-
-            if (timer) {
-                clearTimeout(timer);
-                timer = undefined;
-            }
+            handlePointerCancel();
         }
 
         noDateClick = false;
+    }
+
+    function handlePointerCancel() {
+        interacting = false;
+        action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
+            extraDuration = allDay = minResize = selectStep = margin = gridEl = viewport = snapDuration = undefined;
+        mainState.iClass = undefined;
+
+        if (timer) {
+            clearTimeout(timer);
+            timer = undefined;
+        }
     }
 
     function findDayEl() {
@@ -641,7 +644,7 @@
 <svelte:window
     onpointermove={handlePointerMove}
     onpointerup={handlePointerUp}
-    onpointercancel={handlePointerUp}
+    onpointercancel={handlePointerCancel}
     onscroll={handleScroll}
     onselectstart={createPreventDefaultHandler(complexAction)}
     oncontextmenu={createPreventDefaultHandler(() => timer)}
