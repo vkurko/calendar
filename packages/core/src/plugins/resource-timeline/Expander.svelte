@@ -4,8 +4,7 @@
 
     let {resource} = $props();
 
-    let {options} = $derived(getContext('state'));
-    let {resources, theme} = $derived(options);
+    let {resources, options: {theme}} = $derived(getContext('state'));
 
     let payload = $state.raw({});
     let expanded = $state(true);
@@ -19,7 +18,7 @@
         expanded = !expanded;
         payload.expanded = expanded;
         toggle(payload.children, expanded);
-        options.resources = [...resources];
+        resources.length = resources.length;
     }
 
     function toggle(children, expand) {

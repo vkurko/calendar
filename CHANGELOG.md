@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.3.2
+February 3, 2026
+* Fixed regression bug related to event manipulation ([611](https://github.com/vkurko/calendar/issues/611))
+
 ## 5.3.1
 January 29, 2026
 * Fixed an issue with `pointercancel` JS event in the mobile version of Firefox ([606](https://github.com/vkurko/calendar/issues/606))

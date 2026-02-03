@@ -5,6 +5,7 @@ import {
     createLoadingInvoker, loadEvents, loadResources, runDatesSet, runEventAllUpdated, runViewDidMount, setNowAndToday
 } from './effects.js';
 import {activeRange, currentRange, filteredEvents, view, viewDates, viewTitle} from './derived.js';
+import {arrayProxy} from './proxy.svelte.js';
 
 export default class State {
 
@@ -12,8 +13,8 @@ export default class State {
 
     constructor(plugins, options) {
         // Create options state
-        let {proxy, setOption, initEffects} = optionsState(this, plugins, options);
-        this.options = proxy;
+        let {state, setOption, initEffects} = optionsState(this, plugins, options);
+        this.options = state;
         this.#setOption = setOption;
 
         // Create other states
@@ -21,11 +22,11 @@ export default class State {
         this.currentRange = $derived.by(currentRange(this));
         this.activeRange = $derived.by(activeRange(this));
         this.fetchedRange = $state({events: {}, resources: {}});
-        this.events = $state.raw([]);
+        this.events = $state.raw(arrayProxy([]));
         this.filteredEvents = $derived.by(filteredEvents(this));
         this.mainEl = $state();
         this.now = $state(createDate());
-        this.resources = $state.raw([]);
+        this.resources = $state.raw(arrayProxy([]));
         this.today = $state(setMidnight(createDate()));
         this.intlEventTime = $derived.by(intlRange(this, 'eventTimeFormat'));
         this.intlDayHeader = $derived.by(intl(this, 'dayHeaderFormat'));

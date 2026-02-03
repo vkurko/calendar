@@ -10,6 +10,10 @@ export function entries(object) {
     return Object.entries(object);
 }
 
+export function hasOwn(object, property) {
+    return Object.hasOwn(object, property);
+}
+
 export function floor(value) {
     return Math.floor(value);
 }

@@ -1,9 +1,9 @@
 import {untrack} from 'svelte';
 import {
-    createDate, createDateRange, createDuration, createEvents, createEventSources, createResources, entries, isArray,
-    isFunction, keys, setMidnight
+    assign, createDate, createDateRange, createDuration, createEvents, createEventSources, createResources, hasOwn,
+    isArray, isFunction, isPlainObject, keys, setMidnight
 } from '#lib';
-import {SvelteMap} from "svelte/reactivity";
+import {objectProxy} from './proxy.svelte.js';
 
 function createOptions(plugins) {
     let options = {
@@ -146,16 +146,15 @@ export function optionsState(mainState, plugins, userOptions) {
     let userViewsOptions = extractOption(userOptions, 'views') ?? {};
 
     // Create options state
-    let options = new SvelteMap();
-    setOptions(options, defOptions);
+    let options = objectProxy({});
+    assign(options, defOptions);
 
     let setters = {};
-    let currentOpts = {};
 
     function initEffects() {
         // Set initial view based on input
         if (userOptions.view) {
-            options.set('view', userOptions.view);
+            options['view'] = userOptions.view;
         }
         // Set options for each view
         let views = new Set([...keys(defViewsOptions), ...keys(userViewsOptions)]);
@@ -168,7 +167,7 @@ export function optionsState(mainState, plugins, userOptions) {
             delete opts.view;
             // Set up option setters and delete unknown options
             for (let key of keys(opts)) {
-                if (options.has(key)) {
+                if (hasOwn(options, key)) {
                     if (!setters[key]) {
                         setters[key] = [];
                     }
@@ -183,14 +182,13 @@ export function optionsState(mainState, plugins, userOptions) {
             }
             // When view changes...
             $effect.pre(() => {
-                let newView = options.get('view');
+                let newView = options['view'];
                 untrack(() => {
                     if (newView === view) {
                         // ...switch view component
                         mainState.setViewComponent(component);
                         // ...and update options
-                        currentOpts = opts;
-                        setOptions(options, opts);
+                        assign(options, opts);
                     }
                 });
             });
@@ -198,24 +196,21 @@ export function optionsState(mainState, plugins, userOptions) {
     }
 
     return {
-        proxy: new Proxy(options, {
-            set(options, key, value) {
-                currentOpts[key] = value;
-                options.set(key, value);
-                return true;
-            },
-            get(options, key) {
-                return options.get(key);
-            }
-        }),
+        state: options,
         setOption(key, value, parsed) {
-            if (options.has(key)) {
-                if (!parsed && key in parsers) {
-                    value = parsers[key](value);
+            if (hasOwn(options, key)) {
+                if (!parsed) {
+                    if (key in parsers) {
+                        value = parsers[key](value);
+                    } else if (isPlainObject(value)) {
+                        value = {...value};
+                    } else if (isArray(value)) {
+                        value = [...value];
+                    }
                 }
                 // Set value for all views
                 setters[key]?.forEach(set => set(value));
-                options.set(key, currentOpts[key] ?? value);
+                options[key] = value;
             }
         },
         initEffects
@@ -260,12 +255,6 @@ function mergeOpts(...args) {
         };
     }
     return result;
-}
-
-function setOptions(map, options) {
-    for (let [key, value] of entries(options)) {
-        map.set(key, value);
-    }
 }
 
 export function diff(options, prevOptions) {

@@ -487,7 +487,7 @@
             addDuration(iEvent.end, extraDuration);
         }
         event.display = 'ghost';
-        mainState.events = [...events];
+        events.length = events.length;
     }
 
     function createIEventSelect() {
@@ -519,7 +519,7 @@
 
     function updateEvent(target, source) {
         copyIEventData(target, source);
-        mainState.events = [...events];
+        events.length = events.length;
     }
 
     function updateIEvent(source) {

@@ -3,6 +3,7 @@ import {
     assign, cloneDate, createDate, createEvents, createResources, datesEqual, empty, isArray, isFunction, setMidnight,
     toISOString, toLocalDate, toViewWithLocalDates
 } from '#lib';
+import {arrayProxy} from './proxy.svelte.js';
 
 export function loadEvents(mainState, loadingInvoker) {
     return () => {
@@ -15,7 +16,7 @@ export function loadEvents(mainState, loadingInvoker) {
                 eventSources.map(source => isFunction(source.events) ? source.events : source),
                 events,
                 createEvents,
-                result => mainState.events = result,
+                result => mainState.events = arrayProxy(result),
                 activeRange,
                 fetchedRange,
                 viewDates,
@@ -38,7 +39,7 @@ export function loadResources(mainState, loadingInvoker) {
                 isArray(resources) ? [] : [resources],
                 resources,
                 createResources,
-                result => mainState.resources = result,
+                result => mainState.resources = arrayProxy(result),
                 activeRange,
                 fetchedRange,
                 viewDates,

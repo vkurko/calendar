@@ -2,7 +2,7 @@
     import './styles/index.css';
     import {setContext, untrack} from 'svelte';
     import {
-        assign, cloneDate, createEvents, getElementWithPayload, getPayload, isArray, isDate, isPlainObject, nextDate,
+        assign, cloneDate, createEvents, getElementWithPayload, getPayload, isDate, nextDate,
         prevDate, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import MainState from './storage/state.svelte.js';
@@ -33,12 +33,6 @@
     });
 
     export function setOption(name, value) {
-        if (isPlainObject(value)) {
-            value = {...value};
-        }
-        if (isArray(value)) {
-            value = [...value];
-        }
         mainState.setOption(name, value, false);
         return this;
     }
@@ -75,7 +69,6 @@
     export function addEvent(event) {
         event = createEvents([event])[0];
         events.push(event);
-        mainState.events = [...events];
         return toEventWithLocalDates(event);
     }
 
@@ -85,7 +78,6 @@
         if (idx >= 0) {
             event = createEvents([event])[0];
             events[idx] = event;
-            mainState.events = [...events];
             return toEventWithLocalDates(event);
         }
         return null;
@@ -96,7 +88,6 @@
         let idx = events.findIndex(event => event.id === id);
         if (idx >= 0) {
             events.splice(idx, 1);
-            mainState.events = [...events];
         }
         return this;
     }
@@ -143,9 +134,7 @@
     role="{features.includes('list') ? 'list' : 'table'}"
 >
     <Toolbar/>
-    {#if View} <!-- temporary fix for https://github.com/sveltejs/kit/issues/15109 -->
-        <View/>
-    {/if}
+    <View/>
     {#each auxComponents as AuxComponent}
         <AuxComponent/>
     {/each}
