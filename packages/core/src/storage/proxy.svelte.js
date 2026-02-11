@@ -38,11 +38,11 @@ function proxy(target, setDependency, hasEffect, invokeEffect) {
         },
         set(target, prop, value, receiver) {
             let has = hasEffect(target[prop], value);
-            Reflect.set(target, prop, value, receiver);
+            let result = Reflect.set(target, prop, value, receiver);
             if (has) {
                 invokeEffect(prop);
             }
-            return true;
+            return result;
         }
     });
 }

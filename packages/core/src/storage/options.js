@@ -132,7 +132,7 @@ function createParsers(plugins) {
 // Options where default value is passed to the function
 const specialOptions = ['buttonText', 'customButtons', 'theme'];
 
-export function optionsState(mainState, plugins, userOptions) {
+export function optionsState(plugins, userOptions) {
     // Create default options and parsers
     let defOptions = createOptions(plugins);
     let parsers = createParsers(plugins);
@@ -142,62 +142,53 @@ export function optionsState(mainState, plugins, userOptions) {
     userOptions = parseOptions(userOptions, parsers);
 
     // Extract view-specific options
-    let defViewsOptions = extractOption(defOptions, 'views') ?? {};
-    let userViewsOptions = extractOption(userOptions, 'views') ?? {};
+    let defViews = extractOption(defOptions, 'views') ?? {};
+    let userViews = extractOption(userOptions, 'views') ?? {};
 
     // Create options state
     let options = objectProxy({});
     assign(options, defOptions);
-
-    let setters = {};
-
-    function initEffects() {
-        // Set initial view based on input
-        if (userOptions.view) {
-            options['view'] = userOptions.view;
-        }
-        // Set options for each view
-        let views = new Set([...keys(defViewsOptions), ...keys(userViewsOptions)]);
-        for (let view of views) {
-            let userViewOptions = userViewsOptions[view] ?? {};
-            let defOpts = mergeOpts(defOptions, defViewsOptions[view] ?? defViewsOptions[userViewOptions.type] ?? {});
-            let opts = mergeOpts(defOpts, userOptions, userViewOptions);
-            let component = extractOption(opts, 'component');
-            // View has been set
-            delete opts.view;
-            // Set up option setters and delete unknown options
-            for (let key of keys(opts)) {
-                if (hasOwn(options, key)) {
-                    if (!setters[key]) {
-                        setters[key] = [];
-                    }
-                    setters[key].push(
-                        specialOptions.includes(key)
-                            ? value => opts[key] = isFunction(value) ? value(defOpts[key]) : value
-                            : value => opts[key] = value
-                    );
-                } else {
-                    delete opts[key];
-                }
-            }
-            // When view changes...
-            $effect.pre(() => {
-                let newView = options['view'];
-                untrack(() => {
-                    if (newView === view) {
-                        // ...switch view component
-                        mainState.setViewComponent(component);
-                        // ...and update options
-                        assign(options, opts);
-                    }
-                });
-            });
-        }
+    // Set initial view based on input
+    if (userOptions.view) {
+        options.view = userOptions.view;
     }
 
-    return {
-        state: options,
-        setOption(key, value, parsed) {
+    // Set options for each view
+    let setters = {};
+    let viewOptions = {};
+    let viewComponents = {};
+    let views = new Set([...keys(defViews), ...keys(userViews)]);
+    for (let view of views) {
+        let userViewOptions = userViews[view] ?? {};
+        let defOpts = mergeOpts(defOptions, defViews[view] ?? defViews[userViewOptions.type] ?? {});
+        let opts = mergeOpts(defOpts, userOptions, userViewOptions);
+        let component = extractOption(opts, 'component');
+        // View has been set
+        delete opts.view;
+        // Set up option setters and delete unknown options
+        for (let key of keys(opts)) {
+            if (hasOwn(options, key)) {
+                if (!setters[key]) {
+                    setters[key] = [];
+                }
+                setters[key].push(
+                    specialOptions.includes(key)
+                        ? value => opts[key] = isFunction(value) ? value(defOpts[key]) : value
+                        : value => opts[key] = value
+                );
+            } else {
+                delete opts[key];
+            }
+        }
+        viewOptions[view] = opts;
+        viewComponents[view] = component;
+    }
+
+    assign(options, viewOptions[options.view]);
+
+    return [
+        options,
+        function setOption(key, value, parsed = true) {
             if (hasOwn(options, key)) {
                 if (!parsed) {
                     if (key in parsers) {
@@ -213,8 +204,11 @@ export function optionsState(mainState, plugins, userOptions) {
                 options[key] = value;
             }
         },
-        initEffects
-    };
+        function setViewOptions(view) {
+            assign(options, viewOptions[view]);
+            return viewComponents[view];
+        }
+    ];
 }
 
 function parseOptions(opts, parsers) {

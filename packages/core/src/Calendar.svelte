@@ -6,7 +6,7 @@
         prevDate, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import MainState from './storage/state.svelte.js';
-    import {diff} from './storage/options.svelte.js';
+    import {diff} from './storage/options.js';
     import Toolbar from './Toolbar.svelte';
 
     let {plugins = [], options = {}} = $props();

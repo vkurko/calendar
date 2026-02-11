@@ -5,6 +5,20 @@ import {
 } from '#lib';
 import {arrayProxy} from './proxy.svelte.js';
 
+export function switchView(mainState) {
+    return () => {
+        // Dependencies
+        let {options: {view}} = mainState;
+
+        untrack(() => {
+            let initComponent = mainState.setViewOptions(view);
+            mainState.extensions = {};
+            mainState.features = [];
+            mainState.viewComponent = initComponent(mainState);
+        });
+    };
+}
+
 export function loadEvents(mainState, loadingInvoker) {
     return () => {
         // Dependencies
@@ -125,10 +139,10 @@ function load(sources, defaultResult, parseResult, applyResult, activeRange, fet
     }
 }
 
-export function createLoadingInvoker(options) {
+export function createLoadingInvoker(mainState) {
     let counter = 0;
     function invoke(value) {
-        let {loading} = options;
+        let {options: {loading}} = mainState;
         if (isFunction(loading)) {
             loading(value);
         }

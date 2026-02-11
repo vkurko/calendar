@@ -5,7 +5,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
 * Lightweight (35kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
-* 100% human-coded
+* Feature-rich, performant, and with minimal DOM structure (thanks to [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout))
 * Zero-dependency (standalone bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -251,8 +251,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.2/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.2/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.3/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.3/dist/event-calendar.min.js"></script>
 ```
 
 <details>
