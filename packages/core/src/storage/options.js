@@ -52,6 +52,7 @@ function createOptions(plugins) {
         height: undefined,
         hiddenDays: [],
         highlightedDates: [],  // ec option
+        icons: {},  // ec option
         lazyFetching: true,
         loading: undefined,
         locale: undefined,
@@ -130,7 +131,7 @@ function createParsers(plugins) {
 }
 
 // Options where default value is passed to the function
-const specialOptions = ['buttonText', 'customButtons', 'theme'];
+const specialOptions = ['buttonText', 'customButtons', 'icons', 'theme'];
 
 export function optionsState(plugins, userOptions) {
     // Create default options and parsers

@@ -68,9 +68,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
+  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
-  - [eventDurationEditable](#eventdurationeditable)
   - [eventFilter](#eventfilter)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
@@ -92,6 +92,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [height](#height)
   - [hiddenDays](#hiddendays)
   - [highlightedDates](#highlighteddates)
+  - [icons](#icons)
   - [lazyFetching](#lazyfetching)
   - [listDayFormat](#listdayformat)
   - [listDaySideFormat](#listdaysideformat)
@@ -102,11 +103,12 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
+  - [pointer](#pointer)
   </td><td>
 
-  - [pointer](#pointer)
   - [refetchResourcesOnNavigate](#refetchresourcesonnavigate)
   - [resizeConstraint](#resizeconstraint)
+  - [resourceExpand](#resourceexpand)
   - [resources](#resources)
   - [resourceLabelContent](#resourcelabelcontent)
   - [resourceLabelDidMount](#resourcelabeldidmount)
@@ -251,8 +253,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.3/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.3/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1829,6 +1831,31 @@ Array of dates that need to be highlighted in the calendar.
 
 Each date can be either an ISO8601 date string like `'2026-12-31'`, or a JavaScript Date object.
 
+### icons
+- Type `object`
+- Default `{collapse: {html: '&minus;'}, expand: {html: '&plus;'}}`
+
+Defines icons used in some buttons, such as those for expanding nested resources in `resourceTimeline` views.
+
+Each icon is specified as a [Content](#content) value.
+
+This option can be either a plain object with all necessary properties, or a callback function that receives default icons object and should return a new one:
+
+```js
+function (icons) {
+  // return new icons object
+}
+```
+<table>
+<tr>
+<td>
+
+`icons`
+</td>
+<td>An object with default icons</td>
+</tr>
+</table>
+
 ### lazyFetching
 - Type `boolean`
 - Default `true`
@@ -2028,6 +2055,47 @@ Determines whether to refetch [resources](#resources) when the user navigates to
 Callback function that limits the date/time range within which the event is allowed to resize.
 
 The function is triggered during resizing for each cursor movement and takes the same parameters as [eventResize](#eventresize). The function should return `true` if the new size is allowed, and `false` otherwise.
+
+### resourceExpand
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered when a resource with nested children is expanded or collapsed in `resourceTimeline` views.
+
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+The associated [Resource](#resource-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
 
 ### resources
 - Type `array`, `object` or `function`
@@ -3263,6 +3331,16 @@ The title of the resource. See [Content](#content)
 <tr>
 <td>
 
+`expanded`
+</td>
+<td>
+
+A flag indicating whether the resource is expanded or collapsed if it has nested children
+</td>
+</tr>
+<tr>
+<td>
+
 `extendedProps`
 </td>
 <td>
@@ -3320,6 +3398,16 @@ Here are all admissible fields for the resource’s input object:
 <tr>
 <td>
 
+`expanded`
+</td>
+<td>
+
+`boolean` Specifies whether the resource with nested children will be expanded or collapsed. Default `true`
+</td>
+</tr>
+<tr>
+<td>
+
 `extendedProps`
 </td>
 <td>
@@ -3336,7 +3424,7 @@ Here are all admissible fields for the resource’s input object:
 </tr>
 </table>
 
-The `timeline` views support displaying nested resources. Nested resources can be collapsed or expanded using an additional button that appears before the parent resource name. To pass nested resources, use the `children` field:
+The `resourceTimeline` views support displaying nested resources. Nested resources can be collapsed or expanded using an additional button that appears before the parent resource name. To pass nested resources, use the `children` field:
 
 ```js
 resources: [
