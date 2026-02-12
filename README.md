@@ -251,8 +251,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.2/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.2/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.3/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.3.3/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2207,6 +2207,23 @@ The associated [Resource](#resource-object) object
 <td>If it is a column that is within a specific date, this will be a Date object</td>
 </tr>
 </table>
+
+
+###resourceLabelExpander
+- Type `object`
+- Default `{}`
+
+Defines the content that is rendered inside resource expander button.
+You can set both `expandedIcon` and `nonExpandedIcon` separately.
+
+Both icons are of [Content](#content) value:
+
+```js
+{
+  expandedIcon: Content,
+  nonExpandedIcon: Content,        
+}
+```
 
 ### scrollTime
 - Type `string`, `integer` or `object`

@@ -57,6 +57,7 @@ function createOptions(plugins) {
         locale: undefined,
         refetchResourcesOnNavigate: false,
         resources: [],
+        resourceLabelExpander: {},
         selectable: false,
         theme: {
             active: 'ec-active',

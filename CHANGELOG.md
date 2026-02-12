@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.3.3
+February 12, 2026
+* Added capability to change resource expander icons ([616](https://github.com/vkurko/calendar/issues/616))
+
 ## 5.3.2
 February 3, 2026
 * Fixed regression bug related to event manipulation ([611](https://github.com/vkurko/calendar/issues/611))

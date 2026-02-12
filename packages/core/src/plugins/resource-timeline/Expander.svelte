@@ -1,10 +1,22 @@
 <script>
     import {getContext} from 'svelte';
-    import {getPayload} from '#lib';
+    import {contentFrom, getPayload} from '#lib';
 
     let {resource} = $props();
 
-    let {resources, options: {theme}} = $derived(getContext('state'));
+    const MINUS_SIGN = '\u2212';
+    const PLUS_SIGN = '\u002b';
+
+    let {
+        resources,
+        options: {
+            theme,
+            resourceLabelExpander: {
+                expandedIcon = MINUS_SIGN,
+                nonExpandedIcon = PLUS_SIGN
+            } = {}
+        }
+    } = $derived(getContext('state'));
 
     let payload = $state.raw({});
     let expanded = $state(true);
@@ -38,8 +50,12 @@
 
 <span class="{theme.expander}">
     {#if payload.children?.length}
-        <button class="{theme.button}" {onclick}>
-            {#if expanded}&minus;{:else}&plus;{/if}
+        <button
+            class="{theme.button}"
+            aria-label="{expanded ? MINUS_SIGN : PLUS_SIGN}"
+            {onclick}
+            {@attach expanded ? contentFrom(expandedIcon) : contentFrom(nonExpandedIcon)}
+        >
         </button>
     {/if}
 </span>
