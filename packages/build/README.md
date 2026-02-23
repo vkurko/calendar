@@ -5,7 +5,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
 * Lightweight (35kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
-* Feature-rich, performant, and with minimal DOM structure (thanks to [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout))
+* Minimal DOM structure (thanks to [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout))
 * Zero-dependency (standalone bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
 
@@ -253,8 +253,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.1/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.1/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -349,7 +349,7 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 <details>
     <summary>Default</summary>
 
-`{close: 'Close', dayGridDay: 'day', dayGridMonth: 'month', dayGridWeek: 'week', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', resourceTimelineDay: 'timeline', resourceTimelineMonth: 'timeline', resourceTimelineWeek: 'timeline', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
+`{collapse: 'Collapse', close: 'Close', dayGridDay: 'day', dayGridMonth: 'month', dayGridWeek: 'week', expand: 'Expand', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', resourceTimelineDay: 'timeline', resourceTimelineMonth: 'timeline', resourceTimelineWeek: 'timeline', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
 > Views override the default value as follows:
 > - dayGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - dayGridMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`

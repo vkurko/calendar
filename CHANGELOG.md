@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.4.1
+February 23, 2026
+* Fixed compatibility with Svelte 5.51.1+ ([623](https://github.com/vkurko/calendar/issues/623))
+
 ## 5.4.0
 February 12, 2026
 * Added ability to change resource expander icons via `icons` option ([616](https://github.com/vkurko/calendar/issues/616))

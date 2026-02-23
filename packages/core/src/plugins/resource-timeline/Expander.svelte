@@ -43,7 +43,7 @@
         <button
             class="{theme.button}"
             aria-label="{title}"
-            title="{title}"
+            {title}
             {onclick}
             {@attach contentFrom(icons[expanded ? 'collapse' : 'expand'])}
         >
