@@ -66,9 +66,10 @@
             ></time>
         {/if}
         {#if showWeekNumber}
-            <span class="{theme.weekNumber}" {@attach contentFrom(snippets.weekNumberContent ? undefined : weekNumber)}>
-                {@render snippets.weekNumberContent?.({date: toLocalDate(dayStart), week: getWeekNumber(dayStart, $firstDay)})}
-            </span>
+            {#snippet defaultWeekNumber()}
+                <span class="{theme.weekNumber}" {@attach contentFrom(weekNumber)}></span>
+            {/snippet}
+            {@render (snippets.weekNumberContent ?? defaultWeekNumber)({date: toLocalDate(dayStart), week: getWeekNumber(dayStart, $firstDay)})}
         {/if}
     </div>
 
@@ -77,17 +78,18 @@
             <!-- svelte-ignore a11y_missing_attribute -->
             <!-- svelte-ignore a11y_missing_content -->
             <!-- svelte-ignore a11y_consider_explicit_label -->
-            <a
-                role="button"
-                tabindex="0"
-                aria-haspopup="dialog"
-                onclick={stopPropagation(showMore)}
-                onkeydown={keyEnter(showMore)}
-                onpointerdown={stopPropagation()}
-                {@attach contentFrom(snippets.moreLinkContent ? undefined : moreLink)}
-            >
-                {@render snippets.moreLinkContent?.({num: dayHiddenChunks.length, text: '+' + dayHiddenChunks.length + ' more'})}
-            </a>
+            {#snippet defaultMoreLink()}
+                <a
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="dialog"
+                    onclick={stopPropagation(showMore)}
+                    onkeydown={keyEnter(showMore)}
+                    onpointerdown={stopPropagation()}
+                    {@attach contentFrom(moreLink)}
+                ></a>
+            {/snippet}
+            {@render (snippets.moreLinkContent ?? defaultMoreLink)({num: dayHiddenChunks.length, text: '+' + dayHiddenChunks.length + ' more'})}
         {/if}
     </div>
 </BaseDay>

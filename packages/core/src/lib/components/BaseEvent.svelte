@@ -83,10 +83,11 @@
     {onmouseleave}
     {onpointerdown}
 >
+    {#snippet defaultContent()}
+        <div class={theme.eventBody} {@attach contentFrom(content)}></div>
+    {/snippet}
     {#snippet defaultBody()}
-        <div class={theme.eventBody} {@attach contentFrom(snippets.eventContent ? undefined : content)}>
-            {@render snippets.eventContent?.({event: toEventWithLocalDates(event), timeText, view: toViewWithLocalDates(view)})}
-        </div>
+        {@render (snippets.eventContent ?? defaultContent)({event: toEventWithLocalDates(event), timeText, view: toViewWithLocalDates(view)})}
     {/snippet}
     {#if body}
         {@render body(defaultBody, bgColor, txtColor)}

@@ -28,9 +28,9 @@
         resource;
         date;
         untrack(() => {
-            if (date) {
+            if (date && el) {
                 ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText;
-            } else if (setLabel) {
+            } else if (setLabel && el) {
                 ariaLabel = undefined;
                 setLabel(el.innerText);
             }
@@ -48,10 +48,11 @@
     });
 </script>
 
-<span
-    bind:this={el}
-    aria-label="{ariaLabel}"
-    {@attach contentFrom(snippets.resourceLabelContent ? undefined : content)}
->
-    {@render snippets.resourceLabelContent?.({resource, date: date ? toLocalDate(date) : undefined})}
-</span>
+{#snippet defaultContent()}
+    <span
+        bind:this={el}
+        aria-label="{ariaLabel}"
+        {@attach contentFrom(content)}
+    ></span>
+{/snippet}
+{@render (snippets.resourceLabelContent ?? defaultContent)({resource, date: date ? toLocalDate(date) : undefined})}

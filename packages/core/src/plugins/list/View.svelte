@@ -38,9 +38,10 @@
     {#if noEvents}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div class="{theme.noEvents}" {onclick} {@attach contentFrom(snippets.noEventsContent ? undefined : content)}>
-            {@render snippets.noEventsContent?.()}
-        </div>
+        {#snippet defaultContent()}
+            <div class="{theme.noEvents}" {onclick} {@attach contentFrom(content)}></div>
+        {/snippet}
+        {@render (snippets.noEventsContent ?? defaultContent)()}
     {:else}
         {#each viewDates as date}
             <Day {date}/>
