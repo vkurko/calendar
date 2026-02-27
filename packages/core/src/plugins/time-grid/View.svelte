@@ -19,7 +19,7 @@
     // svelte-ignore state_referenced_locally
     setContext('view-state', viewState);
 
-    let {mainEl, viewDates, options: {allDayContent, allDaySlot, columnWidth, nowIndicator: showNowIndicator,
+    let {mainEl, snippets, viewDates, options: {allDayContent, allDaySlot, columnWidth, nowIndicator: showNowIndicator,
         scrollTime, slotHeight, slotDuration, theme}} = $derived(mainState);
     let {allDayChunks, allDayBgChunks, allDayIChunks, bgChunks, chunks, iChunks, grid, sidebarWidth, slots,
         slotLabelPeriodicity, slotTimeLimits} = $derived(viewState);
@@ -77,7 +77,11 @@
 
             {#if allDaySlot}
                 <div class="{theme.allDay}">
-                    <aside class="{theme.sidebar}" {@attach contentFrom(allDayText)}></aside>
+                    {#if snippets.allDayContent}
+                        <aside class="{theme.sidebar}">{@render snippets.allDayContent({text: 'all-day'})}</aside>
+                    {:else}
+                        <aside class="{theme.sidebar}" {@attach contentFrom(allDayText)}></aside>
+                    {/if}
                     <div class="{theme.grid}" role="row">
                         {#each grid as days, i}
                             {#each days as day, j}

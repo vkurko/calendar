@@ -8,7 +8,7 @@
     let viewState = new ViewState(mainState);
     setContext('view-state', viewState);
 
-    let {filteredEvents, view, viewDates, options: {noEventsClick, noEventsContent, theme}} = $derived(mainState);
+    let {filteredEvents, snippets, view, viewDates, options: {noEventsClick, noEventsContent, theme}} = $derived(mainState);
 
     let noEvents = $derived.by(() => {
         let noEvents = true;
@@ -38,7 +38,11 @@
     {#if noEvents}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div {@attach contentFrom(content)} class="{theme.noEvents}" {onclick}></div>
+        {#if snippets.noEventsContent}
+            <div class="{theme.noEvents}" {onclick}>{@render snippets.noEventsContent()}</div>
+        {:else}
+            <div {@attach contentFrom(content)} class="{theme.noEvents}" {onclick}></div>
+        {/if}
     {:else}
         {#each viewDates as date}
             <Day {date}/>

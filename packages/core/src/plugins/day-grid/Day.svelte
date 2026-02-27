@@ -10,7 +10,7 @@
     let mainState = getContext('state');
     let viewState = getContext('view-state');
 
-    let {features, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
+    let {features, snippets, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
     let {hiddenChunks, intlDayCell} = $derived(viewState);
 
     let {dayStart, disabled, highlight} = $derived(day);
@@ -66,10 +66,16 @@
             ></time>
         {/if}
         {#if showWeekNumber}
-            <span
-                class="{theme.weekNumber}"
-                {@attach contentFrom(weekNumber)}
-            ></span>
+            {#if snippets.weekNumberContent}
+                <span class="{theme.weekNumber}">
+                    {@render snippets.weekNumberContent({date: toLocalDate(dayStart), week: getWeekNumber(dayStart, $firstDay)})}
+                </span>
+            {:else}
+                <span
+                    class="{theme.weekNumber}"
+                    {@attach contentFrom(weekNumber)}
+                ></span>
+            {/if}
         {/if}
     </div>
 
@@ -78,15 +84,28 @@
             <!-- svelte-ignore a11y_missing_attribute -->
             <!-- svelte-ignore a11y_missing_content -->
             <!-- svelte-ignore a11y_consider_explicit_label -->
-            <a
-                role="button"
-                tabindex="0"
-                aria-haspopup="dialog"
-                onclick={stopPropagation(showMore)}
-                onkeydown={keyEnter(showMore)}
-                onpointerdown={stopPropagation()}
-                {@attach contentFrom(moreLink)}
-            ></a>
+            {#if snippets.moreLinkContent}
+                <a
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="dialog"
+                    onclick={stopPropagation(showMore)}
+                    onkeydown={keyEnter(showMore)}
+                    onpointerdown={stopPropagation()}
+                >
+                    {@render snippets.moreLinkContent({num: dayHiddenChunks.length, text: '+' + dayHiddenChunks.length + ' more'})}
+                </a>
+            {:else}
+                <a
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="dialog"
+                    onclick={stopPropagation(showMore)}
+                    onkeydown={keyEnter(showMore)}
+                    onpointerdown={stopPropagation()}
+                    {@attach contentFrom(moreLink)}
+                ></a>
+            {/if}
         {/if}
     </div>
 </BaseDay>
