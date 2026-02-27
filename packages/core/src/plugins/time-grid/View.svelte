@@ -77,11 +77,9 @@
 
             {#if allDaySlot}
                 <div class="{theme.allDay}">
-                    {#if snippets.allDayContent}
-                        <aside class="{theme.sidebar}">{@render snippets.allDayContent({text: 'all-day'})}</aside>
-                    {:else}
-                        <aside class="{theme.sidebar}" {@attach contentFrom(allDayText)}></aside>
-                    {/if}
+                    <aside class="{theme.sidebar}" {@attach contentFrom(snippets.allDayContent ? undefined : allDayText)}>
+                        {@render snippets.allDayContent?.({text: 'all-day'})}
+                    </aside>
                     <div class="{theme.grid}" role="row">
                         {#each grid as days, i}
                             {#each days as day, j}

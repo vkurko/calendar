@@ -48,15 +48,10 @@
     });
 </script>
 
-{#if snippets.resourceLabelContent}
-    <span
-        bind:this={el}
-        aria-label="{ariaLabel}"
-    >{@render snippets.resourceLabelContent({resource, date: date ? toLocalDate(date) : undefined})}</span>
-{:else}
-    <span
-        bind:this={el}
-        aria-label="{ariaLabel}"
-        {@attach contentFrom(content)}
-    ></span>
-{/if}
+<span
+    bind:this={el}
+    aria-label="{ariaLabel}"
+    {@attach contentFrom(snippets.resourceLabelContent ? undefined : content)}
+>
+    {@render snippets.resourceLabelContent?.({resource, date: date ? toLocalDate(date) : undefined})}
+</span>

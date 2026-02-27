@@ -84,13 +84,9 @@
     {onpointerdown}
 >
     {#snippet defaultBody()}
-        {#if snippets.eventContent}
-            <div class={theme.eventBody}>
-                {@render snippets.eventContent({event: toEventWithLocalDates(event), timeText, view: toViewWithLocalDates(view)})}
-            </div>
-        {:else}
-            <div class={theme.eventBody} {@attach contentFrom(content)}></div>
-        {/if}
+        <div class={theme.eventBody} {@attach contentFrom(snippets.eventContent ? undefined : content)}>
+            {@render snippets.eventContent?.({event: toEventWithLocalDates(event), timeText, view: toViewWithLocalDates(view)})}
+        </div>
     {/snippet}
     {#if body}
         {@render body(defaultBody, bgColor, txtColor)}
