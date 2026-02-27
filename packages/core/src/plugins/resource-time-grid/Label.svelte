@@ -4,7 +4,7 @@
 
     let {resource, date = undefined, setLabel = undefined} = $props();
 
-    let {intlDayHeaderAL, options: {resourceLabelContent, resourceLabelDidMount}} = $derived(getContext('state'));
+    let {intlDayHeaderAL, snippets, options: {resourceLabelContent, resourceLabelDidMount}} = $derived(getContext('state'));
 
     let el = $state();
     // Content
@@ -23,11 +23,14 @@
     // Aria-label
     let ariaLabel = $state();
     $effect(() => {
+        // Track all content-changing dependencies
         content;
+        resource;
+        date;
         untrack(() => {
-            if (date) {
+            if (date && el) {
                 ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText;
-            } else if (setLabel) {
+            } else if (setLabel && el) {
                 ariaLabel = undefined;
                 setLabel(el.innerText);
             }
@@ -45,8 +48,11 @@
     });
 </script>
 
-<span
-    bind:this={el}
-    aria-label="{ariaLabel}"
-    {@attach contentFrom(content)}
-></span>
+{#snippet defaultContent()}
+    <span
+        bind:this={el}
+        aria-label="{ariaLabel}"
+        {@attach contentFrom(content)}
+    ></span>
+{/snippet}
+{@render (snippets.resourceLabelContent ?? defaultContent)({resource, date: date ? toLocalDate(date) : undefined})}

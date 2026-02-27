@@ -10,7 +10,7 @@
     let mainState = getContext('state');
     let viewState = getContext('view-state');
 
-    let {features, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
+    let {features, snippets, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
     let {hiddenChunks, intlDayCell} = $derived(viewState);
 
     let {dayStart, disabled, highlight} = $derived(day);
@@ -66,10 +66,10 @@
             ></time>
         {/if}
         {#if showWeekNumber}
-            <span
-                class="{theme.weekNumber}"
-                {@attach contentFrom(weekNumber)}
-            ></span>
+            {#snippet defaultWeekNumber()}
+                <span class="{theme.weekNumber}" {@attach contentFrom(weekNumber)}></span>
+            {/snippet}
+            {@render (snippets.weekNumberContent ?? defaultWeekNumber)({date: toLocalDate(dayStart), week: getWeekNumber(dayStart, $firstDay)})}
         {/if}
     </div>
 
@@ -78,15 +78,18 @@
             <!-- svelte-ignore a11y_missing_attribute -->
             <!-- svelte-ignore a11y_missing_content -->
             <!-- svelte-ignore a11y_consider_explicit_label -->
-            <a
-                role="button"
-                tabindex="0"
-                aria-haspopup="dialog"
-                onclick={stopPropagation(showMore)}
-                onkeydown={keyEnter(showMore)}
-                onpointerdown={stopPropagation()}
-                {@attach contentFrom(moreLink)}
-            ></a>
+            {#snippet defaultMoreLink()}
+                <a
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="dialog"
+                    onclick={stopPropagation(showMore)}
+                    onkeydown={keyEnter(showMore)}
+                    onpointerdown={stopPropagation()}
+                    {@attach contentFrom(moreLink)}
+                ></a>
+            {/snippet}
+            {@render (snippets.moreLinkContent ?? defaultMoreLink)({num: dayHiddenChunks.length, text: '+' + dayHiddenChunks.length + ' more'})}
         {/if}
     </div>
 </BaseDay>

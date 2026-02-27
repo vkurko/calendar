@@ -15,7 +15,7 @@
         body
     } = $props();
 
-    let {intlEventTime, resources, view, options: {
+    let {intlEventTime, resources, snippets, view, options: {
         displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount, eventClassNames,
         eventMouseEnter, eventMouseLeave, eventTextColor, theme
     }} = $derived(getContext('state'));
@@ -83,8 +83,11 @@
     {onmouseleave}
     {onpointerdown}
 >
-    {#snippet defaultBody()}
+    {#snippet defaultContent()}
         <div class={theme.eventBody} {@attach contentFrom(content)}></div>
+    {/snippet}
+    {#snippet defaultBody()}
+        {@render (snippets.eventContent ?? defaultContent)({event: toEventWithLocalDates(event), timeText, view: toViewWithLocalDates(view)})}
     {/snippet}
     {#if body}
         {@render body(defaultBody, bgColor, txtColor)}
