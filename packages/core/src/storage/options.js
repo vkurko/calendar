@@ -91,6 +91,7 @@ function createOptions(plugins) {
             view: '',
             weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'],
         },
+        timezoneOffsetMins: 0,
         titleFormat: {
             year: 'numeric',
             month: 'short',

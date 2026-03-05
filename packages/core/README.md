@@ -129,6 +129,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [slotWidth](#slotwidth)
   - [snapDuration](#snapduration)
   - [theme](#theme)
+  - [timezoneOffsetMins](#timezoneoffsetmins)
   - [titleFormat](#titleformat)
   - [unselect](#unselect)
   - [unselectAuto](#unselectauto)
@@ -2539,6 +2540,14 @@ function (theme) {
 <td>An object with default CSS classes</td>
 </tr>
 </table>
+
+### timezoneOffsetMins
+- Type `integer`
+- Default `0`
+
+Shifts all displayed times by the given number of minutes. This includes the now indicator, today highlight, and timed event start/end times. All-day events are unaffected.
+
+Use this option to display the calendar in a timezone different from the browser's local time. For example, set `timezoneOffsetMins: 60` to shift all times forward by one hour. Callback functions (e.g. `eventClick`) will receive the offset-adjusted times matching what is displayed.
 
 ### titleFormat
 - Type `object` or `function`
