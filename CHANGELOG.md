@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.4.2
+March 11, 2026
+* Fixed an issue with `weekNumbers` ([632](https://github.com/vkurko/calendar/issues/632))
+
 ## 5.4.1
 February 23, 2026
 * Fixed compatibility with Svelte 5.51.1+ ([623](https://github.com/vkurko/calendar/issues/623))

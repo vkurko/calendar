@@ -22,7 +22,7 @@
     let weekNumber = $derived.by(() => {
         let weekNumber;
         if (showWeekNumber) {
-            let week = getWeekNumber(dayStart, $firstDay);
+            let week = getWeekNumber(dayStart, firstDay);
             if (weekNumberContent) {
                 weekNumber = isFunction(weekNumberContent)
                     ? weekNumberContent({date: toLocalDate(dayStart), week})
