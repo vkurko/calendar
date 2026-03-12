@@ -17,6 +17,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 <tr>
 <td>
 
+[![@ekwi-tech](https://avatars.githubusercontent.com/u/146312349?s=52&v=4)](https://github.com/ekwi-tech)
+</td>
+<td>
+
 [![@steveb85](https://avatars.githubusercontent.com/u/50031994?s=52&v=4)](https://github.com/steveb85)
 </td>
 <td>
