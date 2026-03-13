@@ -1,7 +1,7 @@
 import {getAbortSignal, tick, untrack} from 'svelte';
 import {
-    assign, cloneDate, createDate, createEvents, createResources, datesEqual, empty, isArray, isFunction, setMidnight,
-    toISOString, toLocalDate, toViewWithLocalDates
+    applyOffset, applyTimezoneOffsetToEvents, assign, cloneDate, createDate, createEvents, createResources, datesEqual,
+    empty, isArray, isFunction, setMidnight, toISOString, toLocalDate, toViewWithLocalDates
 } from '#lib';
 import {arrayProxy} from './proxy.svelte.js';
 
@@ -23,14 +23,14 @@ export function loadEvents(mainState, loadingInvoker) {
     return () => {
         // Dependencies
         let {activeRange, fetchedRange: {events: fetchedRange}, viewDates,
-            options: {events, eventSources, lazyFetching}} = mainState;
+            options: {events, eventSources, lazyFetching, timezoneOffsetMins}} = mainState;
 
         untrack(() => {
             load(
                 eventSources.map(source => isFunction(source.events) ? source.events : source),
                 events,
                 createEvents,
-                result => mainState.events = arrayProxy(result),
+                result => mainState.events = arrayProxy(applyTimezoneOffsetToEvents(result, timezoneOffsetMins)),
                 activeRange,
                 fetchedRange,
                 viewDates,
@@ -155,9 +155,12 @@ export function createLoadingInvoker(mainState) {
 
 export function setNowAndToday(mainState) {
     return () => {
+        // Dependencies
+        let {options: {timezoneOffsetMins}} = mainState;
+
         // Now and today
         let interval = setInterval(() => {
-            let now = createDate();
+            let now = applyOffset(createDate(), timezoneOffsetMins);
             let today = setMidnight(cloneDate(now));
             mainState.now = now;
             if (!datesEqual(mainState.today, today)) {

@@ -117,6 +117,15 @@ export function noTimePart(date) {
 }
 
 /**
+ * Apply a timezone offset in minutes to a date (mutates in place)
+ */
+export function applyOffset(date, offsetMins) {
+    date.setUTCMinutes(date.getUTCMinutes() + offsetMins);
+
+    return date;
+}
+
+/**
  * Copy time from one date to another
  */
 export function copyTime(toDate, fromDate) {

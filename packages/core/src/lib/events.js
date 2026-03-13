@@ -1,5 +1,5 @@
 import {
-    addDay, cloneDate, copyTime, createDate, datesEqual, noTimePart, setMidnight, toISOString, toLocalDate
+    addDay, applyOffset, cloneDate, copyTime, createDate, datesEqual, noTimePart, setMidnight, toISOString, toLocalDate
 } from './date.js';
 import {createElement} from './dom.js';
 import {assign, isArray, isFunction} from './utils.js';
@@ -177,4 +177,17 @@ export function ghostEvent(display) {
 
 export function pointerEvent(display) {
     return display === 'pointer';
+}
+
+export function applyTimezoneOffsetToEvents(events, offsetMins) {
+    if (offsetMins) {
+        for (let event of events) {
+            if (!event.allDay) {
+                applyOffset(event.start, offsetMins);
+                applyOffset(event.end, offsetMins);
+            }
+        }
+    }
+
+    return events;
 }
