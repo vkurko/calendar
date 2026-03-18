@@ -1,7 +1,8 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
     import {
-        max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl, empty, length
+        max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl, empty, length, toISOString,
+        createWeekNumberContent
     } from '#lib';
     import {getSlotTimeLimits} from './lib.js';
     import ViewState from './state.svelte.js';
@@ -16,9 +17,11 @@
     let viewState = new ViewState(mainState);
     setContext('view-state', viewState);
 
-    let {mainEl, today, viewDates, options: {columnWidth, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme}} = $derived(mainState);
-    let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, monthView, nestedResources, sidebarWidth,
-        slotLabelPeriodicity, viewResources} = $derived(viewState);
+    let {mainEl, today, viewDates, options: {
+        columnWidth, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
+    }} = $derived(mainState);
+    let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
+        nestedResources, sidebarWidth, slotLabelPeriodicity, viewResources} = $derived(viewState);
 
     let headerHeight = $state(0);
 
@@ -84,6 +87,26 @@
         <header bind:offsetHeight={headerHeight} class="{theme.header}">
             <aside class="{theme.sidebar}" bind:offsetWidth={viewState.sidebarWidth}></aside>
             <div class="{theme.grid}" role="row">
+                {#if length(extraHeads.months) > 1}
+                    {#each extraHeads.months as {date, gridColumn, span}}
+                        <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
+                            <time
+                                datetime="{toISOString(date, 10)}"
+                                {@attach contentFrom(intlMonthHeader.format(date))}
+                            ></time>
+                        </ColHead>
+                    {/each}
+                {/if}
+                {#if length(extraHeads.weeks) > 1}
+                    {#each extraHeads.weeks as {number, date, gridColumn, span}}
+                        <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
+                            <span
+                                class="{theme.weekNumber}"
+                                {@attach contentFrom(createWeekNumberContent(number, weekNumberContent, date))}
+                            ></span>
+                        </ColHead>
+                    {/each}
+                {/if}
                 {#each grid[0] as {dayStart: date, disabled, highlight}, i}
                     <ColHead {date} colIndex={1 + i} {disabled} {highlight}>
                         <DayHeader {date}/>

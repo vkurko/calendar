@@ -1,6 +1,9 @@
+import {intl} from '#lib';
 import {TRRState} from '../time-grid/state.svelte.js';
 import {RRState} from '../resource-time-grid/state.svelte.js';
-import {daySlots, dayTimeLimits, eventChunks, grid, iEventChunks, monthView, nestedResources} from './derived.js';
+import {
+    daySlots, dayTimeLimits, eventChunks, extraHeads, grid, iEventChunks, monthView, nestedResources
+} from './derived.js';
 
 export default class ViewState extends RRState(TRRState()) {
     constructor(mainState) {
@@ -8,6 +11,8 @@ export default class ViewState extends RRState(TRRState()) {
         this.dayTimeLimits = $derived.by(dayTimeLimits(mainState));  // flexible time limits per day
         this.daySlots = $derived.by(daySlots(mainState, this));
         this.grid = $derived.by(grid(mainState, this));
+        this.extraHeads = $derived.by(extraHeads(mainState, this));
+        this.intlMonthHeader = $derived.by(intl(mainState, 'monthHeaderFormat'));
         this.monthView = $derived.by(monthView(mainState));
         let {chunks, bgChunks} = $derived.by(eventChunks(mainState, this));
         this.chunks = $derived(chunks);

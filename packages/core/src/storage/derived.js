@@ -13,7 +13,10 @@ export function currentRange(mainState) {
 
         untrack(() => {
             start = cloneDate(date);
-            if (duration.months) {
+            if (duration.years) {
+                start.setUTCMonth(0);
+                start.setUTCDate(1);
+            } else if (duration.months) {
                 start.setUTCDate(1);
             } else if (duration.inWeeks) {
                 // First day of week

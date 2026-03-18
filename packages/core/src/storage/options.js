@@ -90,6 +90,7 @@ function createOptions(plugins) {
             toolbar: 'ec-toolbar',
             view: '',
             weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'],
+            weekNumber: 'ec-week-number'
         },
         titleFormat: {
             year: 'numeric',

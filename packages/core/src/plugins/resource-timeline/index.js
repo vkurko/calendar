@@ -1,4 +1,4 @@
-import {assign, btnTextDay, btnTextMonth, btnTextWeek, getPayload, themeView} from '#lib';
+import {assign, btnTextDay, btnTextMonth, btnTextWeek, btnTextYear, getPayload, themeView} from '#lib';
 import {setExtensions} from '../time-grid/lib.js';
 import {createTRROptions, createTRRParsers} from '../time-grid/options.js';
 import {createRROptions} from '../resource-time-grid/options.js';
@@ -9,8 +9,11 @@ export default {
         createTRROptions(options);
         createRROptions(options);
 		assign(options, {
-			resourceExpand: undefined,
-			slotWidth: 32,
+			monthHeaderFormat: {  // ec option
+				month: 'long'
+			},
+			resourceExpand: undefined,  // ec option
+			slotWidth: 32,  // ec option
 			// Common options
 			view: 'resourceTimelineWeek'
 		});
@@ -19,7 +22,8 @@ export default {
 			collapse: 'Collapse',
 			resourceTimelineDay:  'timeline',
 			resourceTimelineWeek: 'timeline',
-			resourceTimelineMonth: 'timeline'
+			resourceTimelineMonth: 'timeline',
+			resourceTimelineYear: 'timeline'
 		});
 		assign(options.icons, {
 			collapse: {html: '&minus;'},
@@ -59,6 +63,19 @@ export default {
 				slotDuration: {days: 1},
 				theme: themeView('ec-resource ec-timeline ec-month-view'),
 				titleFormat: {year: 'numeric', month: 'long'}
+			},
+			resourceTimelineYear: {
+				buttonText: btnTextYear,
+				component: initMonthViewComponent,
+				displayEventEnd: false,
+				dayHeaderFormat: {
+					weekday: 'short',
+					day: 'numeric'
+				},
+				duration: {years: 1},
+				slotDuration: {days: 1},
+				theme: themeView('ec-resource ec-timeline ec-year-view'),
+				titleFormat: {year: 'numeric'}
 			}
 		});
 	},
@@ -70,10 +87,14 @@ export default {
 
 function initViewComponent(mainState) {
 	setExtensions(mainState);
-	return initMonthViewComponent(mainState);
+	return _initViewComponent(mainState);
 }
 
 function initMonthViewComponent(mainState) {
+	return _initViewComponent(mainState);
+}
+
+function _initViewComponent(mainState) {
 	mainState.features = ['timeline'];
 	mainState.extensions.viewResources = resources => resources.filter(resource => !getPayload(resource).hidden);
 	return View;

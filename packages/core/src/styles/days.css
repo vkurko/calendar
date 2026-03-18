@@ -26,7 +26,7 @@
                 100% var(--ec-slot-height);
     }
 
-    .ec-timeline:not(.ec-month-view) .ec-body & {
+    .ec-timeline:not(.ec-month-view, .ec-year-view) .ec-body & {
         --ec-last-line-color: transparent;
         --ec-direction: to left;
         [dir="rtl"] & {

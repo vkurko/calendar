@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
-    addDay, addDuration, bgEvent, cloneDate, createSlots, createSlotTimeLimits, datesEqual, getPayload, outsideRange,
-    toSeconds
+    addDay, addDuration, bgEvent, cloneDate, createSlots, createSlotTimeLimits, datesEqual, empty, getPayload,
+    getWeekNumber, outsideRange, toSeconds
 } from '#lib';
 import {createChunks, prepareChunks} from './lib.js';
 
@@ -39,6 +39,43 @@ export function grid(mainState, viewState) {
         });
 
         return grid;
+    };
+}
+
+export function extraHeads(mainState, viewState) {
+    return () => {
+        // Dependencies
+        let {options: {firstDay, weekNumbers}} = mainState;
+        let {grid} = viewState;
+
+        let months = [];
+        let weeks = [];
+
+        untrack(() => {
+            let month;
+            let week;
+            if (!empty(grid)) {
+                for (let {dayStart, gridColumn} of grid[0]) {
+                    if (month && month.date.getUTCMonth() === dayStart.getUTCMonth()) {
+                        ++month.span;
+                    } else {
+                        month = {date: dayStart, gridColumn, span: 1};
+                        months.push(month);
+                    }
+                    if (weekNumbers) {
+                        let number = getWeekNumber(dayStart, firstDay);
+                        if (week && week.number === number) {
+                            ++week.span;
+                        } else {
+                            week = {number, date: dayStart, gridColumn, span: 1};
+                            weeks.push(week);
+                        }
+                    }
+                }
+            }
+        });
+
+        return {months, weeks};
     };
 }
 

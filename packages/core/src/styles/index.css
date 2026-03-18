@@ -42,7 +42,7 @@
         flex-grow: 1;
     }
 
-    .ec-timeline.ec-month-view & {
+    .ec-timeline:is(.ec-month-view, .ec-year-view) & {
         grid-template-columns: max-content repeat(var(--ec-grid-cols), var(--ec-col-width));
     }
 

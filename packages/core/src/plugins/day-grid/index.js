@@ -23,8 +23,7 @@ export default {
             uniform: 'ec-uniform',
             dayFoot: 'ec-day-foot',
             otherMonth: 'ec-other-month',
-            popup: 'ec-popup',
-            weekNumber: 'ec-week-number'
+            popup: 'ec-popup'
         });
         assign(options.views, {
             dayGridDay: {

@@ -11,6 +11,7 @@
         ariaHidden = false,
         disabled = false,
         highlight = false,
+        cssSpan = false,
         children
     } = $props();
 
@@ -25,6 +26,7 @@
         highlight && theme.highlight,
         disabled && theme.disabled
     ]}
+    style:--ec-col-group-span={cssSpan ? colSpan : undefined}
     role="{ariaHidden ? null : 'columnheader'}"
     aria-colspan="{ariaHidden || colSpan <= 1 ? null : colSpan}"
     aria-colindex="{ariaHidden ? null : colIndex}"

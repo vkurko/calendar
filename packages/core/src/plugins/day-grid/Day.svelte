@@ -1,7 +1,7 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        contentFrom, getWeekNumber, isFunction, keyEnter, toISOString, toLocalDate, stopPropagation
+        contentFrom, getWeekNumber, isFunction, keyEnter, toISOString, stopPropagation, createWeekNumberContent
     } from '#lib';
     import {BaseDay} from '#components';
 
@@ -19,20 +19,10 @@
 
     // Week numbers
     let showWeekNumber = $derived(weekNumbers && dayStart.getUTCDay() === (firstDay ? 1 : 0));
-    let weekNumber = $derived.by(() => {
-        let weekNumber;
-        if (showWeekNumber) {
-            let week = getWeekNumber(dayStart, firstDay);
-            if (weekNumberContent) {
-                weekNumber = isFunction(weekNumberContent)
-                    ? weekNumberContent({date: toLocalDate(dayStart), week})
-                    : weekNumberContent;
-            } else {
-                weekNumber = 'W' + String(week).padStart(2, '0');
-            }
-        }
-        return weekNumber;
-    });
+    let weekNumber = $derived(showWeekNumber
+        ? createWeekNumberContent(getWeekNumber(dayStart, firstDay), weekNumberContent, dayStart)
+        : undefined
+    );
 
     // More link
     let dayHiddenChunks = $derived(hiddenChunks.get(dayStart.getTime()));

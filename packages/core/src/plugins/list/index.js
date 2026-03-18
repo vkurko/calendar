@@ -27,7 +27,8 @@ export default {
                 buttonText: btnTextDay,
                 component: initViewComponent,
                 duration: {days: 1},
-                theme: themeView('ec-list ec-day-view')
+                theme: themeView('ec-list ec-day-view'),
+                titleFormat: {year: 'numeric', month: 'long', day: 'numeric'}
             },
             listWeek: {
                 buttonText: btnTextWeek,
@@ -39,13 +40,15 @@ export default {
                 buttonText: btnTextMonth,
                 component: initViewComponent,
                 duration: {months: 1},
-                theme: themeView('ec-list ec-month-view')
+                theme: themeView('ec-list ec-month-view'),
+                titleFormat: {year: 'numeric', month: 'long'}
             },
             listYear: {
                 buttonText: btnTextYear,
                 component: initViewComponent,
                 duration: {years: 1},
-                theme: themeView('ec-list ec-year-view')
+                theme: themeView('ec-list ec-year-view'),
+                titleFormat: {year: 'numeric'}
             }
         });
     }
