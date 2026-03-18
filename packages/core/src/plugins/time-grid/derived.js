@@ -134,13 +134,19 @@ export function slotLabelPeriodicity(mainState) {
 export function slots(mainState, viewState) {
     return () => {
         // Dependencies
-        let {options: {slotDuration}} = mainState;
+        let {offset, options: {slotDuration}} = mainState;
         let {intlSlotLabel, slotLabelPeriodicity, slotTimeLimits} = viewState;
 
         let slots;
 
         untrack(() => {
-            slots = createSlots(setMidnight(createDate()), slotDuration, slotLabelPeriodicity, slotTimeLimits, intlSlotLabel);
+            slots = createSlots(
+                setMidnight(createDate(undefined, offset)),
+                slotDuration,
+                slotLabelPeriodicity,
+                slotTimeLimits,
+                intlSlotLabel
+            );
         });
 
         return slots;

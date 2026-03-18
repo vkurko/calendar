@@ -2,10 +2,13 @@ import {SvelteMap} from 'svelte/reactivity';
 import {cloneDate, createDate, identity, intl, intlRange, isArray, setMidnight} from '#lib';
 import {optionsState} from './options.js';
 import {
-    createLoadingInvoker, loadEvents, loadResources, runDatesSet, runEventAllUpdated, runViewDidMount, setNowAndToday,
+    createLoadingInvoker, handleTimeZoneChange, loadEvents, loadResources, runDatesSet, runEventAllUpdated,
+    runViewDidMount, setNowAndToday,
     switchView
 } from './effects.js';
-import {activeRange, currentRange, filteredEvents, view, viewDates, viewTitle} from './derived.js';
+import {
+    activeRange, currentRange, filteredEvents, offset, view, viewDates, viewTitle
+} from './derived.js';
 import {arrayProxy} from './proxy.svelte.js';
 
 export default class State {
@@ -20,13 +23,14 @@ export default class State {
 
         // Create other states
         this.auxComponents = $state([]);
+        this.offset = $derived.by(offset(this));
         this.currentRange = $derived.by(currentRange(this));
         this.activeRange = $derived.by(activeRange(this));
         this.fetchedRange = $state({events: {}, resources: {}});
         this.events = $state.raw(arrayProxy(this.options.events));
         this.filteredEvents = $derived.by(filteredEvents(this));
         this.mainEl = $state();
-        this.now = $state(createDate());
+        this.now = $state(createDate(undefined, this.offset));
         this.resources = $state.raw(arrayProxy(isArray(this.options.resources) ? this.options.resources : []));
         this.today = $state(setMidnight(cloneDate(this.now)));
         this.intlEventTime = $derived.by(intlRange(this, 'eventTimeFormat'));
@@ -56,6 +60,7 @@ export default class State {
     #initEffects() {
         let loading = createLoadingInvoker(this);
         $effect.pre(switchView(this));
+        $effect.pre(handleTimeZoneChange(this));
         $effect.pre(setNowAndToday(this));
         $effect(loadEvents(this, loading));
         $effect(loadResources(this, loading));

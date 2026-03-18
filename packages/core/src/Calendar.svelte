@@ -16,7 +16,7 @@
     setContext('state', mainState);
 
     let {
-        auxComponents, features, events, interaction, iClass, view, viewComponent: View,
+        auxComponents, features, events, interaction, iClass, offset, view, viewComponent: View,
         options: {date, dateIncrement, duration, height, hiddenDays, customScrollbars, theme}
     } = $derived(mainState);
 
@@ -67,7 +67,7 @@
     }
 
     export function addEvent(event) {
-        event = createEvents([event])[0];
+        event = createEvents([event], offset)[0];
         events.push(event);
         return toEventWithLocalDates(event);
     }
@@ -76,7 +76,7 @@
         let id = String(event.id);
         let idx = events.findIndex(event => event.id === id);
         if (idx >= 0) {
-            event = createEvents([event])[0];
+            event = createEvents([event], offset)[0];
             events[idx] = event;
             return toEventWithLocalDates(event);
         }

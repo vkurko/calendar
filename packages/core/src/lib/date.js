@@ -1,13 +1,9 @@
-import {isDate, isFunction} from './utils.js';
+import {assign, isDate, isFunction, tzOffset} from './utils.js';
 
 export const DAY_IN_SECONDS = 86400;
 
-export function createDate(input = undefined) {
-    if (input !== undefined) {
-        return isDate(input) ? _fromLocalDate(input) : _fromISOString(input);
-    }
-
-    return _fromLocalDate(new Date());
+export function createDate(input = new Date(), offset = undefined) {
+    return isDate(input) ? _fromLocalDate(input, offset) : _fromISOString(input, offset);
 }
 
 export function createDuration(input) {
@@ -38,7 +34,10 @@ export function createDuration(input) {
 }
 
 export function cloneDate(date) {
-    return new Date(date.getTime());
+    let result = new Date(date.getTime());
+    setOffset(result, getOffset(date));
+
+    return result;
 }
 
 export function addDuration(date, duration, x = 1) {
@@ -152,14 +151,6 @@ export function prevDate(date, duration, hiddenDays) {
     return date;
 }
 
-function _skipHiddenDays(date, hiddenDays, dateFn) {
-    if (hiddenDays.length && hiddenDays.length < 7) {
-        while (hiddenDays.includes(date.getUTCDay())) {
-            dateFn(date);
-        }
-    }
-}
-
 /**
  * For a given date, get its week number
  *  - ISO @see https://stackoverflow.com/questions/6117814/get-week-of-year-in-javascript-like-in-php
@@ -192,12 +183,42 @@ export function createWeekNumberContent(week, weekNumberContent, date) {
     return 'W' + String(week).padStart(2, '0');
 }
 
+export function parseOffset(str, match = {}) {
+    let parts = str.match(/([+-])(\d{2}):(\d{2})$/);
+    if (parts) {
+        assign(match, parts);
+        return +(parts[1] + '1') * (+parts[2] * 60 + +parts[3]);
+    }
+    return undefined;
+}
+
+/**
+ * Apply timezone offset difference in minutes to a date
+ */
+export function applyOffsetDiff(date, offsetDiff) {
+    if (offsetDiff) {
+        date.setUTCMinutes(date.getUTCMinutes() + offsetDiff);
+    }
+
+    return date;
+}
+
+let offsetSymbol = Symbol('ec');
+export function setOffset(date, offset) {
+    date[offsetSymbol] = offset;
+    return date;
+}
+
+export function getOffset(date) {
+    return date[offsetSymbol];
+}
+
 /**
  * Private functions
  */
 
-function _fromLocalDate(date) {
-    return new Date(Date.UTC(
+function _fromLocalDate(date, offset = undefined) {
+    let result = new Date(Date.UTC(
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
@@ -205,16 +226,39 @@ function _fromLocalDate(date) {
         date.getMinutes(),
         date.getSeconds()
     ));
+    applyOffsetDiff(result, offset ? offset - tzOffset(result) : 0);
+    setOffset(result, offset ?? tzOffset(result));
+
+    return result;
 }
 
-function _fromISOString(str) {
-    const parts = str.match(/\d+/g);
-    return new Date(Date.UTC(
-        Number(parts[0]),
-        Number(parts[1]) - 1,
-        Number(parts[2]),
-        Number(parts[3] || 0),
-        Number(parts[4] || 0),
-        Number(parts[5] || 0)
+function _fromISOString(str, offset = undefined) {
+    let match = {};
+    let inputOffset = parseOffset(str, match);
+    if (inputOffset !== undefined) {
+        str = str.substring(0, match.index);
+    }
+    let parts = str.match(/\d+/g);
+    let result = new Date(Date.UTC(
+        +parts[0],
+        +parts[1] - 1,
+        +parts[2],
+        +parts[3] || 0,
+        +parts[4] || 0,
+        +parts[5] || 0
     ));
+    if (offset !== undefined && inputOffset !== undefined) {
+        applyOffsetDiff(result, offset - inputOffset);
+    }
+    setOffset(result, offset ?? inputOffset);
+
+    return result;
+}
+
+function _skipHiddenDays(date, hiddenDays, dateFn) {
+    if (hiddenDays.length && hiddenDays.length < 7) {
+        while (hiddenDays.includes(date.getUTCDay())) {
+            dateFn(date);
+        }
+    }
 }

@@ -94,6 +94,7 @@ function createOptions(plugins) {
             weekdays: ['ec-sun', 'ec-mon', 'ec-tue', 'ec-wed', 'ec-thu', 'ec-fri', 'ec-sat'],
             weekNumber: 'ec-week-number'
         },
+        timeZone: 'local',
         titleFormat: {
             year: 'numeric',
             month: 'short',
@@ -173,9 +174,7 @@ export function optionsState(plugins, userOptions) {
         // Set up option setters and delete unknown options
         for (let key of keys(opts)) {
             if (hasOwn(options, key)) {
-                if (!setters[key]) {
-                    setters[key] = [];
-                }
+                setters[key] ??= [];
                 setters[key].push(
                     specialOptions.includes(key)
                         ? value => opts[key] = isFunction(value) ? value(defOpts[key]) : value

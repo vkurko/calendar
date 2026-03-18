@@ -1,7 +1,8 @@
 import {getAbortSignal, tick, untrack} from 'svelte';
 import {
-    assign, cloneDate, createDate, createEvents, createResources, datesEqual, empty, isArray, isFunction, setMidnight,
-    toISOString, toLocalDate, toViewWithLocalDates
+    addDay,
+    applyOffsetDiff, assign, cloneDate, createDate, createEvents, createResources, datesEqual, empty, getOffset, isArray,
+    isFunction, setMidnight, setOffset, toISOString, toLocalDate, toViewWithLocalDates
 } from '#lib';
 import {arrayProxy} from './proxy.svelte.js';
 
@@ -22,15 +23,16 @@ export function switchView(mainState) {
 export function loadEvents(mainState, loadingInvoker) {
     return () => {
         // Dependencies
-        let {activeRange, fetchedRange: {events: fetchedRange}, viewDates,
-            options: {events, eventSources, lazyFetching}} = mainState;
+        let {activeRange, fetchedRange: {events: fetchedRange}, offset, viewDates,
+            options: {events, eventSources, lazyFetching, timeZone}} = mainState;
 
         untrack(() => {
             load(
                 eventSources.map(source => isFunction(source.events) ? source.events : source),
                 events,
-                createEvents,
+                input => createEvents(input, offset),
                 result => mainState.events = arrayProxy(result),
+                timeZone,
                 activeRange,
                 fetchedRange,
                 viewDates,
@@ -46,7 +48,7 @@ export function loadResources(mainState, loadingInvoker) {
     return () => {
         // Dependencies
         let {activeRange, fetchedRange: {resources: fetchedRange}, viewDates,
-            options: {lazyFetching, refetchResourcesOnNavigate, resources}} = mainState;
+            options: {lazyFetching, refetchResourcesOnNavigate, resources, timeZone}} = mainState;
 
         untrack(() => {
             load(
@@ -54,6 +56,7 @@ export function loadResources(mainState, loadingInvoker) {
                 resources,
                 createResources,
                 result => mainState.resources = arrayProxy(result),
+                timeZone,
                 activeRange,
                 fetchedRange,
                 viewDates,
@@ -65,7 +68,19 @@ export function loadResources(mainState, loadingInvoker) {
     };
 }
 
-function load(sources, defaultResult, parseResult, applyResult, activeRange, fetchedRange, viewDates, refetchOnNavigate, lazyFetching, loading) {
+function load(
+    sources,
+    defaultResult,
+    parseResult,
+    applyResult,
+    timeZone,
+    activeRange,
+    fetchedRange,
+    viewDates,
+    refetchOnNavigate,
+    lazyFetching,
+    loading
+) {
     if (empty(viewDates)) {
         return;
     }
@@ -80,7 +95,8 @@ function load(sources, defaultResult, parseResult, applyResult, activeRange, fet
             !lazyFetching ||
             !fetchedRange.start ||
             fetchedRange.start > activeRange.start ||
-            fetchedRange.end < activeRange.end
+            fetchedRange.end < activeRange.end ||
+            fetchedRange.timeZone !== timeZone
         )
     ) {
         let result = [];
@@ -103,7 +119,8 @@ function load(sources, defaultResult, parseResult, applyResult, activeRange, fet
                     start: toLocalDate(activeRange.start),
                     end: toLocalDate(activeRange.end),
                     startStr,
-                    endStr
+                    endStr,
+                    timeZone
                 } : {}, success, failure);
                 if (result !== undefined) {
                     Promise.resolve(result).then(success, failure);
@@ -115,6 +132,9 @@ function load(sources, defaultResult, parseResult, applyResult, activeRange, fet
                 if (refetchOnNavigate) {
                     params.start = startStr;
                     params.end = endStr;
+                    if (timeZone !== 'local') {
+                        params.timeZone = timeZone;
+                    }
                 }
                 params = new URLSearchParams(params);
                 // Prepare fetch
@@ -135,7 +155,7 @@ function load(sources, defaultResult, parseResult, applyResult, activeRange, fet
             }
         }
         // Save current range for future requests
-        assign(fetchedRange, activeRange);
+        assign(fetchedRange, {...activeRange, timeZone});
     }
 }
 
@@ -155,9 +175,12 @@ export function createLoadingInvoker(mainState) {
 
 export function setNowAndToday(mainState) {
     return () => {
+        // Dependencies
+        let {offset} = mainState;
+
         // Now and today
         let interval = setInterval(() => {
-            let now = createDate();
+            let now = createDate(undefined, offset);
             let today = setMidnight(cloneDate(now));
             mainState.now = now;
             if (!datesEqual(mainState.today, today)) {
@@ -166,6 +189,38 @@ export function setNowAndToday(mainState) {
         }, 1000);
 
         return () => clearInterval(interval);
+    }
+}
+
+export function handleTimeZoneChange(mainState) {
+    return () => {
+        // Dependencies
+        let {offset, options} = mainState;
+
+        untrack(() => {
+            // Update events
+            for (let event of mainState.events) {
+                if (!event.allDay) {
+                    for (let prop of ['start', 'end']) {
+                        let dateOffset = getOffset(event[prop]);
+                        // Dates parsed from strings with no timezone info have dateOffset === undefined;
+                        // they are treated as floating and only get branded with the new offset, not shifted
+                        if (dateOffset !== undefined) {
+                            applyOffsetDiff(event[prop], offset - dateOffset);
+                        }
+                        setOffset(event[prop], offset);
+                    }
+                }
+            }
+            // Update date option
+            let dateOffset = getOffset(options.date);
+            if (dateOffset !== undefined) {
+                let diff = createDate(undefined, offset).getUTCDay() - createDate(undefined, dateOffset).getUTCDay();
+                let date = addDay(cloneDate(options.date), diff);
+                mainState.setOption('date', date);
+            }
+            setOffset(options.date, offset);
+        });
     }
 }
 

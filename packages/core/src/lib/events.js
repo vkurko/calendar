@@ -6,14 +6,14 @@ import {assign, isArray, isFunction} from './utils.js';
 import {toViewWithLocalDates} from './view.js';
 
 let eventId = 1;
-export function createEvents(input) {
+export function createEvents(input, offset = undefined) {
     return input.map(event => {
         let result = {
             id: 'id' in event ? String(event.id) : `{generated-${eventId++}}`,
             resourceIds: toArrayProp(event, 'resourceId').map(String),
             allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
-            start: createDate(event.start),
-            end: createDate(event.end),
+            start: createDate(event.start, offset),
+            end: createDate(event.end, offset),
             title: event.title ?? '',
             editable: event.editable,
             startEditable: event.startEditable,

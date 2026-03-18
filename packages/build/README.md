@@ -136,6 +136,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [slotWidth](#slotwidth)
   - [snapDuration](#snapduration)
   - [theme](#theme)
+  - [timeZone](#timezone)
   - [titleFormat](#titleformat)
   - [unselect](#unselect)
   - [unselectAuto](#unselectauto)
@@ -260,8 +261,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.6.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.6.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.7.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.7.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1652,6 +1653,15 @@ Start date of the range the calendar needs events for
 End date of the range the calendar needs events for
 </td>
 </tr>
+<tr>
+<td>
+
+`timeZone`
+</td>
+<td>
+The value of the calendar's [timeZone](#timezone) option. Sent only when `timeZone` is not `'local'`
+</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -1720,6 +1730,13 @@ function(fetchInfo, successCallback, failureCallback) { }
 `endStr`
 </td>
 <td>ISO8601 string representation of the end date</td>
+</tr>
+<tr>
+<td>
+
+`timeZone`
+</td>
+<td>The value of the calendar's [timeZone](#timezone) option</td>
 </tr>
 </table>
 
@@ -2639,6 +2656,39 @@ function (theme) {
 <td>An object with default CSS classes</td>
 </tr>
 </table>
+
+### timeZone
+- Type `string`
+- Default `'local'`
+
+The time zone the calendar uses to display dates and times.
+
+The following values are accepted:
+- `'local'` — uses the browser's local time zone
+- `'UTC'` — uses UTC (zero offset)
+- A UTC offset string in the form `'±HH:MM'`, e.g. `'+05:30'` or `'-06:00'`
+
+Event dates that contain an explicit timezone offset in their ISO string (e.g. `'2028-06-01T10:00:00+02:00'`) will be shifted to the calendar's timezone. Event dates without timezone info (e.g. `'2028-06-01T10:00:00'`) are treated as floating — they display their wall-clock time as-is and will be interpreted in the calendar's timezone from that point forward.
+
+When the `timeZone` option changes at runtime, all already-loaded events and the current `date` option are automatically shifted to the new timezone. Events from [eventSources](#eventsources) are re-fetched automatically.
+
+```js
+let ec = new EventCalendar(document.getElementById('ec'), {
+    timeZone: '+02:00',
+    events: [
+        {
+            start: '2028-06-01T10:00:00',        // floating — displayed as 10:00
+            end:   '2028-06-01T12:00:00',
+            title: 'Meeting'
+        },
+        {
+            start: '2028-06-01T10:00:00+00:00',  // UTC — displayed as 12:00 in +02:00
+            end:   '2028-06-01T12:00:00+00:00',
+            title: 'Call'
+        }
+    ]
+});
+```
 
 ### titleFormat
 - Type `object` or `function`

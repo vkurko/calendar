@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.7.0
+April 14, 2026
+* Added `timeZone` option ([367](https://github.com/vkurko/calendar/discussions/367), [502](https://github.com/vkurko/calendar/issues/502), [576](https://github.com/vkurko/calendar/issues/576), [588](https://github.com/vkurko/calendar/discussions/588))
+
 ## 5.6.1
 April 9, 2026
 * Improved rendering performance in `resourceTimeGrid` views ([640](https://github.com/vkurko/calendar/issues/640))

@@ -42,6 +42,10 @@ export function empty(array) {
     return !length(array);
 }
 
+export function tzOffset(date = new Date()) {
+    return -date.getTimezoneOffset();
+}
+
 export function isArray(value) {
     return Array.isArray(value);
 }
