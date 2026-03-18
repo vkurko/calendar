@@ -9,11 +9,24 @@
     import {diff} from './storage/options.js';
     import Toolbar from './Toolbar.svelte';
 
-    let {plugins = [], options = {}} = $props();
+    let {
+        plugins = [],
+        options = {},
+        eventContent = undefined,
+        allDayContent = undefined,
+        moreLinkContent = undefined,
+        weekNumberContent = undefined,
+        noEventsContent = undefined,
+        resourceLabelContent = undefined,
+    } = $props();
 
     // svelte-ignore state_referenced_locally
     let mainState = new MainState(plugins, options);
     setContext('state', mainState);
+
+    $effect.pre(() => {
+        mainState.snippets = {eventContent, allDayContent, moreLinkContent, weekNumberContent, noEventsContent, resourceLabelContent};
+    });
 
     let {
         auxComponents, features, events, interaction, iClass, view, viewComponent: View,
