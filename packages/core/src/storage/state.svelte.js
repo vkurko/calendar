@@ -1,5 +1,5 @@
 import {SvelteMap} from 'svelte/reactivity';
-import {createDate, identity, intl, intlRange, setMidnight} from '#lib';
+import {applyOffset, createDate, identity, intl, intlRange, setMidnight} from '#lib';
 import {optionsState} from './options.js';
 import {
     createLoadingInvoker, loadEvents, loadResources, runDatesSet, runEventAllUpdated, runViewDidMount, setNowAndToday,
@@ -26,9 +26,9 @@ export default class State {
         this.events = $state.raw(arrayProxy(this.options.events));
         this.filteredEvents = $derived.by(filteredEvents(this));
         this.mainEl = $state();
-        this.now = $state(createDate());
+        this.now = $state(applyOffset(createDate(), this.options.timezoneOffsetMins));
         this.resources = $state.raw(arrayProxy(this.options.resources));
-        this.today = $state(setMidnight(createDate()));
+        this.today = $state(setMidnight(applyOffset(createDate(), this.options.timezoneOffsetMins)));
         this.intlEventTime = $derived.by(intlRange(this, 'eventTimeFormat'));
         this.intlDayHeader = $derived.by(intl(this, 'dayHeaderFormat'));
         this.intlDayHeaderAL = $derived.by(intl(this, 'dayHeaderAriaLabelFormat'));
