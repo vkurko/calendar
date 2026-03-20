@@ -1,10 +1,14 @@
 # EventCalendar changelog
 
+## 5.5.1
+March 20, 2026
+* Fixed issue with `resources` as function ([636](https://github.com/vkurko/calendar/issues/636))
+
 ## 5.5.0
 March 18, 2026
-* Added `resourceTimelineYear` view
+* Added `resourceTimelineYear` view ([386](https://github.com/vkurko/calendar/issues/386), [597](https://github.com/vkurko/calendar/issues/597))
 * Added `monthHeaderFormat` option for the new `resourceTimelineYear` view
-* `weekNumbers` now work in `resourceTimeline` views too
+* `weekNumbers` now work in `resourceTimeline` views ([596](https://github.com/vkurko/calendar/issues/596))
 
 ## 5.4.2
 March 11, 2026

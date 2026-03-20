@@ -103,6 +103,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [loading](#loading)
   - [locale](#locale)
   - [longPressDelay](#longpressdelay)
+  - [monthHeaderFormat](#monthheaderformat)
   - [moreLinkContent](#morelinkcontent)
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
@@ -257,8 +258,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.2/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.4.2/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.5.1/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.5.1/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -353,7 +354,7 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 <details>
     <summary>Default</summary>
 
-`{collapse: 'Collapse', close: 'Close', dayGridDay: 'day', dayGridMonth: 'month', dayGridWeek: 'week', expand: 'Expand', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'resources', resourceTimeGridWeek: 'resources', resourceTimelineDay: 'timeline', resourceTimelineMonth: 'timeline', resourceTimelineWeek: 'timeline', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
+`{collapse: 'Collapse', close: 'Close', dayGridDay: 'day', dayGridMonth: 'month', dayGridWeek: 'week', expand: 'Expand', listDay: 'day', listMonth: 'month', listWeek: 'week', listYear: 'year', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', resourceTimelineDay: 'day', resourceTimelineMonth: 'month', resourceTimelineWeek: 'week', resourceTimelineYear: 'year', timeGridDay: 'day', timeGridWeek: 'week', today: 'today'}`
 > Views override the default value as follows:
 > - dayGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - dayGridMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
@@ -367,6 +368,7 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 > - resourceTimelineDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - resourceTimelineMonth `text => ({...text, next: 'Next month', prev: 'Previous month'})`
 > - resourceTimelineWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
+> - resourceTimelineYear `text => ({...text, next: 'Next year', prev: 'Previous year'})`
 > - timeGridDay `text => ({...text, next: 'Next day', prev: 'Previous day'})`
 > - timeGridWeek `text => ({...text, next: 'Next week', prev: 'Previous week'})`
 
@@ -680,6 +682,7 @@ function (date) {
 > - dayGridDay `{weekday: 'long'}`
 > - dayGridMonth `{weekday: 'short'}`
 > - resourceTimelineMonth `{weekday: 'short', day: 'numeric'}`
+> - resourceTimelineYear `{weekday: 'short', day: 'numeric'}`
 > - timeGridDay `{weekday: 'long'}`
 
 Defines the text that is displayed on the calendar’s column headings.
@@ -734,6 +737,7 @@ function (date) {
 > - resourceTimelineDay `false`
 > - resourceTimelineMonth `false`
 > - resourceTimelineWeek `false`
+> - resourceTimelineYear `false`
 
 Determines whether to display an event’s end time.
 
@@ -765,6 +769,7 @@ Determines whether the calendar should automatically scroll during the event dra
 > - resourceTimeGridDay `{days: 1}`
 > - resourceTimelineDay `{days: 1}`
 > - resourceTimelineMonth `{months: 1}`
+> - resourceTimelineYear `{years: 1}`
 > - timeGridDay `{days: 1}`
 
 Sets the duration of a view.
@@ -1954,6 +1959,29 @@ For touch devices, the amount of time (in milliseconds) the user must hold down 
 
 For a more granular configuration, see [eventLongPressDelay](#eventlongpressdelay) and [selectLongPressDelay](#selectlongpressdelay).
 
+### monthHeaderFormat
+- Type `object` or `function`
+- Default `{month: 'long'}`
+
+Defines the text that is displayed in month headings in `resourceTimelineYear` view.
+
+This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+
+```js
+function (date) {
+  // return Content with the formatted date string
+}
+```
+<table>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object that needs to be formatted</td>
+</tr>
+</table>
+
 ### moreLinkContent
 - Type `Content` or `function`
 - Default `undefined`
@@ -2412,6 +2440,7 @@ Defines how many pixels the user’s mouse must move before the selection begins
 - Default `'00:30:00'`
 > Views override the default value as follows:
 > - resourceTimelineMonth `{days: 1}`
+> - resourceTimelineYear `{days: 1}`
 
 Defines the frequency for displaying time slots.
 
@@ -2519,6 +2548,7 @@ If not specified, then equal to [slotDuration](#slotduration).
 > - resourceTimelineDay `theme => ({...theme, view: 'ec-resource ec-timeline ec-day-view'})`
 > - resourceTimelineMonth `theme => ({...theme, view: 'ec-resource ec-timeline ec-month-view'})`
 > - resourceTimelineWeek `theme => ({...theme, view: 'ec-resource ec-timeline ec-week-view'})`
+> - resourceTimelineYear `theme => ({...theme, view: 'ec-resource ec-timeline ec-year-view'})`
 > - timeGridDay `theme => ({...theme, view: 'ec-time-grid ec-day-view'})`
 > - timeGridWeek `theme => ({...theme, view: 'ec-time-grid ec-week-view'})`
 </details>
@@ -2549,6 +2579,9 @@ function (theme) {
 - Default `{year: 'numeric', month: 'short', day: 'numeric'}`
 > Views override the default value as follows:
 > - dayGridMonth `{year: 'numeric', month: 'long'}`
+> - listDay `{year: 'numeric', month: 'long', day: 'numeric'}`
+> - listMonth `{year: 'numeric', month: 'long'}`
+> - listYear `{year: 'numeric'}`
 > - timeGridDay `{year: 'numeric', month: 'long', day: 'numeric'}`
 
 Defines the text that is displayed in the header toolbar’s title.
@@ -2686,6 +2719,7 @@ The following values are available:
 - `'resourceTimelineDay'`
 - `'resourceTimelineWeek'`
 - `'resourceTimelineMonth'`
+- `'resourceTimelineYear'`
 - `'timeGridDay'`
 - `'timeGridWeek'`
 
@@ -2765,7 +2799,7 @@ function (arg) {
 - Type `boolean`
 - Default `false`
 
-Determines whether week numbers should be displayed in the `dayGrid` view.
+Determines whether week numbers should be displayed in `dayGrid`/`resourceTimeline` views.
 
 The numbering of weeks depends on the value of [firstDay](#firstday). When `firstDay` is `0`, the [Western](https://en.wikipedia.org/wiki/Week#Other_week_numbering_systems) system is used. Any other value uses the [ISO](https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system) system.
 
@@ -2775,20 +2809,20 @@ Methods allow you to manipulate EventCalendar after initialization. They are acc
 In Svelte, methods are available from a component instance:
 ```html
 <script>
-    import {Calendar, TimeGrid} from '@event-calendar/core';
+  import {Calendar, TimeGrid} from '@event-calendar/core';
 
-    let ec = $state();
-    let options = $state({
-        view: 'timeGridWeek',
-        eventSources: [{events: function() {
-            console.log('fetching...');
-            return [];
-        }}]
-    });
+  let ec = $state();
+  let options = $state({
+    view: 'timeGridWeek',
+    eventSources: [{events: function() {
+        console.log('fetching...');
+        return [];
+      }}]
+  });
 
-    function invokeMethod() {
-        ec.refetchEvents();
-    }
+  function invokeMethod() {
+    ec.refetchEvents();
+  }
 </script>
 
 <button onclick={invokeMethod}>Refetch events</button>

@@ -15,8 +15,8 @@ export default {
             view: 'resourceTimeGridWeek'
         });
         assign(options.buttonText, {
-            resourceTimeGridDay: 'resources',
-            resourceTimeGridWeek: 'resources'
+            resourceTimeGridDay: 'day',
+            resourceTimeGridWeek: 'week'
         });
         assign(options.theme, {
             colGroup: 'ec-col-group'

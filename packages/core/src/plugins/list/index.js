@@ -12,10 +12,10 @@ export default {
             view: 'listWeek'
         });
         assign(options.buttonText, {
-            listDay: 'list',
-            listWeek: 'list',
-            listMonth: 'list',
-            listYear: 'list'
+            listDay: 'day',
+            listWeek: 'week',
+            listMonth: 'month',
+            listYear: 'year'
         });
         assign(options.theme, {
             daySide: 'ec-day-side',

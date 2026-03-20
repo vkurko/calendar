@@ -45,7 +45,7 @@ export function grid(mainState, viewState) {
 export function extraHeads(mainState, viewState) {
     return () => {
         // Dependencies
-        let {options: {firstDay, weekNumbers}} = mainState;
+        let {features, options: {firstDay, weekNumbers}} = mainState;
         let {grid} = viewState;
 
         let months = [];
@@ -56,11 +56,13 @@ export function extraHeads(mainState, viewState) {
             let week;
             if (!empty(grid)) {
                 for (let {dayStart, gridColumn} of grid[0]) {
-                    if (month && month.date.getUTCMonth() === dayStart.getUTCMonth()) {
-                        ++month.span;
-                    } else {
-                        month = {date: dayStart, gridColumn, span: 1};
-                        months.push(month);
+                    if (features.includes('month')) {
+                        if (month && month.date.getUTCMonth() === dayStart.getUTCMonth()) {
+                            ++month.span;
+                        } else {
+                            month = {date: dayStart, gridColumn, span: 1};
+                            months.push(month);
+                        }
                     }
                     if (weekNumbers) {
                         let number = getWeekNumber(dayStart, firstDay);

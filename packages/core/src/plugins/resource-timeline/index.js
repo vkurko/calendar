@@ -20,10 +20,10 @@ export default {
 		assign(options.buttonText, {
 			expand: 'Expand',
 			collapse: 'Collapse',
-			resourceTimelineDay:  'timeline',
-			resourceTimelineWeek: 'timeline',
-			resourceTimelineMonth: 'timeline',
-			resourceTimelineYear: 'timeline'
+			resourceTimelineDay:  'day',
+			resourceTimelineWeek: 'week',
+			resourceTimelineMonth: 'month',
+			resourceTimelineYear: 'year'
 		});
 		assign(options.icons, {
 			collapse: {html: '&minus;'},
@@ -91,11 +91,11 @@ function initViewComponent(mainState) {
 }
 
 function initMonthViewComponent(mainState) {
-	return _initViewComponent(mainState);
+	return _initViewComponent(mainState, ['month']);
 }
 
-function _initViewComponent(mainState) {
-	mainState.features = ['timeline'];
+function _initViewComponent(mainState, extraFeatures = []) {
+	mainState.features = ['timeline', ...extraFeatures];
 	mainState.extensions.viewResources = resources => resources.filter(resource => !getPayload(resource).hidden);
 	return View;
 }
