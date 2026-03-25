@@ -48,8 +48,10 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [customScrollbars](#customscrollbars)
   - [date](#date)
   - [dateClick](#dateclick)
+  - [dateIncrement](#dateincrement)
   - [datesAboveResources](#datesaboveresources)
   - [datesSet](#datesset)
+  - [dayCellContent](#daycellcontent)
   - [dayCellFormat](#daycellformat)
   - [dayHeaderAriaLabelFormat](#dayheaderarialabelformat)
   - [dayHeaderFormat](#dayheaderformat)
@@ -72,9 +74,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
-  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
+  - [eventDurationEditable](#eventdurationeditable)
   - [eventFilter](#eventfilter)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
@@ -108,9 +110,9 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [noEventsClick](#noeventsclick)
   - [noEventsContent](#noeventscontent)
   - [nowIndicator](#nowindicator)
-  - [pointer](#pointer)
   </td><td>
 
+  - [pointer](#pointer)
   - [refetchResourcesOnNavigate](#refetchresourcesonnavigate)
   - [resizeConstraint](#resizeconstraint)
   - [resourceExpand](#resourceexpand)
@@ -258,8 +260,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.5.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.5.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.6.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.6.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -570,6 +572,16 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 </tr>
 </table>
 
+### dateIncrement
+- Type `string`, `integer` or `object`
+- Default `undefined`
+
+Defines the interval by which the displayed view is shifted when pressing the prev/next buttons or when the [prev()](#prev)/[next()](#next) methods are called.
+
+This should be a value that can be parsed into a [Duration](#duration-object) object.
+
+If not specified, then equal to [duration](#duration).
+
 ### datesAboveResources
 - Type `boolean`
 - Default `false`
@@ -623,6 +635,60 @@ function (info) {}
 <td>
 
 The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
+### dayCellContent
+- Type `Content` or `function`
+- Default `undefined`
+
+Defines the content that is rendered inside the day cell.
+
+This value can be either a [Content](#content) or a function that returns content:
+
+```js
+function (arg) {
+    // return Content
+}
+```
+`arg` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`allDay`
+</td>
+<td>
+
+`true` or `false`. Determines if the cell is within `all-day` slot. Month and list views are also considered as all-day slots
+</td>
+</tr>
+<tr>
+<td>
+
+`date`
+</td>
+<td>JavaScript Date object corresponding to the day</td>
+</tr>
+<tr>
+<td>
+
+`isToday`
+</td>
+<td>
+
+`true` or `false`. Determines if the cell is for today
+</td>
+</tr>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+If the current view is a resource view, the [Resource](#resource-object) object that owns this cell
 </td>
 </tr>
 </table>

@@ -17,7 +17,7 @@
 
     let {
         auxComponents, features, events, interaction, iClass, view, viewComponent: View,
-        options: {date, duration, height, hiddenDays, customScrollbars, theme}
+        options: {date, dateIncrement, duration, height, hiddenDays, customScrollbars, theme}
     } = $derived(mainState);
 
     // Reactively update options that did change
@@ -113,12 +113,12 @@
     }
 
     export function next() {
-        mainState.setOption('date', nextDate(cloneDate(date), duration, hiddenDays));
+        mainState.setOption('date', nextDate(cloneDate(date), dateIncrement ?? duration, hiddenDays));
         return this;
     }
 
     export function prev() {
-        mainState.setOption('date', prevDate(cloneDate(date), duration, hiddenDays));
+        mainState.setOption('date', prevDate(cloneDate(date), dateIncrement ?? duration, hiddenDays));
         return this;
     }
 </script>

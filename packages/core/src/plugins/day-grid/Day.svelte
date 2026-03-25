@@ -48,35 +48,35 @@
 </script>
 
 <BaseDay date={dayStart} allDay {classes} {disabled} {highlight} {noIeb} {noBeb}>
-    <div class="{theme.dayHead}">
-        {#if features.includes('dayNumber')}
+    {#snippet content(dayContent)}
+        <div class="{theme.dayHead}">
             <time
                 datetime="{toISOString(dayStart, 10)}"
-                {@attach contentFrom(intlDayCell.format(dayStart))}
+                {@attach contentFrom(dayContent ?? intlDayCell.format(dayStart))}
             ></time>
-        {/if}
-        {#if showWeekNumber}
-            <span
-                class="{theme.weekNumber}"
-                {@attach contentFrom(weekNumber)}
-            ></span>
-        {/if}
-    </div>
+            {#if showWeekNumber}
+                <span
+                    class="{theme.weekNumber}"
+                    {@attach contentFrom(weekNumber)}
+                ></span>
+            {/if}
+        </div>
 
-    <div class="{theme.dayFoot}">
-        {#if dayHiddenChunks}
-            <!-- svelte-ignore a11y_missing_attribute -->
-            <!-- svelte-ignore a11y_missing_content -->
-            <!-- svelte-ignore a11y_consider_explicit_label -->
-            <a
-                role="button"
-                tabindex="0"
-                aria-haspopup="dialog"
-                onclick={stopPropagation(showMore)}
-                onkeydown={keyEnter(showMore)}
-                onpointerdown={stopPropagation()}
-                {@attach contentFrom(moreLink)}
-            ></a>
-        {/if}
-    </div>
+        <div class="{theme.dayFoot}">
+            {#if dayHiddenChunks}
+                <!-- svelte-ignore a11y_missing_attribute -->
+                <!-- svelte-ignore a11y_missing_content -->
+                <!-- svelte-ignore a11y_consider_explicit_label -->
+                <a
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="dialog"
+                    onclick={stopPropagation(showMore)}
+                    onkeydown={keyEnter(showMore)}
+                    onpointerdown={stopPropagation()}
+                    {@attach contentFrom(moreLink)}
+                ></a>
+            {/if}
+        </div>
+    {/snippet}
 </BaseDay>

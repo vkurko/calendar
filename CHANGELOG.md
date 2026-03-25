@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.6.0
+March 25, 2026
+* Added `dayCellContent` option  ([381](https://github.com/vkurko/calendar/issues/381))
+* Added `dateIncrement` option
+
 ## 5.5.1
 March 20, 2026
 * Fixed issue with `resources` as function ([636](https://github.com/vkurko/calendar/issues/636))

@@ -1,4 +1,4 @@
-import {assign, createDuration} from '#lib';
+import {assign, createDuration, undefinedOr} from '#lib';
 
 /**
  * TimeGrid + ResourceTimeGrid + ResourceTimeline
@@ -53,10 +53,10 @@ export function createTRRParsers(parsers) {
         assign(parsers, {
             scrollTime: createDuration,
             slotDuration: createDuration,
-            slotLabelInterval: input => input !== undefined ? createDuration(input) : undefined,
+            slotLabelInterval: undefinedOr(createDuration),
             slotMaxTime: createDuration,
             slotMinTime: createDuration,
-            snapDuration: input => input !== undefined ? createDuration(input) : undefined
+            snapDuration: undefinedOr(createDuration)
         });
     }
 }

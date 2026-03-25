@@ -1,6 +1,6 @@
 <script>
     import {getContext, onMount} from 'svelte';
-    import {datesEqual, identity, setPayload} from '#lib';
+    import {contentFrom, datesEqual, identity, isFunction, setPayload, toLocalDate} from '#lib';
 
     let {
         el = $bindable(),
@@ -14,13 +14,23 @@
         role = 'cell',
         noIeb = false,
         noBeb = false,
-        children
+        content
     } = $props();
 
-    let {today, interaction: {action}, options: {theme}} = $derived(getContext('state'));
+    let {today, interaction: {action}, options: {dayCellContent, theme}} = $derived(getContext('state'));
     let {snap} = $derived(getContext('view-state'));  // timeGrid has snap, others don't
 
     let isToday = $derived(datesEqual(date, today));
+    let dayContent = $derived(
+        isFunction(dayCellContent)
+            ? dayCellContent({
+                allDay,
+                date: toLocalDate(date),
+                isToday,
+                resource
+            })
+            : dayCellContent
+    );
 
     // Class
     let classNames = $derived(classes([
@@ -54,4 +64,5 @@
     class={classNames}
     {role}
     {onpointerdown}
->{@render children?.()}</div>
+    {@attach content ? null : contentFrom(dayContent)}
+>{@render content?.(dayContent)}</div>

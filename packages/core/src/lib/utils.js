@@ -77,3 +77,7 @@ export const identity = (x) => x;
 export function isRtl() {
     return window.getComputedStyle(document.documentElement).direction === 'rtl';
 }
+
+export function undefinedOr(fn) {
+    return input => input === undefined ? undefined : fn(input);
+}

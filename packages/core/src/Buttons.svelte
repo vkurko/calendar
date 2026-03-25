@@ -5,8 +5,8 @@
     let {buttons} = $props();
 
     let mainState = getContext('state');
-    let {currentRange, today, viewTitle, viewDates, options: {buttonText, customButtons, date, duration, hiddenDays,
-        theme, validRange, view}} = $derived(mainState);
+    let {currentRange, today, viewTitle, viewDates, options: {buttonText, customButtons, date, dateIncrement, duration,
+        hiddenDays, theme, validRange, view}} = $derived(mainState);
 
     let prevDisabled = $state(false);
     let nextDisabled = $state(false);
@@ -52,11 +52,11 @@
     }
 
     function prev() {
-        mainState.setOption('date', prevDate(cloneDate(date), duration, hiddenDays));
+        mainState.setOption('date', prevDate(cloneDate(date), dateIncrement ?? duration, hiddenDays));
     }
 
     function next() {
-        mainState.setOption('date', nextDate(cloneDate(date), duration, hiddenDays));
+        mainState.setOption('date', nextDate(cloneDate(date), dateIncrement ?? duration, hiddenDays));
     }
 
     function setToday() {

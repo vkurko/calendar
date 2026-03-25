@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
     assign, createDate, createDateRange, createDuration, createEvents, createEventSources, createResources, hasOwn,
-    isArray, isFunction, isPlainObject, keys, setMidnight
+    isArray, isFunction, isPlainObject, keys, setMidnight, undefinedOr
 } from '#lib';
 import {objectProxy} from './proxy.svelte.js';
 
@@ -13,7 +13,9 @@ function createOptions(plugins) {
         customButtons: {},
         customScrollbars: false,  // ec option
         date: new Date(),
+        dateIncrement: undefined,
         datesSet: undefined,
+        dayCellContent: undefined,
         dayHeaderFormat: {
             weekday: 'short',
             month: 'numeric',
@@ -114,6 +116,7 @@ function createOptions(plugins) {
 function createParsers(plugins) {
     let parsers = {
         date: input => setMidnight(createDate(input)),
+        dateIncrement: undefinedOr(createDuration),
         duration: createDuration,
         events: createEvents,
         eventSources: createEventSources,
