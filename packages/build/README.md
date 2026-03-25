@@ -42,6 +42,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 
   - [allDayContent](#alldaycontent)
   - [allDaySlot](#alldayslot)
+  - [beforeResourceExpand](#beforeResourceExpand)
   - [buttonText](#buttontext)
   - [columnWidth](#columnwidth)
   - [customButtons](#custombuttons)
@@ -346,6 +347,48 @@ The default text
 Determines whether the `all-day` slot is displayed at the top of the calendar.
 
 When hidden with `false`, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
+
+### beforeResourceExpand
+- Type `function`
+- Default `undefined`
+
+Callback function that is triggered before a resource with nested children is expanded or collapsed in `resourceTimeline` views.
+
+
+```js
+function (info) { }
+```
+`info` is an object with the following properties:
+<table>
+<tr>
+<td>
+
+`resource`
+</td>
+<td>
+
+The associated [Resource](#resource-object) object
+</td>
+</tr>
+<tr>
+<td>
+
+`jsEvent`
+</td>
+<td>JavaScript native event object with low-level information such as click coordinates</td>
+</tr>
+<tr>
+<td>
+
+`view`
+</td>
+<td>
+
+The current [View](#view-object) object
+</td>
+</tr>
+</table>
+
 
 ### buttonText
 - Type `object` or `function`
