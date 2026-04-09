@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.6.1
+April 9, 2026
+* Improved rendering performance in `resourceTimeGrid` views ([640](https://github.com/vkurko/calendar/issues/640))
+
 ## 5.6.0
 March 25, 2026
 * Added `dayCellContent` option  ([381](https://github.com/vkurko/calendar/issues/381))

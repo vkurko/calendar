@@ -1,5 +1,5 @@
 <script>
-    import {getContext, onMount, untrack} from 'svelte';
+    import {getContext, onMount, tick, untrack} from 'svelte';
     import {contentFrom, toLocalDate, isFunction} from '#lib';
 
     let {resource, date = undefined, setLabel = undefined} = $props();
@@ -25,11 +25,12 @@
     $effect(() => {
         content;
         untrack(() => {
+            // Accessing innerText after tick significantly improves performance
             if (date) {
-                ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText;
+                tick().then(() => ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText);
             } else if (setLabel) {
                 ariaLabel = undefined;
-                setLabel(el.innerText);
+                tick().then(() => setLabel(el.innerText));
             }
         });
     });
