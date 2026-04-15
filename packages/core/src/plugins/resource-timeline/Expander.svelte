@@ -4,7 +4,7 @@
 
     let {resource} = $props();
 
-    let {resources, view, options: {buttonText, icons, resourceExpand, theme}} = $derived(getContext('state'));
+    let {resources, view, options: {buttonText, icons, beforeResourceExpand, resourceExpand, theme}} = $derived(getContext('state'));
 
     let payload = $state.raw({});
     let expanded = $derived(resource.expanded);
@@ -15,6 +15,10 @@
     });
 
     function onclick(jsEvent) {
+        if (isFunction(beforeResourceExpand)) {
+            beforeResourceExpand({resource, jsEvent, view: toViewWithLocalDates(view)});
+        }
+
         resource.expanded = expanded = !expanded;
         toggle(payload.children);
         resources.length = resources.length;
