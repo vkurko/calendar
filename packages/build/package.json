@@ -17,6 +17,18 @@
     "directory": "packages/build"
   },
   "license": "MIT",
-  "main": "./dist/event-calendar.min.js",
-  "style": "./dist/event-calendar.min.css"
+  "main": "./dist/event-calendar.min.cjs",
+  "module": "./dist/event-calendar.min.mjs",
+  "unpkg": "./dist/event-calendar.min.js",
+  "jsdelivr": "./dist/event-calendar.min.js",
+  "style": "./dist/event-calendar.min.css",
+  "exports": {
+    ".": {
+      "import": "./dist/event-calendar.min.mjs",
+      "require": "./dist/event-calendar.min.cjs",
+      "default": "./dist/event-calendar.min.js"
+    },
+    "./event-calendar.min.css": "./dist/event-calendar.min.css",
+    "./package.json": "./package.json"
+  }
 }
