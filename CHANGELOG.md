@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.7.1
+May 22, 2026
+* Fixed an issue with resizing events and `hiddenDays` ([646](https://github.com/vkurko/calendar/issues/646))
+
 ## 5.7.0
 April 14, 2026
 * Added `timeZone` option ([367](https://github.com/vkurko/calendar/discussions/367), [502](https://github.com/vkurko/calendar/issues/502), [576](https://github.com/vkurko/calendar/issues/576), [588](https://github.com/vkurko/calendar/discussions/588))

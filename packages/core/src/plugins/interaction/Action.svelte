@@ -108,10 +108,9 @@
                         if (minResize < event.start) {
                             minResize = event.start;
                         }
-                        // Overwrite the date due to possible discrepancy between calculated date
-                        // and resizer coordinates in browser
-                        date = event.start;
                     }
+                    // Correct the date in case the start of the event falls on a hidden day
+                    date = event.start;
                 } else {
                     minResize = cloneDate(event.start);
                     if (allDay) {
@@ -124,15 +123,14 @@
                         if (minResize > event.end) {
                             minResize = event.end;
                         }
-                        // Overwrite the date due to possible discrepancy between calculated date
-                        // and resizer coordinates in browser
-                        date = event.end;
-                        if (!zeroDuration) {
-                            date = subtractDuration(cloneDate(date), snapDuration);
-                        }
+                    }
+                    // Correct the date in case the end of the event falls on a hidden day
+                    date = event.end;
+                    if (!zeroDuration) {
+                        date = subtractDuration(cloneDate(date), snapDuration);
                     }
 
-                    // Handle zero duration events
+                    // Handle zero-duration events
                     if (zeroDuration && !allDay) {
                         extraDuration = snapDuration;
                     }
