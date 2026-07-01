@@ -20,7 +20,7 @@ export function createChunks(event, days, monthView, withId = true) {
                         resource = dayResource;
                     }
                     dates.push(dayStart);
-                    lastEnd = end;
+                    lastEnd = dayEnd;
                 }
             } else {
                 if (eventIntersects(event, start, end, dayResource)) {

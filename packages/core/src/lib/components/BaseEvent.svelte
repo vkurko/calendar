@@ -1,9 +1,9 @@
 <script>
     import {getContext, onMount} from 'svelte';
     import {
-        bgEvent, createEventClasses, createEventContent, entries, helperEvent, identity, isFunction, keyEnter,
-        findFirstResource, contentFrom, toEventWithLocalDates, toViewWithLocalDates, eventBackgroundColor as getEventBackgroundColor,
-        eventTextColor as getEventTextColor
+        bgEvent, cloneDate, contentFrom, createEventClasses, createEventContent, datesEqual, entries,
+        eventBackgroundColor as getEventBackgroundColor, eventTextColor as getEventTextColor, findFirstResource,
+        helperEvent, identity, isFunction, keyEnter, setMidnight, toEventWithLocalDates, toViewWithLocalDates
     } from '#lib';
 
     let {
@@ -36,10 +36,33 @@
     )).map(entry => `${entry[0]}:${entry[1]}`).concat(event.styles).join(';'));
 
     // Class
-    let classNames = $derived(classes([
-        bgEvent(display) ? theme.bgEvent : theme.event,
-        ...createEventClasses(eventClassNames, event, view)
-    ]));
+    let classNames = $derived.by(() => {
+        let classNames = [bgEvent(display) ? theme.bgEvent : theme.event];
+
+        // Clipped or not
+        if (event.allDay) {
+            // Setting midnight and 1-second manipulation is mainly needed for timeline view
+            if (!datesEqual(setMidnight(cloneDate(chunk.start)), event.start)) {
+                classNames.push(theme.startClipped);
+            }
+            let end1 = cloneDate(chunk.end);
+            let end2 = cloneDate(event.end);
+            end1.setUTCSeconds(end1.getUTCSeconds() - 1);
+            end2.setUTCSeconds(end2.getUTCSeconds() - 1);
+            if (!datesEqual(setMidnight(end1), setMidnight(end2))) {
+                classNames.push(theme.endClipped);
+            }
+        } else {
+            if (!datesEqual(chunk.start, event.start)) {
+                classNames.push(theme.startClipped);
+            }
+            if (!datesEqual(chunk.end, event.end)) {
+                classNames.push(theme.endClipped);
+            }
+        }
+
+        return classes(classNames.concat(createEventClasses(eventClassNames, event, view)));
+    });
 
     // Content
     let [timeText, content] = $derived(createEventContent(

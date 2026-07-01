@@ -34,6 +34,12 @@
     .ec-timeline & {
         block-size: max-content;
         margin-block-end: var(--ec-event-col-gap);
+        &.ec-start-clipped {
+            border-radius: 0 3px 3px 0;
+        }
+        &.ec-end-clipped {
+            border-radius: 3px 0 0 3px;
+        }
     }
 
     .ec-list & {
@@ -56,6 +62,16 @@
         user-select: none;
         z-index: 0;
         box-shadow: none;
+    }
+
+    &.ec-start-clipped {
+        border-radius: 0 0 3px 3px;
+    }
+    &.ec-end-clipped {
+        border-radius: 3px 3px 0 0;
+    }
+    &.ec-start-clipped.ec-end-clipped {
+        border-radius: 0;
     }
 }
 

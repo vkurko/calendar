@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.8.0
+July 1, 2026
+* Added CSS classes `ec-start-clipped` and `ec-end-clipped` for events clipped by the current view ([650](https://github.com/vkurko/calendar/issues/650))
+
 ## 5.7.1
 May 22, 2026
 * Fixed an issue with resizing events and `hiddenDays` ([646](https://github.com/vkurko/calendar/issues/646))

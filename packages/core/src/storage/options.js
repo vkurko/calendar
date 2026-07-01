@@ -74,6 +74,7 @@ function createOptions(plugins) {
             day: 'ec-day',
             dayHead: 'ec-day-head',
             disabled: 'ec-disabled',
+            endClipped: 'ec-end-clipped',
             event: 'ec-event',
             eventBody: 'ec-event-body',
             eventTime: 'ec-event-time',
@@ -87,6 +88,7 @@ function createOptions(plugins) {
             main: 'ec-main',
             noBeb: 'ec-no-beb',  // no block end border
             noIeb: 'ec-no-ieb',  // no inline end border
+            startClipped: 'ec-start-clipped',
             today: 'ec-today',
             title: 'ec-title',
             toolbar: 'ec-toolbar',
