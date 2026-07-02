@@ -2,8 +2,8 @@
     import './styles/index.css';
     import {setContext, untrack} from 'svelte';
     import {
-        assign, cloneDate, createEvents, getElementWithPayload, getPayload, isDate, nextDate,
-        prevDate, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
+        assign, cloneDate, createDate, createEvents, getElementWithPayload, getPayload, isDate, nextDate,
+        prevDate, setMidnight, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import MainState from './storage/state.svelte.js';
     import {diff} from './storage/options.js';
@@ -110,6 +110,13 @@
             return info;
         }
         return null;
+    }
+
+    export function gotoDate(date) {
+        date = setMidnight(createDate(date));
+        mainState.setOption('date', cloneDate(date));
+        mainState.scrollDate = date;
+        return this;
     }
 
     export function next() {

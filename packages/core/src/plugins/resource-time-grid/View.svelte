@@ -1,7 +1,7 @@
 <script>
     import {getContext, tick} from 'svelte';
     import {ColHead, DayHeader} from '#components';
-    import {datesEqual, isRtl, length} from '#lib';
+    import {isRtl, length} from '#lib';
     import ViewState from './state.svelte.js';
     import Label from './Label.svelte';
     import View from '../time-grid/View.svelte';
@@ -10,24 +10,28 @@
     let mainState = getContext('state');
     let viewState = new ViewState(mainState);
 
-    let {today, mainEl, viewDates, options: {scrollTime, datesAboveResources, theme}} = $derived(mainState);
+    let {today, mainEl, scrollDate, viewDates, options: {scrollTime, datesAboveResources, theme}} = $derived(mainState);
     let {grid, sidebarWidth} = $derived(viewState);
 
     let resourceLabels = $state([]);
 
-    // Handle scrollTime (scroll to today)
+    // Handle scrollTime (scroll to date)
+    let scrolledTo;  // the scrollDate value that has already been scrolled to
     $effect(() => {
         if (datesAboveResources) {
             viewDates;
             scrollTime;
+            scrollDate;
             tick().then(scrollToTime);
         }
     });
     function scrollToTime() {
-        if (today >= viewDates[0] && today <= viewDates.at(-1)) {
+        let target = scrollDate && scrollDate !== scrolledTo ? scrollDate : today;
+        scrolledTo = scrollDate;
+        if (target >= viewDates[0] && target <= viewDates.at(-1)) {
             for (let days of grid) {
                 let day = days[0];
-                if (datesEqual(day.dayStart, today)) {
+                if (day.dayStart >= target) {
                     mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / (length(grid) * length(days)) * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
                     break;
                 }

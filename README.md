@@ -170,6 +170,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 
   - [dateFromPoint](#datefrompoint-x-y-)
   - [getView](#getview)
+  - [gotoDate](#gotodate-date-)
   - [next](#next)
   - [prev](#prev)
   - [unselect](#unselect-1)
@@ -261,8 +262,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.8.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.8.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.9.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.9.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2617,7 +2618,7 @@ If not specified, then equal to [slotDuration](#slotduration).
 <details>
     <summary>Default</summary>
 
-`'{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', colHead: 'ec-col-head', day: 'ec-day', dayHead: 'ec-day-head', disabled: 'ec-disabled', endClipped: 'ec-end-clipped', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', grid: 'ec-grid', header: 'ec-header', hidden: 'ec-hidden', highlight: 'ec-highlight', icon: 'ec-icon', main: 'ec-main', noIeb: 'ec-no-ieb', noBeb: 'ec-no-beb', today: 'ec-today', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-list ec-week-view', weekdays: ['ec-sun', ec-mon', ec-tue', ec-wed', ec-thu', ec-fri', ec-sat'], draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', start: 'ec-start', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x', selecting: 'ec-selecting', startClipped: 'ec-start-clipped', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', otherMonth: 'ec-other-month', popup: 'ec-popup', weekNumber: 'ec-week-number', daySide: 'ec-day-side', eventTag: 'ec-event-tag', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', sidebar: 'ec-sidebar', slot: 'ec-slot', colGroup: 'ec-col-group', expander: 'ec-expander', rowHead: 'ec-row-head', slots: 'ec-slots}'`
+`{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', colHead: 'ec-col-head', day: 'ec-day', dayHead: 'ec-day-head', disabled: 'ec-disabled', endClipped: 'ec-end-clipped', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', grid: 'ec-grid', header: 'ec-header', hidden: 'ec-hidden', highlight: 'ec-highlight', icon: 'ec-icon', main: 'ec-main', noIeb: 'ec-no-ieb', noBeb: 'ec-no-beb', today: 'ec-today', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-list ec-week-view', weekdays: ['ec-sun', ec-mon', ec-tue', ec-wed', ec-thu', ec-fri', ec-sat'], draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', start: 'ec-start', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x', selecting: 'ec-selecting', startClipped: 'ec-start-clipped', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', otherMonth: 'ec-other-month', popup: 'ec-popup', weekNumber: 'ec-week-number', daySide: 'ec-day-side', eventTag: 'ec-event-tag', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', sidebar: 'ec-sidebar', slot: 'ec-slot', colGroup: 'ec-col-group', expander: 'ec-expander', rowHead: 'ec-row-head', slots: 'ec-slots'}`
 > Views override the default value as follows:
 > - dayGridDay `theme => ({...theme, view: 'ec-day-grid ec-day-view'})`
 > - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`
@@ -3062,6 +3063,20 @@ Using this method, you can, for example, find out on which day a click occurred 
 
 Returns the [View](#view-object) object for the current view.
 
+### gotoDate( date )
+- Parameters
+  - `date` `Date` or `string` This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`
+- Return value `EventCalendar` The calendar instance for chaining
+
+Moves the current calendar date to the given date and, in views with horizontal scrolling (`resourceTimeline` views and `resourceTimeGrid` views with [datesAboveResources](#datesaboveresources) enabled), additionally scrolls the view to make this date visible.
+
+Unlike `setOption('date', date)`, which scrolls the view to today whenever today is inside the new visible period, this method always scrolls to the given date.
+
+```js
+// E.g. Scroll to the date of the found event
+ec.gotoDate(event.start);
+```
+
 ### next()
 - Return value `EventCalendar` The calendar instance for chaining
 
@@ -3173,6 +3188,8 @@ Here are all properties that exist in Event object:
 <td>
 
 The rendering type of the event. Can be `'auto'` or `'background'`
+
+In month-based views such as `dayGridMonth` or `resourceTimelineMonth`, background events are displayed only if their `allDay` property is set to `true`
 
 In addition, in your callback functions, you may get the `'ghost'`, `'preview'` and `'pointer'` for this property, which are internal values and are used, for example, to display events during drag-and-drop operations
 </td>
@@ -3332,6 +3349,8 @@ Here are all admissible fields for the event’s input object:
 <td>
 
 `string` The rendering type of the event. Can be `'auto'` or `'background'`. Default `'auto'`
+
+In month-based views such as `dayGridMonth` or `resourceTimelineMonth`, background events are displayed only if their `allDay` property is set to `true`
 </td>
 </tr>
 <tr>

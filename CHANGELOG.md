@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.9.0
+* Added `gotoDate` method ([651](https://github.com/vkurko/calendar/issues/651))
+* Fixed rounded corners of clipped events in RTL mode
+
 ## 5.8.0
 July 1, 2026
 * Added CSS classes `ec-start-clipped` and `ec-end-clipped` for events clipped by the current view ([650](https://github.com/vkurko/calendar/issues/650))

@@ -1,7 +1,7 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
     import {
-        max, resizeObserver, runReposition, contentFrom, toSeconds, datesEqual, min, isRtl, empty, length, toISOString,
+        max, resizeObserver, runReposition, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
         createWeekNumberContent
     } from '#lib';
     import {getSlotTimeLimits} from './lib.js';
@@ -17,7 +17,7 @@
     let viewState = new ViewState(mainState);
     setContext('view-state', viewState);
 
-    let {mainEl, today, viewDates, options: {
+    let {mainEl, scrollDate, today, viewDates, options: {
         columnWidth, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
     }} = $derived(mainState);
     let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
@@ -26,20 +26,24 @@
     let headerHeight = $state(0);
 
     // Handle scrollTime
+    let scrolledTo;  // the scrollDate value that has already been scrolled to
     $effect(() => {
         scrollTime;
+        scrollDate;
         if (!empty(viewDates)) {
             tick().then(scrollToTime);
         }
     });
     function scrollToTime() {
         let scrollLeft = 0;
-        let todayOutOfView = today < viewDates[0] || today > viewDates.at(-1);
+        let target = scrollDate && scrollDate !== scrolledTo ? scrollDate : today;
+        scrolledTo = scrollDate;
+        let targetOutOfView = target < viewDates[0] || target > viewDates.at(-1);
         if (monthView) {
-            if (!todayOutOfView) {
+            if (!targetOutOfView) {
                 let days = grid[0];
                 for (let day of days) {
-                    if (datesEqual(day.dayStart, today)) {
+                    if (day.dayStart >= target) {
                         mainEl.scrollLeft = (mainEl.scrollWidth - sidebarWidth) / length(days) * (day.gridColumn - 1) * (isRtl() ? -1 : 1);
                         break;
                     }
@@ -48,7 +52,7 @@
         } else {
             for (let date of viewDates) {
                 let slotTimeLimits = getSlotTimeLimits(dayTimeLimits, date);
-                if (todayOutOfView || datesEqual(date, today)) {
+                if (targetOutOfView || date >= target) {
                     scrollLeft += max(
                         min(toSeconds(scrollTime), toSeconds(slotTimeLimits.max)) - toSeconds(slotTimeLimits.min),
                         0

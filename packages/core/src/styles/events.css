@@ -35,10 +35,16 @@
         block-size: max-content;
         margin-block-end: var(--ec-event-col-gap);
         &.ec-start-clipped {
-            border-radius: 0 3px 3px 0;
+            border-start-start-radius: 0;
+            border-end-start-radius: 0;
+            border-start-end-radius: 3px;
+            border-end-end-radius: 3px;
         }
         &.ec-end-clipped {
-            border-radius: 3px 0 0 3px;
+            border-start-end-radius: 0;
+            border-end-end-radius: 0;
+            border-start-start-radius: 3px;
+            border-end-start-radius: 3px;
         }
     }
 
@@ -65,10 +71,12 @@
     }
 
     &.ec-start-clipped {
-        border-radius: 0 0 3px 3px;
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
     }
     &.ec-end-clipped {
-        border-radius: 3px 3px 0 0;
+        border-end-start-radius: 0;
+        border-end-end-radius: 0;
     }
     &.ec-start-clipped.ec-end-clipped {
         border-radius: 0;

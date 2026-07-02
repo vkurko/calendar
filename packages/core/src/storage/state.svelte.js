@@ -32,6 +32,7 @@ export default class State {
         this.mainEl = $state();
         this.now = $state(createDate(undefined, this.offset));
         this.resources = $state.raw(arrayProxy(isArray(this.options.resources) ? this.options.resources : []));
+        this.scrollDate = $state();
         this.today = $state(setMidnight(cloneDate(this.now)));
         this.intlEventTime = $derived.by(intlRange(this, 'eventTimeFormat'));
         this.intlDayHeader = $derived.by(intl(this, 'dayHeaderFormat'));
