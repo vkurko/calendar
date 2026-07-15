@@ -70,7 +70,7 @@ export function prepareChunks(chunks) {
     }
 }
 
-export function repositionEvent(chunk, height, monthView) {
+export function repositionEvent(chunk, height, monthView, gap = 1) {
     let top = 1;
     let bottom = top + height;
     let dayChunks = chunk.day;
@@ -80,7 +80,7 @@ export function repositionEvent(chunk, height, monthView) {
             continue;
         }
         if ((monthView || chunk.start < dayChunk.end && chunk.end > dayChunk.start) && top < dayChunk.bottom && bottom > dayChunk.top) {
-            let offset = dayChunk.bottom - top + 1;
+            let offset = dayChunk.bottom - top + gap;
             top += offset;
             bottom += offset;
         }

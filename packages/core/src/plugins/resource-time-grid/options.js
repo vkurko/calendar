@@ -6,5 +6,6 @@ export function createRROptions(options) {
         options.filterResourcesWithEvents = false;
         options.resourceLabelContent = undefined;
         options.resourceLabelDidMount = undefined;
+        options.theme.colGroup = 'ec-col-group';
     }
 }

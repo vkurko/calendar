@@ -99,9 +99,9 @@ export function prepareAllDayChunks(chunks) {
     }
 }
 
-export function repositionEvent(chunk, height, top = 1) {
+export function repositionEvent(chunk, height, top = 1, gap = 1) {
     if (chunk.prev) {
-        top = chunk.prev.bottom + 1;
+        top = chunk.prev.bottom + gap;
     }
     let bottom = top + height;
     if (chunk.long) {
@@ -112,7 +112,7 @@ export function repositionEvent(chunk, height, top = 1) {
         }
         for (let longChunk of longChunks.chunks) {
             if (top < longChunk.bottom && bottom > longChunk.top) {
-                let offset = longChunk.bottom - top + 1;
+                let offset = longChunk.bottom - top + gap;
                 top += offset;
                 bottom += offset;
             }

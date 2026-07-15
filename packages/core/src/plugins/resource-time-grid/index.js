@@ -18,9 +18,6 @@ export default {
             resourceTimeGridDay: 'day',
             resourceTimeGridWeek: 'week'
         });
-        assign(options.theme, {
-            colGroup: 'ec-col-group'
-        });
         assign(options.views, {
             resourceTimeGridDay: {
                 buttonText: btnTextDay,

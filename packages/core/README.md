@@ -78,6 +78,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 
   - [eventDurationEditable](#eventdurationeditable)
   - [eventFilter](#eventfilter)
+  - [eventGap](#eventgap)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
@@ -262,8 +263,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.9.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.9.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.10.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.10.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1320,6 +1321,12 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+### eventGap
+- Type `integer`
+- Default `1`
+
+Defines the vertical gap in pixels between events that are stacked on top of each other within the same day. Applies to `DayGrid`, the all-day section of `TimeGrid`/`ResourceTimeGrid`, and `ResourceTimeline` views.
+
 ### eventLongPressDelay
 - Type `integer`
 - Default `undefined`
@@ -2220,7 +2227,7 @@ The current [View](#view-object) object
 Defines the source of resource data displayed in resource views. It can be provided in one of three ways:
 
 #### 1. Array of plain objects
-If the resources are predefined and do not change, then pass them as an array of plain objects. The provided plain objects will be [parsed]((#parsing-resource-from-a-plain-object)) into [Resource](#resource-object) objects.
+If the resources are predefined and do not change, then pass them as an array of plain objects. The provided plain objects will be [parsed](#parsing-resource-from-a-plain-object) into [Resource](#resource-object) objects.
 
 #### 2. Fetch resources from a URL
 To make the calendar load resources from a URL, specify `resources` option as an object with the following properties:

@@ -5,7 +5,7 @@
 
     let {chunk, inPopup = false} = $props();
 
-    let {options: {dayMaxEvents}} = $derived(getContext('state'));
+    let {options: {dayMaxEvents, eventGap}} = $derived(getContext('state'));
     let {colsCount, gridEl, hiddenChunks, popupDay} = $derived(getContext('view-state'));
 
     let el = $state();
@@ -44,7 +44,7 @@
     });
 
     export function reposition() {
-        margin = repositionEvent(chunk, height(el), height(dayEl.firstElementChild) || 1);
+        margin = repositionEvent(chunk, height(el), height(dayEl.firstElementChild) || 1, eventGap);
     }
 
     export function hide() {

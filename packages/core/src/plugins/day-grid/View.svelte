@@ -10,7 +10,7 @@
     let viewState = new ViewState(mainState);
     setContext('view-state', viewState);
 
-    let {intlDayHeader, intlDayHeaderAL, options: {dayMaxEvents, theme}} = $derived(mainState);
+    let {intlDayHeader, intlDayHeaderAL, options: {dayMaxEvents, eventGap, theme}} = $derived(mainState);
     let {grid, chunks, bgChunks, iChunks, hiddenChunks, popupDay} = $derived(viewState);
 
     // Events reposition
@@ -24,7 +24,10 @@
         hiddenChunks.size;
         refs.forEach(ref => ref?.hide());
     }
-    $effect(reposition);
+    $effect(() => {
+        eventGap;
+        reposition();
+    });
     $effect(hide);
 </script>
 

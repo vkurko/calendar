@@ -2,12 +2,14 @@ import {assign, btnTextDay, btnTextMonth, btnTextWeek, btnTextYear, getPayload, 
 import {setExtensions} from '../time-grid/lib.js';
 import {createTRROptions, createTRRParsers} from '../time-grid/options.js';
 import {createRROptions} from '../resource-time-grid/options.js';
+import {createDROptions} from '../day-grid/options.js';
 import View from './View.svelte';
 
 export default {
 	createOptions(options) {
         createTRROptions(options);
         createRROptions(options);
+        createDROptions(options);
 		assign(options, {
 			monthHeaderFormat: {  // ec option
 				month: 'long'

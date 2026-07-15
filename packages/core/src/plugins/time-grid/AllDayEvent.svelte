@@ -1,8 +1,11 @@
 <script>
+    import {getContext} from 'svelte';
     import {height, repositionEvent} from '#lib';
     import {InteractableEvent} from '#components';
 
     let {chunk} = $props();
+
+    let {options: {eventGap}} = $derived(getContext('state'));
 
     let el = $state();
     let margin = $state(0);
@@ -18,7 +21,7 @@
     });
 
     export function reposition() {
-        margin = repositionEvent(chunk, height(el));
+        margin = repositionEvent(chunk, height(el), 1, eventGap);
     }
 </script>
 

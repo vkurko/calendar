@@ -35,6 +35,7 @@ function createOptions(plugins) {
         eventContent: undefined,
         eventDidMount: undefined,
         eventFilter: undefined,  // ec option
+        eventGap: 1,  // ec option
         eventMouseEnter: undefined,
         eventMouseLeave: undefined,
         eventOrder: undefined,

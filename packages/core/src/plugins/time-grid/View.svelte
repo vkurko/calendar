@@ -19,7 +19,7 @@
     // svelte-ignore state_referenced_locally
     setContext('view-state', viewState);
 
-    let {mainEl, viewDates, options: {allDayContent, allDaySlot, columnWidth, nowIndicator: showNowIndicator,
+    let {mainEl, viewDates, options: {allDayContent, allDaySlot, columnWidth, eventGap, nowIndicator: showNowIndicator,
         scrollTime, slotHeight, slotDuration, theme}} = $derived(mainState);
     let {allDayChunks, allDayBgChunks, allDayIChunks, bgChunks, chunks, iChunks, grid, sidebarWidth, slots,
         slotLabelPeriodicity, slotTimeLimits} = $derived(viewState);
@@ -45,7 +45,10 @@
     function reposition() {
         runReposition(refs, allDayChunks);
     }
-    $effect(reposition);
+    $effect(() => {
+        eventGap;
+        reposition();
+    });
 </script>
 
 {#if !empty(grid) && !empty(grid[0])}

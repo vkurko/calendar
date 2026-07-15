@@ -1,15 +1,15 @@
 import {assign, btnTextDay, btnTextMonth, btnTextWeek, nextClosestDay, prevClosestDay, themeView} from '#lib';
+import {createDROptions} from './options.js';
 import View from './View.svelte';
 
 export default {
     createOptions(options) {
+        createDROptions(options);
         assign(options, {
             dayMaxEvents: false,
             dayCellFormat: {day: 'numeric'},
             dayPopoverFormat: {month: 'long', day: 'numeric', year: 'numeric'},
             moreLinkContent: undefined,
-            weekNumbers: false,
-            weekNumberContent: undefined,
             // Common options
             view: 'dayGridMonth'
         });

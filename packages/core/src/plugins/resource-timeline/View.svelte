@@ -18,7 +18,7 @@
     setContext('view-state', viewState);
 
     let {mainEl, scrollDate, today, viewDates, options: {
-        columnWidth, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
+        columnWidth, eventGap, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
     }} = $derived(mainState);
     let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
         nestedResources, sidebarWidth, slotLabelPeriodicity, viewResources} = $derived(viewState);
@@ -71,7 +71,10 @@
     function reposition() {
         runReposition(refs, chunks);
     }
-    $effect(reposition);
+    $effect(() => {
+        eventGap;
+        reposition();
+    });
 </script>
 
 {#if !empty(grid) && !empty(grid[0])}

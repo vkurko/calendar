@@ -1,6 +1,14 @@
 # EventCalendar changelog
 
+## 5.10.0
+July 15, 2026
+* Added `eventGap` option
+* Added bundled TypeScript type definitions
+* Fixed `weekNumbers` option not working without the `DayGrid` plugin
+* Fixed timeline scales not rendering without the `ResourceTimeGrid` plugin
+
 ## 5.9.0
+July 2, 2026
 * Added `gotoDate` method ([651](https://github.com/vkurko/calendar/issues/651))
 * Fixed rounded corners of clipped events in RTL mode
 
