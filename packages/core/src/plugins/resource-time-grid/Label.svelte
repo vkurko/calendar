@@ -27,10 +27,10 @@
         untrack(() => {
             // Accessing innerText after tick significantly improves performance
             if (date) {
-                tick().then(() => ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText);
+                tick().then(() => el && (ariaLabel = intlDayHeaderAL.format(date) + ', ' + el.innerText));
             } else if (setLabel) {
                 ariaLabel = undefined;
-                tick().then(() => setLabel(el.innerText));
+                tick().then(() => el && setLabel(el.innerText));
             }
         });
     });
