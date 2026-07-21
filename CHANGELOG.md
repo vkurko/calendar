@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.10.1
+July 21, 2026
+* Fixed a `TypeError` when removing a resource in `resourceTimeGrid` views ([653](https://github.com/vkurko/calendar/issues/653))
+* Fixed incorrect TypeScript type for the `eventOrder` callback ([655](https://github.com/vkurko/calendar/issues/655))
+
 ## 5.10.0
 July 15, 2026
 * Added `eventGap` option

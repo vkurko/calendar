@@ -214,12 +214,6 @@ export namespace Calendar {
         view: View;
     }
 
-    interface EventOrderInfo {
-        start: Date;
-        end: Date;
-        event: Event;
-    }
-
     interface EventResizeInfo {
         event: Event;
         oldEvent: Event;
@@ -386,7 +380,7 @@ export namespace Calendar {
         eventLongPressDelay?: number;
         eventMouseEnter?: (info: MouseEnterInfo) => void;
         eventMouseLeave?: (info: MouseEnterInfo) => void;
-        eventOrder?: (a: EventOrderInfo, b: EventOrderInfo) => number;
+        eventOrder?: (a: Event, b: Event) => number;
         eventResizableFromStart?: boolean;
         eventResize?: (info: EventResizeInfo) => void;
         eventResizeStart?: (info: EventDuringResizeInfo) => void;
