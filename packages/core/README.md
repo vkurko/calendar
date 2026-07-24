@@ -74,15 +74,16 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [eventDragStart](#eventdragstart)
   - [eventDragStop](#eventdragstop)
   - [eventDrop](#eventdrop)
+  - [eventDurationEditable](#eventdurationeditable)
   </td><td>
 
-  - [eventDurationEditable](#eventdurationeditable)
   - [eventFilter](#eventfilter)
   - [eventGap](#eventgap)
   - [eventLongPressDelay](#eventlongpressdelay)
   - [eventMouseEnter](#eventmouseenter)
   - [eventMouseLeave](#eventmouseleave)
   - [eventOrder](#eventorder)
+  - [eventOrderStrict](#eventorderstrict)
   - [eventResizableFromStart](#eventresizablefromstart)
   - [eventResize](#eventresize)
   - [eventResizeStart](#eventresizestart)
@@ -263,8 +264,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.10.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.10.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.11.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.11.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1447,6 +1448,16 @@ function (a, b) {
 ```
 
 `a` and `b` are [Event](#event-object) objects.
+
+### eventOrderStrict
+- Type `boolean`
+- Default `false`
+
+Determines whether [eventOrder](#eventorder) is followed strictly in `resourceTimeline` views.
+
+By default, the layout prioritizes compactness: an event is placed in the topmost free slot, which means it can move above earlier-ordered events when there is empty space above them. When set to `true`, events keep their vertical order — an event is never placed above another event that comes before it in `eventOrder` and overlaps it, even if free space is available.
+
+This is useful, for example, when a parent event should always stay above its child events (order them so the parent comes first and enable this option).
 
 ### eventResizableFromStart
 - Type `boolean`

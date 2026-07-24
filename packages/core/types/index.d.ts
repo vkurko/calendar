@@ -381,6 +381,7 @@ export namespace Calendar {
         eventMouseEnter?: (info: MouseEnterInfo) => void;
         eventMouseLeave?: (info: MouseEnterInfo) => void;
         eventOrder?: (a: Event, b: Event) => number;
+        eventOrderStrict?: boolean;
         eventResizableFromStart?: boolean;
         eventResize?: (info: EventResizeInfo) => void;
         eventResizeStart?: (info: EventDuringResizeInfo) => void;

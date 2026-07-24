@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.11.0
+July 24, 2026
+* Added `eventOrderStrict` option ([654](https://github.com/vkurko/calendar/issues/654))
+
 ## 5.10.1
 July 21, 2026
 * Fixed a `TypeError` when removing a resource in `resourceTimeGrid` views ([653](https://github.com/vkurko/calendar/issues/653))

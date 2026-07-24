@@ -6,7 +6,7 @@
 
     let {chunk} = $props();
 
-    let {options: {eventGap, slotDuration, slotWidth}} = $derived(getContext('state'));
+    let {options: {eventGap, eventOrderStrict, slotDuration, slotWidth}} = $derived(getContext('state'));
     let {monthView} = $derived(getContext('view-state'));
 
     let el = $state();
@@ -34,7 +34,7 @@
     });
 
     export function reposition() {
-        margin = repositionEvent(chunk, height(el), monthView, eventGap);
+        margin = repositionEvent(chunk, height(el), monthView, eventGap, eventOrderStrict);
     }
 </script>
 
