@@ -17,13 +17,12 @@
 
     function createResizeHandler(start) {
         return jsEvent => action.resize(
-            event,
+            chunk,
             jsEvent,
             start,
             axis,
             forceDate,
             forceMargin,
-            chunk.zeroDuration,
             snap
         );
     }

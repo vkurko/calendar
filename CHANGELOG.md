@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.11.1
+July 29, 2026
+* Fixed a `TypeError` when resizing events in `dayGrid` views and in the all-day slot ([656](https://github.com/vkurko/calendar/issues/656))
+* Fixed incorrect date calculation when resizing events in `dayGrid` views, in the all-day slot and in the popup ([658](https://github.com/vkurko/calendar/issues/658))
+
 ## 5.11.0
 July 24, 2026
 * Added `eventOrderStrict` option ([654](https://github.com/vkurko/calendar/issues/654))
