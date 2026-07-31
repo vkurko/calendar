@@ -34,6 +34,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 - [Usage](#usage)
   - [JavaScript module](#javascript-module)
   - [Svelte 5 component](#svelte-5-component)
+    - [Content snippets](#content-snippets)
   - [Standalone bundle](#standalone-bundle)
   - [Modifying options after initialization](#modifying-options-after-initialization)
 - [Options](#options)
@@ -259,13 +260,42 @@ Then in your Svelte 5 component, use the calendar like this:
 ```
 The calendar is destroyed gracefully when the component containing it is destroyed.
 
+#### Content snippets
+The options that define content can also be given as Svelte snippets:
+
+* [allDayContent](#alldaycontent)
+* [dayCellContent](#daycellcontent)
+* [eventContent](#eventcontent)
+* [moreLinkContent](#morelinkcontent)
+* [noEventsContent](#noeventscontent)
+* [resourceLabelContent](#resourcelabelcontent)
+* [weekNumberContent](#weeknumbercontent)
+
+A snippet is passed to the `Calendar` component under the name of the option it defines:
+```html
+<Calendar plugins={[DayGrid]} {options}>
+    {#snippet eventContent({event, timeText})}
+        <b>{timeText}</b> {event.title}
+    {/snippet}
+</Calendar>
+```
+It can also be passed as a property, which is convenient when the snippet is declared elsewhere:
+```html
+<Calendar plugins={[DayGrid]} {options} eventContent={myEventContent}/>
+```
+A snippet receives the same argument as the function form of the option and is rendered in the same place.
+
+Unlike a function, a snippet is rendered by Svelte itself. It can contain components, event handlers and transitions, and it is updated reactively when the state it uses changes.
+
+If both a snippet and an option with the same name are given, the snippet takes precedence. The `noEventsContent` snippet is the only one that receives no argument.
+
 ### Standalone bundle
 This bundle contains a version of the calendar that includes all plugins and is prepared for use in the browser via the `<script>` tag.
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.11.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.11.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -344,6 +374,8 @@ The default text
 </td>
 </tr>
 </table>
+
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
 
 ### allDaySlot
 - Type `boolean`
@@ -697,6 +729,8 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 </tr>
 </table>
 
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+
 ### dayCellFormat
 - Type `object` or `function`
 - Default `{day: 'numeric'}`
@@ -1031,6 +1065,8 @@ The current [View](#view-object) object
 </table>
 
 In case the function returns `undefined`, the event will be rendered in the default way.
+
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
 
 ### eventDidMount
 - Type `function`
@@ -2118,6 +2154,8 @@ The default text like `+2 more`
 </tr>
 </table>
 
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+
 ### noEventsClick
 - Type `function`
 - Default `undefined`
@@ -2161,6 +2199,8 @@ function () {
   // return Content
 }
 ```
+
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
 
 ### nowIndicator
 - Type `boolean`
@@ -2372,6 +2412,8 @@ The associated [Resource](#resource-object) object
 <td>If it is a column that is within a specific date, this will be a Date object</td>
 </tr>
 </table>
+
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
 
 ### resourceLabelDidMount
 - Type `function`
@@ -2929,6 +2971,8 @@ function (arg) {
 <td>Calculated week number</td>
 </tr>
 </table>
+
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
 
 ### weekNumbers
 - Type `boolean`

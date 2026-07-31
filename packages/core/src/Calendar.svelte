@@ -9,10 +9,13 @@
     import {diff} from './storage/options.js';
     import Toolbar from './Toolbar.svelte';
 
-    let {plugins = [], options = {}} = $props();
+    let {plugins = [], options = {}, ...snippets} = $props();
 
     // svelte-ignore state_referenced_locally
     let mainState = new MainState(plugins, options);
+    // Rest props is a reactive proxy, so reading snippets from it stays reactive
+    // svelte-ignore state_referenced_locally
+    mainState.snippets = snippets;
     setContext('state', mainState);
 
     let {

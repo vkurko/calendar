@@ -1,6 +1,7 @@
 export * from './a11y.js';
 export * from './attachments.js';
 export * from './chunks.js';
+export * from './content.js';
 export * from './date.js';
 export * from './derived.js';
 export * from './dom.js';

@@ -1,5 +1,11 @@
 # EventCalendar changelog
 
+## 5.12.0
+August 1, 2026
+* Added support for Svelte snippets in the options that define content ([244](https://github.com/vkurko/calendar/issues/244), [571](https://github.com/vkurko/calendar/issues/571))
+* Fixed incorrect date calculation when resizing events that start or end outside the visible time range
+* Fixed incorrect TypeScript types for the `allDayContent` option and for the `date` property of the `resourceLabelContent` argument
+
 ## 5.11.1
 July 29, 2026
 * Fixed a `TypeError` when resizing events in `dayGrid` views and in the all-day slot ([656](https://github.com/vkurko/calendar/issues/656))

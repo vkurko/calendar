@@ -44,6 +44,7 @@ export default class State {
         this.viewComponent = $state();
         this.extensions = $state({});
         this.features = $state([]);
+        this.snippets = {};
         // Interaction
         this.interaction = $state({});
         this.iEvents = new SvelteMap();

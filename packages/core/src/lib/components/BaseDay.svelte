@@ -1,6 +1,6 @@
 <script>
     import {getContext, onMount} from 'svelte';
-    import {contentFrom, datesEqual, identity, isFunction, setPayload, toLocalDate} from '#lib';
+    import {contentFrom, createContent, datesEqual, identity, setPayload, toLocalDate} from '#lib';
 
     let {
         el = $bindable(),
@@ -14,23 +14,20 @@
         role = 'cell',
         noIeb = false,
         noBeb = false,
-        content
+        content,
+        defaultContent = undefined
     } = $props();
 
-    let {today, interaction: {action}, options: {dayCellContent, theme}} = $derived(getContext('state'));
+    let {today, snippets, interaction: {action}, options: {dayCellContent, theme}} = $derived(getContext('state'));
     let {snap} = $derived(getContext('view-state'));  // timeGrid has snap, others don't
 
     let isToday = $derived(datesEqual(date, today));
-    let dayContent = $derived(
-        isFunction(dayCellContent)
-            ? dayCellContent({
-                allDay,
-                date: toLocalDate(date),
-                isToday,
-                resource
-            })
-            : dayCellContent
-    );
+    let dayCell = $derived(createContent(
+        dayCellContent,
+        () => ({allDay, date: toLocalDate(date), isToday, resource}),
+        defaultContent,
+        snippets.dayCellContent
+    ));
 
     // Class
     let classNames = $derived(classes([
@@ -64,5 +61,5 @@
     class={classNames}
     {role}
     {onpointerdown}
-    {@attach content ? null : contentFrom(dayContent)}
->{@render content?.(dayContent)}</div>
+    {@attach content ? null : contentFrom(dayCell.content, dayCell.snippet)}
+>{#if content}{@render content(dayCell)}{:else}{@render dayCell.snippet?.(dayCell.arg)}{/if}</div>

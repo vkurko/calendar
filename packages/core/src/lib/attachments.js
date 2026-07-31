@@ -1,5 +1,9 @@
 
-export function contentFrom(content) {
+export function contentFrom(content, snippet) {
+    if (snippet) {
+        // The content is rendered by the user snippet inside the element
+        return null;
+    }
     return el => {
         if (typeof content == 'string') {
             el.innerText = content;

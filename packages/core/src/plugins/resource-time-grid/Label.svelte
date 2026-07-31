@@ -1,29 +1,26 @@
 <script>
     import {getContext, onMount, tick, untrack} from 'svelte';
-    import {contentFrom, toLocalDate, isFunction} from '#lib';
+    import {contentFrom, createContent, toLocalDate, isFunction} from '#lib';
 
     let {resource, date = undefined, setLabel = undefined} = $props();
 
-    let {intlDayHeaderAL, options: {resourceLabelContent, resourceLabelDidMount}} = $derived(getContext('state'));
+    let {intlDayHeaderAL, snippets, options: {resourceLabelContent, resourceLabelDidMount}} = $derived(getContext('state'));
 
     let el = $state();
     // Content
-    let content = $derived.by(() => {
-        if (resourceLabelContent) {
-            return isFunction(resourceLabelContent)
-                ? resourceLabelContent({
-                    resource,
-                    date: date ? toLocalDate(date) : undefined,
-                })
-                : resourceLabelContent;
-        } else {
-            return resource.title;
-        }
-    });
+    let content = $derived(createContent(
+        resourceLabelContent,
+        () => ({resource, date: date ? toLocalDate(date) : undefined}),
+        () => resource.title,
+        snippets.resourceLabelContent
+    ));
     // Aria-label
     let ariaLabel = $state();
     $effect(() => {
+        // Track everything the rendered content depends on, including the user snippet
         content;
+        resource;
+        date;
         untrack(() => {
             // Accessing innerText after tick significantly improves performance
             if (date) {
@@ -49,5 +46,5 @@
 <span
     bind:this={el}
     aria-label="{ariaLabel}"
-    {@attach contentFrom(content)}
-></span>
+    {@attach contentFrom(content.content, content.snippet)}
+>{@render content.snippet?.(content.arg)}</span>

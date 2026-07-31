@@ -19,13 +19,13 @@
     // svelte-ignore state_referenced_locally
     setContext('view-state', viewState);
 
-    let {mainEl, viewDates, options: {allDayContent, allDaySlot, columnWidth, eventGap, nowIndicator: showNowIndicator,
+    let {mainEl, snippets, viewDates, options: {allDayContent, allDaySlot, columnWidth, eventGap, nowIndicator: showNowIndicator,
         scrollTime, slotHeight, slotDuration, theme}} = $derived(mainState);
     let {allDayChunks, allDayBgChunks, allDayIChunks, bgChunks, chunks, iChunks, grid, sidebarWidth, slots,
         slotLabelPeriodicity, slotTimeLimits} = $derived(viewState);
 
     let headerHeight = $state(0);
-    let allDayText = $derived(createAllDayContent(allDayContent));
+    let allDay = $derived(createAllDayContent(allDayContent, snippets.allDayContent));
 
     // Handle scrollTime
     $effect(() => {
@@ -80,7 +80,10 @@
 
             {#if allDaySlot}
                 <div class="{theme.allDay}">
-                    <aside class="{theme.sidebar}" {@attach contentFrom(allDayText)}></aside>
+                    <aside
+                        class="{theme.sidebar}"
+                        {@attach contentFrom(allDay.content, allDay.snippet)}
+                    >{@render allDay.snippet?.(allDay.arg)}</aside>
                     <div class="{theme.grid}" role="row">
                         {#each grid as days, i}
                             {#each days as day, j}

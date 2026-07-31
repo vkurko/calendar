@@ -1,7 +1,8 @@
 <script>
     import {getContext, onMount} from 'svelte';
     import {
-        bgEvent, cloneDate, contentFrom, createEventClasses, createEventContent, datesEqual, entries,
+        bgEvent, cloneDate, contentFrom, createContent, createDefaultEventContent, createEventClasses,
+        createEventTimeText, datesEqual, entries,
         eventBackgroundColor as getEventBackgroundColor, eventTextColor as getEventTextColor, findFirstResource,
         helperEvent, identity, isFunction, keyEnter, setMidnight, toEventWithLocalDates, toViewWithLocalDates
     } from '#lib';
@@ -15,7 +16,7 @@
         body
     } = $props();
 
-    let {intlEventTime, resources, view, options: {
+    let {intlEventTime, resources, snippets, view, options: {
         displayEventEnd, eventBackgroundColor, eventColor, eventContent, eventClick, eventDidMount, eventClassNames,
         eventMouseEnter, eventMouseLeave, eventTextColor, theme
     }} = $derived(getContext('state'));
@@ -65,8 +66,12 @@
     });
 
     // Content
-    let [timeText, content] = $derived(createEventContent(
-        chunk, displayEventEnd, eventContent, theme, intlEventTime, view
+    let timeText = $derived(createEventTimeText(chunk, displayEventEnd, intlEventTime));
+    let content = $derived(createContent(
+        eventContent,
+        () => ({event: toEventWithLocalDates(event), timeText, view: toViewWithLocalDates(view)}),
+        () => createDefaultEventContent(chunk, timeText, theme),
+        snippets.eventContent
     ));
 
     onMount(() => {
@@ -107,7 +112,10 @@
     {onpointerdown}
 >
     {#snippet defaultBody()}
-        <div class={theme.eventBody} {@attach contentFrom(content)}></div>
+        <div
+            class={theme.eventBody}
+            {@attach contentFrom(content.content, content.snippet)}
+        >{@render content.snippet?.(content.arg)}</div>
     {/snippet}
     {#if body}
         {@render body(defaultBody, bgColor, txtColor)}

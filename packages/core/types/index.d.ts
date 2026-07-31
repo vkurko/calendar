@@ -13,7 +13,7 @@
  */
 /// <reference lib="es6" />
 /// <reference lib="dom" />
-import type { Component } from "svelte";
+import type { Component, Snippet } from "svelte";
 
 export function createCalendar(
     target: Element | Document | ShadowRoot,
@@ -29,7 +29,9 @@ export const ResourceTimeGrid: Calendar.Plugin;
 export const ResourceTimeline: Calendar.Plugin;
 export const TimeGrid: Calendar.Plugin;
 
-export const Calendar: Component<{ plugins?: Calendar.Plugin[]; options?: Calendar.Options }>;
+export const Calendar: Component<
+    { plugins?: Calendar.Plugin[]; options?: Calendar.Options } & Calendar.Snippets
+>;
 
 export interface Calendar {
     getOption<K extends keyof Calendar.Options>(name: K): Calendar.Options[K];
@@ -54,12 +56,27 @@ export namespace Calendar {
 
     type DomEvent = GlobalEventHandlersEventMap[keyof GlobalEventHandlersEventMap];
 
-    interface ComponentProps {
+    interface ComponentProps extends Snippets {
         plugins: Plugin[];
         options: Options;
     }
 
     type Content = string | { html: string } | { domNodes: Node[] };
+
+    /**
+     * Svelte snippets that render the content of the corresponding options.
+     * A snippet takes precedence over the option with the same name and is
+     * rendered inside the same element the option content would be placed in.
+     */
+    interface Snippets {
+        allDayContent?: Snippet<[AllDayContentArg]>;
+        dayCellContent?: Snippet<[DayCellContentArg]>;
+        eventContent?: Snippet<[EventContentInfo]>;
+        moreLinkContent?: Snippet<[MoreLinkInfo]>;
+        noEventsContent?: Snippet<[]>;
+        resourceLabelContent?: Snippet<[ResourceLabelInfo]>;
+        weekNumberContent?: Snippet<[WeekNumberContentArg]>;
+    }
 
     type ButtonTextMapping = Record<string, string>;
     type Theme = Record<string, string | string[]>;
@@ -145,6 +162,10 @@ export namespace Calendar {
         startStr: string;
         endStr: string;
         view: View;
+    }
+
+    interface AllDayContentArg {
+        text: string;
     }
 
     interface DayCellContentArg {
@@ -259,7 +280,7 @@ export namespace Calendar {
 
     interface ResourceLabelInfo {
         resource: Resource;
-        date: Date;
+        date?: Date;
     }
 
     interface SelectInfo {
@@ -340,7 +361,7 @@ export namespace Calendar {
     type isoDateTimeString = string;
 
     interface Options {
-        allDayContent?: Content;
+        allDayContent?: Content | ((arg: AllDayContentArg) => Content);
         allDaySlot?: boolean;
         buttonText?: ButtonTextMapping | ((text: ButtonTextMapping) => ButtonTextMapping);
         columnWidth?: cssLength;

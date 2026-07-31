@@ -57,44 +57,32 @@ export function createEventSources(input) {
     }));
 }
 
-export function createEventContent(chunk, displayEventEnd, eventContent, theme, _intlEventTime, _view) {
-    let timeText = _intlEventTime.formatRange(
+export function createEventTimeText(chunk, displayEventEnd, _intlEventTime) {
+    return _intlEventTime.formatRange(
         chunk.start,
         displayEventEnd && chunk.event.display !== 'pointer' && !chunk.zeroDuration
             ? copyTime(cloneDate(chunk.start), chunk.end)  // make Intl.formatRange output only the time part
             : chunk.start
     );
-    let content;
+}
 
-    if (eventContent) {
-        content = isFunction(eventContent)
-            ? eventContent({
-                event: toEventWithLocalDates(chunk.event),
-                timeText,
-                view: toViewWithLocalDates(_view)
-            })
-            : eventContent;
+export function createDefaultEventContent(chunk, timeText, theme) {
+    let domNodes;
+    switch (chunk.event.display) {
+        case 'background':
+            domNodes = [];
+            break;
+        case 'pointer':
+            domNodes = chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)];
+            break;
+        default:
+            domNodes = [
+                ...chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)],
+                createElement('h4', theme.eventTitle, chunk.event.title)
+            ];
     }
 
-    if (content === undefined) {
-        let domNodes;
-        switch (chunk.event.display) {
-            case 'background':
-                domNodes = [];
-                break;
-            case 'pointer':
-                domNodes = chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)];
-                break;
-            default:
-                domNodes = [
-                    ...chunk.event.allDay ? [] : [createTimeElement(timeText, chunk, theme)],
-                    createElement('h4', theme.eventTitle, chunk.event.title)
-                ];
-        }
-        content = {domNodes};
-    }
-
-    return [timeText, content];
+    return {domNodes};
 }
 
 function createTimeElement(timeText, chunk, theme) {

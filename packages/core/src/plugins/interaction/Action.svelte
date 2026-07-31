@@ -106,9 +106,9 @@
                             minResize = event.start;
                         }
                     }
-                    // Correct the date in case the start of the chunk falls on a hidden day.
-                    // In all-day grids the date must point to the day cell the chunk starts in
-                    date = allDay ? setMidnight(cloneDate(chunk.start)) : chunk.start;
+                    // Correct the date in case the start of the event falls on a hidden day.
+                    // In all-day grids the date must point to the day cell the event starts in
+                    date = allDay ? setMidnight(cloneDate(event.start)) : event.start;
                 } else {
                     minResize = cloneDate(event.start);
                     if (allDay) {
@@ -122,15 +122,15 @@
                             minResize = event.end;
                         }
                     }
-                    // Correct the date in case the end of the chunk falls on a hidden day.
-                    // In all-day grids the date must point to the last day cell the chunk occupies
+                    // Correct the date in case the end of the event falls on a hidden day.
+                    // In all-day grids the date must point to the last day cell the event occupies
                     if (allDay) {
-                        date = setMidnight(cloneDate(chunk.end));
-                        if (!zeroDuration && datesEqual(date, chunk.end)) {
+                        date = setMidnight(cloneDate(event.end));
+                        if (!zeroDuration && datesEqual(date, event.end)) {
                             subtractDay(date);
                         }
                     } else {
-                        date = chunk.end;
+                        date = event.end;
                         if (!zeroDuration) {
                             date = subtractDuration(cloneDate(date), snapDuration);
                         }

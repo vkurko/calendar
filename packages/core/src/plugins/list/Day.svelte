@@ -32,11 +32,21 @@
 </script>
 
 {#if chunks.length}
-    <BaseDay {date} allDay role="listitem" {disabled} {highlight}>
-        {#snippet content(dayContent)}
+    <BaseDay
+        {date}
+        allDay
+        role="listitem"
+        {disabled}
+        {highlight}
+        defaultContent={() => intlListDay.format(date)}
+    >
+        {#snippet content(dayCell)}
             <!-- svelte-ignore a11y_missing_content -->
             <h4 class="{theme.dayHead}">
-                <time {datetime} {@attach contentFrom(dayContent ?? intlListDay.format(date))}></time>
+                <time
+                    {datetime}
+                    {@attach contentFrom(dayCell.content, dayCell.snippet)}
+                >{@render dayCell.snippet?.(dayCell.arg)}</time>
                 <time class="{theme.daySide}" {datetime} {@attach contentFrom(intlListDaySide.format(date))}></time>
             </h4>
             {#each chunks as chunk (chunk.event)}

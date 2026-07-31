@@ -1,5 +1,5 @@
 import {
-    addDuration, assign, assignChunkId, cloneDate, createEventChunk, DAY_IN_SECONDS, eventIntersects, isFunction,
+    addDuration, assign, assignChunkId, cloneDate, createContent, createEventChunk, DAY_IN_SECONDS, eventIntersects,
     subtractDay
 } from '#lib';
 
@@ -58,21 +58,15 @@ export function groupChunks(chunks) {
     }
 }
 
-export function createAllDayContent(allDayContent) {
+export function createAllDayContent(allDayContent, snippet) {
     let text = 'all-day';
-    let content;
-    if (allDayContent) {
-        content = isFunction(allDayContent) ? allDayContent({text}) : allDayContent;
-        if (typeof content === 'string') {
-            content = {html: content};
-        }
-    } else {
-        content = {
-            html: text
-        };
+    let allDay = createContent(allDayContent, () => ({text}), {html: text}, snippet);
+    if (typeof allDay.content === 'string') {
+        // The all-day text is rendered as HTML for backward compatibility
+        allDay.content = {html: allDay.content};
     }
 
-    return content;
+    return allDay;
 }
 
 export function setExtensions(mainState) {

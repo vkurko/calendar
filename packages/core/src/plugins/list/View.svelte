@@ -1,6 +1,6 @@
 <script>
     import {getContext, setContext} from 'svelte';
-    import {addDay, cloneDate, contentFrom, bgEvent, isFunction, toViewWithLocalDates, empty} from '#lib';
+    import {addDay, cloneDate, contentFrom, createContent, bgEvent, isFunction, toViewWithLocalDates, empty} from '#lib';
     import ViewState from './state.svelte.js';
     import Day from './Day.svelte';
 
@@ -8,7 +8,7 @@
     let viewState = new ViewState(mainState);
     setContext('view-state', viewState);
 
-    let {filteredEvents, view, viewDates, options: {noEventsClick, noEventsContent, theme}} = $derived(mainState);
+    let {filteredEvents, snippets, view, viewDates, options: {noEventsClick, noEventsContent, theme}} = $derived(mainState);
 
     let noEvents = $derived.by(() => {
         let noEvents = true;
@@ -25,7 +25,9 @@
         return noEvents;
     });
 
-    let content = $derived(isFunction(noEventsContent) ? noEventsContent() : noEventsContent);
+    let content = $derived(createContent(
+        noEventsContent, undefined, undefined, snippets.noEventsContent
+    ));
 
     function onclick(jsEvent) {
         if (isFunction(noEventsClick)) {
@@ -38,7 +40,11 @@
     {#if noEvents}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <div {@attach contentFrom(content)} class="{theme.noEvents}" {onclick}></div>
+        <div
+            class="{theme.noEvents}"
+            {onclick}
+            {@attach contentFrom(content.content, content.snippet)}
+        >{@render content.snippet?.(content.arg)}</div>
     {:else}
         {#each viewDates as date}
             <Day {date}/>

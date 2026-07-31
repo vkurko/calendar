@@ -17,7 +17,7 @@
     let viewState = new ViewState(mainState);
     setContext('view-state', viewState);
 
-    let {mainEl, scrollDate, today, viewDates, options: {
+    let {mainEl, scrollDate, snippets, today, viewDates, options: {
         columnWidth, eventGap, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
     }} = $derived(mainState);
     let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
@@ -106,11 +106,14 @@
                 {/if}
                 {#if length(extraHeads.weeks) > 1}
                     {#each extraHeads.weeks as {number, date, gridColumn, span}}
+                        {@const weekNumber = createWeekNumberContent(
+                            number, date, weekNumberContent, snippets.weekNumberContent
+                        )}
                         <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
                             <span
                                 class="{theme.weekNumber}"
-                                {@attach contentFrom(createWeekNumberContent(number, weekNumberContent, date))}
-                            ></span>
+                                {@attach contentFrom(weekNumber.content, weekNumber.snippet)}
+                            >{@render weekNumber.snippet?.(weekNumber.arg)}</span>
                         </ColHead>
                     {/each}
                 {/if}

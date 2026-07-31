@@ -1,4 +1,5 @@
-import {assign, isDate, isFunction, tzOffset} from './utils.js';
+import {assign, isDate, tzOffset} from './utils.js';
+import {createContent} from './content.js';
 
 export const DAY_IN_SECONDS = 86400;
 
@@ -173,14 +174,13 @@ export function getWeekNumber(date, firstDay) {
     return Math.ceil((((date - yearStart) / 1000 / DAY_IN_SECONDS) + 1) / 7);
 }
 
-export function createWeekNumberContent(week, weekNumberContent, date) {
-    if (weekNumberContent) {
-        return isFunction(weekNumberContent)
-            ? weekNumberContent({date: toLocalDate(date), week})
-            : weekNumberContent;
-    }
-
-    return 'W' + String(week).padStart(2, '0');
+export function createWeekNumberContent(week, date, weekNumberContent, snippet) {
+    return createContent(
+        weekNumberContent,
+        () => ({date: toLocalDate(date), week}),
+        () => 'W' + String(week).padStart(2, '0'),
+        snippet
+    );
 }
 
 export function parseOffset(str, match = {}) {

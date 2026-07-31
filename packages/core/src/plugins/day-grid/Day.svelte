@@ -1,7 +1,7 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        contentFrom, getWeekNumber, isFunction, keyEnter, toISOString, stopPropagation, createWeekNumberContent
+        contentFrom, createContent, createWeekNumberContent, getWeekNumber, keyEnter, toISOString, stopPropagation
     } from '#lib';
     import {BaseDay} from '#components';
 
@@ -10,7 +10,7 @@
     let mainState = getContext('state');
     let viewState = getContext('view-state');
 
-    let {features, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
+    let {features, snippets, options: {date, firstDay, moreLinkContent, theme, weekNumbers, weekNumberContent}} = $derived(mainState);
     let {hiddenChunks, intlDayCell} = $derived(viewState);
 
     let {dayStart, disabled, highlight} = $derived(day);
@@ -20,25 +20,21 @@
     // Week numbers
     let showWeekNumber = $derived(weekNumbers && dayStart.getUTCDay() === (firstDay ? 1 : 0));
     let weekNumber = $derived(showWeekNumber
-        ? createWeekNumberContent(getWeekNumber(dayStart, firstDay), weekNumberContent, dayStart)
-        : undefined
+        ? createWeekNumberContent(
+            getWeekNumber(dayStart, firstDay), dayStart, weekNumberContent, snippets.weekNumberContent
+        )
+        : {}
     );
 
     // More link
     let dayHiddenChunks = $derived(hiddenChunks.get(dayStart.getTime()));
     let moreLink = $derived.by(() => {
-        let moreLink = '';
-        if (dayHiddenChunks) {
-            let text = '+' + dayHiddenChunks.length + ' more';
-            if (moreLinkContent) {
-                moreLink = isFunction(moreLinkContent)
-                    ? moreLinkContent({num: dayHiddenChunks.length, text})
-                    : moreLinkContent;
-            } else {
-                moreLink = text;
-            }
+        if (!dayHiddenChunks) {
+            return {};
         }
-        return moreLink;
+        let num = dayHiddenChunks.length;
+        let text = '+' + num + ' more';
+        return createContent(moreLinkContent, () => ({num, text}), text, snippets.moreLinkContent);
     });
 
     // Popup
@@ -47,18 +43,27 @@
     }
 </script>
 
-<BaseDay date={dayStart} allDay {classes} {disabled} {highlight} {noIeb} {noBeb}>
-    {#snippet content(dayContent)}
+<BaseDay
+    date={dayStart}
+    allDay
+    {classes}
+    {disabled}
+    {highlight}
+    {noIeb}
+    {noBeb}
+    defaultContent={() => intlDayCell.format(dayStart)}
+>
+    {#snippet content(dayCell)}
         <div class="{theme.dayHead}">
             <time
                 datetime="{toISOString(dayStart, 10)}"
-                {@attach contentFrom(dayContent ?? intlDayCell.format(dayStart))}
-            ></time>
+                {@attach contentFrom(dayCell.content, dayCell.snippet)}
+            >{@render dayCell.snippet?.(dayCell.arg)}</time>
             {#if showWeekNumber}
                 <span
                     class="{theme.weekNumber}"
-                    {@attach contentFrom(weekNumber)}
-                ></span>
+                    {@attach contentFrom(weekNumber.content, weekNumber.snippet)}
+                >{@render weekNumber.snippet?.(weekNumber.arg)}</span>
             {/if}
         </div>
 
@@ -74,8 +79,8 @@
                     onclick={stopPropagation(showMore)}
                     onkeydown={keyEnter(showMore)}
                     onpointerdown={stopPropagation()}
-                    {@attach contentFrom(moreLink)}
-                ></a>
+                    {@attach contentFrom(moreLink.content, moreLink.snippet)}
+                >{@render moreLink.snippet?.(moreLink.arg)}</a>
             {/if}
         </div>
     {/snippet}
