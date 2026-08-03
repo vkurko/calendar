@@ -14,6 +14,7 @@ export default {
 			monthHeaderFormat: {  // ec option
 				month: 'long'
 			},
+			beforeResourceExpand: undefined, // ec option
 			resourceExpand: undefined,  // ec option
 			slotWidth: 32,  // ec option
 			// Common options
