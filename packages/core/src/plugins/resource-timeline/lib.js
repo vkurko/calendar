@@ -1,4 +1,4 @@
-import {assign, assignChunkId, createDuration, createEventChunk, eventIntersects, max, min} from '#lib';
+import {assign, assignChunkId, createDuration, createEventChunk, eventIntersects, max, min, toTime} from '#lib';
 
 export function createChunks(event, days, monthView, withId = true) {
     let dates = [];
@@ -126,5 +126,5 @@ export function repositionEvent(chunk, height, monthView, gap = 1, strict = fals
 }
 
 export function getSlotTimeLimits(dayTimeLimits, date) {
-    return dayTimeLimits[date.getTime()] ?? {min: createDuration(0), max: createDuration('24:00:00')};
+    return dayTimeLimits[toTime(date)] ?? {min: createDuration(0), max: createDuration('24:00:00')};
 }

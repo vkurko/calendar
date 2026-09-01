@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
     addDay, addDuration, bgEvent, cloneDate, createSlots, createSlotTimeLimits, datesEqual, empty, getPayload,
-    getWeekNumber, outsideRange, toSeconds
+    getWeekNumber, outsideRange, toSeconds, toTime
 } from '#lib';
 import {createChunks, prepareChunks} from './lib.js';
 
@@ -19,7 +19,7 @@ export function grid(mainState, viewState) {
                 let days = [];
                 let gridColumn = 1;
                 for (let date of viewDates) {
-                    let slotTimeLimits = dayTimeLimits[date.getTime()];
+                    let slotTimeLimits = dayTimeLimits[toTime(date)];
                     days.push({
                         gridColumn,
                         gridRow,
@@ -142,7 +142,7 @@ export function dayTimeLimits(mainState) {
 
         untrack(() => {
             for (let date of viewDates) {
-                dayTimeLimits[date.getTime()] = createSlotTimeLimits(
+                dayTimeLimits[toTime(date)] = createSlotTimeLimits(
                     slotMinTime,
                     slotMaxTime,
                     flexibleSlotTimeLimits,
@@ -166,7 +166,7 @@ export function daySlots(mainState, viewState) {
 
         untrack(() => {
             for (let date of viewDates) {
-                let key = date.getTime();
+                let key = toTime(date);
                 slots[key] = key in dayTimeLimits
                     ? createSlots(date, slotDuration, slotLabelPeriodicity, dayTimeLimits[key], intlSlotLabel)
                     : [];

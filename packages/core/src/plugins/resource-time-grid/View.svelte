@@ -42,7 +42,7 @@
 
 <View {viewState}>
     {#snippet header()}
-        {#each grid as days, i}
+        {#each grid as days, i (days[0].groupKey)}
             {@const {dayStart: date, resource, disabled, highlight} = days[0]}
             <ColHead
                 {date}
@@ -61,8 +61,8 @@
             </ColHead>
         {/each}
         {#if length(grid[0]) > 1}
-            {#each grid as days, i}
-                {#each days as day, j}
+            {#each grid as days, i (days[0].groupKey)}
+                {#each days as day, j (day.key)}
                     {@const {dayStart: date, resource, disabled, highlight} = day}
                     <ColHead {date} colIndex={1 + j + i * length(days)} {disabled} {highlight}>
                         {#if datesAboveResources}

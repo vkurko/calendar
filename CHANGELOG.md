@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.12.1
+September 1, 2026
+* Fixed `resourceLabelDidMount` not being called for a resource that replaces another one in the same position
+* Fixed a Svelte warning in the browser console when navigating in `dayGrid` views with `dayMaxEvents` enabled
+
 ## 5.12.0
 August 1, 2026
 * Added support for Svelte snippets in the options that define content ([244](https://github.com/vkurko/calendar/issues/244), [571](https://github.com/vkurko/calendar/issues/571))

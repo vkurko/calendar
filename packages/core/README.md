@@ -287,15 +287,15 @@ A snippet receives the same argument as the function form of the option and is r
 
 Unlike a function, a snippet is rendered by Svelte itself. It can contain components, event handlers and transitions, and it is updated reactively when the state it uses changes.
 
-If both a snippet and an option with the same name are given, the snippet takes precedence. The `noEventsContent` snippet is the only one that receives no argument.
+If both a snippet and an option with the same name are given, the snippet takes precedence.
 
 ### Standalone bundle
 This bundle contains a version of the calendar that includes all plugins and is prepared for use in the browser via the `<script>` tag.
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.1/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.1/dist/event-calendar.min.js"></script>
 ```
 
 <details>

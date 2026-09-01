@@ -1,7 +1,8 @@
 <script>
     import {getContext} from 'svelte';
     import {
-        contentFrom, createContent, createWeekNumberContent, getWeekNumber, keyEnter, toISOString, stopPropagation
+        contentFrom, createContent, createWeekNumberContent, getWeekNumber, keyEnter, toISOString, stopPropagation,
+        toTime
     } from '#lib';
     import {BaseDay} from '#components';
 
@@ -27,7 +28,7 @@
     );
 
     // More link
-    let dayHiddenChunks = $derived(hiddenChunks.get(dayStart.getTime()));
+    let dayHiddenChunks = $derived(hiddenChunks.get(toTime(dayStart)));
     let moreLink = $derived.by(() => {
         if (!dayHiddenChunks) {
             return {};

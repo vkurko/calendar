@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite';
 import {svelte} from '@sveltejs/vite-plugin-svelte';
 import banner from 'vite-plugin-banner';
-import pkg from './package.json';
+import pkg from './package.json' with {type: 'json'};
 
 // https://vite.dev/config/
 export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {

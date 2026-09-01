@@ -28,7 +28,7 @@ function _createResources(input, level, hidden, flat) {
 
 export function createResource(input) {
     return {
-        id: String(input.id),
+        id: input.id != null ? String(input.id) : '',
         title: input.title || '',
         eventBackgroundColor: eventBackgroundColor(input),
         eventTextColor: eventTextColor(input),

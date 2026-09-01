@@ -85,3 +85,16 @@ export function isRtl() {
 export function undefinedOr(fn) {
     return input => input === undefined ? undefined : fn(input);
 }
+
+// Storage of unique object identifiers for use as keys in each blocks
+const uids = new WeakMap();
+let uidCounter = 1;
+
+export function uid(obj) {
+    let id = uids.get(obj);
+    if (!id) {
+        id = uidCounter++;
+        uids.set(obj, id);
+    }
+    return id;
+}

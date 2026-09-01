@@ -1,6 +1,6 @@
 import {datesEqual} from './date.js';
 import {eventIntersects} from './events.js';
-import {assign} from './utils.js';
+import {assign, uid} from './utils.js';
 
 /**
  * @returns {{
@@ -123,16 +123,7 @@ export function repositionEvent(chunk, height, top = 1, gap = 1) {
     return top;
 }
 
-// Storage of unique event identifiers for generating chunk ids
-const ids = new WeakMap();
-let idCounter = 1;
-
 export function assignChunkId(chunk) {
     let {event, gridColumn, gridRow} = chunk;
-    let id = ids.get(event);
-    if (!id) {
-        id = idCounter++;
-        ids.set(event, id);
-    }
-    chunk.id = `${id}-${gridColumn}-${gridRow}`;
+    chunk.id = `${uid(event)}-${gridColumn}-${gridRow}`;
 }

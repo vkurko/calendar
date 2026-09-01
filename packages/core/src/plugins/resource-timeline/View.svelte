@@ -2,7 +2,7 @@
     import {getContext, setContext, tick} from 'svelte';
     import {
         max, resizeObserver, runReposition, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
-        createWeekNumberContent
+        createWeekNumberContent, toTime, uid
     } from '#lib';
     import {getSlotTimeLimits} from './lib.js';
     import ViewState from './state.svelte.js';
@@ -125,7 +125,7 @@
                 {#if !monthView}
                     {#each grid[0] as {dayStart: date, disabled, highlight}}
                         <ColHead {date} className={theme.slots} {disabled} {highlight} ariaHidden>
-                            {#each daySlots[date.getTime()] as slot}
+                            {#each daySlots[toTime(date)] as slot}
                                 <div
                                     class="{theme.slot}"
                                     style:--ec-slot-label-periodicity={slot[2]}
@@ -144,7 +144,7 @@
 
         <div class="{theme.body}" role="rowgroup">
             <aside class="{theme.sidebar}">
-                {#each viewResources as resource}
+                {#each viewResources as resource (uid(resource))}
                     <div class="{theme.rowHead}" role="rowheader">
                         {#if nestedResources}
                             <Expander {resource} />

@@ -34,8 +34,12 @@ export function createDuration(input) {
     };
 }
 
+export function toTime(date) {
+    return date.getTime();
+}
+
 export function cloneDate(date) {
-    let result = new Date(date.getTime());
+    let result = new Date(toTime(date));
     setOffset(result, getOffset(date));
 
     return result;
@@ -94,7 +98,7 @@ export function toISOString(date, len = 19) {
 }
 
 export function datesEqual(date1, ...dates2) {
-    return dates2.every(date2 => date1.getTime() === date2.getTime());
+    return dates2.every(date2 => toTime(date1) === toTime(date2));
 }
 
 export function nextClosestDay(date, day) {
