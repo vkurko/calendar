@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
     addDay, addDuration, bgEvent, cloneDate, createSlots, createSlotTimeLimits, datesEqual, empty, getPayload,
-    getWeekNumber, outsideRange, toSeconds, toTime
+    getWeekNumber, length, outsideRange, toSeconds, toTime
 } from '#lib';
 import {createChunks, prepareChunks} from './lib.js';
 
@@ -42,10 +42,24 @@ export function grid(mainState, viewState) {
     };
 }
 
+/**
+ * Check whether the view spans exactly one whole month
+ */
+function oneMonth(duration) {
+    return duration.months === 1 && !duration.years && !duration.days && !duration.seconds;
+}
+
+/**
+ * Check whether the view spans exactly one whole week
+ */
+function oneWeek(duration) {
+    return duration.inWeeks && duration.days === 7 && !duration.years && !duration.months && !duration.seconds;
+}
+
 export function extraHeads(mainState, viewState) {
     return () => {
         // Dependencies
-        let {features, options: {firstDay, weekNumbers}} = mainState;
+        let {features, options: {duration, firstDay, weekNumbers}} = mainState;
         let {grid} = viewState;
 
         let months = [];
@@ -74,6 +88,13 @@ export function extraHeads(mainState, viewState) {
                         }
                     }
                 }
+            }
+            // A single header is redundant when the view spans exactly one whole month or week
+            if (length(months) === 1 && oneMonth(duration)) {
+                months = [];
+            }
+            if (length(weeks) === 1 && oneWeek(duration)) {
+                weeks = [];
             }
         });
 

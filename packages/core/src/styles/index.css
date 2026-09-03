@@ -37,13 +37,9 @@
     }
 
     .ec-timeline & {
-        grid-template-columns: max-content repeat(var(--ec-grid-cols), min-content);
+        grid-template-columns: max-content repeat(var(--ec-grid-cols), var(--ec-col-width));
         grid-template-rows: max-content var(--ec-grid-rows);
         flex-grow: 1;
-    }
-
-    .ec-timeline:is(.ec-month-view, .ec-year-view) & {
-        grid-template-columns: max-content repeat(var(--ec-grid-cols), var(--ec-col-width));
     }
 
     .ec-list & {

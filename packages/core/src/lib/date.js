@@ -34,10 +34,6 @@ export function createDuration(input) {
     };
 }
 
-export function toTime(date) {
-    return date.getTime();
-}
-
 export function cloneDate(date) {
     let result = new Date(toTime(date));
     setOffset(result, getOffset(date));
@@ -97,6 +93,10 @@ export function toISOString(date, len = 19) {
     return date.toISOString().substring(0, len);
 }
 
+export function toTime(date) {
+    return date.getTime();
+}
+
 export function datesEqual(date1, ...dates2) {
     return dates2.every(date2 => toTime(date1) === toTime(date2));
 }
@@ -114,7 +114,7 @@ export function prevClosestDay(date, day) {
 }
 
 /**
- * Check whether given date is string which contains no time part
+ * Check whether a given date is a string that contains no time part
   */
 export function noTimePart(date) {
     return typeof date === 'string' && date.length <= 10;

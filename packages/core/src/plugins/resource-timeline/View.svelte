@@ -83,7 +83,7 @@
         class="{theme.main}"
         style:--ec-grid-cols="{length(grid[0])}"
         style:--ec-grid-rows="{length(grid) > 1 ? `repeat(${length(grid) - 1}, auto)` : ''} 1fr"
-        style:--ec-col-width="{columnWidth ?? 'minmax(4em, 1fr)'}"
+        style:--ec-col-width="{monthView ? columnWidth ?? 'minmax(4em, 1fr)' : 'min-content'}"
         style:--ec-slot-label-periodicity="{slotLabelPeriodicity}"
         style:--ec-slot-height="{slotHeight}px"
         style:--ec-slot-width="{slotWidth}px"
@@ -94,29 +94,25 @@
         <header bind:offsetHeight={headerHeight} class="{theme.header}">
             <aside class="{theme.sidebar}" bind:offsetWidth={viewState.sidebarWidth}></aside>
             <div class="{theme.grid}" role="row">
-                {#if length(extraHeads.months) > 1}
-                    {#each extraHeads.months as {date, gridColumn, span}}
-                        <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
-                            <time
-                                datetime="{toISOString(date, 10)}"
-                                {@attach contentFrom(intlMonthHeader.format(date))}
-                            ></time>
-                        </ColHead>
-                    {/each}
-                {/if}
-                {#if length(extraHeads.weeks) > 1}
-                    {#each extraHeads.weeks as {number, date, gridColumn, span}}
-                        {@const weekNumber = createWeekNumberContent(
-                            number, date, weekNumberContent, snippets.weekNumberContent
-                        )}
-                        <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
-                            <span
-                                class="{theme.weekNumber}"
-                                {@attach contentFrom(weekNumber.content, weekNumber.snippet)}
-                            >{@render weekNumber.snippet?.(weekNumber.arg)}</span>
-                        </ColHead>
-                    {/each}
-                {/if}
+                {#each extraHeads.months as {date, gridColumn, span}}
+                    <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
+                        <time
+                            datetime="{toISOString(date, 10)}"
+                            {@attach contentFrom(intlMonthHeader.format(date))}
+                        ></time>
+                    </ColHead>
+                {/each}
+                {#each extraHeads.weeks as {number, date, gridColumn, span}}
+                    {@const weekNumber = createWeekNumberContent(
+                        number, date, weekNumberContent, snippets.weekNumberContent
+                    )}
+                    <ColHead className={theme.colGroup} colIndex={gridColumn} colSpan={span} cssSpan weekday={false}>
+                        <span
+                            class="{theme.weekNumber}"
+                            {@attach contentFrom(weekNumber.content, weekNumber.snippet)}
+                        >{@render weekNumber.snippet?.(weekNumber.arg)}</span>
+                    </ColHead>
+                {/each}
                 {#each grid[0] as {dayStart: date, disabled, highlight}, i}
                     <ColHead {date} colIndex={1 + i} {disabled} {highlight}>
                         <DayHeader {date}/>

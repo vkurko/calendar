@@ -294,8 +294,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.2/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.2/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2101,7 +2101,9 @@ For a more granular configuration, see [eventLongPressDelay](#eventlongpressdela
 - Type `object` or `function`
 - Default `{month: 'long'}`
 
-Defines the text that is displayed in month headings in `resourceTimelineYear` view.
+Defines the text that is displayed in month headings in `resourceTimelineMonth` and `resourceTimelineYear` views.
+
+The month heading row is hidden when the view spans exactly one whole month, since the month is already shown in the calendar title.
 
 This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
 

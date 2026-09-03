@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.12.2
+September 3, 2026
+* Fixed the month heading row disappearing in `resourceTimeline` views with a custom `duration` ([660](https://github.com/vkurko/calendar/issues/660))
+* Fixed incorrect slot width calculation in `resourceTimeline` views with a day-long `slotDuration` ([661](https://github.com/vkurko/calendar/issues/661))
+
 ## 5.12.1
 September 1, 2026
 * Fixed `resourceLabelDidMount` not being called for a resource that replaces another one in the same position
