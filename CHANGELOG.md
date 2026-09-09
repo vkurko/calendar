@@ -1,5 +1,12 @@
 # EventCalendar changelog
 
+## 5.12.3
+September 9, 2026
+* Fixed incorrect TypeScript types for the `resources` option ([664](https://github.com/vkurko/calendar/issues/664))
+* Fixed resources not being loaded when the `resources` option is given as an object without the `method` property
+* Fixed incorrect TypeScript types for the `method` property of `eventSources` and for the `timeZone` property of the `fetchInfo` argument
+* Fixed the `buttonText`, `customButtons`, `icons` and `theme` options not being applied to the calendar when set as a function after the calendar has been created ([667](https://github.com/vkurko/calendar/issues/667))
+
 ## 5.12.2
 September 3, 2026
 * Fixed the month heading row disappearing in `resourceTimeline` views with a custom `duration` ([660](https://github.com/vkurko/calendar/issues/660))

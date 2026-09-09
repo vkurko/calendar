@@ -2,7 +2,7 @@ import {
     addDay, cloneDate, copyTime, createDate, datesEqual, noTimePart, setMidnight, toISOString, toLocalDate
 } from './date.js';
 import {createElement} from './dom.js';
-import {assign, isArray, isFunction} from './utils.js';
+import {assign, createSource, isArray, isFunction} from './utils.js';
 import {toViewWithLocalDates} from './view.js';
 
 let eventId = 1;
@@ -51,9 +51,7 @@ function toArrayProp(input, propName) {
 export function createEventSources(input) {
     return input.map(source => ({
         events: source.events,
-        url: (source.url && source.url.trimEnd('&')) || '',
-        method: (source.method && source.method.toUpperCase()) || 'GET',
-        extraParams: source.extraParams || {}
+        ...createSource(source)
     }));
 }
 

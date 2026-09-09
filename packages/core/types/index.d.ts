@@ -339,6 +339,7 @@ export namespace Calendar {
         end: Date;
         startStr: string;
         endStr: string;
+        timeZone: string;
     }
 
     type EventSourceFunc = (
@@ -349,10 +350,22 @@ export namespace Calendar {
     type EventSourceFuncPromise = (info: FetchInfo) => Promise<Array<Event | EventInput>>;
     type EventSource = {
         url: string;
-        method: string;
+        method?: string;
         extraParams?: object | (() => object);
     } | {
         events: EventSourceFunc | EventSourceFuncPromise;
+    };
+
+    type ResourceSourceFunc = (
+        info: Partial<FetchInfo>,
+        success: (resources: ResourceInput[]) => void,
+        failure: (errorInfo: object) => void,
+    ) => void;
+    type ResourceSourceFuncPromise = (info: Partial<FetchInfo>) => Promise<ResourceInput[]>;
+    type ResourceSource = {
+        url: string;
+        method?: string;
+        extraParams?: object | (() => object);
     };
 
     type cssLength = string;
@@ -439,7 +452,7 @@ export namespace Calendar {
         refetchResourcesOnNavigate?: boolean;
         resizeConstraint?: (info: EventResizeInfo) => boolean;
         resourceExpand?: (info: ResourceExpandInfo) => void;
-        resources?: ResourceInput[];
+        resources?: ResourceInput[] | ResourceSource | ResourceSourceFunc | ResourceSourceFuncPromise;
         resourceLabelContent?: Content | ((info: ResourceLabelInfo) => Content);
         resourceLabelDidMount?: (info: ResourceDidMountInfo) => void;
         select?: (info: SelectInfo) => void;

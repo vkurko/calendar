@@ -98,3 +98,11 @@ export function uid(obj) {
     }
     return id;
 }
+
+export function createSource(input) {
+    return {
+        url: input.url?.replace(/&+$/, '') || '',
+        method: input.method?.toUpperCase() || 'GET',
+        extraParams: input.extraParams || {}
+    };
+}

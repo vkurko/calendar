@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
-    assign, createDate, createDateRange, createDuration, createEvents, createEventSources, createResources, hasOwn,
-    isArray, isFunction, isPlainObject, keys, setMidnight, undefinedOr
+    assign, createDate, createDateRange, createDuration, createEvents, createEventSources, createResources,
+    createSource, hasOwn, isArray, isFunction, isPlainObject, keys, setMidnight, undefinedOr
 } from '#lib';
 import {objectProxy} from './proxy.svelte.js';
 
@@ -127,7 +127,8 @@ function createParsers(plugins) {
         eventSources: createEventSources,
         hiddenDays: input => [...new Set(input)],
         highlightedDates: input => input.map(item => setMidnight(createDate(item))),
-        resources: input => isArray(input) ? createResources(input) : input,
+        resources: input => isArray(input) ? createResources(input)
+            : isPlainObject(input) ? createSource(input) : input,
         validRange: createDateRange
     };
 
@@ -209,7 +210,10 @@ export function optionsState(plugins, userOptions) {
                 }
                 // Set value for all views
                 setters[key]?.forEach(set => set(value));
-                options[key] = value;
+                // Special options are stored expanded, as they are in the current view options
+                options[key] = specialOptions.includes(key) && isFunction(value)
+                    ? viewOptions[options.view][key]
+                    : value;
             }
         },
         function setViewOptions(view) {
