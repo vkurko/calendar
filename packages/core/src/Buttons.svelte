@@ -64,7 +64,7 @@
     }
 
     function snippetName(button) {
-        return 'customButton' + button[0].toUpperCase() + button.slice(1);
+        return 'customButton' + button.charAt(0).toUpperCase() + button.slice(1);
     }
 </script>
 
@@ -109,7 +109,7 @@
             onclick={customButtons[button].click}
             {@attach contentFrom(customButtons[button].text)}
         ></button>
-    {:else if button !== ''}
+    {:else}
         <button
             class={[theme.button, `ec-${button}`, view === button && theme.active]}
             onclick={() => mainState.setOption('view', button)}

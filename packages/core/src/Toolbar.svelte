@@ -8,7 +8,8 @@
     let sections = $derived.by(() => {
         let sections = {};
         for (let key of ['start', 'center', 'end']) {
-            sections[key] = headerToolbar[key]?.split(' ').map(group => group.split(',')) ?? [];
+            sections[key] = headerToolbar[key]?.split(' ').filter(Boolean)
+                .map(group => group.split(',').filter(Boolean)) ?? [];
         }
         return sections;
     });

@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.13.1
+September 15, 2026
+* Fixed a `TypeError` that prevented the calendar from being created when a section of the `headerToolbar` option is empty
+
 ## 5.13.0
 September 15, 2026
 * Added support for arbitrary content in the elements of the `headerToolbar` via the new `content` property of `customButtons` ([668](https://github.com/vkurko/calendar/issues/668))
