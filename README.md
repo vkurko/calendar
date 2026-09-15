@@ -285,6 +285,15 @@ It can also be passed as a property, which is convenient when the snippet is dec
 ```
 A snippet receives the same argument as the function form of the option and is rendered in the same place.
 
+The `content` property of [customButtons](#custombuttons) is also supported, but since custom buttons have arbitrary names, such a snippet is named `customButton` followed by the name of the button with the first letter capitalized. The button itself does not have to be listed in the `customButtons` option:
+```html
+<Calendar plugins={[ResourceTimeline]} options={{headerToolbar: {end: 'myFilter'}}}>
+    {#snippet customButtonMyFilter()}
+        <input bind:value={query}>
+    {/snippet}
+</Calendar>
+```
+
 Unlike a function, a snippet is rendered by Svelte itself. It can contain components, event handlers and transitions, and it is updated reactively when the state it uses changes.
 
 If both a snippet and an option with the same name are given, the snippet takes precedence.
@@ -294,8 +303,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.3/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.12.3/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.13.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.13.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -502,9 +511,52 @@ The text to be display on the button itself. See [Content](#content)
 If `true`, the button will appear pressed/active
 </td>
 </tr>
+<tr>
+<td>
+
+`content`
+</td>
+<td>
+
+Arbitrary content displayed in place of the button. See [Content](#content)
+
+This value can be either a [Content](#content) or a function that returns content:
+
+```js
+function () {
+  // return Content
+}
+```
+</td>
+</tr>
 </table>
 
-This option can also be set as a callback function that receives default custom button object and should return a new one:
+An entry with the `content` property is rendered as a plain `<div>` rather than a `<button>`, so it can hold any widget, such as an input or a select. Such an entry does not need the `text` and `click` properties, and if `content` is also given, it takes precedence over `text`.
+
+<details>
+  <summary>Example</summary>
+
+```js
+let input = document.createElement('input');
+
+let options = {
+    customButtons: {
+        myFilter: {
+            content: {domNodes: [input]}
+        }
+    },
+    headerToolbar: {
+        start: 'prev,next today',
+        center: 'title',
+        end: 'myFilter'
+    }
+};
+```
+</details>
+
+In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+
+The `customButtons` option can also be set as a callback function that receives default custom button object and should return a new one:
 
 ```js
 function (customButtons) {
@@ -2948,6 +3000,8 @@ views: {
     }
 }
 ```
+
+This option is only read when the calendar is created. Changing it afterwards, either with [setOption](#setoption-name-value-) or reactively in Svelte, has no effect.
 
 
 ### weekNumberContent

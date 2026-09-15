@@ -1,11 +1,11 @@
 <script>
     import {getContext, tick, untrack} from 'svelte';
-    import {cloneDate, contentFrom, nextDate, prevDate, outsideRange} from '#lib';
+    import {cloneDate, contentFrom, createContent, nextDate, prevDate, outsideRange} from '#lib';
 
     let {buttons} = $props();
 
     let mainState = getContext('state');
-    let {currentRange, today, viewTitle, viewDates, options: {buttonText, customButtons, date, dateIncrement, duration,
+    let {currentRange, snippets, today, viewTitle, viewDates, options: {buttonText, customButtons, date, dateIncrement, duration,
         hiddenDays, theme, validRange, view}} = $derived(mainState);
 
     let prevDisabled = $state(false);
@@ -62,6 +62,10 @@
     function setToday() {
         mainState.setOption('date', cloneDate(today));
     }
+
+    function snippetName(button) {
+        return 'customButton' + button[0].toUpperCase() + button.slice(1);
+    }
 </script>
 
 {#each buttons as button}
@@ -90,6 +94,14 @@
             onclick={setToday}
             disabled={todayDisabled}
         >{buttonText[button]}</button>
+    {:else if snippets[snippetName(button)] || customButtons[button]?.content != null}
+        {@const item = createContent(
+            customButtons[button]?.content, undefined, undefined, snippets[snippetName(button)]
+        )}
+        <div
+            class="ec-{button}"
+            {@attach contentFrom(item.content, item.snippet)}
+        >{@render item.snippet?.()}</div>
     {:else if customButtons[button]}
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button

@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.13.0
+September 15, 2026
+* Added support for arbitrary content in the elements of the `headerToolbar` via the new `content` property of `customButtons` ([668](https://github.com/vkurko/calendar/issues/668))
+* Fixed incorrect TypeScript types for the `views` option, which did not allow the `type` property
+
 ## 5.12.3
 September 9, 2026
 * Fixed incorrect TypeScript types for the `resources` option ([664](https://github.com/vkurko/calendar/issues/664))

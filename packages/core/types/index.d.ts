@@ -70,6 +70,8 @@ export namespace Calendar {
      */
     interface Snippets {
         allDayContent?: Snippet<[AllDayContentArg]>;
+        /** Renders a custom toolbar item, named after the item in the `headerToolbar` option with the first letter capitalized */
+        [key: `customButton${Capitalize<string>}`]: Snippet<[]> | undefined;
         dayCellContent?: Snippet<[DayCellContentArg]>;
         eventContent?: Snippet<[EventContentInfo]>;
         moreLinkContent?: Snippet<[MoreLinkInfo]>;
@@ -87,8 +89,19 @@ export namespace Calendar {
         active?: boolean;
     }
 
+    /** An arbitrary widget placed in the toolbar instead of a button */
+    interface CustomItem {
+        content: Content | (() => Content);
+    }
+
     interface CustomButtons {
-        [key: string]: CustomButton;
+        [key: string]: CustomButton | CustomItem;
+    }
+
+    /** Options that apply only to a specific view */
+    interface ViewOptions extends Omit<Options, 'views'> {
+        /** The standard view to inherit options from, used when creating a custom view */
+        type?: string;
     }
 
     interface Icons {
@@ -480,7 +493,7 @@ export namespace Calendar {
         validRange?: { start?: Date | isoDateString; end?: Date | isoDateString };
         view?: string;
         viewDidMount?: (info: { view: View }) => void;
-        views?: Record<string, Options>;
+        views?: Record<string, ViewOptions>;
         weekNumberContent?: Content | ((arg: WeekNumberContentArg) => Content);
         weekNumbers?: boolean;
     }
