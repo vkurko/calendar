@@ -29,7 +29,7 @@ function _createResources(input, level, hidden, flat) {
 export function createResource(input) {
     return {
         id: input.id != null ? String(input.id) : '',
-        title: input.title || '',
+        title: input.title ?? '',
         eventBackgroundColor: eventBackgroundColor(input),
         eventTextColor: eventTextColor(input),
         expanded: input.expanded ?? true,

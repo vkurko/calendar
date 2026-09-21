@@ -303,8 +303,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.13.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.13.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.14.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.14.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -1546,6 +1546,8 @@ Determines whether [eventOrder](#eventorder) is followed strictly in `resourceTi
 By default, the layout prioritizes compactness: an event is placed in the topmost free slot, which means it can move above earlier-ordered events when there is empty space above them. When set to `true`, events keep their vertical order — an event is never placed above another event that comes before it in `eventOrder` and overlaps it, even if free space is available.
 
 This is useful, for example, when a parent event should always stay above its child events (order them so the parent comes first and enable this option).
+
+Events that don't overlap each other are laid out independently, even with this option enabled. To keep related events on the same line, give them the same `layoutGroup`.
 
 ### eventResizableFromStart
 - Type `boolean`
@@ -3322,6 +3324,18 @@ In addition, in your callback functions, you may get the `'ghost'`, `'preview'` 
 <tr>
 <td>
 
+`layoutGroup`
+</td>
+<td>
+
+The layout group the event belongs to
+
+Events of the same layout group within a resource row are laid out as a unit: they are placed on the same line whenever they don't overlap each other. Only applies in `resourceTimeline` views with [eventOrderStrict](#eventorderstrict) enabled
+</td>
+</tr>
+<tr>
+<td>
+
 `backgroundColor`
 </td>
 <td>
@@ -3476,6 +3490,16 @@ Here are all admissible fields for the event’s input object:
 `string` The rendering type of the event. Can be `'auto'` or `'background'`. Default `'auto'`
 
 In month-based views such as `dayGridMonth` or `resourceTimelineMonth`, background events are displayed only if their `allDay` property is set to `true`
+</td>
+</tr>
+<tr>
+<td>
+
+`layoutGroup`
+</td>
+<td>
+
+`string` or `number` The layout group the event belongs to. Events of the same layout group within a resource row are laid out as a unit: they are placed on the same line whenever they don't overlap each other. Only applies in `resourceTimeline` views with [eventOrderStrict](#eventorderstrict) enabled
 </td>
 </tr>
 <tr>

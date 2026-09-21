@@ -9,7 +9,7 @@ let eventId = 1;
 export function createEvents(input, offset = undefined) {
     return input.map(event => {
         let result = {
-            id: 'id' in event ? String(event.id) : `{generated-${eventId++}}`,
+            id: event.id != null ? String(event.id) : `{generated-${eventId++}}`,
             resourceIds: toArrayProp(event, 'resourceId').map(String),
             allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
             start: createDate(event.start, offset),
@@ -19,6 +19,7 @@ export function createEvents(input, offset = undefined) {
             startEditable: event.startEditable,
             durationEditable: event.durationEditable,
             display: event.display ?? 'auto',
+            layoutGroup: event.layoutGroup?.toString(),
             extendedProps: event.extendedProps ?? {},
             backgroundColor: event.backgroundColor ?? event.color,
             textColor: event.textColor,

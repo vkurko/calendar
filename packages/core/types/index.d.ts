@@ -319,6 +319,7 @@ export namespace Calendar {
         resourceIds?: string | number | Array<string | number>;
         resourceId?: string | number | Array<string | number>;
         display?: "auto" | "background";
+        layoutGroup?: string | number;
         backgroundColor?: string;
         textColor?: string;
         color?: string;
@@ -340,6 +341,7 @@ export namespace Calendar {
         startEditable: boolean | undefined;
         durationEditable: boolean | undefined;
         display: "auto" | "background" | "ghost" | "preview" | "pointer";
+        layoutGroup: string | undefined;
         backgroundColor: string | undefined;
         textColor: string | undefined;
         classNames: string[];

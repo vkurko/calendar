@@ -72,25 +72,52 @@ export function prepareChunks(chunks, strict) {
         chunk.day = dayChunks[key];
     }
     if (strict) {
-        // Collect, for each chunk, all chunks sharing at least one of its columns.
-        // Unlike `chunk.day` (which covers only the starting cell), this spans the
-        // whole chunk, so a chunk can't float above an earlier-ordered chunk that
-        // overlaps it in a column other than the first one.
+        // Collect, for each chunk, its `rivals` — all chunks sharing at least one of its columns,
+        // and thus competing with it for a place. Unlike `chunk.day` (which covers only the
+        // starting cell), this spans the whole chunk, so a chunk can't float above an
+        // earlier-ordered chunk that overlaps it in a column other than the first one.
+        let layoutGroups = {};
         for (let chunk of chunks) {
             let {gridColumn, gridRow} = chunk;
             let seen = new Set([chunk]);
-            let group = [];
+            let rivals = [];
             for (let j = 0; j < chunk.dates.length; ++ j) {
                 for (let other of dayChunks[`${gridRow}_${gridColumn + j}`]) {
                     if (!seen.has(other)) {
                         seen.add(other);
-                        group.push(other);
+                        rivals.push(other);
                     }
                 }
             }
-            chunk.group = group;
+            chunk.rivals = rivals;
+            // `mates` are the chunks of the same layoutGroup within the same resource row. They are
+            // laid out as a unit. The array is shared between the mates and lists them in the
+            // eventOrder order, so `mates[0]` is the one positioned first — their anchor
+            let {layoutGroup} = chunk.event;
+            if (layoutGroup !== undefined) {
+                chunk.mates = layoutGroups[`${gridRow}_${layoutGroup}`] ??= [];
+                chunk.mates.push(chunk);
+            }
         }
     }
+}
+
+/**
+ * Check whether the chunk fits the given line without touching the chunks that have to keep their
+ * place: the ones in its columns that come earlier in the order. Later-ordered chunks give way,
+ * and they do have a position here, as the layout is run more than once
+ */
+function lineIsFree(chunk, line, height, gap) {
+    for (let other of chunk.rivals) {
+        if (
+            other.order < chunk.order && 'top' in other &&
+            line < other.bottom + gap && line + height + gap > other.top
+        ) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 export function repositionEvent(chunk, height, monthView, gap = 1, strict = false) {
@@ -100,12 +127,29 @@ export function repositionEvent(chunk, height, monthView, gap = 1, strict = fals
         // Strictly follow eventOrder: place the chunk below every already-positioned
         // chunk that comes earlier in the order and shares a column with it. Chunks
         // sharing a column always overlap in time there, so they can't share a row.
-        for (let other of chunk.group) {
-            if (other.order < chunk.order && 'top' in other && other.bottom + gap > top) {
-                top = other.bottom + gap;
+
+        // The anchor is the mate positioned first, and it picks the line for all of them, so it
+        // has to clear the way for every mate, not just for itself. The rest are positioned
+        // against their own columns only: repeating the joint calculation would push each of them
+        // lower than the anchor, since more chunks come earlier in the order for them
+        let anchor = chunk.mates?.[0];
+        for (let {rivals} of anchor === chunk ? chunk.mates : [chunk]) {
+            for (let other of rivals) {
+                if (other.order < chunk.order && 'top' in other && other.bottom + gap > top) {
+                    top = other.bottom + gap;
+                }
             }
         }
         bottom = top + height;
+        if (anchor && anchor !== chunk) {
+            // Join the line of the anchor, as long as it is free in the columns of this chunk.
+            // A line above is out of reach, as it is taken by an earlier-ordered chunk
+            let line = anchor.top;
+            if (line > top && lineIsFree(chunk, line, height, gap)) {
+                top = line;
+                bottom = top + height;
+            }
+        }
     } else {
         let dayChunks = chunk.day;
         dayChunks.sort((a, b) => (a.top ?? Number.POSITIVE_INFINITY) - (b.top ?? Number.POSITIVE_INFINITY));

@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.14.0
+September 21, 2026
+* Added the `layoutGroup` event property that keeps related events on the same line in `resourceTimeline` views ([674](https://github.com/vkurko/calendar/issues/674))
+* Fixed an event `id` given as `null` or `undefined` being turned into a string
+
 ## 5.13.1
 September 15, 2026
 * Fixed a `TypeError` that prevented the calendar from being created when a section of the `headerToolbar` option is empty

@@ -3,28 +3,53 @@ import {eventIntersects} from './events.js';
 import {assign, uid} from './utils.js';
 
 /**
- * @returns {{
- *   id?: String,  // this can be used as key in Svelte keyed each block
- *   start: Date,
- *   end: Date,
- *   event: Object,
- *   zeroDuration: boolean,
- *   gridColumn?: Number,
- *   gridRow?: Number,
- *   resource?: Object,
- *   group?: Object,
- *   groupColumn?: Number,
- *   dates?: Array
- *   day?: Array,
- *   long?: Object,
- *   prev?: Object,
- *   top?: Number,
- *   bottom?: Number,
- *   left?: Number,
- *   height?: Number,
- *   width?: Number,
- *   maxHeight?: Number
- * }}
+ * A chunk is the part of an event that belongs to one cell of the grid. Every view builds chunks
+ * its own way and adds its own fields to them, so the type below is the union of all of them.
+ *
+ * Note that `top` means different things depending on who filled it in, see below.
+ *
+ * @typedef {Object} EventChunk
+ *
+ * Filled in by createEventChunk(), for every view
+ * @property {Object} event         the event the chunk belongs to
+ * @property {Date} start           start of the chunk, not of the event
+ * @property {Date} end             end of the chunk, not of the event
+ * @property {boolean} zeroDuration whether the chunk starts and ends at the same time
+ * @property {String} [id]          can be used as key in a Svelte keyed each block
+ *
+ * Placement in the grid, filled in when the chunk is created
+ * @property {Number} [gridColumn]
+ * @property {Number} [gridRow]
+ * @property {Object} [resource]    the resource of the row, in views that have resources
+ * @property {Array} [dates]        days the chunk spans, in dayGrid, the all-day slot and timeline
+ *
+ * dayGrid and the all-day slot, filled in by prepareAllDayChunks()
+ * @property {Object} [long]        chunks passing through the cell, shared between them
+ * @property {Object} [prev]        chunk placed in the same cell before this one
+ *
+ * timeGrid, filled in by its createChunks() and groupChunks(). The values are in seconds and are
+ * turned into pixels when the event is rendered
+ * @property {Number} [top]         offset from the start of the day
+ * @property {Number} [height]
+ * @property {Number} [maxHeight]
+ * @property {Object} [group]       chunks overlapping in time, laid out side by side: {columns, end}
+ * @property {Number} [groupColumn] index of the column within that group
+ *
+ * timeline, filled in by its createChunks() and prepareChunks(). `left` and `width` are in seconds
+ * @property {Number} [left]        offset from the start of the first day of the chunk
+ * @property {Number} [width]
+ * @property {Number} [order]       position in the eventOrder order, for the strict layout
+ * @property {Array} [day]          chunks of the starting cell, shared between them
+ * @property {Array} [rivals]       chunks sharing at least one column, competing for a place
+ * @property {Array} [mates]        chunks of the same layoutGroup in the row, shared between them
+ *
+ * Result of the layout in dayGrid, the all-day slot and timeline, in pixels
+ * @property {Number} [top]
+ * @property {Number} [bottom]
+ */
+
+/**
+ * @returns {EventChunk}
  */
 export function createEventChunk(event, start, end) {
     start = event.start > start ? event.start : start;
