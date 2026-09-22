@@ -1,10 +1,11 @@
 import {tick, untrack} from 'svelte';
 import {
-    addDay, addDuration, cloneDate, createView, isFunction, prevClosestDay, setMidnight, subtractDay,
+    addDay, addDuration, cloneDate, createView, datesEqual, isFunction, prevClosestDay, setMidnight, subtractDay,
     toEventWithLocalDates, toViewWithLocalDates, parseOffset, tzOffset, applyOffsetDiff
 } from '#lib';
 
 export function currentRange(mainState) {
+    let prev;
     return () => {
         // Dependencies
         let {options: {date, duration, firstDay}} = mainState;
@@ -25,11 +26,18 @@ export function currentRange(mainState) {
             end = addDuration(cloneDate(start), duration);
         });
 
-        return {start, end};
+        // Keep the previous value if the range did not actually change,
+        // so that the dependent states are not recalculated
+        if (prev && datesEqual(prev.start, start) && datesEqual(prev.end, end)) {
+            return prev;
+        }
+
+        return prev = {start, end};
     };
 }
 
 export function activeRange(mainState) {
+    let prev;
     return () => {
         // Dependencies
         let {currentRange, extensions: {activeRange}} = mainState;
@@ -41,7 +49,14 @@ export function activeRange(mainState) {
             end = cloneDate(currentRange.end);
         });
 
-        return activeRange ? activeRange(start, end) : {start, end};
+        let result = activeRange ? activeRange(start, end) : {start, end};
+
+        // Keep the previous value if the range did not actually change
+        if (prev && datesEqual(prev.start, result.start) && datesEqual(prev.end, result.end)) {
+            return prev;
+        }
+
+        return prev = result;
     };
 }
 

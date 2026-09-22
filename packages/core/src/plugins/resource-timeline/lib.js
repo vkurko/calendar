@@ -1,5 +1,29 @@
 import {assign, assignChunkId, createDuration, createEventChunk, eventIntersects, max, min, toTime} from '#lib';
 
+/**
+ * Find the index of the first day that can intersect with the event.
+ * Days are ordered, so the range of days the event can occupy is contiguous.
+ */
+function firstDayIndex(event, days) {
+    // Binary search for the first day ending after the event starts
+    let low = 0;
+    let high = days.length;
+    while (low < high) {
+        let mid = (low + high) >> 1;
+        if (days[mid].dayEnd > event.start) {
+            high = mid;
+        } else {
+            low = mid + 1;
+        }
+    }
+    // A day may extend past midnight (slotMaxTime over 24 hours), so step back while it does
+    while (low > 0 && days[low - 1].end > event.start) {
+        --low;
+    }
+
+    return low;
+}
+
 export function createChunks(event, days, monthView, withId = true) {
     let dates = [];
     let firstStart;
@@ -9,7 +33,12 @@ export function createChunks(event, days, monthView, withId = true) {
     let resource;
     let left;
     let width = 0;
-    for (let {gridColumn: column, gridRow: row, resource: dayResource, dayStart, dayEnd, start, end, disabled} of days) {
+    for (let i = firstDayIndex(event, days); i < days.length; ++i) {
+        let {gridColumn: column, gridRow: row, resource: dayResource, dayStart, dayEnd, start, end, disabled} = days[i];
+        if (dayStart >= event.end) {
+            // Days are ordered, so no day after this one can intersect either
+            break;
+        }
         if (!disabled) {
             if (monthView) {
                 if (eventIntersects(event, dayStart, dayEnd, dayResource)) {
@@ -46,10 +75,18 @@ export function createChunks(event, days, monthView, withId = true) {
             assignChunkId(chunk);
         }
 
-        return [chunk];
+        return chunk;
     }
 
-    return [];
+    return null;
+}
+
+/**
+ * Check whether the event can have chunks in the given grid row
+ */
+export function eventInRow(event, days) {
+    let resource = days[0]?.resource;
+    return !resource || event.resourceIds.includes(resource.id);
 }
 
 export function prepareChunks(chunks, strict) {
@@ -60,20 +97,18 @@ export function prepareChunks(chunks, strict) {
         // Remember the processing order (eventOrder) for strict layout
         chunk.order = i;
         // Prepare day chunks
+        let cells = [];
         for (let j = 0; j < chunk.dates.length; ++ j) {
             let key = `${gridRow}_${gridColumn + j}`;
-            if (dayChunks[key]) {
-                dayChunks[key].push(chunk);
-            } else {
-                dayChunks[key] = [chunk];
-            }
+            let cell = dayChunks[key] ??= {pass: 0, placed: [], chunks: []};
+            cell.chunks.push(chunk);
+            cells.push(cell);
         }
-        let key = `${gridRow}_${gridColumn}`;
-        chunk.day = dayChunks[key];
+        chunk.cells = cells;
     }
     if (strict) {
         // Collect, for each chunk, its `rivals` — all chunks sharing at least one of its columns,
-        // and thus competing with it for a place. Unlike `chunk.day` (which covers only the
+        // and thus competing with it for a place. Unlike the non-strict layout (which looks only at the
         // starting cell), this spans the whole chunk, so a chunk can't float above an
         // earlier-ordered chunk that overlaps it in a column other than the first one.
         let layoutGroups = {};
@@ -82,7 +117,7 @@ export function prepareChunks(chunks, strict) {
             let seen = new Set([chunk]);
             let rivals = [];
             for (let j = 0; j < chunk.dates.length; ++ j) {
-                for (let other of dayChunks[`${gridRow}_${gridColumn + j}`]) {
+                for (let other of dayChunks[`${gridRow}_${gridColumn + j}`].chunks) {
                     if (!seen.has(other)) {
                         seen.add(other);
                         rivals.push(other);
@@ -120,7 +155,18 @@ function lineIsFree(chunk, line, height, gap) {
     return true;
 }
 
-export function repositionEvent(chunk, height, monthView, gap = 1, strict = false) {
+/**
+ * Chunks already positioned in the cell during the current pass, ordered by top
+ */
+function placedIn(cell, pass) {
+    if (cell.pass !== pass) {
+        cell.pass = pass;
+        cell.placed = [];
+    }
+    return cell.placed;
+}
+
+export function repositionEvent(chunk, height, monthView, gap = 1, strict = false, pass = 0) {
     let top = 1;
     let bottom = top + height;
     if (strict) {
@@ -151,20 +197,37 @@ export function repositionEvent(chunk, height, monthView, gap = 1, strict = fals
             }
         }
     } else {
-        let dayChunks = chunk.day;
-        dayChunks.sort((a, b) => (a.top ?? Number.POSITIVE_INFINITY) - (b.top ?? Number.POSITIVE_INFINITY));
-        for (let dayChunk of dayChunks) {
-            if (dayChunk === chunk || !('top' in dayChunk)) {
-                continue;
+        // Walk the chunks already placed in the starting cell, which are kept ordered by top
+        for (let other of placedIn(chunk.cells[0], pass)) {
+            if (other.top >= bottom) {
+                // The rest is below the chunk, so it can't be pushed down any further
+                break;
             }
-            if ((monthView || chunk.start < dayChunk.end && chunk.end > dayChunk.start) && top < dayChunk.bottom && bottom > dayChunk.top) {
-                let offset = dayChunk.bottom - top + gap;
+            if ((monthView || chunk.start < other.end && chunk.end > other.start) && top < other.bottom) {
+                let offset = other.bottom - top + gap;
                 top += offset;
                 bottom += offset;
             }
         }
     }
     assign(chunk, {top, bottom});
+    if (!strict) {
+        // Keep every cell the chunk spans ordered by top
+        for (let cell of chunk.cells) {
+            let placed = placedIn(cell, pass);
+            let low = 0;
+            let high = placed.length;
+            while (low < high) {
+                let mid = (low + high) >> 1;
+                if (placed[mid].top <= top) {
+                    low = mid + 1;
+                } else {
+                    high = mid;
+                }
+            }
+            placed.splice(low, 0, chunk);
+        }
+    }
 
     return top;
 }

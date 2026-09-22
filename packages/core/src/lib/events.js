@@ -126,10 +126,14 @@ function _cloneEvent(event, dateFn) {
     return event;
 }
 
+let repositionPass = 0;
+
 export function runReposition(refs, data) {
     refs.length = data.length;
+    // Each run is a new pass, so that per-cell data can be prepared once per pass
+    ++repositionPass;
     for (let ref of refs) {
-        ref?.reposition();
+        ref?.reposition(repositionPass);
     }
 }
 

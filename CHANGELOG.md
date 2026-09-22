@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.14.1
+September 22, 2026
+* Fixed the scroll position being reset when the `date` or `duration` option is set without changing the view range ([670](https://github.com/vkurko/calendar/issues/670))
+* Improved rendering performance of `resourceTimeline` views with many events ([672](https://github.com/vkurko/calendar/issues/672))
+
 ## 5.14.0
 September 21, 2026
 * Added the `layoutGroup` event property that keeps related events on the same line in `resourceTimeline` views ([674](https://github.com/vkurko/calendar/issues/674))

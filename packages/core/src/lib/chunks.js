@@ -39,7 +39,7 @@ import {assign, uid} from './utils.js';
  * @property {Number} [left]        offset from the start of the first day of the chunk
  * @property {Number} [width]
  * @property {Number} [order]       position in the eventOrder order, for the strict layout
- * @property {Array} [day]          chunks of the starting cell, shared between them
+ * @property {Array} [cells]        cells the chunk spans, each with its chunks and those placed in the current pass
  * @property {Array} [rivals]       chunks sharing at least one column, competing for a place
  * @property {Array} [mates]        chunks of the same layoutGroup in the row, shared between them
  *

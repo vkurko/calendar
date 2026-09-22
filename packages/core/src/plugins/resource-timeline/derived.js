@@ -3,7 +3,7 @@ import {
     addDay, addDuration, bgEvent, cloneDate, createSlots, createSlotTimeLimits, datesEqual, empty, getPayload,
     getWeekNumber, length, outsideRange, toSeconds, toTime
 } from '#lib';
-import {createChunks, prepareChunks} from './lib.js';
+import {createChunks, eventInRow, prepareChunks} from './lib.js';
 
 export function grid(mainState, viewState) {
     return () => {
@@ -113,13 +113,19 @@ export function eventChunks(mainState, viewState) {
 
         untrack(() => {
             for (let event of filteredEvents) {
+                let bg = bgEvent(event.display);
+                if (bg && monthView && !event.allDay) {
+                    continue;
+                }
+                let target = bg ? bgChunks : chunks;
                 for (let days of grid) {
-                    if (bgEvent(event.display)) {
-                        if (!monthView || event.allDay) {
-                            bgChunks = bgChunks.concat(createChunks(event, days, monthView));
-                        }
-                    } else {
-                        chunks = chunks.concat(createChunks(event, days, monthView));
+                    // The event can only have chunks in the rows of its own resources
+                    if (!eventInRow(event, days)) {
+                        continue;
+                    }
+                    let chunk = createChunks(event, days, monthView);
+                    if (chunk) {
+                        target.push(chunk);
                     }
                 }
             }
@@ -144,7 +150,13 @@ export function iEventChunks(mainState, viewState) {
             }
             untrack(() => {
                 for (let days of grid) {
-                    iChunks = iChunks.concat(createChunks(event, days, monthView, false));
+                    if (!eventInRow(event, days)) {
+                        continue;
+                    }
+                    let chunk = createChunks(event, days, monthView, false);
+                    if (chunk) {
+                        iChunks.push(chunk);
+                    }
                 }
             });
         }

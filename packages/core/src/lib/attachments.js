@@ -33,10 +33,24 @@ export function outsideEvent(type) {
     };
 }
 
-export function resizeObserver(callback) {
+/**
+ * @param callback
+ * @param widthOnly  Skip the notifications where the width did not change. The event layout depends
+ *                   on the height of the events, which in turn depends on the width, while the height
+ *                   of the element itself is a result of the layout, not its input.
+ */
+export function resizeObserver(callback, widthOnly = false) {
     return el => {
+        let width;
         let observer = new ResizeObserver(entries => {
             for (let entry of entries) {
+                if (widthOnly) {
+                    let {inlineSize} = entry.contentBoxSize?.[0] ?? {inlineSize: entry.contentRect.width};
+                    if (inlineSize === width) {
+                        continue;
+                    }
+                    width = inlineSize;
+                }
                 callback(el, entry);
             }
         });

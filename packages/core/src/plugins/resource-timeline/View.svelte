@@ -89,7 +89,7 @@
         style:--ec-slot-width="{slotWidth}px"
         style:--ec-header-height="{headerHeight}px"
         style:--ec-sidebar-width="{sidebarWidth}px"
-        {@attach resizeObserver(reposition)}
+        {@attach resizeObserver(reposition, true)}
     >
         <header bind:offsetHeight={headerHeight} class="{theme.header}">
             <aside class="{theme.sidebar}" bind:offsetWidth={viewState.sidebarWidth}></aside>

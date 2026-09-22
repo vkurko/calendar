@@ -33,8 +33,8 @@
         return style;
     });
 
-    export function reposition() {
-        margin = repositionEvent(chunk, height(el), monthView, eventGap, eventOrderStrict);
+    export function reposition(pass) {
+        margin = repositionEvent(chunk, height(el), monthView, eventGap, eventOrderStrict, pass);
     }
 </script>
 
