@@ -46,7 +46,10 @@
     display: flex;
     border-block-end: 1px solid var(--ec-border-color);
     padding: .375em .75rem;
-    min-block-size: 1.5em;
+
+    > span {
+        min-block-size: 1.5em;
+    }
 
     &:last-child {
         border: none;

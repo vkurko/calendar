@@ -437,7 +437,7 @@ export namespace Calendar {
         eventResizeStop?: (info: EventDuringResizeInfo) => void;
         eventSources?: EventSource[];
         eventStartEditable?: boolean;
-        eventTimeFormat?: Intl.DateTimeFormatOptions | ((start: Date, end: Date) => Content);
+        eventTimeFormat?: Intl.DateTimeFormatOptions | ((start: Date, end: Date | null) => Content);
         eventTextColor?: string;
         filterEventsWithResources?: boolean;
         filterResourcesWithEvents?: boolean;

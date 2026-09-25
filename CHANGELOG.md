@@ -1,5 +1,12 @@
 # EventCalendar changelog
 
+## 5.15.0
+September 25, 2026
+* Changed `dragConstraint`, `resizeConstraint` and `selectConstraint` to stop the action at the last allowed position and cancel it when released at a refused one ([681](https://github.com/vkurko/calendar/issues/681))
+* Fixed `eventTimeFormat` given as a function receiving incorrect dates, `end` is now `null` when the end time is not displayed ([630](https://github.com/vkurko/calendar/issues/630))
+* Fixed `eventDrop` and `eventResize` being triggered when the new position is refused by the constraint
+* Fixed rows in `resourceTimeline` views being shorter than their resource labels ([682](https://github.com/vkurko/calendar/issues/682))
+
 ## 5.14.1
 September 22, 2026
 * Fixed the scroll position being reset when the `date` or `duration` option is set without changing the view range ([670](https://github.com/vkurko/calendar/issues/670))

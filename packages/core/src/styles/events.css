@@ -196,6 +196,9 @@
 .ec-resizing-x, .ec-resizing-x * {
     cursor: ew-resize!important;
 }
+.ec-not-allowed, .ec-not-allowed * {
+    cursor: not-allowed!important;
+}
 
 .ec-no-events {
     text-align: center;

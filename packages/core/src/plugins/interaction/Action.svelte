@@ -34,6 +34,7 @@
     let delta;
     let allDay;
     let iClass;
+    let refused;  // whether the current position is refused by the constraint
     let minResize;  // minimum end time when resizing
     let selectStep;  // minimum selection step
     let selected;  // whether selection has been made
@@ -217,7 +218,6 @@
         ) {
             interacting = true;
             unselect(jsEvent);
-            mainState.iClass = iClass;
 
             if (!iEvent) {
                 if (selecting()) {
@@ -274,25 +274,23 @@
                         }
                     }
                     // Check constraint
-                    do {
-                        if (constraintFn !== undefined) {
-                            candidate = copyIEventData(cloneEvent(event), candidate);
-                            let result = constraintFn(
-                                selecting()
-                                    ? createSelectCallbackInfo(candidate, jsEvent)
-                                    : createCallbackInfo(candidate, event, jsEvent)
-                            );
-                            if (result === false) {
-                                // Revert preview event
-                                updateIEvent(event);
-                                break;
-                            }
-                        }
-                        // Update preview event
+                    refused = false;
+                    if (constraintFn !== undefined) {
+                        candidate = copyIEventData(cloneEvent(event), candidate);
+                        refused = constraintFn(
+                            selecting()
+                                ? createSelectCallbackInfo(candidate, jsEvent)
+                                : createCallbackInfo(candidate, event, jsEvent)
+                        ) === false;
+                    }
+                    // Update preview event, otherwise it stays at the last allowed position
+                    if (!refused) {
                         updateIEvent(candidate);
-                    } while (0);
+                    }
                 }
             }
+
+            mainState.iClass = refused ? 'notAllowed' : iClass;
         }
 
         if (dragScroll) {
@@ -347,10 +345,15 @@
         if (action && jsEvent.isPrimary) {
             if (interacting) {
                 if (selecting()) {
-                    selected = true;
-                    if (isFunction(selectFn)) {
-                        let info = createSelectCallbackInfo(iEvent, jsEvent);
-                        selectFn(info);
+                    if (refused) {
+                        // Cancel selection
+                        destroyIEvent();
+                    } else {
+                        selected = true;
+                        if (isFunction(selectFn)) {
+                            let info = createSelectCallbackInfo(iEvent, jsEvent);
+                            selectFn(info);
+                        }
                     }
                 } else {
                     event.display = display;
@@ -365,12 +368,13 @@
                     }
 
                     let oldEvent = cloneEvent(event);
-                    updateEvent(event, iEvent);
+                    // Leave the event in place if the position is refused
+                    updateEvent(event, refused ? oldEvent : iEvent);
 
                     destroyIEvent();
 
                     callback = resizing() ? eventResize : eventDrop;
-                    if (isFunction(callback)) {
+                    if (!refused && isFunction(callback)) {
                         let eventRef = event;
                         let info = createCallbackInfo(event, oldEvent, jsEvent);
                         callback(assign(info, {
@@ -409,7 +413,7 @@
     }
 
     function handlePointerCancel() {
-        interacting = false;
+        interacting = refused = false;
         action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
             extraDuration = allDay = minResize = selectStep = margin = gridEl = viewport = snapDuration = undefined;
         mainState.iClass = undefined;

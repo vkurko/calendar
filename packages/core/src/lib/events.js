@@ -1,5 +1,5 @@
 import {
-    addDay, cloneDate, copyTime, createDate, datesEqual, noTimePart, setMidnight, toISOString, toLocalDate
+    addDay, cloneDate, createDate, datesEqual, noTimePart, setMidnight, toISOString, toLocalDate
 } from './date.js';
 import {createElement} from './dom.js';
 import {assign, createSource, isArray, isFunction} from './utils.js';
@@ -59,9 +59,7 @@ export function createEventSources(input) {
 export function createEventTimeText(chunk, displayEventEnd, _intlEventTime) {
     return _intlEventTime.formatRange(
         chunk.start,
-        displayEventEnd && chunk.event.display !== 'pointer' && !chunk.zeroDuration
-            ? copyTime(cloneDate(chunk.start), chunk.end)  // make Intl.formatRange output only the time part
-            : chunk.start
+        displayEventEnd && chunk.event.display !== 'pointer' && !chunk.zeroDuration ? chunk.end : null
     );
 }
 

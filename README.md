@@ -303,8 +303,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.14.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.14.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.15.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.15.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -905,6 +905,8 @@ Determines whether to display an event’s end time.
 Callback function that limits the date/time range into which events are allowed to be dragged.
 
 The function is triggered during dragging for each cursor movement and takes the same parameters as [eventDrop](#eventdrop). The function should return `true` if dragging to the new position is allowed, and `false` otherwise.
+
+While the position is not allowed, the event stays at the last allowed position and the cursor changes to `not-allowed`. Releasing the pointer there cancels the dragging.
 
 ### dragScroll
 - Type `boolean`
@@ -1891,7 +1893,7 @@ function (start, end) {
 
 `end`
 </td>
-<td>JavaScript Date object containing the end of the time span to be formatted</td>
+<td>JavaScript Date object containing the end of the time span to be formatted, or `null` if the end time is not displayed (see [displayEventEnd](#displayeventend))</td>
 </tr>
 </table>
 
@@ -2286,6 +2288,8 @@ Callback function that limits the date/time range within which the event is allo
 
 The function is triggered during resizing for each cursor movement and takes the same parameters as [eventResize](#eventresize). The function should return `true` if the new size is allowed, and `false` otherwise.
 
+While the size is not allowed, the event keeps the last allowed size and the cursor changes to `not-allowed`. Releasing the pointer there cancels the resizing.
+
 ### resourceExpand
 - Type `function`
 - Default `undefined`
@@ -2617,6 +2621,8 @@ Callback function that limits the date/time range that can be selected.
 
 The function is triggered during selection for each cursor movement and takes the same parameters as [select](#select). The function should return `true` if the selected range is allowed, and `false` otherwise.
 
+While the range is not allowed, the selection keeps the last allowed range and the cursor changes to `not-allowed`. Releasing the pointer there cancels the selection.
+
 ### selectBackgroundColor
 - Type `string`
 - Default `undefined`
@@ -2741,7 +2747,7 @@ If not specified, then equal to [slotDuration](#slotduration).
 <details>
     <summary>Default</summary>
 
-`{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', colHead: 'ec-col-head', day: 'ec-day', dayHead: 'ec-day-head', disabled: 'ec-disabled', endClipped: 'ec-end-clipped', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', grid: 'ec-grid', header: 'ec-header', hidden: 'ec-hidden', highlight: 'ec-highlight', icon: 'ec-icon', main: 'ec-main', noIeb: 'ec-no-ieb', noBeb: 'ec-no-beb', today: 'ec-today', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-list ec-week-view', weekdays: ['ec-sun', ec-mon', ec-tue', ec-wed', ec-thu', ec-fri', ec-sat'], draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', start: 'ec-start', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x', selecting: 'ec-selecting', startClipped: 'ec-start-clipped', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', otherMonth: 'ec-other-month', popup: 'ec-popup', weekNumber: 'ec-week-number', daySide: 'ec-day-side', eventTag: 'ec-event-tag', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', sidebar: 'ec-sidebar', slot: 'ec-slot', colGroup: 'ec-col-group', expander: 'ec-expander', rowHead: 'ec-row-head', slots: 'ec-slots'}`
+`{allDay: 'ec-all-day', active: 'ec-active', bgEvent: 'ec-bg-event', bgEvents: 'ec-bg-events', body: 'ec-body', button: 'ec-button', buttonGroup: 'ec-button-group', calendar: 'ec', colHead: 'ec-col-head', day: 'ec-day', dayHead: 'ec-day-head', disabled: 'ec-disabled', endClipped: 'ec-end-clipped', event: 'ec-event', eventBody: 'ec-event-body', eventTime: 'ec-event-time', eventTitle: 'ec-event-title', events: 'ec-events', grid: 'ec-grid', header: 'ec-header', hidden: 'ec-hidden', highlight: 'ec-highlight', icon: 'ec-icon', main: 'ec-main', noIeb: 'ec-no-ieb', noBeb: 'ec-no-beb', today: 'ec-today', title: 'ec-title', toolbar: 'ec-toolbar', view: 'ec-list ec-week-view', weekdays: ['ec-sun', ec-mon', ec-tue', ec-wed', ec-thu', ec-fri', ec-sat'], draggable: 'ec-draggable', ghost: 'ec-ghost', preview: 'ec-preview', pointer: 'ec-pointer', resizer: 'ec-resizer', start: 'ec-start', dragging: 'ec-dragging', resizingY: 'ec-resizing-y', resizingX: 'ec-resizing-x', selecting: 'ec-selecting', notAllowed: 'ec-not-allowed', startClipped: 'ec-start-clipped', uniform: 'ec-uniform', dayFoot: 'ec-day-foot', otherMonth: 'ec-other-month', popup: 'ec-popup', weekNumber: 'ec-week-number', daySide: 'ec-day-side', eventTag: 'ec-event-tag', noEvents: 'ec-no-events', nowIndicator: 'ec-now-indicator', sidebar: 'ec-sidebar', slot: 'ec-slot', colGroup: 'ec-col-group', expander: 'ec-expander', rowHead: 'ec-row-head', slots: 'ec-slots'}`
 > Views override the default value as follows:
 > - dayGridDay `theme => ({...theme, view: 'ec-day-grid ec-day-view'})`
 > - dayGridMonth `theme => ({...theme, view: 'ec-day-grid ec-month-view'})`

@@ -42,7 +42,8 @@ export default {
             dragging: 'ec-dragging',
             resizingY: 'ec-resizing-y',
             resizingX: 'ec-resizing-x',
-            selecting: 'ec-selecting'
+            selecting: 'ec-selecting',
+            notAllowed: 'ec-not-allowed'
         });
     },
 

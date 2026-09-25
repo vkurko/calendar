@@ -1,6 +1,6 @@
 import {untrack} from 'svelte';
 import {isFunction} from './utils.js';
-import {toLocalDate} from './date.js';
+import {cloneDate, copyTime, toLocalDate} from './date.js';
 
 export function intl(mainState, option) {
     return () => {
@@ -22,7 +22,13 @@ export function intl(mainState, option) {
     };
 }
 
-export function intlRange(mainState, option) {
+/**
+ * @param mainState
+ * @param option
+ * @param timeOnly  Make the native formatter output only the time part of the range, even if the dates differ.
+ *                  A formatting function always gets the actual dates.
+ */
+export function intlRange(mainState, option, timeOnly = false) {
     return () => {
         // Dependencies
         let {options: {locale}} = mainState;
@@ -32,10 +38,19 @@ export function intlRange(mainState, option) {
 
         untrack(() => {
             if (isFunction(format)) {
-                formatRange = format;
+                formatRange = (start, end) => format(toLocalDate(start), end && toLocalDate(end));
             } else {
                 let intl = new Intl.DateTimeFormat(locale, format);
                 formatRange = (start, end) => {
+                    if (!end) {
+                        return intl.format(toLocalDate(start));
+                    }
+                    if (timeOnly) {
+                        // Move the end to the start day, so that the dates are not output
+                        end = copyTime(cloneDate(start), end);
+                    }
+                    start = toLocalDate(start);
+                    end = toLocalDate(end);
                     if (start <= end) {
                         return intl.formatRange(start, end);
                     } else {
@@ -63,9 +78,7 @@ export function intlRange(mainState, option) {
             }
         });
 
-        return {
-            formatRange: (start, end) => formatRange(toLocalDate(start), toLocalDate(end))
-        };
+        return {formatRange};
     };
 }
 
