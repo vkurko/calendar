@@ -188,10 +188,10 @@ export function createWeekNumberContent(week, date, weekNumberContent, snippet) 
 }
 
 export function parseOffset(str, match = {}) {
-    let parts = str.match(/([+-])(\d{2}):(\d{2})$/);
+    let parts = str.match(/(?:Z|([+-])(\d{2}):?(\d{2}))$/);
     if (parts) {
         assign(match, parts);
-        return +(parts[1] + '1') * (+parts[2] * 60 + +parts[3]);
+        return parts[1] ? +(parts[1] + '1') * (+parts[2] * 60 + +parts[3]) : 0;
     }
     return undefined;
 }

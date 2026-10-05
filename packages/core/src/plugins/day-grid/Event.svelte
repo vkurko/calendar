@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {bgEvent, height, max, repositionEvent, toTime} from '#lib';
+    import {bgEvent, height, max, pointerEvent, previewEvent, repositionEvent, toTime} from '#lib';
     import {InteractableEvent} from '#components';
 
     let {chunk, inPopup = false} = $props();
@@ -19,8 +19,9 @@
         return gridEl.children.item((chunk.gridRow - 1) * colsCount + chunk.gridColumn - 1);
     }
 
+    // Regular events get their margin in reposition(), measuring here would force a layout for each of them
     $effect(() => {
-        if (!inPopup) {
+        if (!inPopup && (previewEvent(display) || pointerEvent(display))) {
             margin = height(getDayEl().firstElementChild) || 1;
         }
     });

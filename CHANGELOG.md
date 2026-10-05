@@ -1,5 +1,12 @@
 # EventCalendar changelog
 
+## 5.16.0
+October 5, 2026
+* Changed ISO date strings ending in `Z` to be treated as UTC, offsets without a colon like `+0200` are now recognized too ([677](https://github.com/vkurko/calendar/issues/677))
+* :warning: Events with dates ending in `Z` are now shifted to the calendar's time zone, remove the `Z` to keep displaying them as is
+* Improved rendering performance of `dayGrid` views with many events ([678](https://github.com/vkurko/calendar/issues/678))
+* Fixed a 1px gap above background events in `resourceTimeline` views ([683](https://github.com/vkurko/calendar/issues/683))
+
 ## 5.15.0
 September 25, 2026
 * Changed `dragConstraint`, `resizeConstraint` and `selectConstraint` to stop the action at the last allowed position and cancel it when released at a refused one ([681](https://github.com/vkurko/calendar/issues/681))

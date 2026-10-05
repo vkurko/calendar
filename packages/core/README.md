@@ -303,8 +303,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.15.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.15.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.16.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.16.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2798,7 +2798,7 @@ The following values are accepted:
 - `'UTC'` — uses UTC (zero offset)
 - A UTC offset string in the form `'±HH:MM'`, e.g. `'+05:30'` or `'-06:00'`
 
-Event dates that contain an explicit timezone offset in their ISO string (e.g. `'2028-06-01T10:00:00+02:00'`) will be shifted to the calendar's timezone. Event dates without timezone info (e.g. `'2028-06-01T10:00:00'`) are treated as floating — they display their wall-clock time as-is and will be interpreted in the calendar's timezone from that point forward.
+Event dates that contain an explicit timezone offset in their ISO string (e.g. `'2028-06-01T10:00:00+02:00'` or `'2028-06-01T08:00:00Z'`) will be shifted to the calendar's timezone. Event dates without timezone info (e.g. `'2028-06-01T10:00:00'`) are treated as floating — they display their wall-clock time as-is and will be interpreted in the calendar's timezone from that point forward.
 
 When the `timeZone` option changes at runtime, all already-loaded events and the current `date` option are automatically shifted to the new timezone. Events from [eventSources](#eventsources) are re-fetched automatically.
 

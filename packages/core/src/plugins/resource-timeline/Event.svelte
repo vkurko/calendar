@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {height, toSeconds} from '#lib';
+    import {bgEvent, height, toSeconds} from '#lib';
     import {repositionEvent} from './lib.js';
     import {InteractableEvent} from '#components';
 
@@ -21,15 +21,17 @@
             style['inset-inline-start'] = `${left}px`;
             style['inline-size'] = `${chunk.width / toSeconds(slotDuration) * slotWidth}px`;
         }
-        let marginTop = margin;
-        if (event._margin) {
-            // Force margin for helper events
-            let [_margin, _gridRow] = event._margin;
-            if (chunk.gridRow === _gridRow) {
-                marginTop = _margin;
+        if (!bgEvent(event.display)) {
+            let marginTop = margin;
+            if (event._margin) {
+                // Force margin for helper events
+                let [_margin, _gridRow] = event._margin;
+                if (chunk.gridRow === _gridRow) {
+                    marginTop = _margin;
+                }
             }
+            style['margin-block-start'] = `${marginTop}px`;
         }
-        style['margin-block-start'] = `${marginTop}px`;
         return style;
     });
 
