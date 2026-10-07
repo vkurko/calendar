@@ -35,6 +35,10 @@
         }
     });
     function scrollToTime() {
+        if (!mainEl) {
+            // The view was destroyed before the tick came
+            return;
+        }
         let scrollLeft = 0;
         let target = scrollDate && scrollDate !== scrolledTo ? scrollDate : today;
         scrolledTo = scrollDate;
