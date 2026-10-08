@@ -132,7 +132,7 @@ export namespace Calendar {
         title: Content;
         eventBackgroundColor: string | undefined;
         eventTextColor: string | undefined;
-        expanded: boolean;
+        expanded: boolean | undefined;
         extendedProps: Record<string, unknown>;
     }
 
@@ -468,6 +468,7 @@ export namespace Calendar {
         resizeConstraint?: (info: EventResizeInfo) => boolean;
         resourceExpand?: (info: ResourceExpandInfo) => void;
         resources?: ResourceInput[] | ResourceSource | ResourceSourceFunc | ResourceSourceFuncPromise;
+        resourcesInitiallyExpanded?: boolean;
         resourceLabelContent?: Content | ((info: ResourceLabelInfo) => Content);
         resourceLabelDidMount?: (info: ResourceDidMountInfo) => void;
         select?: (info: SelectInfo) => void;

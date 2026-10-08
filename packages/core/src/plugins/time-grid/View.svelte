@@ -35,6 +35,10 @@
         }
     });
     function scrollToTime() {
+        if (!mainEl) {
+            // The view was destroyed before the tick came
+            return;
+        }
         mainEl.scrollTop = (
             (toSeconds(scrollTime) - toSeconds(slotTimeLimits.min)) / toSeconds(slotDuration) - 0.5
         ) * slotHeight;

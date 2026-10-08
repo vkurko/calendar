@@ -1,4 +1,6 @@
-import {assign, assignChunkId, createDuration, createEventChunk, eventIntersects, max, min, toTime} from '#lib';
+import {
+    assign, assignChunkId, createDuration, createEventChunk, eventIntersects, getPayload, max, min, toTime
+} from '#lib';
 
 /**
  * Find the index of the first day that can intersect with the event.
@@ -234,4 +236,17 @@ export function repositionEvent(chunk, height, monthView, gap = 1, strict = fals
 
 export function getSlotTimeLimits(dayTimeLimits, date) {
     return dayTimeLimits[toTime(date)] ?? {min: createDuration(0), max: createDuration('24:00:00')};
+}
+
+export function isExpanded(resource, initiallyExpanded) {
+    return resource.expanded ?? initiallyExpanded;
+}
+
+export function isHidden(resource, initiallyExpanded) {
+    for (let parent = getPayload(resource).parent; parent; parent = getPayload(parent).parent) {
+        if (!isExpanded(parent, initiallyExpanded)) {
+            return true;
+        }
+    }
+    return false;
 }

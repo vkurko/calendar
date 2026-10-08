@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.17.0
+October 8, 2026
+* Added `resourcesInitiallyExpanded` option ([379](https://github.com/vkurko/calendar/issues/379))
+* Fixed a TypeError when the calendar is destroyed right after creation ([684](https://github.com/vkurko/calendar/issues/684))
+
 ## 5.16.0
 October 5, 2026
 * Changed ISO date strings ending in `Z` to be treated as UTC, offsets without a colon like `+0200` are now recognized too ([677](https://github.com/vkurko/calendar/issues/677))

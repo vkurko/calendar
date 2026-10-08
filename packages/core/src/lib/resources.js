@@ -3,11 +3,11 @@ import {empty} from './utils.js';
 
 export function createResources(input) {
     let result = [];
-    _createResources(input, 0, false, result);
+    _createResources(input, 0, undefined, result);
     return result;
 }
 
-function _createResources(input, level, hidden, flat) {
+function _createResources(input, level, parent, flat) {
     let result = [];
     for (let item of input) {
         let resource = createResource(item);
@@ -15,12 +15,12 @@ function _createResources(input, level, hidden, flat) {
         flat.push(resource);
         let payload = {
             level,
-            children: [],
-            hidden
+            parent,
+            children: []
         };
         setPayload(resource, payload);
         if (item.children) {
-            payload.children = _createResources(item.children, level + 1, hidden || !resource.expanded, flat);
+            payload.children = _createResources(item.children, level + 1, resource, flat);
         }
     }
     return result;
@@ -32,7 +32,7 @@ export function createResource(input) {
         title: input.title ?? '',
         eventBackgroundColor: eventBackgroundColor(input),
         eventTextColor: eventTextColor(input),
-        expanded: input.expanded ?? true,
+        expanded: input.expanded,
         extendedProps: input.extendedProps ?? {}
     };
 }

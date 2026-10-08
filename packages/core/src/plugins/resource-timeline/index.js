@@ -1,4 +1,5 @@
-import {assign, btnTextDay, btnTextMonth, btnTextWeek, btnTextYear, getPayload, themeView} from '#lib';
+import {assign, btnTextDay, btnTextMonth, btnTextWeek, btnTextYear, themeView} from '#lib';
+import {isHidden} from './lib.js';
 import {setExtensions} from '../time-grid/lib.js';
 import {createTRROptions, createTRRParsers} from '../time-grid/options.js';
 import {createRROptions} from '../resource-time-grid/options.js';
@@ -15,6 +16,7 @@ export default {
 				month: 'long'
 			},
 			resourceExpand: undefined,  // ec option
+			resourcesInitiallyExpanded: true,
 			slotWidth: 32,  // ec option
 			// Common options
 			view: 'resourceTimelineWeek'
@@ -98,6 +100,9 @@ function initMonthViewComponent(mainState) {
 
 function _initViewComponent(mainState, extraFeatures = []) {
 	mainState.features = ['timeline', ...extraFeatures];
-	mainState.extensions.viewResources = resources => resources.filter(resource => !getPayload(resource).hidden);
+	mainState.extensions.viewResources = resources => {
+		let {resourcesInitiallyExpanded} = mainState.options;
+		return resources.filter(resource => !isHidden(resource, resourcesInitiallyExpanded));
+	};
 	return View;
 }

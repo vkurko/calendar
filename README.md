@@ -120,6 +120,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [resizeConstraint](#resizeconstraint)
   - [resourceExpand](#resourceexpand)
   - [resources](#resources)
+  - [resourcesInitiallyExpanded](#resourcesinitiallyexpanded)
   - [resourceLabelContent](#resourcelabelcontent)
   - [resourceLabelDidMount](#resourcelabeldidmount)
   - [scrollTime](#scrolltime)
@@ -303,8 +304,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.16.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.16.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.17.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.17.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2446,6 +2447,12 @@ If there is any failure (e.g., if an AJAX request fails), then call the `failure
 
 Instead of calling `successCallback` and `failureCallback`, you may return the resulting array of resources or return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) (or [thenable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)) object instead.
 
+### resourcesInitiallyExpanded
+- Type `boolean`
+- Default `true`
+
+Determines whether resources with nested children are expanded or collapsed in `resourceTimeline` views. Applies to resources whose `expanded` property has not been specified and that have not yet been expanded or collapsed by the user.
+
 ### resourceLabelContent
 - Type `string`, `object`or `function`
 - Default `undefined`
@@ -3663,7 +3670,7 @@ The title of the resource. See [Content](#content)
 </td>
 <td>
 
-A flag indicating whether the resource is expanded or collapsed if it has nested children
+A flag indicating whether the resource is expanded or collapsed if it has nested children. `undefined` means the [resourcesInitiallyExpanded](#resourcesinitiallyexpanded) option applies
 </td>
 </tr>
 <tr>
@@ -3730,7 +3737,7 @@ Here are all admissible fields for the resource’s input object:
 </td>
 <td>
 
-`boolean` Specifies whether the resource with nested children will be expanded or collapsed. Default `true`
+`boolean` Specifies whether the resource with nested children will be expanded or collapsed. Default `undefined`, which means the [resourcesInitiallyExpanded](#resourcesinitiallyexpanded) option applies
 </td>
 </tr>
 <tr>
