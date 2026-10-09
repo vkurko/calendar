@@ -1,8 +1,8 @@
 import {getAbortSignal, tick, untrack} from 'svelte';
 import {
     addDay,
-    applyOffsetDiff, assign, cloneDate, createDate, createEvents, createResources, datesEqual, empty, getOffset, isArray,
-    isFunction, setMidnight, setOffset, toISOString, toLocalDate, toViewWithLocalDates
+    assign, cloneDate, convertOffset, createDate, createEvents, createResources, datesEqual, empty, getOffset, isArray,
+    isFunction, resolveOffset, setMidnight, setOffset, toISOString, toLocalDate, toViewWithLocalDates
 } from '#lib';
 import {arrayProxy} from './proxy.svelte.js';
 
@@ -206,9 +206,10 @@ export function handleTimeZoneChange(mainState) {
                         // Dates parsed from strings with no timezone info have dateOffset === undefined;
                         // they are treated as floating and only get branded with the new offset, not shifted
                         if (dateOffset !== undefined) {
-                            applyOffsetDiff(event[prop], offset - dateOffset);
+                            convertOffset(event[prop], dateOffset, offset);
+                        } else {
+                            setOffset(event[prop], resolveOffset(event[prop], offset));
                         }
-                        setOffset(event[prop], offset);
                     }
                 }
             }
@@ -219,7 +220,7 @@ export function handleTimeZoneChange(mainState) {
                 let date = addDay(cloneDate(options.date), diff);
                 mainState.setOption('date', date);
             }
-            setOffset(options.date, offset);
+            setOffset(options.date, resolveOffset(options.date, offset));
         });
     }
 }

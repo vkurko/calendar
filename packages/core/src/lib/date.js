@@ -197,14 +197,24 @@ export function parseOffset(str, match = {}) {
 }
 
 /**
- * Apply timezone offset difference in minutes to a date
+ * Convert a date from one timezone offset to another, 'local' means the local offset at the moment of the date
  */
-export function applyOffsetDiff(date, offsetDiff) {
-    if (offsetDiff) {
-        date.setUTCMinutes(date.getUTCMinutes() + offsetDiff);
+export function convertOffset(date, fromOffset, toOffset) {
+    if (toOffset === 'local') {
+        toOffset = tzOffset(new Date(date.getTime() - fromOffset * 60000));
+    }
+    if (toOffset !== fromOffset) {
+        date.setUTCMinutes(date.getUTCMinutes() + toOffset - fromOffset);
     }
 
-    return date;
+    return setOffset(date, toOffset);
+}
+
+/**
+ * Get the numeric offset for a date whose time is already in the given offset
+ */
+export function resolveOffset(date, offset) {
+    return offset === 'local' ? tzOffset(toLocalDate(date)) : offset;
 }
 
 let offsetSymbol = Symbol('ec');
@@ -230,10 +240,8 @@ function _fromLocalDate(date, offset = undefined) {
         date.getMinutes(),
         date.getSeconds()
     ));
-    applyOffsetDiff(result, offset ? offset - tzOffset(result) : 0);
-    setOffset(result, offset ?? tzOffset(result));
 
-    return result;
+    return convertOffset(result, tzOffset(date), offset ?? 'local');
 }
 
 function _fromISOString(str, offset = undefined) {
@@ -252,11 +260,10 @@ function _fromISOString(str, offset = undefined) {
         +parts[5] || 0
     ));
     if (offset !== undefined && inputOffset !== undefined) {
-        applyOffsetDiff(result, offset - inputOffset);
+        return convertOffset(result, inputOffset, offset);
     }
-    setOffset(result, offset ?? inputOffset);
 
-    return result;
+    return setOffset(result, inputOffset ?? resolveOffset(result, offset));
 }
 
 function _skipHiddenDays(date, hiddenDays, dateFn) {

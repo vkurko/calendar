@@ -1,7 +1,7 @@
 import {tick, untrack} from 'svelte';
 import {
     addDay, addDuration, cloneDate, createView, datesEqual, isFunction, prevClosestDay, setMidnight, subtractDay,
-    toEventWithLocalDates, toViewWithLocalDates, parseOffset, tzOffset, applyOffsetDiff
+    toEventWithLocalDates, toViewWithLocalDates, parseOffset
 } from '#lib';
 
 export function currentRange(mainState) {
@@ -108,9 +108,8 @@ export function offset(mainState) {
         let offset;
 
         untrack(() => {
-            offset = timeZone === 'local' ? tzOffset() : (
-                timeZone === 'UTC' ? 0 : (parseOffset(timeZone) ?? tzOffset())
-            );
+            // 'local' is not a fixed number, the offset of each date is used instead
+            offset = timeZone === 'UTC' ? 0 : (parseOffset(timeZone) ?? 'local');
         });
 
         return offset;
