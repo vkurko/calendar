@@ -202,13 +202,14 @@ export function handleTimeZoneChange(mainState) {
             for (let event of mainState.events) {
                 if (!event.allDay) {
                     for (let prop of ['start', 'end']) {
-                        let dateOffset = getOffset(event[prop]);
+                        let date = event[prop];
+                        let dateOffset = getOffset(date);
                         // Dates parsed from strings with no timezone info have dateOffset === undefined;
                         // they are treated as floating and only get branded with the new offset, not shifted
                         if (dateOffset !== undefined) {
-                            convertOffset(event[prop], dateOffset, offset);
+                            convertOffset(date, dateOffset, offset);
                         } else {
-                            setOffset(event[prop], resolveOffset(event[prop], offset));
+                            setOffset(date, resolveOffset(date, offset));
                         }
                     }
                 }

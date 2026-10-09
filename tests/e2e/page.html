@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>EventCalendar tests</title>
+    <style>
+        body {
+            margin: 0;
+            font: 14px sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div id="ec"></div>
+<script type="module">
+    import * as EventCalendar from '/packages/core/src/index.es.js';
+    import '/packages/core/src/styles/index.css';
+
+    // Tests create the calendar themselves via window.EventCalendar
+    window.EventCalendar = EventCalendar;
+    // Local date in the form YYYY-MM-DDTHH:mm, to compare dates passed to callbacks
+    window.fmt = date => {
+        let pad = n => String(n).padStart(2, '0');
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T` +
+            `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    };
+    window.ready = true;
+</script>
+</body>
+</html>

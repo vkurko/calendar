@@ -11,6 +11,10 @@ node_modules
 dist
 *.local
 
+# Playwright
+test-results
+playwright-report
+
 # Editor directories and files
 .vscode
 .idea
