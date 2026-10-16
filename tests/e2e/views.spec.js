@@ -49,3 +49,39 @@ test('can be destroyed right after creation', async ({page}) => {
 
     await expect(page.locator('#ec')).toBeEmpty();
 });
+
+for (let [view, plugin] of [
+    ['resourceTimelineWeek', 'ResourceTimeline'],
+    ['timeGridWeek', 'TimeGrid'],
+    ['resourceTimeGridWeek', 'ResourceTimeGrid']
+]) {
+    test(`${view} stacks events set right after resources`, async ({page}) => {
+        // https://github.com/vkurko/calendar/issues/687
+        await openPage(page);
+        await page.evaluate(([view, plugin]) => {
+            let {createCalendar} = EventCalendar;
+            let resources = [{id: 1, title: 'Resource A'}];
+            window.ec = createCalendar(document.getElementById('ec'), [EventCalendar[plugin]], {
+                view,
+                resources,
+                events: []
+            });
+            window.resources = resources;
+        }, [view, plugin]);
+        await expect(page.locator('.ec-day').first()).toBeVisible();
+        // Data refresh in a later task: resources first, then events
+        await page.evaluate(() => {
+            ec.setOption('resources', resources);
+            // All-day events, as the all-day slot is where timeGrid views stack them
+            ec.setOption('events', [
+                {start: '2026-10-08', end: '2026-10-08', allDay: true, title: 'One', resourceId: 1},
+                {start: '2026-10-08', end: '2026-10-08', allDay: true, title: 'Two', resourceId: 1}
+            ]);
+        });
+
+        let events = page.locator('.ec-event');
+        await expect(events).toHaveCount(2);
+        let [one, two] = [await events.nth(0).boundingBox(), await events.nth(1).boundingBox()];
+        expect(two.y).toBeGreaterThanOrEqual(one.y + one.height);
+    });
+}

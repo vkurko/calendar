@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.17.2
+October 16, 2026
+* Fixed overlapping events not being stacked after setting `resources` and `events` together ([687](https://github.com/vkurko/calendar/issues/687))
+
 ## 5.17.1
 October 9, 2026
 * Fixed events being shifted by an hour across a daylight saving time change ([686](https://github.com/vkurko/calendar/issues/686))
