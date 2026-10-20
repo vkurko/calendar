@@ -85,3 +85,34 @@ for (let [view, plugin] of [
         expect(two.y).toBeGreaterThanOrEqual(one.y + one.height);
     });
 }
+
+test('dayGridWeek stacks events set right after resources', async ({page}) => {
+    // https://github.com/vkurko/calendar/issues/687
+    await openPage(page);
+    await page.evaluate(() => {
+        let {createCalendar, DayGrid} = EventCalendar;
+        // The view must already show events, otherwise the bug does not occur
+        window.ec = createCalendar(document.getElementById('ec'), [DayGrid], {
+            view: 'dayGridWeek',
+            events: [
+                {start: '2026-10-07T08:00', end: '2026-10-07T09:00', title: 'Before A'},
+                {start: '2026-10-08T09:00', end: '2026-10-08T10:00', title: 'Before B'}
+            ]
+        });
+    });
+    await expect(page.locator('.ec-event')).toHaveCount(2);
+    await page.evaluate(() => {
+        ec.setOption('resources', [{id: 1, title: 'Resource A'}, {id: 2, title: 'Resource B'}]);
+        ec.setOption('events', [
+            {start: '2026-10-08T09:00', end: '2026-10-08T11:00', title: 'One', resourceId: 1},
+            {start: '2026-10-08T10:00', end: '2026-10-08T12:00', title: 'Two', resourceId: 1},
+            {start: '2026-10-08T13:00', end: '2026-10-08T14:00', title: 'Three', resourceId: 2}
+        ]);
+    });
+
+    let events = page.locator('.ec-event');
+    await expect(events).toHaveCount(3);
+    let boxes = await Promise.all([0, 1, 2].map(i => events.nth(i).boundingBox()));
+    expect(boxes[1].y).toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height);
+    expect(boxes[2].y).toBeGreaterThanOrEqual(boxes[1].y + boxes[1].height);
+});

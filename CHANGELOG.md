@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.17.3
+October 20, 2026
+* Fixed overlapping events not being stacked in `dayGrid` views after setting `resources` and `events` together ([687](https://github.com/vkurko/calendar/issues/687))
+
 ## 5.17.2
 October 16, 2026
 * Fixed overlapping events not being stacked after setting `resources` and `events` together ([687](https://github.com/vkurko/calendar/issues/687))

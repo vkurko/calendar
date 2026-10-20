@@ -26,7 +26,9 @@
     }
     $effect(() => {
         eventGap;
-        reposition();
+        chunks;
+        // Wait for the event components to mount, otherwise new events are not positioned
+        tick().then(reposition);
     });
     $effect(hide);
 </script>
