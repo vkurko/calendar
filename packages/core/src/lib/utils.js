@@ -86,7 +86,7 @@ export function undefinedOr(fn) {
     return input => input === undefined ? undefined : fn(input);
 }
 
-// Storage of unique object identifiers for use as keys in each blocks
+// Storage of unique object identifiers for use as keys in {#each} blocks
 const uids = new WeakMap();
 let uidCounter = 1;
 

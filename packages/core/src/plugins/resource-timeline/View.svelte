@@ -1,10 +1,10 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
     import {
-        max, resizeObserver, runReposition, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
+        max, resizeObserver, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
         createWeekNumberContent, toTime, uid
     } from '#lib';
-    import {getSlotTimeLimits} from './lib.js';
+    import {getSlotTimeLimits, layoutChunks} from './lib.js';
     import ViewState from './state.svelte.js';
     import {ColHead, DayHeader} from '#components';
     import Label from '../resource-time-grid/Label.svelte';
@@ -18,9 +18,9 @@
     setContext('view-state', viewState);
 
     let {mainEl, scrollDate, snippets, today, viewDates, options: {
-        columnWidth, eventGap, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
+        columnWidth, eventGap, eventOrderStrict, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
     }} = $derived(mainState);
-    let {chunks, bgChunks, iChunks, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
+    let {chunks, bgChunks, iChunks, units, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
         nestedResources, sidebarWidth, slotLabelPeriodicity, viewResources} = $derived(viewState);
 
     let headerHeight = $state(0);
@@ -73,10 +73,16 @@
     // Events reposition
     let refs = [];
     function reposition() {
-        runReposition(refs, chunks);
+        refs.length = chunks.length;
+        let heights = new Map(chunks.map((chunk, i) => [chunk, refs[i]?.measure() ?? 0]));
+        layoutChunks(units, heights, eventOrderStrict, eventGap);
+        for (let ref of refs) {
+            ref?.reposition();
+        }
     }
     $effect(() => {
         eventGap;
+        eventOrderStrict;
         chunks;
         // Wait for the event components to mount, otherwise new events are not positioned
         tick().then(reposition);

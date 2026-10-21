@@ -14,9 +14,10 @@ export default class ViewState extends RRState(TRRState()) {
         this.extraHeads = $derived.by(extraHeads(mainState, this));
         this.intlMonthHeader = $derived.by(intl(mainState, 'monthHeaderFormat'));
         this.monthView = $derived.by(monthView(mainState));
-        let {chunks, bgChunks} = $derived.by(eventChunks(mainState, this));
+        let {chunks, bgChunks, units} = $derived.by(eventChunks(mainState, this));
         this.chunks = $derived(chunks);
         this.bgChunks = $derived(bgChunks);
+        this.units = $derived(units);
         this.iChunks = $derived.by(iEventChunks(mainState, this));
         this.nestedResources = $derived.by(nestedResources(mainState));
     }

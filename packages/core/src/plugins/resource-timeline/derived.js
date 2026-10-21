@@ -105,11 +105,12 @@ export function extraHeads(mainState, viewState) {
 export function eventChunks(mainState, viewState) {
     return () => {
         // Dependencies
-        let {filteredEvents, options: {eventOrderStrict}} = mainState;
+        let {filteredEvents} = mainState;
         let {grid, monthView} = viewState;
 
         let chunks = [];
         let bgChunks = [];
+        let units;
 
         untrack(() => {
             for (let event of filteredEvents) {
@@ -129,10 +130,10 @@ export function eventChunks(mainState, viewState) {
                     }
                 }
             }
-            prepareChunks(chunks, eventOrderStrict);
+            units = prepareChunks(chunks, monthView);
         });
 
-        return {chunks, bgChunks};
+        return {chunks, bgChunks, units};
     };
 }
 

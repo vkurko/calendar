@@ -38,10 +38,9 @@ import {assign, uid} from './utils.js';
  * timeline, filled in by its createChunks() and prepareChunks(). `left` and `width` are in seconds
  * @property {Number} [left]        offset from the start of the first day of the chunk
  * @property {Number} [width]
- * @property {Number} [order]       position in the eventOrder order, for the strict layout
- * @property {Array} [cells]        cells the chunk spans, each with its chunks and those placed in the current pass
- * @property {Array} [rivals]       chunks sharing at least one column, competing for a place
- * @property {Array} [mates]        chunks of the same layoutGroup in the row, shared between them
+ * @property {Array} [span]         part of the row the chunk takes, as [start, end): columns in the month view, time
+ *                                  in milliseconds otherwise
+ * @property {Array} [rivals]       chunks of the same layout unit coming earlier whose spans intersect
  *
  * Result of the layout in dayGrid, the all-day slot and timeline, in pixels
  * @property {Number} [top]

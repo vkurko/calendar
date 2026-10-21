@@ -304,8 +304,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.17.3/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.17.3/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.18.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.18.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -3343,7 +3343,7 @@ In addition, in your callback functions, you may get the `'ghost'`, `'preview'` 
 
 The layout group the event belongs to
 
-Events of the same layout group within a resource row are laid out as a unit: they are placed on the same line whenever they don't overlap each other. Only applies in `resourceTimeline` views with [eventOrderStrict](#eventorderstrict) enabled
+Events of the same layout group within a resource row are laid out as a unit, at the place of the first of them in `eventOrder`: they take a rectangle from the start of the first one to the end of the last one, and no other event is placed inside it. Within the group, events are laid out among themselves the same way as the groups are laid out in the row, depending on [eventOrderStrict](#eventorderstrict). Only applies in `resourceTimeline` views
 </td>
 </tr>
 <tr>
@@ -3512,7 +3512,7 @@ In month-based views such as `dayGridMonth` or `resourceTimelineMonth`, backgrou
 </td>
 <td>
 
-`string` or `number` The layout group the event belongs to. Events of the same layout group within a resource row are laid out as a unit: they are placed on the same line whenever they don't overlap each other. Only applies in `resourceTimeline` views with [eventOrderStrict](#eventorderstrict) enabled
+`string` or `number` The layout group the event belongs to. Events of the same layout group within a resource row are laid out as a unit, at the place of the first of them in `eventOrder`: they take a rectangle from the start of the first one to the end of the last one, and no other event is placed inside it. Within the group, events are laid out among themselves the same way as the groups are laid out in the row, depending on [eventOrderStrict](#eventorderstrict). Only applies in `resourceTimeline` views
 </td>
 </tr>
 <tr>

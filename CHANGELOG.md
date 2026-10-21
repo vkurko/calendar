@@ -1,5 +1,12 @@
 # EventCalendar changelog
 
+## 5.18.0
+October 21, 2026
+* Changed events of the same `layoutGroup` to keep other events out of their span ([688](https://github.com/vkurko/calendar/issues/688))
+* Changed `layoutGroup` to work without `eventOrderStrict`
+* Fixed overlapping events with a custom `eventOrder` in `resourceTimeline` views
+* Fixed events that don't overlap in time being stacked with `eventOrderStrict`
+
 ## 5.17.3
 October 20, 2026
 * Fixed overlapping events not being stacked in `dayGrid` views after setting `resources` and `events` together ([687](https://github.com/vkurko/calendar/issues/687))

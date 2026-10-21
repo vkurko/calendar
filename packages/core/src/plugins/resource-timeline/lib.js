@@ -91,143 +91,150 @@ export function eventInRow(event, days) {
     return !resource || event.resourceIds.includes(resource.id);
 }
 
-export function prepareChunks(chunks, strict) {
-    let dayChunks = {};
-    for (let i = 0; i < chunks.length; ++i) {
-        let chunk = chunks[i];
-        let {gridColumn, gridRow} = chunk;
-        // Remember the processing order (eventOrder) for strict layout
-        chunk.order = i;
-        // Prepare day chunks
-        let cells = [];
-        for (let j = 0; j < chunk.dates.length; ++ j) {
-            let key = `${gridRow}_${gridColumn + j}`;
-            let cell = dayChunks[key] ??= {pass: 0, placed: [], chunks: []};
-            cell.chunks.push(chunk);
-            cells.push(cell);
+/**
+ * Prepare the chunks for the layout done by layoutChunks(). The chunks come in the eventOrder order.
+ *
+ * The layout has two levels. The chunks are split into units: the chunks of the same layoutGroup within a
+ * resource row, or a single chunk. The chunks of a unit are laid out among themselves, which gives the unit
+ * its shape: a rectangle from the start of its first chunk to the end of its last one, as high as its chunks
+ * need. The units are laid out in the row as such rectangles, so no chunk can get inside the rectangle of
+ * another unit. A unit is laid out at the place of its first chunk in eventOrder.
+ *
+ * Both levels follow the same rules, see place(). Only the items whose spans intersect compete for a place,
+ * and an item is placed with regard to the items that come before it in the order, which are its `rivals`
+ * @param chunks
+ * @param monthView  whether the slots are days, so that a chunk fills its days whatever its time
+ * @return {Array} the units in the order of the layout
+ */
+export function prepareChunks(chunks, monthView) {
+    let units = [];
+    // Units made of a layoutGroup rather than a single chunk, keyed by resource row and layoutGroup
+    let groupUnits = {};
+    for (let chunk of chunks) {
+        let {gridColumn, gridRow, dates, start, end, event: {layoutGroup}} = chunk;
+        // The part of the row the chunk takes, as [start, end): its columns when it fills its days,
+        // and its time otherwise. The time matches the position on the screen, as the chunk is cut
+        // to the visible part of its days and hidden hours between days are not shown
+        chunk.span = monthView ? [gridColumn, gridColumn + dates.length] : [+start, +end];
+        let unit;
+        if (layoutGroup !== undefined) {
+            let key = `${gridRow}_${layoutGroup}`;
+            unit = groupUnits[key];
+            if (!unit) {
+                unit = addUnit(chunk, units);
+                groupUnits[key] = unit;
+            }
+        } else {
+            unit = addUnit(chunk, units);
         }
-        chunk.cells = cells;
+        // The chunks of the unit coming earlier whose spans intersect
+        chunk.rivals = unit.chunks.filter(other => spanIntersects(other.span, chunk.span));
+        unit.chunks.push(chunk);
+        extendSpan(unit.span, chunk.span);
+        unit.startColumn = min(unit.startColumn, gridColumn);
+        unit.endColumn = max(unit.endColumn, gridColumn + dates.length);
     }
-    if (strict) {
-        // Collect, for each chunk, its `rivals` — all chunks sharing at least one of its columns,
-        // and thus competing with it for a place. Unlike the non-strict layout (which looks only at the
-        // starting cell), this spans the whole chunk, so a chunk can't float above an
-        // earlier-ordered chunk that overlaps it in a column other than the first one.
-        let layoutGroups = {};
-        for (let chunk of chunks) {
-            let {gridColumn, gridRow} = chunk;
-            let seen = new Set([chunk]);
-            let rivals = [];
-            for (let j = 0; j < chunk.dates.length; ++ j) {
-                for (let other of dayChunks[`${gridRow}_${gridColumn + j}`].chunks) {
-                    if (!seen.has(other)) {
-                        seen.add(other);
-                        rivals.push(other);
-                    }
+    // A cell is one day (column) of one resource row. It lists the units spanning it and the units starting
+    // in it, so that the units whose spans may intersect are found quickly. Each cell lists only the units
+    // coming earlier, as a unit adds itself to the cells after collecting its rivals
+    let cells = [];
+    let cellAt = (row, column) => (cells[row] ??= [])[column] ??= {spanning: [], starting: []};
+    for (let unit of units) {
+        let {gridRow, startColumn, endColumn, span} = unit;
+        // The units coming earlier whose spans intersect. Sharing a column with the unit, such a unit either
+        // spans its first column or starts in one of the following columns, but not both, so it is met once
+        let rivals = [];
+        let first = cellAt(gridRow, startColumn);
+        for (let other of first.spanning) {
+            if (spanIntersects(other.span, span)) {
+                rivals.push(other);
+            }
+        }
+        for (let column = startColumn + 1; column < endColumn; ++column) {
+            for (let other of cellAt(gridRow, column).starting) {
+                if (spanIntersects(other.span, span)) {
+                    rivals.push(other);
                 }
             }
-            chunk.rivals = rivals;
-            // `mates` are the chunks of the same layoutGroup within the same resource row. They are
-            // laid out as a unit. The array is shared between the mates and lists them in the
-            // eventOrder order, so `mates[0]` is the one positioned first — their anchor
-            let {layoutGroup} = chunk.event;
-            if (layoutGroup !== undefined) {
-                chunk.mates = layoutGroups[`${gridRow}_${layoutGroup}`] ??= [];
-                chunk.mates.push(chunk);
-            }
+        }
+        unit.rivals = rivals;
+        first.starting.push(unit);
+        for (let column = startColumn; column < endColumn; ++column) {
+            cellAt(gridRow, column).spanning.push(unit);
+        }
+    }
+
+    return units;
+}
+
+function addUnit(chunk, units) {
+    let {gridColumn, gridRow, span} = chunk;
+    let unit = {
+        gridRow,
+        chunks: [],
+        span: [...span],
+        startColumn: gridColumn,
+        endColumn: gridColumn
+    };
+    units.push(unit);
+    return unit;
+}
+
+function spanIntersects([start, end], [otherStart, otherEnd]) {
+    return start < otherEnd && end > otherStart;
+}
+
+function extendSpan(span, other) {
+    span[0] = min(span[0], other[0]);
+    span[1] = max(span[1], other[1]);
+}
+
+/**
+ * Lay out the chunks of the units prepared by prepareChunks(): set `top` and `bottom` of each chunk
+ * @param units
+ * @param heights  the heights of the chunks, by chunk
+ * @param strict   the eventOrderStrict option
+ * @param gap      the eventGap option
+ */
+export function layoutChunks(units, heights, strict, gap) {
+    for (let unit of units) {
+        // Lay out the chunks of the unit among themselves, from the top of the unit
+        let height = 0;
+        for (let chunk of unit.chunks) {
+            let top = place(chunk.rivals, heights.get(chunk), 0, strict, gap);
+            assign(chunk, {top, bottom: top + heights.get(chunk)});
+            height = max(height, chunk.bottom);
+        }
+        // Lay out the unit in the row and move its chunks there
+        let top = place(unit.rivals, height, 1, strict, gap);
+        assign(unit, {top, bottom: top + height});
+        for (let chunk of unit.chunks) {
+            chunk.top += top;
+            chunk.bottom += top;
         }
     }
 }
 
 /**
- * Check whether the chunk fits the given line without touching the chunks that have to keep their
- * place: the ones in its columns that come earlier in the order. Later-ordered chunks give way,
- * and they do have a position here, as the layout is run more than once
+ * Find the top for an item of the given height among its rivals, which are already placed. In the strict
+ * layout, the item goes below all of them, so that it never gets above an item that comes earlier in the
+ * order. Otherwise it takes the topmost gap it fits in, for compactness
  */
-function lineIsFree(chunk, line, height, gap) {
-    for (let other of chunk.rivals) {
-        if (
-            other.order < chunk.order && 'top' in other &&
-            line < other.bottom + gap && line + height + gap > other.top
-        ) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/**
- * Chunks already positioned in the cell during the current pass, ordered by top
- */
-function placedIn(cell, pass) {
-    if (cell.pass !== pass) {
-        cell.pass = pass;
-        cell.placed = [];
-    }
-    return cell.placed;
-}
-
-export function repositionEvent(chunk, height, monthView, gap = 1, strict = false, pass = 0) {
-    let top = 1;
-    let bottom = top + height;
+function place(rivals, height, top, strict, gap) {
     if (strict) {
-        // Strictly follow eventOrder: place the chunk below every already-positioned
-        // chunk that comes earlier in the order and shares a column with it. Chunks
-        // sharing a column always overlap in time there, so they can't share a row.
-
-        // The anchor is the mate positioned first, and it picks the line for all of them, so it
-        // has to clear the way for every mate, not just for itself. The rest are positioned
-        // against their own columns only: repeating the joint calculation would push each of them
-        // lower than the anchor, since more chunks come earlier in the order for them
-        let anchor = chunk.mates?.[0];
-        for (let {rivals} of anchor === chunk ? chunk.mates : [chunk]) {
-            for (let other of rivals) {
-                if (other.order < chunk.order && 'top' in other && other.bottom + gap > top) {
-                    top = other.bottom + gap;
-                }
-            }
-        }
-        bottom = top + height;
-        if (anchor && anchor !== chunk) {
-            // Join the line of the anchor, as long as it is free in the columns of this chunk.
-            // A line above is out of reach, as it is taken by an earlier-ordered chunk
-            let line = anchor.top;
-            if (line > top && lineIsFree(chunk, line, height, gap)) {
-                top = line;
-                bottom = top + height;
-            }
+        for (let other of rivals) {
+            top = max(top, other.bottom + gap);
         }
     } else {
-        // Walk the chunks already placed in the starting cell, which are kept ordered by top
-        for (let other of placedIn(chunk.cells[0], pass)) {
-            if (other.top >= bottom) {
-                // The rest is below the chunk, so it can't be pushed down any further
+        // Sorting in place is cheap on repeated layouts, as the order by top rarely changes
+        for (let other of rivals.sort((a, b) => a.top - b.top)) {
+            if (other.top >= top + height) {
+                // The rest is below the item, so it can't be pushed down any further
                 break;
             }
-            if ((monthView || chunk.start < other.end && chunk.end > other.start) && top < other.bottom) {
-                let offset = other.bottom - top + gap;
-                top += offset;
-                bottom += offset;
+            if (top < other.bottom) {
+                top = other.bottom + gap;
             }
-        }
-    }
-    assign(chunk, {top, bottom});
-    if (!strict) {
-        // Keep every cell the chunk spans ordered by top
-        for (let cell of chunk.cells) {
-            let placed = placedIn(cell, pass);
-            let low = 0;
-            let high = placed.length;
-            while (low < high) {
-                let mid = (low + high) >> 1;
-                if (placed[mid].top <= top) {
-                    low = mid + 1;
-                } else {
-                    high = mid;
-                }
-            }
-            placed.splice(low, 0, chunk);
         }
     }
 

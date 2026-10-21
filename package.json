@@ -1,7 +1,7 @@
 {
   "name": "event-calendar",
   "private": true,
-  "version": "5.17.3",
+  "version": "5.18.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

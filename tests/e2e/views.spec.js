@@ -116,3 +116,69 @@ test('dayGridWeek stacks events set right after resources', async ({page}) => {
     expect(boxes[1].y).toBeGreaterThanOrEqual(boxes[0].y + boxes[0].height);
     expect(boxes[2].y).toBeGreaterThanOrEqual(boxes[1].y + boxes[1].height);
 });
+
+test('resourceTimelineMonth keeps other events out of the span of a layout group', async ({page}) => {
+    await openPage(page);
+    await page.evaluate(() => {
+        let {createCalendar, ResourceTimeline} = EventCalendar;
+        let event = (title, start, end, order, layoutGroup) => ({
+            title, start, end, resourceId: 1, layoutGroup, extendedProps: {order}
+        });
+        createCalendar(document.getElementById('ec'), [ResourceTimeline], {
+            view: 'resourceTimelineMonth',
+            resources: [{id: 1, title: 'Resource A'}],
+            eventOrder: 'order',
+            eventOrderStrict: true,
+            events: [
+                event('A start', '2026-10-01', '2026-10-02', 1, 'a'),
+                event('Job A', '2026-10-12', '2026-10-17', 2, 'a'),
+                event('Step A', '2026-10-13', '2026-10-15', 3, 'a'),
+                event('A end', '2026-10-26', '2026-10-27', 4, 'a'),
+                event('Job B', '2026-10-04', '2026-10-09', 5),
+                event('Job D', '2026-10-28', '2026-10-30', 6)
+            ]
+        });
+    });
+
+    let top = async title => (await page.locator('.ec-event', {hasText: title}).boundingBox()).y;
+    await expect(page.locator('.ec-event')).toHaveCount(6);
+    let jobA = await top('Job A');
+    expect(await top('A start')).toBe(jobA);
+    expect(await top('A end')).toBe(jobA);
+    expect(await top('Step A')).toBeGreaterThan(jobA);
+    // Job B falls between the events of group A, so it goes below the group
+    expect(await top('Job B')).toBeGreaterThan(await top('Step A'));
+    // Job D is outside the span of group A
+    expect(await top('Job D')).toBe(jobA);
+});
+
+test('resourceTimelineDay keeps events not overlapping in time on the same line with eventOrderStrict, also past midnight', async ({page}) => {
+    await openPage(page);
+    await page.evaluate(() => {
+        let {createCalendar, ResourceTimeline} = EventCalendar;
+        createCalendar(document.getElementById('ec'), [ResourceTimeline], {
+            view: 'resourceTimelineDay',
+            resources: [{id: 1, title: 'Resource A'}],
+            eventOrderStrict: true,
+            scrollTime: '08:00',
+            // A night shift, the day goes on till 6:00 of the next one
+            slotMinTime: '06:00',
+            slotMaxTime: '30:00',
+            events: [
+                {title: 'Morning', start: '2026-10-08T09:00', end: '2026-10-08T10:00', resourceId: 1},
+                {title: 'Afternoon', start: '2026-10-08T14:00', end: '2026-10-08T15:00', resourceId: 1},
+                {title: 'Overlap', start: '2026-10-08T09:30', end: '2026-10-08T11:00', resourceId: 1},
+                {title: 'Night', start: '2026-10-08T23:00', end: '2026-10-09T02:00', resourceId: 1},
+                {title: 'Small hours', start: '2026-10-09T01:00', end: '2026-10-09T03:00', resourceId: 1}
+            ]
+        });
+    });
+
+    let top = async title => (await page.locator('.ec-event', {hasText: title}).boundingBox()).y;
+    await expect(page.locator('.ec-event')).toHaveCount(5);
+    let morning = await top('Morning');
+    expect(await top('Afternoon')).toBe(morning);
+    expect(await top('Overlap')).toBeGreaterThan(morning);
+    expect(await top('Night')).toBe(morning);
+    expect(await top('Small hours')).toBe(await top('Overlap'));
+});

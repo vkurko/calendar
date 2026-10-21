@@ -1,12 +1,11 @@
 <script>
     import {getContext} from 'svelte';
     import {bgEvent, height, toSeconds} from '#lib';
-    import {repositionEvent} from './lib.js';
     import {InteractableEvent} from '#components';
 
     let {chunk} = $props();
 
-    let {options: {eventGap, eventOrderStrict, slotDuration, slotWidth}} = $derived(getContext('state'));
+    let {options: {slotDuration, slotWidth}} = $derived(getContext('state'));
     let {monthView} = $derived(getContext('view-state'));
 
     let el = $state();
@@ -35,8 +34,12 @@
         return style;
     });
 
-    export function reposition(pass) {
-        margin = repositionEvent(chunk, height(el), monthView, eventGap, eventOrderStrict, pass);
+    export function measure() {
+        return height(el);
+    }
+
+    export function reposition() {
+        margin = chunk.top;
     }
 </script>
 
