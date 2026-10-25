@@ -344,46 +344,7 @@
         }
         if (action && jsEvent.isPrimary) {
             if (interacting) {
-                if (selecting()) {
-                    if (refused) {
-                        // Cancel selection
-                        destroyIEvent();
-                    } else {
-                        selected = true;
-                        if (isFunction(selectFn)) {
-                            let info = createSelectCallbackInfo(iEvent, jsEvent);
-                            selectFn(info);
-                        }
-                    }
-                } else {
-                    event.display = display;
-
-                    let callback = resizing() ? eventResizeStop : eventDragStop;
-                    if (isFunction(callback)) {
-                        callback({
-                            event: toEventWithLocalDates(event),
-                            jsEvent,
-                            view: toViewWithLocalDates(view)
-                        });
-                    }
-
-                    let oldEvent = cloneEvent(event);
-                    // Leave the event in place if the position is refused
-                    updateEvent(event, refused ? oldEvent : iEvent);
-
-                    destroyIEvent();
-
-                    callback = resizing() ? eventResize : eventDrop;
-                    if (!refused && isFunction(callback)) {
-                        let eventRef = event;
-                        let info = createCallbackInfo(event, oldEvent, jsEvent);
-                        callback(assign(info, {
-                            revert() {
-                                updateEvent(eventRef, oldEvent);
-                            }
-                        }));
-                    }
-                }
+                finish(jsEvent);
             } else {
                 if (clicking() || selecting()) {
                     // Perform date click
@@ -406,13 +367,67 @@
                     }
                 }
             }
-            handlePointerCancel();
+            reset();
         }
 
         noDateClick = false;
     }
 
-    function handlePointerCancel() {
+    function handlePointerCancel(jsEvent) {
+        if (action && jsEvent.isPrimary) {
+            if (interacting) {
+                // Cancel the action as if the position is refused
+                refused = true;
+                finish(jsEvent);
+            }
+            reset();
+        }
+    }
+
+    function finish(jsEvent) {
+        if (selecting()) {
+            if (refused) {
+                // Cancel selection
+                destroyIEvent();
+            } else {
+                selected = true;
+                if (isFunction(selectFn)) {
+                    let info = createSelectCallbackInfo(iEvent, jsEvent);
+                    selectFn(info);
+                }
+            }
+        } else {
+            event.display = display;
+
+            let callback = resizing() ? eventResizeStop : eventDragStop;
+            if (isFunction(callback)) {
+                callback({
+                    event: toEventWithLocalDates(event),
+                    jsEvent,
+                    view: toViewWithLocalDates(view)
+                });
+            }
+
+            let oldEvent = cloneEvent(event);
+            // Leave the event in place if the position is refused
+            updateEvent(event, refused ? oldEvent : iEvent);
+
+            destroyIEvent();
+
+            callback = resizing() ? eventResize : eventDrop;
+            if (!refused && isFunction(callback)) {
+                let eventRef = event;
+                let info = createCallbackInfo(event, oldEvent, jsEvent);
+                callback(assign(info, {
+                    revert() {
+                        updateEvent(eventRef, oldEvent);
+                    }
+                }));
+            }
+        }
+    }
+
+    function reset() {
         interacting = refused = false;
         action = fromX = fromY = toX = toY = event = display = date = newDate = resource = newResource = delta =
             extraDuration = allDay = minResize = selectStep = margin = gridEl = viewport = snapDuration = undefined;

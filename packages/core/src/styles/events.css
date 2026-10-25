@@ -93,6 +93,7 @@
 .ec-draggable {
     cursor: pointer;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .ec-ghost {

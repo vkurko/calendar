@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.18.1
+October 25, 2026
+* Fixed events getting stuck semi-transparent after a drag or resize is interrupted by the browser ([689](https://github.com/vkurko/calendar/issues/689))
+
 ## 5.18.0
 October 21, 2026
 * Changed events of the same `layoutGroup` to keep other events out of their span ([688](https://github.com/vkurko/calendar/issues/688))

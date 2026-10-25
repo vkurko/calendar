@@ -22,6 +22,10 @@ async function createCalendar(page, options = {}) {
             eventDrop: log('eventDrop'),
             eventResize: log('eventResize'),
             select: log('select'),
+            // Stop callbacks and clicks are logged only when the test asks for it
+            eventDragStop: options.logStop ? log('eventDragStop') : undefined,
+            eventResizeStop: options.logStop ? log('eventResizeStop') : undefined,
+            eventClick: options.logStop ? log('eventClick') : undefined,
             // Refuse Wednesday when the test asks for it
             dragConstraint: options.refuseWednesday ? info => info.event.start.getDay() !== 3 : undefined,
             eventResizableFromStart: options.eventResizableFromStart
@@ -40,6 +44,20 @@ async function getLayout(page) {
         // Vertical position of the given hour, the event starts at 10:00
         y: hour => event.y + (hour - 10) * HOUR
     };
+}
+
+/**
+ * Start dragging with the mouse and end it with pointercancel instead of pointerup,
+ * as mobile browsers do when they take the touch over
+ */
+async function dragAndCancel(page, from, to) {
+    await page.mouse.move(from.x, from.y);
+    await page.mouse.down();
+    await page.mouse.move(to.x, to.y, {steps: 10});
+    await page.evaluate(() => window.dispatchEvent(
+        new PointerEvent('pointercancel', {isPrimary: true, bubbles: true})
+    ));
+    await page.mouse.up();
 }
 
 function getCalls(page) {
@@ -97,4 +115,41 @@ test('selecting a time range', async ({page}) => {
     await drag(page, {x, y: y(9) + HOUR / 4}, {x, y: y(10.5) + HOUR / 4});
 
     expect(await getCalls(page)).toEqual([{name: 'select', start: '2026-11-02T09:00', end: '2026-11-02T11:00'}]);
+});
+
+test('pointercancel during a drag leaves the event in place', async ({page}) => {
+    await createCalendar(page, {logStop: true});
+    let {event, tue, wed} = await getLayout(page);
+    let from = center(event);
+    await dragAndCancel(page, from, {x: from.x + wed.x - tue.x, y: from.y + HOUR});
+
+    expect(await getCalls(page)).toEqual([{name: 'eventDragStop', start: '2026-11-03T10:00', end: '2026-11-03T12:00'}]);
+    expect(await getEvent(page)).toEqual({start: '2026-11-03T10:00', end: '2026-11-03T12:00'});
+    await expect(page.locator('.ec-ghost')).toHaveCount(0);
+    await expect(page.locator('.ec-preview')).toHaveCount(0);
+
+    // The event is clickable again
+    await page.mouse.click(from.x, from.y);
+    expect((await getCalls(page)).at(-1).name).toBe('eventClick');
+});
+
+test('pointercancel during a resize leaves the event in place', async ({page}) => {
+    await createCalendar(page, {logStop: true});
+    let resizer = center(await page.locator('.ec-event .ec-resizer:not(.ec-start)').boundingBox());
+    await dragAndCancel(page, resizer, {x: resizer.x, y: resizer.y + HOUR});
+
+    expect(await getCalls(page)).toEqual([{name: 'eventResizeStop', start: '2026-11-03T10:00', end: '2026-11-03T12:00'}]);
+    expect(await getEvent(page)).toEqual({start: '2026-11-03T10:00', end: '2026-11-03T12:00'});
+    await expect(page.locator('.ec-ghost')).toHaveCount(0);
+    await expect(page.locator('.ec-preview')).toHaveCount(0);
+});
+
+test('pointercancel during a selection cancels it', async ({page}) => {
+    await createCalendar(page);
+    let {mon, y} = await getLayout(page);
+    let x = mon.x + mon.width / 2;
+    await dragAndCancel(page, {x, y: y(9) + HOUR / 4}, {x, y: y(10.5) + HOUR / 4});
+
+    expect(await getCalls(page)).toEqual([]);
+    await expect(page.locator('.ec-preview')).toHaveCount(0);
 });
