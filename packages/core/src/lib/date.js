@@ -211,10 +211,11 @@ export function convertOffset(date, fromOffset, toOffset) {
 }
 
 /**
- * Get the numeric offset for a date whose time is already in the given offset
+ * Get the numeric offset for a date whose time is already in the given offset.
+ * For 'local' it is the offset that gives the instant a native Date has for the time
  */
 export function resolveOffset(date, offset) {
-    return offset === 'local' ? tzOffset(toLocalDate(date)) : offset;
+    return offset === 'local' ? (date.getTime() - toLocalDate(date).getTime()) / 60000 : offset;
 }
 
 let offsetSymbol = Symbol('ec');

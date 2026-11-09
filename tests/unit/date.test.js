@@ -113,6 +113,20 @@ describe('resolveOffset', () => {
         expect(resolveOffset(date, 180)).toBe(180);
         expect(resolveOffset(date, undefined)).toBeUndefined();
     });
+
+    it('gives a time in the hour the clocks skip the offset before the change, as a Date moves it forward', () => {
+        // 02:30 on 28 March 2027 does not exist, new Date(2027, 2, 28, 2, 30) is 03:30
+        let date = createDate('2027-03-28T02:30:00');
+        expect(resolveOffset(date, 'local')).toBe(60);
+        expect(str(convertOffset(date, 60, 0))).toBe(new Date(2027, 2, 28, 2, 30).toISOString().substring(0, 19));
+    });
+
+    it('gives a time in the hour the clocks repeat the offset of its first occurrence', () => {
+        // 02:30 on 25 October 2026 happens twice, new Date(2026, 9, 25, 2, 30) is the first one
+        let date = createDate('2026-10-25T02:30:00');
+        expect(resolveOffset(date, 'local')).toBe(120);
+        expect(str(convertOffset(date, 120, 0))).toBe(new Date(2026, 9, 25, 2, 30).toISOString().substring(0, 19));
+    });
 });
 
 describe('toLocalDate', () => {
