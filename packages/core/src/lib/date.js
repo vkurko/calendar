@@ -1,5 +1,6 @@
 import {assign, isDate, tzOffset} from './utils.js';
 import {createContent} from './content.js';
+import {zoneOffset, zoneWallOffset} from './time-zone.js';
 
 export const DAY_IN_SECONDS = 86400;
 
@@ -204,11 +205,13 @@ export function parseTimeZoneOffset(str) {
 }
 
 /**
- * Convert a date from one timezone offset to another, 'local' means the local offset at the moment of the date
+ * Convert a date from one timezone offset to another.
+ * 'local' or an IANA time zone name means the offset of that zone at the moment of the date
  */
 export function convertOffset(date, fromOffset, toOffset) {
-    if (toOffset === 'local') {
-        toOffset = tzOffset(new Date(date.getTime() - fromOffset * 60000));
+    if (typeof toOffset === 'string') {
+        let time = date.getTime() - fromOffset * 60000;
+        toOffset = toOffset === 'local' ? tzOffset(new Date(time)) : zoneOffset(toOffset, time);
     }
     if (toOffset !== fromOffset) {
         date.setUTCMinutes(date.getUTCMinutes() + toOffset - fromOffset);
@@ -219,10 +222,16 @@ export function convertOffset(date, fromOffset, toOffset) {
 
 /**
  * Get the numeric offset for a date whose time is already in the given offset.
- * For 'local' it is the offset that gives the instant a native Date has for the time
+ * For 'local' or an IANA time zone name it is the offset that gives the instant a native Date has for the time
  */
 export function resolveOffset(date, offset) {
-    return offset === 'local' ? (date.getTime() - toLocalDate(date).getTime()) / 60000 : offset;
+    if (typeof offset === 'string') {
+        return offset === 'local'
+            ? (date.getTime() - toLocalDate(date).getTime()) / 60000
+            : zoneWallOffset(offset, date.getTime());
+    }
+
+    return offset;
 }
 
 let offsetSymbol = Symbol('ec');

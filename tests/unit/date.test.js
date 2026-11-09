@@ -3,6 +3,7 @@ import {
     addDuration, convertOffset, createDate, createDuration, getOffset, getWeekNumber, nextDate, noTimePart,
     parseOffset, parseTimeZoneOffset, prevDate, resolveOffset, toISOString, toLocalDate
 } from '../../packages/core/src/lib/date.js';
+import {isTimeZoneName, zoneOffset, zoneWallOffset} from '../../packages/core/src/lib/time-zone.js';
 
 // Tests run in Europe/Amsterdam (see vitest.config.js):
 // UTC+2 in summer, UTC+1 in winter, clocks go back on 25 October 2026 and forward on 28 March 2027
@@ -142,6 +143,126 @@ describe('resolveOffset', () => {
         let date = createDate('2026-10-25T02:30:00');
         expect(resolveOffset(date, 'local')).toBe(120);
         expect(str(convertOffset(date, 120, 0))).toBe(new Date(2026, 9, 25, 2, 30).toISOString().substring(0, 19));
+    });
+});
+
+describe('IANA time zone names', () => {
+    // These do not depend on the zone of the test run, tests/unit/zones/time-zone.test.js compares them with local
+    it('are told apart from other timeZone values', () => {
+        expect(isTimeZoneName('America/Los_Angeles')).toBe(true);
+        expect(isTimeZoneName('Etc/GMT+5')).toBe(true);
+        expect(isTimeZoneName('NZ')).toBe(true);
+        expect(isTimeZoneName('UTC')).toBe(true);
+        expect(isTimeZoneName('local')).toBe(false);
+        expect(isTimeZoneName('Europe/Atlantis')).toBe(false);
+        expect(isTimeZoneName('')).toBe(false);
+    });
+
+    it('convert a string with an offset using the offset of that moment', () => {
+        for (let [zone, input, expected, offset] of [
+            // Clocks go forward on 14 March 2027 at 10:00 UTC and back on 1 November 2026 at 09:00 UTC (west of UTC)
+            ['America/Los_Angeles', '2027-03-14T09:59:00Z', '2027-03-14T01:59:00', -480],
+            ['America/Los_Angeles', '2027-03-14T10:00:00Z', '2027-03-14T03:00:00', -420],
+            ['America/Los_Angeles', '2026-11-01T08:30:00Z', '2026-11-01T01:30:00', -420],
+            ['America/Los_Angeles', '2026-11-01T09:30:00Z', '2026-11-01T01:30:00', -480],
+            // Clocks go forward on 28 March 2027 at 01:00 UTC and back on 25 October 2026 at 01:00 UTC (east of UTC)
+            ['Europe/Berlin', '2027-03-28T00:59:00Z', '2027-03-28T01:59:00', 60],
+            ['Europe/Berlin', '2027-03-28T01:00:00Z', '2027-03-28T03:00:00', 120],
+            ['Europe/Berlin', '2026-10-25T00:30:00Z', '2026-10-25T02:30:00', 120],
+            ['Europe/Berlin', '2026-10-25T01:30:00Z', '2026-10-25T02:30:00', 60],
+            // Southern hemisphere, the change is by half an hour
+            ['Australia/Lord_Howe', '2026-10-03T15:29:00Z', '2026-10-04T01:59:00', 630],
+            ['Australia/Lord_Howe', '2026-10-03T15:30:00Z', '2026-10-04T02:30:00', 660],
+            ['Australia/Lord_Howe', '2027-04-03T14:45:00Z', '2027-04-04T01:45:00', 660],
+            ['Australia/Lord_Howe', '2027-04-03T15:15:00Z', '2027-04-04T01:45:00', 630],
+            // No DST, half an hour offset
+            ['Asia/Kolkata', '2027-03-14T10:00:00Z', '2027-03-14T15:30:00', 330],
+            // A name that ends with the letter Z is not UTC
+            ['NZ', '2027-03-14T10:00:00Z', '2027-03-14T23:00:00', 780],
+            // The input offset does not matter
+            ['Europe/Berlin', '2027-03-28T03:00:00+02:00', '2027-03-28T03:00:00', 120],
+            ['Europe/Berlin', '2027-03-27T18:00:00-07:00', '2027-03-28T03:00:00', 120]
+        ]) {
+            let date = createDate(input, zone);
+            expect([zone, input, str(date), getOffset(date)]).toEqual([zone, input, expected, offset]);
+        }
+    });
+
+    it('brand a string without an offset with the offset of its wall time', () => {
+        for (let [zone, input, offset] of [
+            ['America/Los_Angeles', '2027-03-14T01:59:00', -480],
+            ['America/Los_Angeles', '2027-03-14T03:00:00', -420],
+            ['Europe/Berlin', '2026-10-24T12:00:00', 120],
+            ['Europe/Berlin', '2026-10-26T12:00:00', 60],
+            ['Asia/Kolkata', '2026-10-26T12:00:00', 330]
+        ]) {
+            let date = createDate(input, zone);
+            expect([zone, input, str(date), getOffset(date)]).toEqual([zone, input, input, offset]);
+        }
+    });
+
+    it('treat a skipped wall time like a native Date does, moved forward', () => {
+        for (let [zone, input, offset, utc] of [
+            ['America/Los_Angeles', '2027-03-14T02:30:00', -480, '2027-03-14T10:30:00'],
+            ['Europe/Berlin', '2027-03-28T02:30:00', 60, '2027-03-28T01:30:00'],
+            ['Australia/Lord_Howe', '2026-10-04T02:15:00', 630, '2026-10-03T15:45:00'],
+            // Chile skips midnight
+            ['America/Santiago', '2026-09-06T00:30:00', -240, '2026-09-06T04:30:00']
+        ]) {
+            let date = createDate(input, zone);
+            expect([zone, input, str(date), getOffset(date)]).toEqual([zone, input, input, offset]);
+            expect([zone, str(convertOffset(date, offset, 0))]).toEqual([zone, utc]);
+        }
+    });
+
+    it('treat a repeated wall time like a native Date does, as the first occurrence', () => {
+        for (let [zone, input, offset, utc] of [
+            ['America/Los_Angeles', '2026-11-01T01:30:00', -420, '2026-11-01T08:30:00'],
+            ['Europe/Berlin', '2026-10-25T02:30:00', 120, '2026-10-25T00:30:00'],
+            ['Australia/Lord_Howe', '2027-04-04T01:45:00', 660, '2027-04-03T14:45:00'],
+            // Chile repeats the hour before midnight
+            ['America/Santiago', '2027-04-03T23:30:00', -180, '2027-04-04T02:30:00']
+        ]) {
+            let date = createDate(input, zone);
+            expect([zone, input, str(date), getOffset(date)]).toEqual([zone, input, input, offset]);
+            expect([zone, str(convertOffset(date, offset, 0))]).toEqual([zone, utc]);
+        }
+    });
+
+    it('convert from one zone to another with convertOffset and resolveOffset', () => {
+        let date = convertOffset(createDate('2027-03-28T01:30:00'), 0, 'Europe/Berlin');
+        expect([str(date), getOffset(date)]).toEqual(['2027-03-28T03:30:00', 120]);
+        date = convertOffset(date, 120, 'America/Los_Angeles');
+        expect([str(date), getOffset(date)]).toEqual(['2027-03-27T18:30:00', -420]);
+        expect(resolveOffset(createDate('2026-10-25T02:30:00'), 'Europe/Berlin')).toBe(120);
+        expect(resolveOffset(createDate('2026-10-25T03:30:00'), 'Europe/Berlin')).toBe(60);
+    });
+
+    it('resolve the years 1 to 99 and the years before 1', () => {
+        // Berlin has local mean time (UTC+0:53:28) until 1893, Los Angeles (UTC-7:52:58) until 1883
+        let at = year => new Date(0).setUTCFullYear(year);
+        for (let year of [1, 50, 99, 100, 1000, 0, -100]) {
+            expect([year, zoneOffset('Europe/Berlin', at(year)), zoneWallOffset('Europe/Berlin', at(year))])
+                .toEqual([year, 53, 53]);
+            expect([year, zoneOffset('America/Los_Angeles', at(year)), zoneWallOffset('America/Los_Angeles', at(year))])
+                .toEqual([year, -473, -473]);
+        }
+    });
+
+    it('give NaN for an invalid date or one out of range, as local does', () => {
+        for (let time of [NaN, Infinity, -Infinity, 8.64e15 + 1, -8.64e15 - 1]) {
+            expect(zoneOffset('Europe/Berlin', time)).toBeNaN();
+        }
+        for (let wall of [NaN, Infinity, -Infinity]) {
+            expect(zoneWallOffset('Europe/Berlin', wall)).toBeNaN();
+        }
+        // The latest date is out of range after the conversion
+        expect(() => zoneWallOffset('Europe/Berlin', 8.64e15)).not.toThrow();
+        for (let input of [new Date(NaN), new Date(8.64e15)]) {
+            let local = createDate(input, 'local');
+            let zoned = createDate(input, 'Europe/Berlin');
+            expect([zoned.getTime(), getOffset(zoned)]).toEqual([local.getTime(), getOffset(local)]);
+        }
     });
 });
 
