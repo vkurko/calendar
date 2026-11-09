@@ -235,10 +235,15 @@ export function convertOffset(date, fromOffset, toOffset) {
 
 /**
  * Get the numeric offset for a date whose time is already in the given offset.
- * For 'local' it is the offset of the local Date with that wall time, which can be passed if it is known
+ * For 'local' it is the offset of the local Date with that wall time, which can be passed if it is known.
+ * Without one it is the offset that gives the instant a native Date has for the time
  */
 export function resolveOffset(date, offset, localDate = undefined) {
-    return offset === 'local' ? tzOffset(localDate ?? toLocalDate(date)) : offset;
+    if (offset !== 'local') {
+        return offset;
+    }
+
+    return localDate ? tzOffset(localDate) : (date.getTime() - toLocalDate(date).getTime()) / 60000;
 }
 
 let offsetSymbol = Symbol('ec');
