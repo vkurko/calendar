@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest';
 import {
     addDuration, convertOffset, createDate, createDuration, getOffset, getWeekNumber, nextDate, noTimePart,
-    parseOffset, prevDate, resolveOffset, toISOString, toLocalDate
+    parseOffset, parseTimeZoneOffset, prevDate, resolveOffset, toISOString, toLocalDate
 } from '../../packages/core/src/lib/date.js';
 
 // Tests run in Europe/Amsterdam (see vitest.config.js):
@@ -89,6 +89,22 @@ describe('parseOffset', () => {
     it('returns undefined when there is no offset', () => {
         expect(parseOffset('2026-11-03T10:00:00')).toBeUndefined();
         expect(parseOffset('local')).toBeUndefined();
+    });
+});
+
+describe('parseTimeZoneOffset', () => {
+    it('parses a string that is an offset and nothing else', () => {
+        expect(parseTimeZoneOffset('Z')).toBe(0);
+        expect(parseTimeZoneOffset('+05:30')).toBe(330);
+        expect(parseTimeZoneOffset('-0600')).toBe(-360);
+    });
+
+    it('returns undefined for a string with more than the offset', () => {
+        // NZ is a time zone name that ends with the letter Z
+        expect(parseTimeZoneOffset('NZ')).toBeUndefined();
+        expect(parseTimeZoneOffset('Etc/GMT+05:30')).toBeUndefined();
+        expect(parseTimeZoneOffset('2026-11-03T10:00:00+02:00')).toBeUndefined();
+        expect(parseTimeZoneOffset('local')).toBeUndefined();
     });
 });
 

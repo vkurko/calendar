@@ -197,6 +197,13 @@ export function parseOffset(str, match = {}) {
 }
 
 /**
+ * Parse the value of the timeZone option as a UTC offset, a string with anything else around it is not one
+ */
+export function parseTimeZoneOffset(str) {
+    return /^(?:Z|[+-]\d{2}:?\d{2})$/.test(str) ? parseOffset(str) : undefined;
+}
+
+/**
  * Convert a date from one timezone offset to another, 'local' means the local offset at the moment of the date
  */
 export function convertOffset(date, fromOffset, toOffset) {
