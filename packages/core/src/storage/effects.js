@@ -1,6 +1,6 @@
 import {getAbortSignal, tick, untrack} from 'svelte';
 import {
-    addDay,
+    addDay, DAY_IN_SECONDS,
     assign, cloneDate, convertOffset, createDate, createEvents, createResources, datesEqual, empty, getOffset, isArray,
     isFunction, resolveOffset, setMidnight, setOffset, toISOString, toLocalDate, toViewWithLocalDates
 } from '#lib';
@@ -217,7 +217,9 @@ export function handleTimeZoneChange(mainState) {
             // Update date option
             let dateOffset = getOffset(options.date);
             if (dateOffset !== undefined) {
-                let diff = createDate(undefined, offset).getUTCDay() - createDate(undefined, dateOffset).getUTCDay();
+                // Days between today in the new and in the old time zone
+                let todayAt = zoneOffset => setMidnight(createDate(undefined, zoneOffset));
+                let diff = (todayAt(offset) - todayAt(dateOffset)) / (DAY_IN_SECONDS * 1000);
                 let date = addDay(cloneDate(options.date), diff);
                 mainState.setOption('date', date);
             }
