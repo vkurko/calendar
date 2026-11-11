@@ -2,13 +2,14 @@
     import {getContext, onMount} from 'svelte';
     import {
         addDay, addDuration, ancestor, assign, cloneDate, cloneEvent, copyTime, createDuration, datesEqual,
-        getElementWithPayload, getPayload, isFunction, isRtl, listen, max, min, noop, rect, runAll, setMidnight,
-        subtractDay, subtractDuration, toEventWithLocalDates, toISOString, toLocalDate, toViewWithLocalDates
+        getElementWithPayload, getPayload, isFunction, isRtl, listen, max, min, noop, rect, resolveOffset, runAll,
+        setMidnight, setOffset, subtractDay, subtractDuration, toEventWithLocalDates, toISOString, toLocalDate,
+        toViewWithLocalDates
     } from '#lib';
     import {animate, limit, eventDraggable} from './lib';
 
     let mainState = getContext('state');
-    let {events, iEvents, features, view, mainEl, options: {dateClick, dragConstraint, dragScroll, editable,
+    let {events, iEvents, features, view, mainEl, offset, options: {dateClick, dragConstraint, dragScroll, editable,
         eventStartEditable, eventDragMinDistance, eventDragStart, eventDragStop, eventDrop,
         eventLongPressDelay, eventResizeStart, eventResizeStop, eventResize, longPressDelay, resizeConstraint,
         selectable, select: selectFn, selectBackgroundColor, selectConstraint, selectLongPressDelay, selectMinDistance,
@@ -547,6 +548,10 @@
 
     function updateEvent(target, source) {
         copyIEventData(target, source);
+        // The dates were moved by wall time, so the offset of the new time can differ, like after a DST change
+        for (let date of [target.start, target.end]) {
+            setOffset(date, resolveOffset(date, offset));
+        }
         events.length = events.length;
     }
 
