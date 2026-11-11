@@ -11,5 +11,6 @@ export * from './payload.js';
 export * from './range.js';
 export * from './resources.js';
 export * from './slots.js';
+export * from './time-zone.js';
 export * from './utils.js';
 export * from './view.js';
