@@ -21,14 +21,22 @@ export function switchView(mainState) {
 }
 
 export function loadEvents(mainState, loadingInvoker) {
+    // handleTimeZoneChange() converts the events that the calendar is created with
+    let convertedEvents = untrack(() => mainState.options.events);
     return () => {
         // Dependencies
         let {activeRange, fetchedRange: {events: fetchedRange}, offset, viewDates,
             options: {events, eventSources, lazyFetching, timeZone}} = mainState;
 
         untrack(() => {
+            let sources = eventSources.map(source => isFunction(source.events) ? source.events : source);
+            if (empty(sources) && events !== convertedEvents) {
+                // A new events option is parsed without the offset of the time zone
+                convertEvents(events, offset);
+                convertedEvents = events;
+            }
             load(
-                eventSources.map(source => isFunction(source.events) ? source.events : source),
+                sources,
                 events,
                 input => createEvents(input, offset),
                 result => mainState.events = arrayProxy(result),
@@ -198,22 +206,7 @@ export function handleTimeZoneChange(mainState) {
         let {offset, options} = mainState;
 
         untrack(() => {
-            // Update events
-            for (let event of mainState.events) {
-                if (!event.allDay) {
-                    for (let prop of ['start', 'end']) {
-                        let date = event[prop];
-                        let dateOffset = getOffset(date);
-                        // Dates parsed from strings with no timezone info have dateOffset === undefined;
-                        // they are treated as floating and only get branded with the new offset, not shifted
-                        if (dateOffset !== undefined) {
-                            convertOffset(date, dateOffset, offset);
-                        } else {
-                            setOffset(date, resolveOffset(date, offset));
-                        }
-                    }
-                }
-            }
+            convertEvents(mainState.events, offset);
             // Update date option
             let dateOffset = getOffset(options.date);
             if (dateOffset !== undefined) {
@@ -225,6 +218,24 @@ export function handleTimeZoneChange(mainState) {
             }
             setOffset(options.date, resolveOffset(options.date, offset));
         });
+    }
+}
+
+function convertEvents(events, offset) {
+    for (let event of events) {
+        if (!event.allDay) {
+            for (let prop of ['start', 'end']) {
+                let date = event[prop];
+                let dateOffset = getOffset(date);
+                // Dates parsed from strings with no timezone info have dateOffset === undefined;
+                // they are treated as floating and only get branded with the new offset, not shifted
+                if (dateOffset !== undefined) {
+                    convertOffset(date, dateOffset, offset);
+                } else {
+                    setOffset(date, resolveOffset(date, offset));
+                }
+            }
+        }
     }
 }
 
