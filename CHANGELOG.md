@@ -1,5 +1,18 @@
 # EventCalendar changelog
 
+## 5.19.0
+November 13, 2026
+* Changed `Date` objects in events to be read as the wall-clock time of the calendar's time zone
+* :warning: Events with `Date` objects are no longer shifted to the calendar's time zone, use an ISO string with an offset to pass a moment in time
+* Changed events without `end` to end at their start
+* Changed events without `start` to be ignored
+* Changed `date` option to keep the same day when `timeZone` changes, unless it is today
+* Changed `gotoDate()` without a date to go to today
+* Fixed events set at runtime not being converted to `timeZone` ([694](https://github.com/vkurko/calendar/pull/694))
+* Fixed events dragged or resized across a DST change being shifted after changing `timeZone` ([695](https://github.com/vkurko/calendar/pull/695))
+* Fixed `date` option moving by several days when `timeZone` changes ([696](https://github.com/vkurko/calendar/pull/696))
+* Fixed TypeScript types for `updateEvent()` and `gotoDate()`
+
 ## 5.18.1
 October 25, 2026
 * Fixed events getting stuck semi-transparent after a drag or resize is interrupted by the browser ([689](https://github.com/vkurko/calendar/issues/689))

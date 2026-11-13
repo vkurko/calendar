@@ -1,7 +1,7 @@
 import {describe, expect, it} from 'vitest';
 import {
     addDuration, convertOffset, createDate, createDuration, getOffset, getWeekNumber, nextDate, noTimePart,
-    parseOffset, prevDate, resolveOffset, toISOString, toLocalDate
+    nowIn, parseOffset, prevDate, resolveOffset, toISOString, toLocalDate
 } from '../../packages/core/src/lib/date.js';
 
 // Tests run in Europe/Amsterdam (see vitest.config.js):
@@ -59,22 +59,35 @@ describe('createDate', () => {
         expect(getOffset(createDate('2026-10-25T01:30:00', 'local'))).toBe(120);
     });
 
-    it('keeps the wall time of a Date in local mode on both sides of a DST change', () => {
+    it('reads a Date as a wall time in any offset, on both sides of a DST change', () => {
         // https://github.com/vkurko/calendar/issues/686
-        for (let offset of [undefined, 'local']) {
+        for (let [offset, winterOffset, summerOffset] of [[undefined, undefined, undefined], ['local', 60, 120], [0, 0, 0], [-420, -420, -420]]) {
             let winter = createDate(new Date(2026, 10, 3, 10, 0), offset);
             expect(str(winter)).toBe('2026-11-03T10:00:00');
-            expect(getOffset(winter)).toBe(60);
+            expect(getOffset(winter)).toBe(winterOffset);
             let summer = createDate(new Date(2027, 3, 3, 10, 0), offset);
             expect(str(summer)).toBe('2027-04-03T10:00:00');
-            expect(getOffset(summer)).toBe(120);
+            expect(getOffset(summer)).toBe(summerOffset);
         }
     });
 
-    it('converts a Date to a fixed target offset', () => {
-        let date = createDate(new Date(2026, 10, 3, 10, 0), 0);
-        expect(str(date)).toBe('2026-11-03T09:00:00');
-        expect(getOffset(date)).toBe(0);
+    it('keeps the pass of a Date in the repeated hour in local mode', () => {
+        // Clocks go back from 03:00 to 02:00 on 25 October 2026, so 02:30 happens twice
+        let first = createDate(new Date('2026-10-25T00:30:00Z'), 'local');
+        let second = createDate(new Date('2026-10-25T01:30:00Z'), 'local');
+        expect(str(first)).toBe('2026-10-25T02:30:00');
+        expect(str(second)).toBe('2026-10-25T02:30:00');
+        expect(getOffset(first)).toBe(120);
+        expect(getOffset(second)).toBe(60);
+    });
+
+    it('nowIn gives the current moment in the offset', () => {
+        let now = Date.now();
+        for (let [offset, expected] of [[0, 0], [-420, -420], ['local', -new Date(now).getTimezoneOffset()]]) {
+            let date = nowIn(offset);
+            expect(getOffset(date)).toBe(expected);
+            expect(Math.abs(date.getTime() - expected * 60000 - now)).toBeLessThan(2000);
+        }
     });
 });
 

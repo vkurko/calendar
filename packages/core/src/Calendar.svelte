@@ -3,7 +3,7 @@
     import {setContext, untrack} from 'svelte';
     import {
         assign, cloneDate, createDate, createEvents, getElementWithPayload, getPayload, isDate, nextDate,
-        prevDate, setMidnight, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
+        prevDate, setMidnight, todayIn, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import MainState from './storage/state.svelte.js';
     import {diff} from './storage/options.js';
@@ -36,7 +36,12 @@
     });
 
     export function setOption(name, value) {
-        mainState.setOption(name, value, false);
+        if (name === 'date' && value === undefined) {
+            // Today in the time zone of the calendar, which the parser of the option does not know
+            mainState.setOption(name, todayIn(offset));
+        } else {
+            mainState.setOption(name, value, false);
+        }
         return this;
     }
 
@@ -71,6 +76,9 @@
 
     export function addEvent(event) {
         event = createEvents([event], offset)[0];
+        if (!event) {
+            return null;
+        }
         events.push(event);
         return toEventWithLocalDates(event);
     }
@@ -80,6 +88,9 @@
         let idx = events.findIndex(event => event.id === id);
         if (idx >= 0) {
             event = createEvents([event], offset)[0];
+            if (!event) {
+                return null;
+            }
             events[idx] = event;
             return toEventWithLocalDates(event);
         }
@@ -116,7 +127,7 @@
     }
 
     export function gotoDate(date) {
-        date = setMidnight(createDate(date));
+        date = date === undefined ? todayIn(offset) : setMidnight(createDate(date));
         mainState.setOption('date', cloneDate(date));
         mainState.scrollDate = date;
         return this;

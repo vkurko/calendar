@@ -1,5 +1,5 @@
 import {SvelteMap} from 'svelte/reactivity';
-import {cloneDate, createDate, identity, intl, intlRange, isArray, setMidnight} from '#lib';
+import {cloneDate, identity, intl, intlRange, isArray, nowIn, setMidnight} from '#lib';
 import {optionsState} from './options.js';
 import {
     createLoadingInvoker, handleTimeZoneChange, loadEvents, loadResources, runDatesSet, runEventAllUpdated,
@@ -30,7 +30,7 @@ export default class State {
         this.events = $state.raw(arrayProxy(this.options.events));
         this.filteredEvents = $derived.by(filteredEvents(this));
         this.mainEl = $state();
-        this.now = $state(createDate(undefined, this.offset));
+        this.now = $state(nowIn(this.offset));
         this.resources = $state.raw(arrayProxy(isArray(this.options.resources) ? this.options.resources : []));
         this.scrollDate = $state();
         this.today = $state(setMidnight(cloneDate(this.now)));

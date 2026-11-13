@@ -1,8 +1,8 @@
 import {getAbortSignal, tick, untrack} from 'svelte';
 import {
-    addDay,
-    assign, cloneDate, convertOffset, createDate, createEvents, createResources, datesEqual, empty, getOffset, isArray,
-    isFunction, resolveOffset, setMidnight, setOffset, toISOString, toLocalDate, toViewWithLocalDates
+    addDay, DAY_IN_SECONDS,
+    assign, cloneDate, convertOffset, createEvents, createResources, datesEqual, empty, getOffset, isArray, nowIn,
+    isFunction, resolveOffset, setMidnight, setOffset, todayIn, toISOString, toLocalDate, toViewWithLocalDates
 } from '#lib';
 import {arrayProxy} from './proxy.svelte.js';
 
@@ -21,14 +21,22 @@ export function switchView(mainState) {
 }
 
 export function loadEvents(mainState, loadingInvoker) {
+    // handleTimeZoneChange() converts the events that the calendar is created with
+    let convertedEvents = untrack(() => mainState.options.events);
     return () => {
         // Dependencies
         let {activeRange, fetchedRange: {events: fetchedRange}, offset, viewDates,
             options: {events, eventSources, lazyFetching, timeZone}} = mainState;
 
         untrack(() => {
+            let sources = eventSources.map(source => isFunction(source.events) ? source.events : source);
+            if (empty(sources) && events !== convertedEvents) {
+                // A new events option is parsed without the offset of the time zone
+                convertEvents(events, offset);
+                convertedEvents = events;
+            }
             load(
-                eventSources.map(source => isFunction(source.events) ? source.events : source),
+                sources,
                 events,
                 input => createEvents(input, offset),
                 result => mainState.events = arrayProxy(result),
@@ -180,7 +188,7 @@ export function setNowAndToday(mainState) {
 
         // Now and today
         let interval = setInterval(() => {
-            let now = createDate(undefined, offset);
+            let now = nowIn(offset);
             let today = setMidnight(cloneDate(now));
             mainState.now = now;
             if (!datesEqual(mainState.today, today)) {
@@ -198,31 +206,35 @@ export function handleTimeZoneChange(mainState) {
         let {offset, options} = mainState;
 
         untrack(() => {
-            // Update events
-            for (let event of mainState.events) {
-                if (!event.allDay) {
-                    for (let prop of ['start', 'end']) {
-                        let date = event[prop];
-                        let dateOffset = getOffset(date);
-                        // Dates parsed from strings with no timezone info have dateOffset === undefined;
-                        // they are treated as floating and only get branded with the new offset, not shifted
-                        if (dateOffset !== undefined) {
-                            convertOffset(date, dateOffset, offset);
-                        } else {
-                            setOffset(date, resolveOffset(date, offset));
-                        }
-                    }
-                }
-            }
-            // Update date option
+            convertEvents(mainState.events, offset);
+            // Update date option, only today (a date with an offset) follows the time zone,
+            // an explicit date has no offset and stays the same day
             let dateOffset = getOffset(options.date);
             if (dateOffset !== undefined) {
-                let diff = createDate(undefined, offset).getUTCDay() - createDate(undefined, dateOffset).getUTCDay();
+                // Days between today in the new and in the old time zone
+                let diff = (todayIn(offset) - todayIn(dateOffset)) / (DAY_IN_SECONDS * 1000);
                 let date = addDay(cloneDate(options.date), diff);
-                mainState.setOption('date', date);
+                mainState.setOption('date', setOffset(date, resolveOffset(date, offset)));
             }
-            setOffset(options.date, resolveOffset(options.date, offset));
         });
+    }
+}
+
+function convertEvents(events, offset) {
+    for (let event of events) {
+        if (!event.allDay) {
+            for (let prop of ['start', 'end']) {
+                let date = event[prop];
+                let dateOffset = getOffset(date);
+                // Date objects and strings without an offset have dateOffset === undefined;
+                // they are treated as floating and only get branded with the new offset, not shifted
+                if (dateOffset !== undefined) {
+                    convertOffset(date, dateOffset, offset);
+                } else {
+                    setOffset(date, resolveOffset(date, offset));
+                }
+            }
+        }
     }
 }
 

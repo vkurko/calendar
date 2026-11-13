@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
-    addDay, addDuration, bgEvent, ceil, cloneDate, createAllDayChunks, createDate, createSlots, createSlotTimeLimits,
-    datesEqual, outsideRange, prepareAllDayChunks, setMidnight, toSeconds
+    addDay, addDuration, bgEvent, ceil, cloneDate, createAllDayChunks, createSlots, createSlotTimeLimits,
+    datesEqual, outsideRange, prepareAllDayChunks, todayIn, toSeconds
 } from '#lib';
 import {createChunks, groupChunks} from './lib.js';
 
@@ -141,7 +141,7 @@ export function slots(mainState, viewState) {
 
         untrack(() => {
             slots = createSlots(
-                setMidnight(createDate(undefined, offset)),
+                todayIn(offset),
                 slotDuration,
                 slotLabelPeriodicity,
                 slotTimeLimits,

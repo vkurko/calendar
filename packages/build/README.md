@@ -304,8 +304,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.18.1/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.18.1/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.19.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.19.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -583,12 +583,12 @@ Enables scrollbars styling, which in turn prevents the scrollbars from being hid
 This option can be useful, for example, for macOS users in `resourceTimeline` views to indicate that the calendar can be scrolled horizontally. On macOS, scrollbars can be hidden completely, and this option ensures they are always visible in [supported](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-scrollbar#browser_compatibility) browsers.
 
 ### date
-- Type `Date` or `string`
-- Default `new Date()`
+- Type `Date`, `string` or `undefined`
+- Default `undefined`
 
 Date that is currently displayed on the calendar.
 
-This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`.
+This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`. `undefined` means today in the calendar's [timeZone](#timezone).
 
 ### dateClick
 - Type `function`
@@ -2807,7 +2807,9 @@ The following values are accepted:
 
 Event dates that contain an explicit timezone offset in their ISO string (e.g. `'2028-06-01T10:00:00+02:00'` or `'2028-06-01T08:00:00Z'`) will be shifted to the calendar's timezone. Event dates without timezone info (e.g. `'2028-06-01T10:00:00'`) are treated as floating — they display their wall-clock time as-is and will be interpreted in the calendar's timezone from that point forward.
 
-When the `timeZone` option changes at runtime, all already-loaded events and the current `date` option are automatically shifted to the new timezone. Events from [eventSources](#eventsources) are re-fetched automatically.
+JavaScript Date objects in event dates are read as the wall-clock time of the calendar's timezone, the same way the calendar passes dates to callbacks and returns them from methods like [getEventById()](#geteventbyid-id-). So `new Date(2028, 5, 1, 10, 0)` is displayed as 10:00 in any timezone, and a date from a callback can be passed back to [addEvent()](#addevent-event-) or [updateEvent()](#updateevent-event-) as is. To pass an exact moment in time, use an ISO string with an offset, e.g. `date.toISOString()`.
+
+When the `timeZone` option changes at runtime, all already-loaded events are automatically shifted to the new timezone. If the [date](#date) option comes from today (`undefined` or the today button, also after the prev/next buttons), it moves by the days between today in the old and in the new timezone. An explicitly set date stays the same day. Events from [eventSources](#eventsources) are re-fetched automatically.
 
 ```js
 let ec = new EventCalendar(document.getElementById('ec'), {
@@ -3113,8 +3115,8 @@ ec.setOption('date', new Date());
 
 ### addEvent( event )
 - Parameters
-  - `event` `object` A plain object that will be parsed into an [Event](#event-object) object
-- Return value [Event](#event-object) object or `null`
+  - `event` `object` A plain object that will be [parsed](#parsing-event-from-a-plain-object) into an [Event](#event-object) object
+- Return value [Event](#event-object) object or `null` if the `event` can't be parsed
 
 Adds a new event to the calendar.
 
@@ -3140,9 +3142,9 @@ Removes a single event with the matching `id`.
 ### updateEvent( event )
 - Parameters
   - `event` `object` A plain object or [Event](#event-object) object
-- Return value `EventCalendar` The calendar instance for chaining
+- Return value [Event](#event-object) object or `null`
 
-Updates a single event with the matching `event`.`id`.
+Updates a single event with the matching `event`.`id`. Returns `null` if there is no such event or the `event` can't be [parsed](#parsing-event-from-a-plain-object).
 
 ### refetchEvents()
 - Return value `EventCalendar` The calendar instance for chaining
@@ -3205,7 +3207,7 @@ Returns the [View](#view-object) object for the current view.
 
 ### gotoDate( date )
 - Parameters
-  - `date` `Date` or `string` This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`
+  - `date` `Date`, `string` or `undefined` This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`. `undefined` means today in the calendar's [timeZone](#timezone)
 - Return value `EventCalendar` The calendar instance for chaining
 
 Moves the current calendar date to the given date and, in views with horizontal scrolling (`resourceTimeline` views and `resourceTimeGrid` views with [datesAboveResources](#datesaboveresources) enabled), additionally scrolls the view to make this date visible.
@@ -3401,6 +3403,8 @@ A plain object holding miscellaneous properties specified during parsing in the 
 ### Parsing event from a plain object
 When EventCalendar receives an array of plain event’s objects either from the `events` option or as a result of an HTTP request to a URL of an event source, it parses the input objects into proper Event objects.
 
+An input object without `start` can't be parsed, such an event is not added to the calendar.
+
 Here are all admissible fields for the event’s input object:
 <table>
 <tr>
@@ -3440,7 +3444,7 @@ Here are all admissible fields for the event’s input object:
 </td>
 <td>
 
-`string` or `Date` This should be either an ISO8601 datetime string like `'2026-12-31 13:00:00'`, or a JavaScript Date object holding the event’s end time
+`string` or `Date` This should be either an ISO8601 datetime string like `'2026-12-31 13:00:00'`, or a JavaScript Date object holding the event’s end time. If omitted, the event ends at its start, an all-day event lasts one day
 </td>
 </tr>
 <tr>

@@ -1,7 +1,7 @@
 import {untrack} from 'svelte';
 import {
     assign, createDate, createDateRange, createDuration, createEvents, createEventSources, createResources,
-    createSource, hasOwn, isArray, isFunction, isPlainObject, keys, setMidnight, undefinedOr
+    createSource, hasOwn, isArray, isFunction, isPlainObject, keys, setMidnight, todayIn, undefinedOr
 } from '#lib';
 import {objectProxy} from './proxy.svelte.js';
 
@@ -12,7 +12,7 @@ function createOptions(plugins) {
         },
         customButtons: {},
         customScrollbars: false,  // ec option
-        date: new Date(),
+        date: undefined,  // today in the time zone of the calendar
         dateIncrement: undefined,
         datesSet: undefined,
         dayCellContent: undefined,
@@ -120,7 +120,9 @@ function createOptions(plugins) {
 
 function createParsers(plugins) {
     let parsers = {
-        date: input => setMidnight(createDate(input)),
+        // Without a date it is today, the offset of the calendar is not known yet, so today in the browser's offset is
+        // moved to today in the offset of the calendar in handleTimeZoneChange()
+        date: input => input === undefined ? todayIn('local') : setMidnight(createDate(input)),
         dateIncrement: undefinedOr(createDuration),
         duration: createDuration,
         events: createEvents,

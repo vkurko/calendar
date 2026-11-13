@@ -7,13 +7,20 @@ import {toViewWithLocalDates} from './view.js';
 
 let eventId = 1;
 export function createEvents(input, offset = undefined) {
-    return input.map(event => {
+    let events = [];
+    for (let event of input) {
+        // An event without a start is not added
+        if (event.start == null) {
+            continue;
+        }
+        let start = createDate(event.start, offset);
         let result = {
             id: event.id != null ? String(event.id) : `{generated-${eventId++}}`,
             resourceIds: toArrayProp(event, 'resourceId').map(String),
-            allDay: event.allDay ?? (noTimePart(event.start) && noTimePart(event.end)),
-            start: createDate(event.start, offset),
-            end: createDate(event.end, offset),
+            allDay: event.allDay ?? (noTimePart(event.start) && (event.end == null || noTimePart(event.end))),
+            start,
+            // Without an end the event has no length, an all-day event gets one day below
+            end: event.end == null ? cloneDate(start) : createDate(event.end, offset),
             title: event.title ?? '',
             editable: event.editable,
             startEditable: event.startEditable,
@@ -40,8 +47,10 @@ export function createEvents(input, offset = undefined) {
             }
         }
 
-        return result;
-    });
+        events.push(result);
+    }
+
+    return events;
 }
 
 function toArrayProp(input, propName) {

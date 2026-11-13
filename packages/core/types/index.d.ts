@@ -40,12 +40,12 @@ export interface Calendar {
     getEventById(id: number | string): Calendar.Event | null;
     getEvents(): Calendar.Event[];
     removeEventById(id: number | string): Calendar;
-    updateEvent(event: Calendar.Event | Calendar.EventInput): Calendar;
+    updateEvent(event: Calendar.Event | Calendar.EventInput): Calendar.Event | null;
     refetchEvents(): Calendar;
     refetchResources(): Calendar;
     dateFromPoint(x: number, y: number): Calendar.DateClickInfo | null;
     getView(): Calendar.View;
-    gotoDate(date: Date | Calendar.isoDateString): Calendar;
+    gotoDate(date?: Date | Calendar.isoDateString): Calendar;
     next(): Calendar;
     prev(): Calendar;
     unselect(): Calendar;

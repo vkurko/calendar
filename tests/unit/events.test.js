@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {createEvents, eventIntersects} from '../../packages/core/src/lib/events.js';
-import {createDate, toISOString} from '../../packages/core/src/lib/date.js';
+import {createDate, getOffset, toISOString} from '../../packages/core/src/lib/date.js';
 
 function createEvent(input, offset = undefined) {
     return createEvents([input], offset)[0];
@@ -47,6 +47,38 @@ describe('createEvents', () => {
         expect(event.styles).toEqual(['color: red']);
         event = createEvent({start: '2026-11-03', end: '2026-11-04', resourceIds: [1, 'b']});
         expect(event.resourceIds).toEqual(['1', 'b']);
+    });
+
+    it('reads a Date as the wall time of the calendar', () => {
+        for (let offset of [undefined, 'local', 0, -420, 330]) {
+            let event = createEvent({start: new Date(2026, 10, 3, 10, 0), end: new Date(2026, 10, 3, 12, 0)}, offset);
+            expect(str(event.start)).toBe('2026-11-03T10:00:00');
+            expect(str(event.end)).toBe('2026-11-03T12:00:00');
+        }
+        // Without an offset it is floating, like a string without one
+        expect(getOffset(createEvent({start: new Date(2026, 10, 3, 10, 0), end: new Date(2026, 10, 3, 12, 0)}).start))
+            .toBeUndefined();
+        expect(getOffset(createEvent({start: new Date(2026, 10, 3, 10, 0), end: new Date(2026, 10, 3, 12, 0)}, -420).start))
+            .toBe(-420);
+    });
+
+    it('gives an event without an end no length, or one day if it is all-day', () => {
+        let event = createEvent({start: '2026-11-03T10:00:00'});
+        expect(event.allDay).toBe(false);
+        expect(str(event.end)).toBe('2026-11-03T10:00:00');
+        expect(event.end).not.toBe(event.start);
+        event = createEvent({start: new Date(2026, 10, 3, 10, 0)}, -420);
+        expect(str(event.end)).toBe('2026-11-03T10:00:00');
+        expect(getOffset(event.end)).toBe(-420);
+        event = createEvent({start: '2026-11-03'});
+        expect(event.allDay).toBe(true);
+        expect(str(event.end)).toBe('2026-11-04T00:00:00');
+    });
+
+    it('skips an event without a start and reads a null end as no end', () => {
+        let events = createEvents([{start: '2026-11-03T10:00:00'}, {end: '2026-11-03T10:00:00'}, {start: null}]);
+        expect(events.length).toBe(1);
+        expect(str(createEvent({start: '2026-11-03T10:00:00', end: null}).end)).toBe('2026-11-03T10:00:00');
     });
 
     it('applies defaults', () => {

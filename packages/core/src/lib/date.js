@@ -3,8 +3,28 @@ import {createContent} from './content.js';
 
 export const DAY_IN_SECONDS = 86400;
 
-export function createDate(input = new Date(), offset = undefined) {
+/**
+ * Create a date in the given offset of the calendar.
+ * A Date or a string without an offset is read as a wall time, the same as the dates passed to callbacks.
+ * A string with an offset is a moment in time and is converted
+ */
+export function createDate(input, offset = undefined) {
     return isDate(input) ? _fromLocalDate(input, offset) : _fromISOString(input, offset);
+}
+
+/**
+ * Get the current moment as a wall time in the given offset
+ */
+export function nowIn(offset) {
+    let now = new Date();
+    return convertOffset(_wallTime(now), tzOffset(now), offset);
+}
+
+/**
+ * Get today (midnight) in the given offset
+ */
+export function todayIn(offset) {
+    return setMidnight(nowIn(offset));
 }
 
 export function createDuration(input) {
@@ -197,24 +217,28 @@ export function parseOffset(str, match = {}) {
 }
 
 /**
- * Convert a date from one timezone offset to another, 'local' means the local offset at the moment of the date
+ * Convert a date from one offset to another by shifting its wall time.
+ * 'local' means the offset of the browser at the moment of the date
  */
 export function convertOffset(date, fromOffset, toOffset) {
     if (toOffset === 'local') {
-        toOffset = tzOffset(new Date(date.getTime() - fromOffset * 60000));
-    }
-    if (toOffset !== fromOffset) {
-        date.setUTCMinutes(date.getUTCMinutes() + toOffset - fromOffset);
+        // Get the moment from the wall time, then the wall time in the browser's offset at that moment
+        _applyOffset(date, -fromOffset);
+        toOffset = tzOffset(date);
+        _applyOffset(date, toOffset);
+    } else if (toOffset !== fromOffset) {
+        _applyOffset(date, toOffset - fromOffset);
     }
 
     return setOffset(date, toOffset);
 }
 
 /**
- * Get the numeric offset for a date whose time is already in the given offset
+ * Get the numeric offset for a date whose time is already in the given offset.
+ * For 'local' it is the offset of the local Date with that wall time, which can be passed if it is known
  */
-export function resolveOffset(date, offset) {
-    return offset === 'local' ? tzOffset(toLocalDate(date)) : offset;
+export function resolveOffset(date, offset, localDate = undefined) {
+    return offset === 'local' ? tzOffset(localDate ?? toLocalDate(date)) : offset;
 }
 
 let offsetSymbol = Symbol('ec');
@@ -231,8 +255,8 @@ export function getOffset(date) {
  * Private functions
  */
 
-function _fromLocalDate(date, offset = undefined) {
-    let result = new Date(Date.UTC(
+function _wallTime(date) {
+    return new Date(Date.UTC(
         date.getFullYear(),
         date.getMonth(),
         date.getDate(),
@@ -240,8 +264,15 @@ function _fromLocalDate(date, offset = undefined) {
         date.getMinutes(),
         date.getSeconds()
     ));
+}
 
-    return convertOffset(result, tzOffset(date), offset ?? 'local');
+/**
+ * Read a Date as a wall time by its local fields. For 'local' the offset is taken from the Date itself,
+ * so a time in the repeated hour of a DST change keeps the pass it belongs to
+ */
+function _fromLocalDate(date, offset = undefined) {
+    let result = _wallTime(date);
+    return setOffset(result, resolveOffset(result, offset, date));
 }
 
 function _fromISOString(str, offset = undefined) {
@@ -264,6 +295,13 @@ function _fromISOString(str, offset = undefined) {
     }
 
     return setOffset(result, inputOffset ?? resolveOffset(result, offset));
+}
+
+/**
+ * Shift the wall time of a date by an offset in minutes
+ */
+function _applyOffset(date, offset) {
+    date.setUTCMinutes(date.getUTCMinutes() + offset);
 }
 
 function _skipHiddenDays(date, hiddenDays, dateFn) {
