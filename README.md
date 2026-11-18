@@ -4,7 +4,7 @@ See [demo](https://vkurko.github.io/calendar/) and [changelog](CHANGELOG.md).
 
 Full-sized drag & drop JavaScript event calendar with resource & timeline views:
 
-* Lightweight (35kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
+* Lightweight (39kb [br](https://en.wikipedia.org/wiki/Brotli) compressed)
 * Minimal DOM structure (thanks to [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout))
 * Zero-dependency (standalone bundle)
 * Used on over 70,000 websites with [Bookly](https://wordpress.org/plugins/bookly-responsive-appointment-booking-tool/)
@@ -304,8 +304,8 @@ This bundle contains a version of the calendar that includes all plugins and is 
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.19.0/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.19.0/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.20.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.20.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -2804,12 +2804,17 @@ The following values are accepted:
 - `'local'` — uses the browser's local time zone
 - `'UTC'` — uses UTC (zero offset)
 - A UTC offset string in the form `'±HH:MM'`, e.g. `'+05:30'` or `'-06:00'`
+- An [IANA time zone name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g. `'America/Los_Angeles'` — follows the rules of that zone, including daylight saving time (DST). An unknown name is treated as `'local'`
 
 Event dates that contain an explicit timezone offset in their ISO string (e.g. `'2028-06-01T10:00:00+02:00'` or `'2028-06-01T08:00:00Z'`) will be shifted to the calendar's timezone. Event dates without timezone info (e.g. `'2028-06-01T10:00:00'`) are treated as floating — they display their wall-clock time as-is and will be interpreted in the calendar's timezone from that point forward.
 
 JavaScript Date objects in event dates are read as the wall-clock time of the calendar's timezone, the same way the calendar passes dates to callbacks and returns them from methods like [getEventById()](#geteventbyid-id-). So `new Date(2028, 5, 1, 10, 0)` is displayed as 10:00 in any timezone, and a date from a callback can be passed back to [addEvent()](#addevent-event-) or [updateEvent()](#updateevent-event-) as is. To pass an exact moment in time, use an ISO string with an offset, e.g. `date.toISOString()`.
 
 When the `timeZone` option changes at runtime, all already-loaded events are automatically shifted to the new timezone. If the [date](#date) option comes from today (`undefined` or the today button, also after the prev/next buttons), it moves by the days between today in the old and in the new timezone. An explicitly set date stays the same day. Events from [eventSources](#eventsources) are re-fetched automatically.
+
+A day always has 24 hours in the views, also on a DST day, as with `'local'`. The hour the clocks skip stays in the grid and the hour they repeat is shown once, so an event across the change is drawn longer or shorter than it lasts. A date without an offset in the skipped hour is read like `new Date()` reads it (02:30 means 03:30) and moves to 03:30 when `timeZone` changes, in the repeated hour it is read as its first occurrence.
+
+A format option with `timeZoneName` shows the browser's time zone, not the calendar's.
 
 ```js
 let ec = new EventCalendar(document.getElementById('ec'), {

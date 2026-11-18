@@ -8,18 +8,47 @@ export function intl(mainState, option) {
         let {options: {locale}} = mainState;
         let format = mainState.options[option];
 
-        let intl;
+        let formatDate;
 
         untrack(() => {
-            intl = isFunction(format)
-                ? {format}
-                : new Intl.DateTimeFormat(locale, format);
+            if (isFunction(format)) {
+                formatDate = date => format(toLocalDate(date));
+            } else {
+                let wallFormat = createWallFormat(locale, format);
+                formatDate = date => {
+                    let [intl, wallDate] = wallFormat(date);
+                    return intl.format(wallDate);
+                };
+            }
         });
 
-        return {
-            format: date => intl.format(toLocalDate(date))
-        };
+        return {format: formatDate};
     };
+}
+
+/**
+ * A local Date shows a time that the browser's clocks skip an hour late, so such dates are formatted as UTC.
+ * Gets one or two dates, returns the formatter to use and the dates to give it
+ */
+function createWallFormat(locale, format) {
+    let local = new Intl.DateTimeFormat(locale, format);
+    let utc;
+
+    return (start, end) => {
+        let localStart = toLocalDate(start);
+        let localEnd = end && toLocalDate(end);
+        if (holdsWallTime(localStart, start) && (!end || holdsWallTime(localEnd, end))) {
+            return [local, localStart, localEnd];
+        }
+
+        return [utc ??= new Intl.DateTimeFormat(locale, {...format, timeZone: 'UTC'}), start, end];
+    };
+}
+
+function holdsWallTime(localDate, date) {
+    return localDate.getDate() === date.getUTCDate() &&
+        localDate.getHours() === date.getUTCHours() &&
+        localDate.getMinutes() === date.getUTCMinutes();
 }
 
 /**
@@ -40,17 +69,17 @@ export function intlRange(mainState, option, timeOnly = false) {
             if (isFunction(format)) {
                 formatRange = (start, end) => format(toLocalDate(start), end && toLocalDate(end));
             } else {
-                let intl = new Intl.DateTimeFormat(locale, format);
+                let wallFormat = createWallFormat(locale, format);
                 formatRange = (start, end) => {
-                    if (!end) {
-                        return intl.format(toLocalDate(start));
-                    }
-                    if (timeOnly) {
+                    if (end && timeOnly) {
                         // Move the end to the start day, so that the dates are not output
                         end = copyTime(cloneDate(start), end);
                     }
-                    start = toLocalDate(start);
-                    end = toLocalDate(end);
+                    let intl;
+                    [intl, start, end] = wallFormat(start, end);
+                    if (!end) {
+                        return intl.format(start);
+                    }
                     if (start <= end) {
                         return intl.formatRange(start, end);
                     } else {

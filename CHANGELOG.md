@@ -1,5 +1,11 @@
 # EventCalendar changelog
 
+## 5.20.0
+November 18, 2026
+* Added IANA time zone names to `timeZone` option ([690](https://github.com/vkurko/calendar/issues/690))
+* Fixed events in the skipped DST hour being shifted an hour back when `timeZone` changes ([693](https://github.com/vkurko/calendar/pull/693))
+* Fixed times in the DST hour skipped by the browser being shown an hour later ([692](https://github.com/vkurko/calendar/pull/692))
+
 ## 5.19.0
 November 13, 2026
 * Changed `Date` objects in events to be read as the wall-clock time of the calendar's time zone

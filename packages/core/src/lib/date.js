@@ -1,5 +1,6 @@
 import {assign, isDate, tzOffset} from './utils.js';
 import {createContent} from './content.js';
+import {zoneOffset, zoneWallOffset} from './time-zone.js';
 
 export const DAY_IN_SECONDS = 86400;
 
@@ -217,14 +218,21 @@ export function parseOffset(str, match = {}) {
 }
 
 /**
+ * Parse the value of the timeZone option as a UTC offset, a string with anything else around it is not one
+ */
+export function parseTimeZoneOffset(str) {
+    return /^(?:Z|[+-]\d{2}:?\d{2})$/.test(str) ? parseOffset(str) : undefined;
+}
+
+/**
  * Convert a date from one offset to another by shifting its wall time.
- * 'local' means the offset of the browser at the moment of the date
+ * 'local' or an IANA time zone name means the offset of that zone at the moment of the date
  */
 export function convertOffset(date, fromOffset, toOffset) {
-    if (toOffset === 'local') {
-        // Get the moment from the wall time, then the wall time in the browser's offset at that moment
+    if (typeof toOffset === 'string') {
+        // Get the moment from the wall time, then the wall time in the zone's offset at that moment
         _applyOffset(date, -fromOffset);
-        toOffset = tzOffset(date);
+        toOffset = toOffset === 'local' ? tzOffset(date) : zoneOffset(toOffset, toTime(date));
         _applyOffset(date, toOffset);
     } else if (toOffset !== fromOffset) {
         _applyOffset(date, toOffset - fromOffset);
@@ -235,10 +243,22 @@ export function convertOffset(date, fromOffset, toOffset) {
 
 /**
  * Get the numeric offset for a date whose time is already in the given offset.
- * For 'local' it is the offset of the local Date with that wall time, which can be passed if it is known
+ * For 'local' it is the offset of the local Date with that wall time, which can be passed if it is known.
+ * Without one, and for an IANA time zone name, it is the offset that gives the instant a native Date has for the time
  */
 export function resolveOffset(date, offset, localDate = undefined) {
-    return offset === 'local' ? tzOffset(localDate ?? toLocalDate(date)) : offset;
+    if (offset === 'local') {
+        return localDate ? tzOffset(localDate) : (toTime(date) - toTime(toLocalDate(date))) / 60000;
+    }
+
+    if (typeof offset === 'string') {
+        // A Date keeps its pass of a repeated hour if the zone has its offset at that moment, as in local
+        return localDate && zoneOffset(offset, toTime(localDate)) === tzOffset(localDate)
+            ? tzOffset(localDate)
+            : zoneWallOffset(offset, toTime(date));
+    }
+
+    return offset;
 }
 
 let offsetSymbol = Symbol('ec');
