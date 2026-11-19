@@ -22,6 +22,7 @@ export function createTRROptions(options) {
             snapDuration: undefined
         });
         assign(options.theme, {
+            lines: 'ec-lines',
             nowIndicator: 'ec-now-indicator',
             sidebar: 'ec-sidebar',
             slot: 'ec-slot',

@@ -8,6 +8,7 @@
     import Event from './Event.svelte';
     import AllDayEvent from './AllDayEvent.svelte';
     import NowIndicator from './NowIndicator.svelte';
+    import SlotLines from './SlotLines.svelte';
 
     let {header, nowIndicator, viewState} = $props();
 
@@ -126,6 +127,7 @@
                         ></time>
                     </div>
                 {/each}
+                <SlotLines {slots}/>
             </aside>
             <div class="{theme.grid}" role="row">
                 {#each grid as days, i}
@@ -134,6 +136,7 @@
                     {/each}
                 {/each}
             </div>
+            <SlotLines {slots}/>
             <div class="{theme.events}">
                 {#each chunks as chunk (chunk.id)}
                     <Event {chunk}/>

@@ -1,5 +1,12 @@
 # EventCalendar changelog
 
+## 5.21.0
+November 19, 2026
+* Changed `dayCellContent` to be rendered once per day in `resourceTimeline` views
+* :warning: `dayCellContent` no longer receives `resource` in `resourceTimeline` views
+* Improved rendering performance of `resourceTimeline` views with many resources ([691](https://github.com/vkurko/calendar/issues/691))
+* Fixed misaligned slot lines when zooming in Safari ([642](https://github.com/vkurko/calendar/issues/642))
+
 ## 5.20.0
 November 18, 2026
 * Added IANA time zone names to `timeZone` option ([690](https://github.com/vkurko/calendar/issues/690))

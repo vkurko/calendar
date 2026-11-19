@@ -9,10 +9,20 @@
 
     .ec-timeline & {
         grid-column: span var(--ec-slot-label-periodicity);
+        position: relative;
         font-size: .95em;
         padding: .18rem 0;
         overflow: clip;
         text-overflow: ellipsis;
+
+        /* The line does not take space from the label */
+        &:after {
+            content: '';
+            position: absolute;
+            inset-block: 0;
+            inset-inline-end: 0;
+            border-inline-end: 1px solid var(--ec-border-color);
+        }
     }
 }
 
@@ -33,20 +43,74 @@
     &.ec-highlight {
         --ec-day-bg-color: var(--ec-highlight-color);
     }
+}
 
-    --ec-last-line-color: transparent;
-    --ec-direction: to left;
-    [dir="rtl"] & {
-        --ec-direction: to right;
+.ec-slots:last-child > .ec-slot:last-child:after {
+    content: none;
+}
+
+/* Slot lines: a group per slot label with a solid line, dotted lines between the slots inside the group */
+.ec-lines {
+    display: flex;
+    pointer-events: none;
+
+    > div {
+        display: flex;
+        flex: none;
+        box-sizing: border-box;
+
+        > div {
+            flex: none;
+            box-sizing: border-box;
+        }
     }
-    background-image:
-            linear-gradient(var(--ec-direction), var(--ec-last-line-color) 1px, transparent 1px),
-            linear-gradient(var(--ec-direction), var(--ec-border-color) 1px, transparent 1px);
-    background-size:
-            100% 100%,
-            calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity)) 100%;
 
-    &:last-child {
-        --ec-last-line-color: var(--ec-day-bg-color);
+    .ec-time-grid & {
+        flex-direction: column;
+
+        > div {
+            flex-direction: column;
+            block-size: calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity));
+            border-block-end: 1px solid var(--ec-border-color);
+
+            > div {
+                block-size: var(--ec-slot-height);
+                border-block-end: 1px dotted var(--ec-border-color);
+            }
+        }
+
+        > :last-child {
+            border-block-end: none;
+        }
+    }
+
+    .ec-time-grid .ec-body > & {
+        grid-area: 1 / 2 / -1 / -1;
+    }
+
+    .ec-time-grid .ec-sidebar > & {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-end: 0;
+        inline-size: .375rem;
+    }
+
+    .ec-timeline & {
+        position: absolute;
+        inset: 0;
+
+        > div {
+            inline-size: calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity));
+            border-inline-end: 1px solid var(--ec-border-color);
+
+            > div {
+                inline-size: var(--ec-slot-width);
+                border-inline-end: 1px dotted var(--ec-border-color);
+            }
+        }
+    }
+
+    .ec-timeline .ec-no-ieb > & > :last-child {
+        border-inline-end: none;
     }
 }

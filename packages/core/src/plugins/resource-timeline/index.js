@@ -35,6 +35,7 @@ export default {
 		});
 		assign(options.theme, {
 			expander: 'ec-expander',
+			row: 'ec-row',
 			rowHead: 'ec-row-head',
 			slots: 'ec-slots'
 		});

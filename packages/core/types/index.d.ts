@@ -185,7 +185,8 @@ export namespace Calendar {
         allDay: boolean;
         date: Date;
         isToday: boolean;
-        resource: Resource;
+        /** Only in resourceTimeGrid views */
+        resource?: Resource;
     }
 
     interface WeekNumberContentArg {

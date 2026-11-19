@@ -2,7 +2,7 @@
     import {getContext, setContext, tick} from 'svelte';
     import {
         max, resizeObserver, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
-        createWeekNumberContent, toTime, uid
+        createWeekNumberContent, toTime, uid, rect
     } from '#lib';
     import {getSlotTimeLimits, layoutChunks} from './lib.js';
     import ViewState from './state.svelte.js';
@@ -68,6 +68,22 @@
             }
             mainEl.scrollLeft = scrollLeft / toSeconds(slotDuration) * slotWidth * (isRtl() ? -1 : 1);
         }
+    }
+
+    // Resource rows, the resource under the pointer is found by its row
+    let rowEls = [];
+    function resourceFromPoint(x, y) {
+        rowEls.length = length(viewResources);
+        let lo = 0, hi = rowEls.length - 1;
+        while (lo < hi) {
+            let mid = (lo + hi) >> 1;
+            if (y < rect(rowEls[mid]).bottom) {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        return viewResources[lo];
     }
 
     // Events reposition
@@ -162,13 +178,18 @@
                 {/each}
             </aside>
             <div class="{theme.grid}" role="row">
-                {#each grid as days, i}
-                    {#each days as day, j}
-                        <Day {day} noIeb={j + 1 === length(days)} noBeb={i + 1 === length(grid)}/>
-                    {/each}
+                {#each grid[0] as day, j}
+                    <Day {day} {resourceFromPoint} noIeb={j + 1 === length(grid[0])}/>
                 {/each}
             </div>
             <div class="{theme.events}">
+                {#each viewResources as resource, i (uid(resource))}
+                    <div
+                        bind:this={rowEls[i]}
+                        class={[theme.row, i + 1 === length(viewResources) && theme.noBeb]}
+                        style:grid-row="{i + 1}"
+                    ></div>
+                {/each}
                 {#each chunks as chunk, i (chunk.id)}
                     <!-- svelte-ignore binding_property_non_reactive -->
                     <Event bind:this={refs[i]} {chunk}/>

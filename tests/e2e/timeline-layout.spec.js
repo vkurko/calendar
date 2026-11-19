@@ -35,12 +35,12 @@ function event(page, title) {
 }
 
 /**
- * The center of the cell of the given day of October in the row of the given resource
+ * The center of the given day of October in the row of the given resource
  */
 async function cell(page, day, row = 1) {
-    let days = page.locator('.ec-body .ec-day');
-    let count = await days.count();
-    return center(await days.nth((row - 1) * count / 2 + day - 1).boundingBox());
+    let column = center(await page.locator('.ec-body .ec-day').nth(day - 1).boundingBox());
+    let line = center(await page.locator('.ec-body .ec-row').nth(row - 1).boundingBox());
+    return {x: column.x, y: line.y};
 }
 
 /**

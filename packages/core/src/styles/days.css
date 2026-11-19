@@ -13,40 +13,18 @@
         --ec-day-bg-color: var(--ec-highlight-color);
     }
 
-    .ec-time-grid .ec-body & {
-        background-image:
-                linear-gradient(to top, var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px),
-                linear-gradient(to right, var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px);
-        background-size:
-                100% 100%,
-                100% calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity)),
-                2px 100%,
-                100% var(--ec-slot-height);
+    .ec-timeline .ec-body & {
+        grid-row: 1 / -1;
+        position: relative;
+        border-block-end: none;
+
+        > :not(.ec-lines) {
+            position: relative;
+        }
     }
 
     .ec-timeline:not(.ec-month-view, .ec-year-view) .ec-body & {
-        --ec-last-line-color: transparent;
-        --ec-direction: to left;
-        [dir="rtl"] & {
-            --ec-direction: to right;
-        }
-        background-image:
-                linear-gradient(var(--ec-direction), var(--ec-last-line-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-direction), var(--ec-border-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-day-bg-color) 1px, transparent 1px),
-                linear-gradient(var(--ec-direction), var(--ec-border-color) 1px, transparent 1px);
-        background-size:
-                100% 100%,
-                calc(var(--ec-slot-width) * var(--ec-slot-label-periodicity)) 100%,
-                100% 2px,
-                var(--ec-slot-width) 100%;
         border-inline: none;
-
-        &.ec-no-ieb {
-            --ec-last-line-color: var(--ec-day-bg-color);
-        }
     }
 
     .ec-day-grid & {
@@ -119,5 +97,14 @@
         inset: 0 0 0 0;
         background-color: var(--ec-bg-event-color);
         opacity: var(--ec-bg-event-opacity);
+    }
+}
+
+.ec-row {
+    grid-column: 1 / -1;
+    border-block-end: 1px solid var(--ec-border-color);
+
+    &.ec-no-beb {
+        border-block-end: none;
     }
 }

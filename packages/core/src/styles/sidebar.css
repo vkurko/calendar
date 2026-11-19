@@ -16,25 +16,6 @@
         padding-inline: .75rem;
     }
 
-    .ec-time-grid .ec-body & {
-        --ec-direction: to left;
-        [dir="rtl"] & {
-            --ec-direction: to right;
-        }
-        background-image:
-                linear-gradient(var(--ec-direction), transparent .375rem, var(--ec-bg-color) .375rem),
-                linear-gradient(to top, var(--ec-bg-color) 1px, transparent 1px),
-                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px),
-                linear-gradient(to right, var(--ec-bg-color) 1px, transparent 1px),
-                linear-gradient(to top, var(--ec-border-color) 1px, transparent 1px);
-        background-size:
-                100% 100%,
-                100% 100%,
-                100% calc(var(--ec-slot-height) * var(--ec-slot-label-periodicity)),
-                2px 100%,
-                100% var(--ec-slot-height);
-    }
-
     .ec-timeline .ec-body & {
         grid-area: 1 / 1 / -1 / 2;
         display: grid;

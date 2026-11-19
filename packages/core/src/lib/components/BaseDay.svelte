@@ -8,6 +8,7 @@
         allDay = false,
         resource = undefined,
         dateFromPoint = () => date,
+        resourceFromPoint = () => resource,
         classes = identity,
         disabled = false,
         highlight = false,
@@ -46,7 +47,7 @@
             return {
                 allDay,
                 date: dateFromPoint(x, y),
-                resource,
+                resource: resourceFromPoint(x, y),
                 dayEl: el,
                 disabled
             };

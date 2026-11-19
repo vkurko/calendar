@@ -1,14 +1,15 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDuration, cloneDate, floor, isRtl, rect} from '#lib';
+    import {addDuration, cloneDate, contentFrom, floor, isRtl, rect, toTime} from '#lib';
     import {BaseDay} from '#components';
+    import SlotLines from '../time-grid/SlotLines.svelte';
 
-    let {day, noIeb, noBeb} = $props();
+    let {day, resourceFromPoint, noIeb} = $props();
 
     let {options: {slotWidth}} = $derived(getContext('state'));
-    let {monthView, snap} = $derived(getContext('view-state'));
+    let {daySlots, monthView, snap} = $derived(getContext('view-state'));
 
-    let {dayStart: date, start, resource, disabled, highlight} = $derived(day);
+    let {dayStart: date, start, disabled, highlight} = $derived(day);
 
     let el = $state();
 
@@ -27,4 +28,13 @@
     }
 </script>
 
-<BaseDay bind:el allDay={monthView} {date} {resource} {dateFromPoint} {disabled} {highlight} {noIeb} {noBeb}/>
+<BaseDay bind:el allDay={monthView} {date} {dateFromPoint} {resourceFromPoint} {disabled} {highlight} {noIeb}>
+    {#snippet content(dayCell)}
+        {#if !monthView}
+            <SlotLines slots={daySlots[toTime(date)]}/>
+        {/if}
+        <div
+            {@attach contentFrom(dayCell.content, dayCell.snippet)}
+        >{@render dayCell.snippet?.(dayCell.arg)}</div>
+    {/snippet}
+</BaseDay>
