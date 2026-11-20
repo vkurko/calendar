@@ -1,6 +1,6 @@
 {
   "name": "@event-calendar/core",
-  "version": "5.21.0",
+  "version": "5.21.1",
   "title": "Event Calendar Core package",
   "description": "Full-sized drag & drop event calendar with resource & timeline views",
   "keywords": [
@@ -17,6 +17,11 @@
     "directory": "packages/core"
   },
   "license": "MIT",
+  "files": [
+    "dist",
+    "src",
+    "types"
+  ],
   "type": "module",
   "svelte": "./src/index.svelte.js",
   "types": "./types/index.d.ts",

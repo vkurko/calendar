@@ -133,3 +133,20 @@ for (let strict of [false, true]) {
         });
     });
 }
+
+test('dayCellContent is rendered for every resource and day with the resource', async ({page}) => {
+    await createCalendar(page, [['A', 2, 1]]);
+    await page.evaluate(() => ec.setOption('dayCellContent', ({date, resource}) => `${resource.id}:${date.getDate()}`));
+    let texts = await page.locator('.ec-body .ec-events > :not(.ec-row, .ec-event)').allTextContents();
+    expect(texts.length).toBe(62);
+    expect(texts.slice(0, 2)).toEqual(['1:1', '1:2']);
+    expect(texts.at(-1)).toBe('2:31');
+    // The content is in the row of its resource and in the column of its day
+    let content = await page.locator('.ec-events > div', {hasText: /^2:5$/}).boundingBox();
+    let row = await page.locator('.ec-body .ec-row').nth(1).boundingBox();
+    let day = await page.locator('.ec-body .ec-day').nth(4).boundingBox();
+    expect(content.y).toBeGreaterThanOrEqual(row.y - 1);
+    expect(Math.round(content.x)).toBe(Math.round(day.x));
+    // Day columns do not render the content themselves
+    await expect(page.locator('.ec-body .ec-day')).toHaveText(Array(31).fill(''));
+});

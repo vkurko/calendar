@@ -1,5 +1,10 @@
 # EventCalendar changelog
 
+## 5.21.1
+November 20, 2026
+* Fixed `dayCellContent` not receiving `resource` in `resourceTimeline` views
+* Fixed a Svelte warning in dev mode in `resourceTimeline` views ([697](https://github.com/vkurko/calendar/issues/697))
+
 ## 5.21.0
 November 19, 2026
 * Changed `dayCellContent` to be rendered once per day in `resourceTimeline` views

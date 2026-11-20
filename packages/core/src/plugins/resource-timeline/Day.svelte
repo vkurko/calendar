@@ -1,6 +1,6 @@
 <script>
     import {getContext} from 'svelte';
-    import {addDuration, cloneDate, contentFrom, floor, isRtl, rect, toTime} from '#lib';
+    import {addDuration, cloneDate, floor, isRtl, rect, toTime} from '#lib';
     import {BaseDay} from '#components';
     import SlotLines from '../time-grid/SlotLines.svelte';
 
@@ -29,12 +29,9 @@
 </script>
 
 <BaseDay bind:el allDay={monthView} {date} {dateFromPoint} {resourceFromPoint} {disabled} {highlight} {noIeb}>
-    {#snippet content(dayCell)}
+    {#snippet content()}
         {#if !monthView}
             <SlotLines slots={daySlots[toTime(date)]}/>
         {/if}
-        <div
-            {@attach contentFrom(dayCell.content, dayCell.snippet)}
-        >{@render dayCell.snippet?.(dayCell.arg)}</div>
     {/snippet}
 </BaseDay>

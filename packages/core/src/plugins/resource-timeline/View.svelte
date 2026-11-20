@@ -2,7 +2,7 @@
     import {getContext, setContext, tick} from 'svelte';
     import {
         max, resizeObserver, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
-        createWeekNumberContent, toTime, uid, rect
+        createWeekNumberContent, toTime, uid, rect, createContent, datesEqual, toLocalDate
     } from '#lib';
     import {getSlotTimeLimits, layoutChunks} from './lib.js';
     import ViewState from './state.svelte.js';
@@ -18,7 +18,7 @@
     setContext('view-state', viewState);
 
     let {mainEl, scrollDate, snippets, today, viewDates, options: {
-        columnWidth, eventGap, eventOrderStrict, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
+        columnWidth, dayCellContent, eventGap, eventOrderStrict, nowIndicator, scrollTime, slotDuration, slotHeight, slotWidth, theme, weekNumberContent
     }} = $derived(mainState);
     let {chunks, bgChunks, iChunks, units, daySlots, dayTimeLimits, grid, extraHeads, intlMonthHeader, monthView,
         nestedResources, sidebarWidth, slotLabelPeriodicity, viewResources} = $derived(viewState);
@@ -184,12 +184,29 @@
             </div>
             <div class="{theme.events}">
                 {#each viewResources as resource, i (uid(resource))}
+                    <!-- svelte-ignore binding_property_non_reactive -->
                     <div
                         bind:this={rowEls[i]}
                         class={[theme.row, i + 1 === length(viewResources) && theme.noBeb]}
                         style:grid-row="{i + 1}"
                     ></div>
                 {/each}
+                {#if dayCellContent || snippets.dayCellContent}
+                    {#each viewResources as resource, i (uid(resource))}
+                        {#each grid[0] as {dayStart: date, gridColumn}}
+                            {@const dayCell = createContent(
+                                dayCellContent,
+                                () => ({allDay: monthView, date: toLocalDate(date), isToday: datesEqual(date, today), resource}),
+                                undefined,
+                                snippets.dayCellContent
+                            )}
+                            <div
+                                style:grid-area="{i + 1} / {gridColumn}"
+                                {@attach contentFrom(dayCell.content, dayCell.snippet)}
+                            >{@render dayCell.snippet?.(dayCell.arg)}</div>
+                        {/each}
+                    {/each}
+                {/if}
                 {#each chunks as chunk, i (chunk.id)}
                     <!-- svelte-ignore binding_property_non_reactive -->
                     <Event bind:this={refs[i]} {chunk}/>

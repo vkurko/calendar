@@ -185,7 +185,7 @@ export namespace Calendar {
         allDay: boolean;
         date: Date;
         isToday: boolean;
-        /** Only in resourceTimeGrid views */
+        /** Only in resource views */
         resource?: Resource;
     }
 
