@@ -1,5 +1,9 @@
 # EventCalendar changelog
 
+## 5.21.2
+November 23, 2026
+* Fixed calendar failing to mount with Svelte 5.59 ([698](https://github.com/vkurko/calendar/issues/698))
+
 ## 5.21.1
 November 20, 2026
 * Fixed `dayCellContent` not receiving `resource` in `resourceTimeline` views
