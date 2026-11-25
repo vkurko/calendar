@@ -1,0 +1,202 @@
+---
+title: "Your own day cells"
+description: "The day cell with the name of the weekday next to the number, and today as a filled circle."
+sidebar:
+  order: 23
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The day cell with the name of the weekday next to the number, and today as a filled circle.
+
+<Example client:only="svelte" slug="day-cell-content" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, DayGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [DayGrid], {
+    view: 'dayGridMonth',
+    events,
+    dayCellContent: ({date, isToday}) => ({
+        html: `
+            <span class="weekday">${date.toLocaleDateString('en', {weekday: 'short'})}</span>
+            <span class="${isToday ? 'number today' : 'number'}">${date.getDate()}</span>
+        `
+    })
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, DayGrid} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let options = $state({
+        view: 'dayGridMonth',
+        events
+    });
+</script>
+
+<Calendar plugins={[DayGrid]} {options}>
+    {#snippet dayCellContent({date, isToday})}
+        <span class="weekday">{date.toLocaleDateString('en', {weekday: 'short'})}</span>
+        <span class={['number', isToday && 'today']}>{date.getDate()}</span>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, DayGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [DayGrid];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'dayGridMonth',
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+            dayCellContent={({date, isToday}) => (
+                <>
+                    <span className="weekday">{date.toLocaleDateString('en', {weekday: 'short'})}</span>
+                    <span className={isToday ? 'number today' : 'number'}>{date.getDate()}</span>
+                </>
+            )}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, DayGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [DayGrid];
+const events = [/* your events */];
+const options = {
+    view: 'dayGridMonth',
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options">
+        <template #dayCellContent="{date, isToday}">
+            <span class="weekday">{{ date.toLocaleDateString('en', {weekday: 'short'}) }}</span>
+            <span :class="['number', {today: isToday}]">{{ date.getDate() }}</span>
+        </template>
+    </EventCalendar>
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, DayGrid, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `
+        <event-calendar [plugins]="plugins" [options]="options">
+            <ng-template ecContent="dayCellContent" let-date="date" let-isToday="isToday">
+                <span class="weekday">{{ date.toLocaleDateString('en', {weekday: 'short'}) }}</span>
+                <span class="number" [class.today]="isToday">{{ date.getDate() }}</span>
+            </ng-template>
+        </event-calendar>`
+})
+export class App {
+    plugins = [DayGrid];
+    options: Calendar.Options = {
+        view: 'dayGridMonth',
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'dayGridMonth',
+        events,
+        dayCellContent: ({date, isToday}) => ({
+            html: `
+                <span class="weekday">${date.toLocaleDateString('en', {weekday: 'short'})}</span>
+                <span class="${isToday ? 'number today' : 'number'}">${date.getDate()}</span>
+            `
+        })
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Styles
+
+```css
+.weekday {
+    margin-right: 4px;
+    color: #94a3b8;
+    font-size: 0.75em;
+    text-transform: uppercase;
+}
+.number {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.75em;
+    height: 1.75em;
+    border-radius: 50%;
+    font-weight: 600;
+}
+.number.today {
+    background: #4f46e5;
+    color: #fff;
+}
+```
+
+## Options used
+
+- [dayCellContent](../../options/daycellcontent/)
+- [events](../../options/events/)
+- [view](../../options/view/)

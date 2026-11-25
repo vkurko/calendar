@@ -1,0 +1,81 @@
+---
+title: "weekNumberContent"
+description: "The content shown in place of the week number, which is W01 by default. See weekNumbers."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_weeknumbercontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="weekNumberContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    weekNumberContent: ({week}) => ({html: `Week ${week}`})
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet weekNumberContent({week})}
+        Week {week}
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    weekNumberContent={({week}) => <>Week {week}</>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #weekNumberContent="{week}">
+        Week {{ week }}
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="weekNumberContent" let-week="week">
+        Week {{ week }}
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    weekNumberContent: ({week}) => ({html: `Week ${week}`})
+};
+```
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,28 @@
+---
+title: "resources"
+description: "The resources of the resource views: rooms, people, machines, or anything else the events belong to. An event refers to its resources with the resourceId or…"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_resources.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="resources" height="440px" />
+
+## Live examples
+
+- [Resources as columns](../../examples/resource-columns/)
+- [Resources by day](../../examples/resource-week/)
+- [Resource timeline](../../examples/timeline/)
+- [Month timeline](../../examples/timeline-month/)
+- [Nested resources](../../examples/nested-resources/)
+- [Drag between resources](../../examples/drag-between-resources/)
+- [Your own events and resources](../../examples/custom-event-content/)
+- [Your own resource labels](../../examples/resource-labels/)
+- [Timeline scale](../../examples/timeline-zoom/)
+- [Only busy resources](../../examples/filter-resources/)

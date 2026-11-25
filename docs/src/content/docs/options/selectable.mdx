@@ -1,0 +1,21 @@
+---
+title: "selectable"
+description: "Lets the user select several days or time slots by pressing and moving the pointer. The result is reported to the select callback."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_selectable.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="selectable" height="440px" />
+
+## Live examples
+
+- [Drag, resize and select](../../examples/drag-resize-select/)
+- [Select to create](../../examples/select-to-create/)
+- [Drag constraints](../../examples/drag-constraints/)

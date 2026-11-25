@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>EventCalendar React tests</title>
+    <style>
+        body {
+            margin: 0;
+            font: 14px sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+    import * as React from 'react';
+    import {createRoot} from 'react-dom/client';
+    import {createPortal, flushSync} from 'react-dom';
+    import * as Adapter from '/packages/react/src/index.js';
+    import '/packages/core/src/styles/index.css';
+
+    // Tests render the components themselves
+    Object.assign(window, {React, createRoot, createPortal, flushSync, Adapter, h: React.createElement});
+    window.ready = true;
+</script>
+</body>
+</html>

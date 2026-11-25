@@ -1,0 +1,19 @@
+---
+title: "eventClick"
+description: "Called when the user clicks an event, or presses Enter or Space on a focused one."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventclick.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventClick" height="440px" />
+
+## Live examples
+
+- [Clicks](../../examples/click-events/)

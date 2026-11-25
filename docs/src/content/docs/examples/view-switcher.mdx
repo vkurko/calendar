@@ -1,0 +1,213 @@
+---
+title: "Switching views"
+description: "The names of the views in the toolbar become the buttons that switch between them."
+sidebar:
+  order: 11
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The names of the views in the toolbar become the buttons that switch between them.
+
+<Example client:only="svelte" slug="view-switcher" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, DayGrid, TimeGrid, List} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const today = new Date();
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [DayGrid, TimeGrid, List], {
+    view: 'timeGridWeek',
+    headerToolbar: {
+        start: 'title',
+        center: '',
+        end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek today prev,next'
+    },
+    // The texts of the buttons
+    buttonText: text => ({
+        ...text, today: 'Today', dayGridMonth: 'Month', timeGridWeek: 'Week', timeGridDay: 'Day', listWeek: 'List'
+    }),
+    scrollTime: '08:00',
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, DayGrid, TimeGrid, List} from '@event-calendar/core';
+
+    let today = new Date();
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridWeek',
+        headerToolbar: {
+            start: 'title',
+            center: '',
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek today prev,next'
+        },
+        // The texts of the buttons
+        buttonText: text => ({
+            ...text, today: 'Today', dayGridMonth: 'Month', timeGridWeek: 'Week', timeGridDay: 'Day', listWeek: 'List'
+        }),
+        scrollTime: '08:00',
+        events
+    });
+</script>
+
+<Calendar plugins={[DayGrid, TimeGrid, List]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, DayGrid, TimeGrid, List} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [DayGrid, TimeGrid, List];
+const today = new Date();
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridWeek',
+        headerToolbar: {
+            start: 'title',
+            center: '',
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek today prev,next'
+        },
+        // The texts of the buttons
+        buttonText: text => ({
+            ...text, today: 'Today', dayGridMonth: 'Month', timeGridWeek: 'Week', timeGridDay: 'Day', listWeek: 'List'
+        }),
+        scrollTime: '08:00',
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, DayGrid, TimeGrid, List} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [DayGrid, TimeGrid, List];
+const today = new Date();
+const events = [/* your events */];
+const options = {
+    view: 'timeGridWeek',
+    headerToolbar: {
+        start: 'title',
+        center: '',
+        end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek today prev,next'
+    },
+    // The texts of the buttons
+    buttonText: text => ({
+        ...text, today: 'Today', dayGridMonth: 'Month', timeGridWeek: 'Week', timeGridDay: 'Day', listWeek: 'List'
+    }),
+    scrollTime: '08:00',
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, DayGrid, TimeGrid, List, type Calendar} from '@event-calendar/angular';
+
+const today = new Date();
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [DayGrid, TimeGrid, List];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        headerToolbar: {
+            start: 'title',
+            center: '',
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek today prev,next'
+        },
+        // The texts of the buttons
+        buttonText: text => ({
+            ...text, today: 'Today', dayGridMonth: 'Month', timeGridWeek: 'Week', timeGridDay: 'Day', listWeek: 'List'
+        }),
+        scrollTime: '08:00',
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const today = new Date();
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        headerToolbar: {
+            start: 'title',
+            center: '',
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek today prev,next'
+        },
+        // The texts of the buttons
+        buttonText: text => ({
+            ...text, today: 'Today', dayGridMonth: 'Month', timeGridWeek: 'Week', timeGridDay: 'Day', listWeek: 'List'
+        }),
+        scrollTime: '08:00',
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [buttonText](../../options/buttontext/)
+- [events](../../options/events/)
+- [headerToolbar](../../options/headertoolbar/)
+- [scrollTime](../../options/scrolltime/)
+- [view](../../options/view/)

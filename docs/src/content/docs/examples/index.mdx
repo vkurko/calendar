@@ -1,0 +1,180 @@
+---
+title: "Examples"
+description: "Live examples of EventCalendar with code for JavaScript, Svelte, React, Vue and Angular."
+sidebar:
+  label: All examples
+  order: 0
+tableOfContents: false
+---
+
+import Example from '../../../components/Example.svelte';
+
+37 live calendars with the code for every framework. Each one runs right on the page.
+
+## Views
+
+<div class="example-grid not-content">
+<a class="example-card" href="month-view/">
+<div class="example-card-preview"><Example client:visible slug="month-view" mini height="204px" /></div>
+<div class="example-card-text"><strong>Month view</strong><span>A classic month grid.</span></div>
+</a>
+<a class="example-card" href="week-view/">
+<div class="example-card-preview"><Example client:visible slug="week-view" mini height="204px" /></div>
+<div class="example-card-text"><strong>Week view</strong><span>A week with a time axis, all-day row and the indicator of the current time.</span></div>
+</a>
+<a class="example-card" href="day-view/">
+<div class="example-card-preview"><Example client:visible slug="day-view" mini height="204px" /></div>
+<div class="example-card-text"><strong>Day view</strong><span>One day with 15-minute slots.</span></div>
+</a>
+<a class="example-card" href="list-view/">
+<div class="example-card-preview"><Example client:visible slug="list-view" mini height="204px" /></div>
+<div class="example-card-text"><strong>List view</strong><span>The events of the week as an agenda, grouped by day.</span></div>
+</a>
+<a class="example-card" href="resource-columns/">
+<div class="example-card-preview"><Example client:visible slug="resource-columns" mini height="204px" /></div>
+<div class="example-card-text"><strong>Resources as columns</strong><span>Each resource — a room, a person, a machine — gets its own column of the day.</span></div>
+</a>
+<a class="example-card" href="resource-week/">
+<div class="example-card-preview"><Example client:visible slug="resource-week" mini height="204px" /></div>
+<div class="example-card-text"><strong>Resources by day</strong><span>A week of resource columns.</span></div>
+</a>
+<a class="example-card" href="timeline/">
+<div class="example-card-preview"><Example client:visible slug="timeline" mini height="204px" /></div>
+<div class="example-card-text"><strong>Resource timeline</strong><span>Resources as rows and time running horizontally.</span></div>
+</a>
+<a class="example-card" href="timeline-month/">
+<div class="example-card-preview"><Example client:visible slug="timeline-month" mini height="204px" /></div>
+<div class="example-card-text"><strong>Month timeline</strong><span>A month on the timeline, one column per day — a planning board.</span></div>
+</a>
+<a class="example-card" href="nested-resources/">
+<div class="example-card-preview"><Example client:visible slug="nested-resources" mini height="204px" /></div>
+<div class="example-card-text"><strong>Nested resources</strong><span>Resources can have children, the groups are collapsed and expanded with a click.</span></div>
+</a>
+<a class="example-card" href="custom-view/">
+<div class="example-card-preview"><Example client:visible slug="custom-view" mini height="204px" /></div>
+<div class="example-card-text"><strong>Custom view</strong><span>A view of your own is a standard view with other options: here, four days instead of a week.</span></div>
+</a>
+<a class="example-card" href="view-switcher/">
+<div class="example-card-preview"><Example client:visible slug="view-switcher" mini height="204px" /></div>
+<div class="example-card-text"><strong>Switching views</strong><span>The names of the views in the toolbar become the buttons that switch between them.</span></div>
+</a>
+</div>
+
+## Interaction
+
+<div class="example-grid not-content">
+<a class="example-card" href="drag-resize-select/">
+<div class="example-card-preview"><Example client:visible slug="drag-resize-select" mini height="204px" /></div>
+<div class="example-card-text"><strong>Drag, resize and select</strong><span>Everything at once: drag an event to another time, pull its edge to resize it, and drag over the empty slots to create a new one.</span></div>
+</a>
+<a class="example-card" href="drag-and-drop/">
+<div class="example-card-preview"><Example client:visible slug="drag-and-drop" mini height="204px" /></div>
+<div class="example-card-text"><strong>Drag & drop</strong><span>The events can be dragged to another time or day, and eventDrop tells where an event has landed.</span></div>
+</a>
+<a class="example-card" href="resize/">
+<div class="example-card-preview"><Example client:visible slug="resize" mini height="204px" /></div>
+<div class="example-card-text"><strong>Resizing</strong><span>Drag the bottom edge of an event to change its duration — or the top edge, with eventResizableFromStart.</span></div>
+</a>
+<a class="example-card" href="select-to-create/">
+<div class="example-card-preview"><Example client:visible slug="select-to-create" mini height="204px" /></div>
+<div class="example-card-text"><strong>Select to create</strong><span>Drag over the empty slots to select a time range, and create an event from it.</span></div>
+</a>
+<a class="example-card" href="click-events/">
+<div class="example-card-preview"><Example client:visible slug="click-events" mini height="204px" /></div>
+<div class="example-card-text"><strong>Clicks</strong><span>Click a day to add an event, click an event to remove it.</span></div>
+</a>
+<a class="example-card" href="drag-constraints/">
+<div class="example-card-preview"><Example client:visible slug="drag-constraints" mini height="204px" /></div>
+<div class="example-card-text"><strong>Drag constraints</strong><span>The events cannot be dropped or resized into the weekend, and a selection cannot start there.</span></div>
+</a>
+<a class="example-card" href="drag-between-resources/">
+<div class="example-card-preview"><Example client:visible slug="drag-between-resources" mini height="204px" /></div>
+<div class="example-card-text"><strong>Drag between resources</strong><span>On the timeline an event can be moved to another resource as well as to another time.</span></div>
+</a>
+<a class="example-card" href="pointer/">
+<div class="example-card-preview"><Example client:visible slug="pointer" mini height="204px" /></div>
+<div class="example-card-text"><strong>Pointer</strong><span>With pointer the slot under the cursor is highlighted, which helps to aim before a click.</span></div>
+</a>
+<a class="example-card" href="hover/">
+<div class="example-card-preview"><Example client:visible slug="hover" mini height="204px" /></div>
+<div class="example-card-text"><strong>Hover</strong><span>eventMouseEnter and eventMouseLeave are the place to show a tooltip or a preview.</span></div>
+</a>
+<a class="example-card" href="toolbar-buttons/">
+<div class="example-card-preview"><Example client:visible slug="toolbar-buttons" mini height="204px" /></div>
+<div class="example-card-text"><strong>Your buttons in the toolbar</strong><span>Custom buttons call the methods of the calendar: here they add an event and jump a month ahead.</span></div>
+</a>
+</div>
+
+## Appearance
+
+<div class="example-grid not-content">
+<a class="example-card" href="custom-event-content/">
+<div class="example-card-preview"><Example client:visible slug="custom-event-content" mini height="204px" /></div>
+<div class="example-card-text"><strong>Your own events and resources</strong><span>A day of a team where everything is rendered in its own way: the events are cards with a type, a room and the photos of the people who take part, and the columns are headed by the members of the team.</span></div>
+</a>
+<a class="example-card" href="day-cell-content/">
+<div class="example-card-preview"><Example client:visible slug="day-cell-content" mini height="204px" /></div>
+<div class="example-card-text"><strong>Your own day cells</strong><span>The day cell with the name of the weekday next to the number, and today as a filled circle.</span></div>
+</a>
+<a class="example-card" href="resource-labels/">
+<div class="example-card-preview"><Example client:visible slug="resource-labels" mini height="204px" /></div>
+<div class="example-card-text"><strong>Your own resource labels</strong><span>People as resources: a photo, a name and a role in the label.</span></div>
+</a>
+<a class="example-card" href="event-colors/">
+<div class="example-card-preview"><Example client:visible slug="event-colors" mini height="204px" /></div>
+<div class="example-card-text"><strong>Event colors</strong><span>A color can be set for all events at once and for each event separately.</span></div>
+</a>
+<a class="example-card" href="background-events/">
+<div class="example-card-preview"><Example client:visible slug="background-events" mini height="204px" /></div>
+<div class="example-card-text"><strong>Background events</strong><span>Events with display: 'background' color the time itself: a lunch break, focus time, the hours that are taken.</span></div>
+</a>
+<a class="example-card" href="highlighted-dates/">
+<div class="example-card-preview"><Example client:visible slug="highlighted-dates" mini height="204px" /></div>
+<div class="example-card-text"><strong>Highlighted dates</strong><span>Holidays, deadlines and other special days.</span></div>
+</a>
+<a class="example-card" href="week-numbers/">
+<div class="example-card-preview"><Example client:visible slug="week-numbers" mini height="204px" /></div>
+<div class="example-card-text"><strong>Week numbers</strong><span>The ISO number of the week at the start of each row.</span></div>
+</a>
+<a class="example-card" href="business-hours/">
+<div class="example-card-preview"><Example client:visible slug="business-hours" mini height="204px" /></div>
+<div class="example-card-text"><strong>Working week</strong><span>Only the working days and hours: the weekend is hidden and the day runs from 8 to 18.</span></div>
+</a>
+<a class="example-card" href="no-overlap/">
+<div class="example-card-preview"><Example client:visible slug="no-overlap" mini height="204px" /></div>
+<div class="example-card-text"><strong>Events side by side</strong><span>The events that happen at the same time placed side by side, with slotEventOverlap: false.</span></div>
+</a>
+<a class="example-card" href="locale/">
+<div class="example-card-preview"><Example client:visible slug="locale" mini height="204px" /></div>
+<div class="example-card-text"><strong>Language and formats</strong><span>The dates follow the locale, the week starts on Monday, and the texts of the buttons are yours.</span></div>
+</a>
+<a class="example-card" href="timeline-zoom/">
+<div class="example-card-preview"><Example client:visible slug="timeline-zoom" mini height="204px" /></div>
+<div class="example-card-text"><strong>Timeline scale</strong><span>The duration and the width of a slot set the scale of the timeline.</span></div>
+</a>
+</div>
+
+## Data
+
+<div class="example-grid not-content">
+<a class="example-card" href="event-sources/">
+<div class="example-card-preview"><Example client:visible slug="event-sources" mini height="204px" /></div>
+<div class="example-card-text"><strong>Loading events</strong><span>Events are fetched for the visible period: from a URL or with a function.</span></div>
+</a>
+<a class="example-card" href="event-filter/">
+<div class="example-card-preview"><Example client:visible slug="event-filter" mini height="204px" /></div>
+<div class="example-card-text"><strong>Filtering events</strong><span>Decide which events are shown without touching the data.</span></div>
+</a>
+<a class="example-card" href="valid-range/">
+<div class="example-card-preview"><Example client:visible slug="valid-range" mini height="204px" /></div>
+<div class="example-card-text"><strong>Limiting navigation</strong><span>The calendar cannot be navigated outside of validRange, and the days out of it are disabled.</span></div>
+</a>
+<a class="example-card" href="time-zone/">
+<div class="example-card-preview"><Example client:visible slug="time-zone" mini height="204px" /></div>
+<div class="example-card-text"><strong>Time zones</strong><span>The same events shown in the time of New York.</span></div>
+</a>
+<a class="example-card" href="filter-resources/">
+<div class="example-card-preview"><Example client:visible slug="filter-resources" mini height="204px" /></div>
+<div class="example-card-text"><strong>Only busy resources</strong><span>With filterResourcesWithEvents the resources that have no events in the view are hidden.</span></div>
+</a>
+</div>

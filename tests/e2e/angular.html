@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>EventCalendar Angular tests</title>
+    <style>
+        body {
+            margin: 0;
+            font: 14px sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+    // The compiler is needed to compile the templates of the test components in the browser
+    import '@angular/compiler';
+    import * as core from '@angular/core';
+    import {bootstrapApplication} from '@angular/platform-browser';
+    import * as Adapter from '/packages/angular/dist/index.js';
+    import '/packages/core/src/styles/index.css';
+
+    // Tests create the components themselves. A component is a class with a static `component` property.
+    window.bootstrap = cls => {
+        document.getElementById('root').replaceChildren(document.createElement('app-root'));
+        return bootstrapApplication(
+            core.Component({
+                selector: 'app-root', imports: [Adapter.EventCalendar, Adapter.EcContent], ...cls.component
+            })(cls),
+            {providers: [core.provideZonelessChangeDetection()]}
+        );
+    };
+    // Angular itself uses the global variable ng
+    Object.assign(window, {core, Adapter});
+    window.ready = true;
+</script>
+</body>
+</html>

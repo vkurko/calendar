@@ -9,10 +9,24 @@ if (!args.length) {
 const otp = args[0];
 const packages = require('./packages.json');
 
+// A one-time password can expire before all packages are published. The versions that are already published
+// are skipped, so the script can simply be run again with a new password.
 for (let name of packages) {
-    publish(__dirname + '/../packages/' + name);
+    let dir = __dirname + '/../packages/' + name;
+    let {name: pkg, version} = require(dir + '/package.json');
+    if (published(pkg, version)) {
+        console.log(pkg + '@' + version + ' is already published, skipped');
+    } else {
+        execSync('npm publish --access public --otp=' + otp, {cwd: dir, stdio: 'inherit'});
+    }
 }
 
-function publish(dir) {
-    execSync('cd ' + dir + ' && npm publish --access public --otp=' + otp);
+function published(pkg, version) {
+    try {
+        // Prints nothing for a version that does not exist, and fails for a package that does not exist
+        return execSync('npm view ' + pkg + '@' + version + ' version', {stdio: ['ignore', 'pipe', 'ignore']})
+            .toString().trim() === version;
+    } catch (e) {
+        return false;
+    }
 }

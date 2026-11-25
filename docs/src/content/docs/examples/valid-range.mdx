@@ -1,0 +1,163 @@
+---
+title: "Limiting navigation"
+description: "The calendar cannot be navigated outside of validRange, and the days out of it are disabled."
+sidebar:
+  order: 35
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The calendar cannot be navigated outside of `validRange`, and the days out of it are disabled.
+
+<Example client:only="svelte" slug="valid-range" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, DayGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [DayGrid], {
+    view: 'dayGridMonth',
+    validRange: {start: addDays(today, -7), end: addDays(today, 21)},
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, DayGrid} from '@event-calendar/core';
+
+    let today = new Date();
+    let addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+    let events = [/* your events */];
+    let options = $state({
+        view: 'dayGridMonth',
+        validRange: {start: addDays(today, -7), end: addDays(today, 21)},
+        events
+    });
+</script>
+
+<Calendar plugins={[DayGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, DayGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [DayGrid];
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'dayGridMonth',
+        validRange: {start: addDays(today, -7), end: addDays(today, 21)},
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, DayGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [DayGrid];
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+const events = [/* your events */];
+const options = {
+    view: 'dayGridMonth',
+    validRange: {start: addDays(today, -7), end: addDays(today, 21)},
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, DayGrid, type Calendar} from '@event-calendar/angular';
+
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [DayGrid];
+    options: Calendar.Options = {
+        view: 'dayGridMonth',
+        validRange: {start: addDays(today, -7), end: addDays(today, 21)},
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const today = new Date();
+    const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'dayGridMonth',
+        validRange: {start: addDays(today, -7), end: addDays(today, 21)},
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [validRange](../../options/validrange/)
+- [view](../../options/view/)

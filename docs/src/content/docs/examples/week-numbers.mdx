@@ -1,0 +1,158 @@
+---
+title: "Week numbers"
+description: "The ISO number of the week at the start of each row."
+sidebar:
+  order: 28
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The ISO number of the week at the start of each row.
+
+<Example client:only="svelte" slug="week-numbers" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, DayGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [DayGrid], {
+    view: 'dayGridMonth',
+    weekNumbers: true,
+    firstDay: 1,
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, DayGrid} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let options = $state({
+        view: 'dayGridMonth',
+        weekNumbers: true,
+        firstDay: 1,
+        events
+    });
+</script>
+
+<Calendar plugins={[DayGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, DayGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [DayGrid];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'dayGridMonth',
+        weekNumbers: true,
+        firstDay: 1,
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, DayGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [DayGrid];
+const events = [/* your events */];
+const options = {
+    view: 'dayGridMonth',
+    weekNumbers: true,
+    firstDay: 1,
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, DayGrid, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [DayGrid];
+    options: Calendar.Options = {
+        view: 'dayGridMonth',
+        weekNumbers: true,
+        firstDay: 1,
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'dayGridMonth',
+        weekNumbers: true,
+        firstDay: 1,
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [firstDay](../../options/firstday/)
+- [view](../../options/view/)
+- [weekNumbers](../../options/weeknumbers/)

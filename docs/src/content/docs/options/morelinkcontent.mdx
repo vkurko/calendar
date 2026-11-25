@@ -1,0 +1,81 @@
+---
+title: "moreLinkContent"
+description: "The content of the link that replaces the events that do not fit into a day, instead of the default +2 more. See dayMaxEvents."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_morelinkcontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="moreLinkContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    moreLinkContent: ({num}) => ({html: `<b>${num}</b> hidden`})
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet moreLinkContent({num})}
+        <b>{num}</b> hidden
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    moreLinkContent={({num}) => <><b>{num}</b> hidden</>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #moreLinkContent="{num}">
+        <b>{{ num }}</b> hidden
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="moreLinkContent" let-num="num">
+        <b>{{ num }}</b> hidden
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    moreLinkContent: ({num}) => ({html: `<b>${num}</b> hidden`})
+};
+```
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,56 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - docs/**
+      - packages/core/**
+      - README.md
+      - CHANGELOG.md
+      - package.json
+      - .github/workflows/docs.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            docs/package-lock.json
+      # The site renders the calendar from the source code of the core package
+      - run: npm ci
+      - run: npm ci
+        working-directory: docs
+      # The pages are generated from README.md and CHANGELOG.md
+      - run: npm run build
+        working-directory: docs
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -35,6 +35,15 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
   - [JavaScript module](#javascript-module)
   - [Svelte 5 component](#svelte-5-component)
     - [Content snippets](#content-snippets)
+  - [React component](#react-component)
+    - [Rendering content with React](#rendering-content-with-react)
+    - [Calling methods in React](#calling-methods-in-react)
+  - [Vue component](#vue-component)
+    - [Rendering content with slots](#rendering-content-with-slots)
+    - [Calling methods in Vue](#calling-methods-in-vue)
+  - [Angular component](#angular-component)
+    - [Rendering content with templates](#rendering-content-with-templates)
+    - [Calling methods in Angular](#calling-methods-in-angular)
   - [Standalone bundle](#standalone-bundle)
   - [Modifying options after initialization](#modifying-options-after-initialization)
 - [Options](#options)
@@ -159,6 +168,7 @@ Inspired by [FullCalendar](https://fullcalendar.io/), it implements similar opti
 
   - [getOption](#getoption-name-)
   - [setOption](#setoption-name-value-)
+  - [setOptions](#setoptions-options-)
   </td><td>
 
   - [addEvent](#addevent-event-)
@@ -299,13 +309,238 @@ Unlike a function, a snippet is rendered by Svelte itself. It can contain compon
 
 If both a snippet and an option with the same name are given, the snippet takes precedence.
 
+### React component
+The first step is to install the EventCalendar `react` package:
+```bash
+npm install --save-dev @event-calendar/react
+```
+This package provides the `EventCalendar` component, as well as plugins for various views. You must use at least one plugin that provides a view. The following plugins are currently available:
+
+* `DayGrid`
+* `List`
+* `ResourceTimeline`
+* `ResourceTimeGrid`
+* `TimeGrid`
+* `Interaction` (doesn't provide a view)
+
+Then in your React component, use the calendar like this:
+```jsx
+import {useState} from 'react';
+import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid];
+
+export default function App() {
+    const [events, setEvents] = useState([
+        // your list of events
+    ]);
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            view="timeGridWeek"
+            events={events}
+            eventClick={({event}) => console.log(event.id)}
+        />
+    );
+}
+```
+All [options](#options) are passed as props, and the calendar is updated when they change. Objects, arrays and callbacks can be written right in JSX, there is no need for `useMemo` and `useCallback`. The `className`, `style` and `id` props are set on the element that wraps the calendar.
+
+The calendar is destroyed gracefully when the component containing it is destroyed.
+
+#### Rendering content with React
+The following options accept JSX or a function that returns JSX:
+
+* [allDayContent](#alldaycontent)
+* [dayCellContent](#daycellcontent)
+* [eventContent](#eventcontent)
+* [moreLinkContent](#morelinkcontent)
+* [noEventsContent](#noeventscontent)
+* [resourceLabelContent](#resourcelabelcontent)
+* [weekNumberContent](#weeknumbercontent)
+* the `content` property of [customButtons](#custombuttons)
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    eventContent={({event, timeText}) => <EventBody event={event} time={timeText}/>}
+    noEventsContent={<i>No events</i>}
+    headerToolbar={{start: 'title', center: '', end: 'filter today prev,next'}}
+    customButtons={{filter: {content: <input value={query} onChange={e => setQuery(e.target.value)}/>}}}
+/>
+```
+The argument of the function is described in the documentation of each option. If the function returns `null` or `undefined`, the default content is shown.
+
+#### Calling methods in React
+The [methods](#methods) of the calendar are available through the `ref`:
+```jsx
+const calendar = useRef(null);
+
+<EventCalendar ref={calendar} plugins={plugins}/>
+<button onClick={() => calendar.current.next()}>Next</button>
+```
+
+### Vue component
+The first step is to install the EventCalendar `vue` package:
+```bash
+npm install --save-dev @event-calendar/vue
+```
+This package provides the `EventCalendar` component, as well as plugins for various views. You must use at least one plugin that provides a view. The following plugins are currently available:
+
+* `DayGrid`
+* `List`
+* `ResourceTimeline`
+* `ResourceTimeGrid`
+* `TimeGrid`
+* `Interaction` (doesn't provide a view)
+
+Then in your Vue component, use the calendar like this:
+```html
+<script setup>
+import {ref} from 'vue';
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid];
+const events = ref([
+    // your list of events
+]);
+</script>
+
+<template>
+    <EventCalendar
+        :plugins="plugins"
+        view="timeGridWeek"
+        :events="events"
+        @event-click="({event}) => console.log(event.id)"
+    />
+</template>
+```
+All [options](#options) are passed as props, and the calendar is updated when they change, including the changes inside reactive objects and arrays, such as `events.value.push(event)`. The callbacks can also be used as event listeners. The `class`, `style` and `id` attributes are set on the element that wraps the calendar.
+
+The calendar is destroyed gracefully when the component containing it is destroyed.
+
+#### Rendering content with slots
+The following options can be given as slots:
+
+* [allDayContent](#alldaycontent)
+* [dayCellContent](#daycellcontent)
+* [eventContent](#eventcontent)
+* [moreLinkContent](#morelinkcontent)
+* [noEventsContent](#noeventscontent)
+* [resourceLabelContent](#resourcelabelcontent)
+* [weekNumberContent](#weeknumbercontent)
+* the `content` property of [customButtons](#custombuttons): the slot is named `customButton` followed by the name of the button with the first letter capitalized
+
+```html
+<EventCalendar :plugins="plugins" :header-toolbar="{start: 'title', center: '', end: 'filter today prev,next'}">
+    <template #eventContent="{event, timeText}">
+        <EventBody :event="event" :time="timeText"/>
+    </template>
+    <template #customButtonFilter>
+        <input v-model="query">
+    </template>
+</EventCalendar>
+```
+The slot props are described in the documentation of each option, as the argument of its function.
+
+#### Calling methods in Vue
+The [methods](#methods) of the calendar are available through the template ref:
+```html
+<script setup>
+import {useTemplateRef} from 'vue';
+
+const calendar = useTemplateRef('calendar');
+</script>
+
+<template>
+    <EventCalendar ref="calendar" :plugins="plugins"/>
+    <button @click="calendar.next()">Next</button>
+</template>
+```
+
+### Angular component
+The first step is to install the EventCalendar `angular` package:
+```bash
+npm install --save-dev @event-calendar/angular
+```
+This package provides the `EventCalendar` component and the `EcContent` directive, as well as plugins for various views. You must use at least one plugin that provides a view. The following plugins are currently available:
+
+* `DayGrid`
+* `List`
+* `ResourceTimeline`
+* `ResourceTimeGrid`
+* `TimeGrid`
+* `Interaction` (doesn't provide a view)
+
+Then in your Angular component, use the calendar like this:
+```ts
+import {Component, signal} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, type Calendar} from '@event-calendar/angular';
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options()"/>`
+})
+export class App {
+    plugins = [TimeGrid];
+    options = signal<Calendar.Options>({
+        view: 'timeGridWeek',
+        events: [
+            // your list of events
+        ]
+    });
+}
+```
+And import the styles in the global stylesheet of your application:
+```css
+@import '@event-calendar/angular/index.css';
+```
+All [options](#options) are passed as one object. To change them, pass a new object: the calendar is updated with the options that are different in it.
+
+The calendar is destroyed gracefully when the component containing it is destroyed.
+
+#### Rendering content with templates
+The following options can be given as templates with the `ecContent` directive:
+
+* [allDayContent](#alldaycontent)
+* [dayCellContent](#daycellcontent)
+* [eventContent](#eventcontent)
+* [moreLinkContent](#morelinkcontent)
+* [noEventsContent](#noeventscontent)
+* [resourceLabelContent](#resourcelabelcontent)
+* [weekNumberContent](#weeknumbercontent)
+* the `content` property of [customButtons](#custombuttons): the template is named `customButton` followed by the name of the button with the first letter capitalized
+
+```html
+<event-calendar [plugins]="plugins" [options]="options()">
+    <ng-template ecContent="eventContent" let-event="event" let-timeText="timeText">
+        <app-event-body [event]="event" [time]="timeText"/>
+    </ng-template>
+    <ng-template ecContent="customButtonFilter">
+        <input [(ngModel)]="query">
+    </ng-template>
+</event-calendar>
+```
+The variables of the template are described in the documentation of each option, as the argument of its function.
+
+#### Calling methods in Angular
+The [methods](#methods) of the calendar are the methods of the component:
+```html
+<event-calendar #calendar [plugins]="plugins" [options]="options()"/>
+<button (click)="calendar.next()">Next</button>
+```
+
 ### Standalone bundle
 This bundle contains a version of the calendar that includes all plugins and is prepared for use in the browser via the `<script>` tag.
 
 The first step is to include the following lines of code in the `<head>` section of your page:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.21.2/dist/event-calendar.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.21.2/dist/event-calendar.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
 ```
 
 <details>
@@ -334,7 +569,7 @@ EventCalendar.destroy(ec);
 ```
 
 ### Modifying options after initialization
-You can modify the calendar options after initialization using the [setOption](#setoption-name-value-) method.
+You can modify the calendar options after initialization using the [setOption](#setoption-name-value-) method, or the [setOptions](#setoptions-options-) method to set several options at once.
 ```js
 ec.setOption('slotDuration', '01:00');
 ```
@@ -362,16 +597,16 @@ In Svelte, you can simply update the original `options` object.
 - Type `Content` or `function`
 - Default `'all-day'`
 
-Defines the content that is displayed as a title of the `all-day` slot.
+The title of the all-day row.
 
-This value can be either a [Content](#content) or a function that returns content:
+The value is a [Content](#content), or a function that returns it:
 
 ```js
-function (arg) {
-    // return Content
-}
+let options = {
+    allDayContent: ({text}) => ({html: `<i>${text}</i>`})
+};
 ```
-`arg` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -385,15 +620,20 @@ The default text
 </tr>
 </table>
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### allDaySlot
 - Type `boolean`
 - Default `true`
 
-Determines whether the `all-day` slot is displayed at the top of the calendar.
+Shows the all-day row at the top of the `timeGrid` and `resourceTimeGrid` views.
 
-When hidden with `false`, all-day events will not be displayed in `timeGrid`/`resourceTimeGrid` views.
+```js
+let options = {
+    allDaySlot: false
+};
+```
+Without the row there is no place for all-day events in these views, so they are not shown.
 
 ### buttonText
 - Type `object` or `function`
@@ -424,45 +664,40 @@ When hidden with `false`, all-day events will not be displayed in `timeGrid`/`re
 </li>
 </ul>
 
-Text that is displayed in buttons of the header toolbar.
+The texts of the buttons of the calendar. For the buttons without a text — `prev` and `next` in the toolbar, `close` in the popup, `expand` and `collapse` at the nested resources — these are the labels for screen readers and the tooltips.
 
-This value can be either a plain object with all necessary properties, or a callback function that receives default button text object and should return a new one:
+The value is an object with the texts, or a function that receives the default texts and returns the new ones. A function is the way to change some texts and keep the others:
 
 ```js
-function (text) {
-  // return new button text object
-}
+let options = {
+    buttonText: text => ({...text, today: 'This week', dayGridMonth: 'Month'})
+};
 ```
-<table>
-<tr>
-<td>
-
-`text`
-</td>
-<td>An object with default button text</td>
-</tr>
-</table>
+An object replaces the default texts completely, so it has to contain every text the calendar needs.
 
 ### columnWidth
 - Type `string`
 - Default `undefined`
 
-Defines the column width in `timeGrid`/`resourceTimeGrid` views.
+The width of the day columns in the `timeGrid` and `resourceTimeGrid` views, and in the `resourceTimeline` views whose slots are days, such as `resourceTimelineMonth`.
 
-This option accepts a CSS [length](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-columns#values) value, so be sure to include `px` if you specify the value in pixels.
+By default the columns share the width of the calendar. With this option each column gets the given width, and the calendar is scrolled horizontally when the columns do not fit.
 
-If this option is `undefined`, the column width will adjust to the calendar width.
+The value is a CSS [length](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-columns#values), so include the unit:
+
+```js
+let options = {
+    columnWidth: '150px'
+};
+```
 
 ### customButtons
 - Type `object` or `function`
 - Default `{}`
 
-Defines custom buttons that can be used in the [headerToolbar](#headertoolbar).
+Your own buttons and other items for the [headerToolbar](#headertoolbar).
 
-First, specify the custom buttons as key-value pairs. Then reference them from the `headerToolbar` option.
-
-<details>
-  <summary>Example</summary>
+Define the items under any names, then put the names into `headerToolbar`:
 
 ```js
 let options = {
@@ -481,9 +716,7 @@ let options = {
     }
 };
 ```
-</details>
-
-Each `customButton` entry accepts the following properties:
+An item accepts the following properties:
 <table>
 <tr>
 <td>
@@ -492,7 +725,7 @@ Each `customButton` entry accepts the following properties:
 </td>
 <td>
 
-The text to be display on the button itself. See [Content](#content)
+The text to be displayed on the button itself. See [Content](#content)
 </td>
 </tr>
 <tr>
@@ -532,10 +765,7 @@ function () {
 </tr>
 </table>
 
-An entry with the `content` property is rendered as a plain `<div>` rather than a `<button>`, so it can hold any widget, such as an input or a select. Such an entry does not need the `text` and `click` properties, and if `content` is also given, it takes precedence over `text`.
-
-<details>
-  <summary>Example</summary>
+An item with `content` is rendered as a `<div>` instead of a `<button>`, so it can hold any widget, such as an input or a select. It needs neither `text` nor `click`, and if both `content` and `text` are given, `content` is used.
 
 ```js
 let input = document.createElement('input');
@@ -553,54 +783,60 @@ let options = {
     }
 };
 ```
-</details>
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
-
-The `customButtons` option can also be set as a callback function that receives default custom button object and should return a new one:
+The option can also be a function that receives the default items and returns the new ones:
 
 ```js
-function (customButtons) {
-  // return new custom buttons object
-}
+let options = {
+    customButtons: buttons => ({...buttons, myCustomButton: {text: 'custom!', click: () => alert('clicked!')}})
+};
 ```
-<table>
-<tr>
-<td>
-
-`customButtons`
-</td>
-<td>An object with default custom buttons</td>
-</tr>
-</table>
 
 ### customScrollbars
 - Type `boolean`
 - Default `false`
 
-Enables scrollbars styling, which in turn prevents the scrollbars from being hidden in [supported](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-scrollbar#browser_compatibility) browsers.
+Styles the scrollbars of the calendar, which also keeps them always visible in the browsers that [support](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-scrollbar#browser_compatibility) it.
 
-This option can be useful, for example, for macOS users in `resourceTimeline` views to indicate that the calendar can be scrolled horizontally. On macOS, scrollbars can be hidden completely, and this option ensures they are always visible in [supported](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::-webkit-scrollbar#browser_compatibility) browsers.
+It is useful on macOS, where the scrollbars are hidden until you scroll: in a `resourceTimeline` view nothing would tell the user that the calendar can be scrolled horizontally.
+
+```js
+let options = {
+    customScrollbars: true
+};
+```
 
 ### date
 - Type `Date`, `string` or `undefined`
 - Default `undefined`
 
-Date that is currently displayed on the calendar.
+The date the calendar shows. The view displays the period that contains this date: its week, its month and so on.
 
-This value can be either a JavaScript Date object, or an ISO8601 date string like `'2026-12-31'`. `undefined` means today in the calendar's [timeZone](#timezone).
+The value is a JavaScript Date object or an ISO8601 date string. Without a value it is today in the calendar's [timeZone](#timezone).
+
+```js
+let options = {
+    date: '2026-12-31'
+};
+```
+The option follows the navigation, so [getOption](#getoption-name-)`('date')` returns the date that is shown at the moment.
 
 ### dateClick
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when the user clicks on a date or a time.
+Called when the user clicks a day or a time slot.
 
 ```js
-function (info) {}
+let options = {
+    dateClick: ({date, allDay, resource}) => {
+        console.log(date, allDay, resource?.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -665,28 +901,47 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 - Type `string`, `integer` or `object`
 - Default `undefined`
 
-Defines the interval by which the displayed view is shifted when pressing the prev/next buttons or when the [prev()](#prev)/[next()](#next) methods are called.
+How far the calendar moves when the prev and next buttons are clicked, or the [prev()](#prev) and [next()](#next) methods are called. By default it moves by the whole view, that is by its [duration](#duration).
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
 
-If not specified, then equal to [duration](#duration).
+```js
+let options = {
+    view: 'timeGridWeek',
+    // Show a week, but move two weeks at a time
+    dateIncrement: {weeks: 2}
+};
+```
 
 ### datesAboveResources
 - Type `boolean`
 - Default `false`
 
-Determines whether the resource view should render the date headings above the resource headings.
+Puts the days above the resources in the `resourceTimeGrid` views: the columns are grouped by day, and each day holds a column per resource.
+
+By default it is the other way around: the columns are grouped by resource, and each resource holds its days.
+
+```js
+let options = {
+    view: 'resourceTimeGridWeek',
+    datesAboveResources: true
+};
+```
 
 ### datesSet
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when the date range of the calendar was originally set or changed by clicking the previous/next buttons, changing the view, manipulating the current date via the API, etc.
+Called when the period the calendar shows is set or changed: when the calendar is created and each time it moves to other dates, by navigation or by switching to a view of another period.
 
 ```js
-function (info) {}
+let options = {
+    datesSet: ({start, end, view}) => {
+        console.log(view.type, start, end);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -732,16 +987,16 @@ The current [View](#view-object) object
 - Type `Content` or `function`
 - Default `undefined`
 
-Defines the content that is rendered inside the day cell.
+The content of the day cells. In the `dayGrid` views it replaces the number of the day and in the `list` views the name of the day. In the other views the cells have no content by default.
 
-This value can be either a [Content](#content) or a function that returns content:
+The value is a [Content](#content), or a function that returns it:
 
 ```js
-function (arg) {
-    // return Content
-}
+let options = {
+    dayCellContent: ({date, isToday}) => ({html: isToday ? '<b>Today</b>' : String(date.getDate())})
+};
 ```
-`arg` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -782,55 +1037,43 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 </tr>
 </table>
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### dayCellFormat
 - Type `object` or `function`
 - Default `{day: 'numeric'}`
 
-Defines the text that is displayed inside the day cell in the `dayGridMonth` view.
+The format of the day number in the cells of the `dayGrid` views.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (date) {
-  // return Content with the formatted date string
-}
+let options = {
+    dayCellFormat: {day: '2-digit'}
+    // or as a function
+    // dayCellFormat: date => String(date.getDate())
+};
 ```
-<table>
-<tr>
-<td>
-
-`date`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The function receives the JavaScript Date object to format.
 
 ### dayHeaderAriaLabelFormat
 - Type `object` or `function`
-- Default `{dateStyle: 'long'}`
+- Default `{dateStyle: 'full'}`
 > Views override the default value as follows:
 > - dayGridMonth `{weekday: 'long'}`
 
-Defines the text that is used inside the `aria-label` attribute in calendar column headings.
+The format of the `aria-label` attribute of the column headings, which is what screen readers announce instead of the short visible text.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted string.
 
 ```js
-function (date) {
-    // return formatted date string
-}
+let options = {
+    dayHeaderAriaLabelFormat: {weekday: 'long', month: 'long', day: 'numeric'}
+    // or as a function
+    // dayHeaderAriaLabelFormat: date => date.toDateString()
+};
 ```
-<table>
-<tr>
-<td>
-
-`date`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The function receives the JavaScript Date object to format.
 
 ### dayHeaderFormat
 - Type `object` or `function`
@@ -838,52 +1081,59 @@ function (date) {
 > Views override the default value as follows:
 > - dayGridDay `{weekday: 'long'}`
 > - dayGridMonth `{weekday: 'short'}`
+> - resourceTimeGridDay `{weekday: 'long'}`
+> - resourceTimelineDay `{weekday: 'long'}`
 > - resourceTimelineMonth `{weekday: 'short', day: 'numeric'}`
 > - resourceTimelineYear `{weekday: 'short', day: 'numeric'}`
 > - timeGridDay `{weekday: 'long'}`
 
-Defines the text that is displayed on the calendar’s column headings.
+The format of the column headings.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (date) {
-    // return Content with the formatted date string
-}
+let options = {
+    dayHeaderFormat: {weekday: 'long'}
+    // or as a function
+    // dayHeaderFormat: date => date.toDateString()
+};
 ```
-<table>
-<tr>
-<td>
-
-`date`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The function receives the JavaScript Date object to format.
 
 ### dayMaxEvents
 - Type `boolean`
 - Default `false`
 
-Determines the maximum number of stacked event levels for a given day in the `dayGrid` view.
+Limits the events of a day in the `dayGrid` views to those that fit into the height of the day cell. The rest are collected under a link like `+2 more`, which opens them in a popup.
 
-If there are too many events, a link like `+2 more` is displayed.
+It needs the calendar to have a [height](#height): without one, as well as without this option, the rows of the grid grow to show all the events.
 
-Currently, only the value `true` is supported, which limits the number of events to the height of the day cell.
+```js
+let options = {
+    view: 'dayGridMonth',
+    height: '600px',
+    dayMaxEvents: true
+};
+```
+Only `true` is supported: the limit is set by the height of the cell, not by a number.
 
 ### dayPopoverFormat
 - Type `object` or `function`
 - Default `{month: 'long', day: 'numeric', year: 'numeric'}`
 
-Defines the date format of title of the popover created by the [dayMaxEvents](#daymaxevents) option.
+The format of the date in the title of the popup that the `+more` link opens, see [dayMaxEvents](#daymaxevents).
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (date) {
-    // return Content with the formatted date string
-}
+let options = {
+    dayPopoverFormat: {weekday: 'long', month: 'long', day: 'numeric'}
+    // or as a function
+    // dayPopoverFormat: date => date.toDateString()
+};
 ```
+The function receives the JavaScript Date object to format.
+
 ### displayEventEnd
 - Type `boolean`
 - Default `true`
@@ -896,17 +1146,29 @@ function (date) {
 > - resourceTimelineWeek `false`
 > - resourceTimelineYear `false`
 
-Determines whether to display an event’s end time.
+Shows the end time of an event next to its start time: `10:00 - 11:30` instead of `10:00`.
+
+```js
+let options = {
+    displayEventEnd: false
+};
+```
 
 ### dragConstraint
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that limits the date/time range into which events are allowed to be dragged.
+Limits where an event can be dragged.
 
-The function is triggered during dragging for each cursor movement and takes the same parameters as [eventDrop](#eventdrop). The function should return `true` if dragging to the new position is allowed, and `false` otherwise.
+The function is called on every move of the pointer while an event is dragged. It receives the same argument as [eventDrop](#eventdrop), with the event as it would be at the new position, and returns `false` to forbid dropping the event there.
 
+```js
+let options = {
+    // No events on the weekend
+    dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay())
+};
+```
 While the position is not allowed, the event stays at the last allowed position and the cursor changes to `not-allowed`. Releasing the pointer there cancels the dragging.
 
 ### dragScroll
@@ -914,7 +1176,13 @@ While the position is not allowed, the event stays at the last allowed position 
 - Default `true`
 - Requires `Interaction` plugin
 
-Determines whether the calendar should automatically scroll during the event drag-and-drop when the mouse crosses the edge.
+Scrolls the calendar when an event is dragged to its edge, so that the event can be moved to a time that is not visible.
+
+```js
+let options = {
+    dragScroll: false
+};
+```
 
 ### duration
 - Type `string`, `integer` or `object`
@@ -931,39 +1199,68 @@ Determines whether the calendar should automatically scroll during the event dra
 > - resourceTimelineYear `{years: 1}`
 > - timeGridDay `{days: 1}`
 
-Sets the duration of a view.
+The period of time a view shows.
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
+
+```js
+let options = {
+    view: 'timeGridWeek',
+    // Four days instead of a week
+    duration: {days: 4}
+};
+```
+Usually it is set for a view of your own in the [views](#views) option.
 
 ### editable
 - Type `boolean`
 - Default `false`
 - Requires `Interaction` plugin
 
-Determines whether the events on the calendar can be dragged and resized (both at the same time).
+Lets the user drag and resize the events, where the more specific options do not decide it.
 
-If you don't need both, use the more specific [eventStartEditable](#eventstarteditable) and [eventDurationEditable](#eventdurationeditable) instead.
+Dragging is controlled by [eventStartEditable](#eventstarteditable) and resizing by [eventDurationEditable](#eventdurationeditable). Both are `true` by default, so with the `Interaction` plugin the events can be dragged and resized even while `editable` is `false`. This option is used for the action whose own option is set to `null`:
+
+```js
+let options = {
+    // Both dragging and resizing are decided by `editable`
+    eventStartEditable: null,
+    eventDurationEditable: null,
+    editable: true
+};
+```
+For each event the first value that is set is taken, in this order: the `startEditable` (or `durationEditable`) property of the event, the `eventStartEditable` (or `eventDurationEditable`) option, the `editable` property of the event, and this option.
 
 ### events
 - Type `array`
 - Default `[]`
 
-Array of plain objects that will be [parsed](#parsing-event-from-a-plain-object) into [Event](#event-object) objects and displayed on the calendar.
+The events of the calendar: an array of plain objects that are [parsed](#parsing-event-from-a-plain-object) into [Event](#event-object) objects.
 
-This option is not used if the `eventSources` option is provided.
+```js
+let options = {
+    events: [
+        {id: 1, title: 'Meeting', start: '2026-12-01 10:00', end: '2026-12-01 11:30'},
+        {id: 2, title: 'Conference', start: '2026-12-02', end: '2026-12-04', allDay: true}
+    ]
+};
+```
+To load the events from a server, use [eventSources](#eventsources) instead. If `eventSources` is given, this option is not used.
 
 ### eventAllUpdated
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when all events have finished updating.
-
-This is an experimental feature and its behavior may change in the future. The function is called at the end of the cycle of rendering all events. The rendering occurs when new events are added, already displayed events are modified, or events are deleted.
+Called when the calendar has finished rendering the events after they change: when they are loaded, added, changed or removed, and when the view is switched.
 
 ```js
-function (info) { }
+let options = {
+    eventAllUpdated: ({view}) => {
+        console.log('The events are rendered in', view.type);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -977,28 +1274,37 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+This is an experimental feature, and its behavior may change in the future.
+
 ### eventBackgroundColor
 - Type `string`
 - Default `undefined`
 
-Sets the default background color for events on the calendar.
+The default background color of the events.
 
-You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+The value is any CSS color, such as `'#f00'`, `'rgb(255,0,0)'` or `'red'`:
+
+```js
+let options = {
+    eventBackgroundColor: '#0ea5e9'
+};
+```
+The color of a [resource](#resource-object) and the color of the [event](#event-object) itself take precedence over this option.
 
 ### eventClassNames
 - Type `string`, `array` or `function`
 - Default `undefined`
 
-Sets additional CSS classes for events.
+Additional CSS classes for the elements of the events.
 
-This value can be either a string containing class names `'class-1 class-2 ...'`, an array of strings `['class-1', 'class-2', ...]` or a function that returns any of the above formats:
+The value is a string with the class names, an array of them, or a function that returns either:
 
 ```js
-function (info) {
-    // return string or array
-}
+let options = {
+    eventClassNames: ({event}) => event.extendedProps.urgent ? ['urgent', 'bold'] : 'regular'
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1026,12 +1332,16 @@ The current [View](#view-object) object
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when the user clicks an event.
+Called when the user clicks an event, or presses Enter or Space on a focused one.
 
 ```js
-function (info) { }
+let options = {
+    eventClick: ({event, el}) => {
+        console.log(event.id, el);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1069,26 +1379,36 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+With this option the events become buttons for the keyboard and screen readers: they can be focused and activated.
+
 ### eventColor
 - Type `string`
 - Default `undefined`
 
-This is currently an alias for the `eventBackgroundColor`.
+An alias for [eventBackgroundColor](#eventbackgroundcolor). It is used when `eventBackgroundColor` is not set.
+
+```js
+let options = {
+    eventColor: '#0ea5e9'
+};
+```
 
 ### eventContent
 - Type `Content` or `function`
 - Default `undefined`
 
-Defines the content that is rendered inside an event’s element.
+The content of an event, in place of the default time and title.
 
-This value can be either a [Content](#content) or a function that returns content or `undefined`:
+The value is a [Content](#content), or a function that returns it:
 
 ```js
-function (info) {
-    // return Content or undefined
-}
+let options = {
+    eventContent: ({event, timeText}) => ({
+        html: `<div class="ec-event-time">${timeText}</div><div class="ec-event-title">★ ${event.title}</div>`
+    })
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1119,20 +1439,26 @@ The current [View](#view-object) object
 </tr>
 </table>
 
-In case the function returns `undefined`, the event will be rendered in the default way.
+If the function returns `undefined`, the event gets the default content, so the content can be changed for some events only.
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+The event itself does not clip its content: the default time and title are clipped by their own `ec-event-time` and `ec-event-title` classes. Use the same classes for your content, as in the example, so that it does not stick out of an event that is too small for it.
+
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### eventDidMount
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered right after the element has been added to the DOM. If the event data changes, this is not called again.
+Called right after the element of an event is added to the page. This is the place to attach something to the element: a tooltip, for example.
 
 ```js
-function (info) { }
+let options = {
+    eventDidMount: ({event, el}) => {
+        el.title = event.title;
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1170,24 +1496,36 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+It is called once for each element. An element is created again, and the function is called again, when the event is replaced with [updateEvent()](#updateevent-event-), loaded again, or moved to another day or resource.
+
 ### eventDragMinDistance
 - Type `integer`
 - Default `5`
 - Requires `Interaction` plugin
 
-Defines how many pixels the user’s mouse must move before the event dragging begins.
+How many pixels the pointer has to move before an event starts to be dragged. It keeps a click with a slightly moved mouse from being taken as dragging.
+
+```js
+let options = {
+    eventDragMinDistance: 10
+};
+```
 
 ### eventDragStart
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when the event dragging begins.
+Called when the user starts dragging an event.
 
 ```js
-function (info) { }
+let options = {
+    eventDragStart: ({event}) => {
+        console.log('Dragging', event.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1223,14 +1561,16 @@ The current [View](#view-object) object
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when the event dragging stops.
-
-It is triggered before the event’s information has been modified (if moved to a new date/time) and before the [eventDrop](#eventdrop) callback is triggered.
+Called when the user stops dragging an event, wherever it is released.
 
 ```js
-function (info) { }
+let options = {
+    eventDragStop: ({event}) => {
+        console.log('Released', event.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1261,19 +1601,27 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+At this moment the event is not changed yet. Unless the drop is refused, the event is changed after this call, and then [eventDrop](#eventdrop) is called.
+
 ### eventDrop
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when dragging stops, and the event has moved to a different day/time.
-
-It is triggered after the event’s information has been modified and after the [eventDragStop](#eventdragstop) callback has been triggered.
+Called when the user has dropped an event and the drop is accepted. The event is already changed at this moment. It is called even if the event is dropped where it was.
 
 ```js
-function (info) { }
+let options = {
+    eventDrop: async ({event, oldEvent, revert}) => {
+        let saved = await save(event.id, event.start, event.end);
+        if (!saved) {
+            // Put the event back
+            revert();
+        }
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1354,25 +1702,35 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+It is called after [eventDragStop](#eventdragstop).
+
 ### eventDurationEditable
 - Type `boolean`
 - Default `true`
 - Requires `Interaction` plugin
 
-Determines whether calendar events can be resized.
+Lets the user resize the events. Set it to `false` to forbid resizing:
+
+```js
+let options = {
+    eventDurationEditable: false
+};
+```
+An event can override it with its own `durationEditable` property. With `null`, the [editable](#editable) option decides.
 
 ### eventFilter
 - Type `function`
 - Default `undefined`
 
-A function for filtering the array of events before displaying them in the calendar. It allows, for example, to display only specific events for each view.
+Decides which events are shown, without changing the events themselves. The function is called for each event and returns `true` to show it:
 
 ```js
-function (info) {
-    // return true to keep the event, false to exclude it
-}
+let options = {
+    // Only the events of the selected category
+    eventFilter: ({event}) => event.extendedProps.category === 'work'
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1413,31 +1771,48 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+The filter is applied again when the view changes, so the events can be different in each view.
+
 ### eventGap
 - Type `integer`
 - Default `1`
 
-Defines the vertical gap in pixels between events that are stacked on top of each other within the same day. Applies to `DayGrid`, the all-day section of `TimeGrid`/`ResourceTimeGrid`, and `ResourceTimeline` views.
+The vertical gap in pixels between the events that are stacked one under another: in the `dayGrid` views, in the all-day row of the `timeGrid` and `resourceTimeGrid` views, and in the `resourceTimeline` views.
+
+```js
+let options = {
+    eventGap: 4
+};
+```
 
 ### eventLongPressDelay
 - Type `integer`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the event becomes draggable/resizable.
+On touch devices, how many milliseconds the user has to hold a finger on an event before it can be dragged or resized. A shorter touch scrolls the calendar.
 
-If not specified, it falls back to [longPressDelay](#longpressdelay).
+```js
+let options = {
+    eventLongPressDelay: 500
+};
+```
+Without a value, [longPressDelay](#longpressdelay) is used.
 
 ### eventMouseEnter
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when the user hovers over an event with the cursor (mouse pointer).
+Called when the mouse pointer enters an event.
 
 ```js
-function (info) { }
+let options = {
+    eventMouseEnter: ({event, el}) => {
+        showTooltip(el, event.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1479,12 +1854,16 @@ The current [View](#view-object) object
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when the cursor (mouse pointer) is moved out of an event.
+Called when the mouse pointer leaves an event.
 
 ```js
-function (info) { }
+let options = {
+    eventMouseLeave: ({event, el}) => {
+        hideTooltip(el);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1526,52 +1905,68 @@ The current [View](#view-object) object
 - Type `function`
 - Default `undefined`
 
-A function that determines the order in which events that visually intersect in the current view are displayed.
+The order of the events that are shown at the same place: which one is higher in a day of the month view, or to the left in a time slot.
 
-When `eventOrder` is not specified, events are ordered by start time with all-day events appearing first.
+The value is a function that compares two [Event](#event-object) objects, like the function of `Array.sort()`: it returns a negative number if the first event comes before the second, a positive one if it comes after, and zero if they are equal.
 
 ```js
-function (a, b) {
-    // Return a negative value if 'a' should come before 'b'
-    // Return a positive value if 'a' should come after 'b'
-    // Return zero if 'a' and 'b' are equal
-}
+let options = {
+    // By title
+    eventOrder: (a, b) => a.title.localeCompare(b.title)
+};
 ```
-
-`a` and `b` are [Event](#event-object) objects.
+By default the events are ordered by their start time, and of the events that start at the same time the all-day ones come first.
 
 ### eventOrderStrict
 - Type `boolean`
 - Default `false`
 
-Determines whether [eventOrder](#eventorder) is followed strictly in `resourceTimeline` views.
+Makes the `resourceTimeline` views keep the order of the events vertically, even if it takes more space.
 
-By default, the layout prioritizes compactness: an event is placed in the topmost free slot, which means it can move above earlier-ordered events when there is empty space above them. When set to `true`, events keep their vertical order — an event is never placed above another event that comes before it in `eventOrder` and overlaps it, even if free space is available.
+By default the layout is compact: an event is placed into the topmost free line, so it can end up above an event that comes before it in the order, when there is free space above that one. With `true`, an event is never placed above another event that comes before it in [eventOrder](#eventorder) and overlaps it.
 
-This is useful, for example, when a parent event should always stay above its child events (order them so the parent comes first and enable this option).
+```js
+let options = {
+    eventOrderStrict: true
+};
+```
+It is useful when a parent event has to stay above its children: order them so that the parent comes first, and enable this option.
 
-Events that don't overlap each other are laid out independently, even with this option enabled. To keep related events on the same line, give them the same `layoutGroup`.
+The events that do not overlap are still laid out independently. To keep related events on the same line, give them the same `layoutGroup`.
 
 ### eventResizableFromStart
 - Type `boolean`
 - Default `false`
 - Requires `Interaction` plugin
 
-Determines whether the event can be resized from its starting edge.
+Lets the user resize an event from its start as well: by the top edge in the time grid, and by the left edge in the other views.
+
+```js
+let options = {
+    editable: true,
+    eventResizableFromStart: true
+};
+```
 
 ### eventResize
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when resizing stops, and the duration of the event has changed.
-
-It is triggered after the event’s information has been modified and after the [eventResizeStop](#eventresizestop) callback has been triggered.
+Called when the user has finished resizing an event and the new size is accepted. The event is already changed at this moment.
 
 ```js
-function (info) { }
+let options = {
+    eventResize: async ({event, revert}) => {
+        let saved = await save(event.id, event.start, event.end);
+        if (!saved) {
+            // Put the event back
+            revert();
+        }
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1642,17 +2037,23 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+It is called after [eventResizeStop](#eventresizestop).
+
 ### eventResizeStart
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when the event resizing begins.
+Called when the user starts resizing an event.
 
 ```js
-function (info) { }
+let options = {
+    eventResizeStart: ({event}) => {
+        console.log('Resizing', event.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1688,14 +2089,16 @@ The current [View](#view-object) object
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when the event resizing stops.
-
-It is triggered before the event’s information has been modified (if duration is changed) and before the [eventResize](#eventresize) callback is triggered.
+Called when the user stops resizing an event.
 
 ```js
-function (info) { }
+let options = {
+    eventResizeStop: ({event}) => {
+        console.log('Released', event.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -1726,15 +2129,27 @@ The current [View](#view-object) object
 </tr>
 </table>
 
+At this moment the event is not changed yet. Unless the new size is refused, the event is changed after this call, and then [eventResize](#eventresize) is called.
+
 ### eventSources
 - Type `EventSource[]`
 - Default `[]`
 
-Array of `EventSource` objects that will provide EventCalendar with data about events.
+The sources the calendar loads its events from: URLs or functions. The events are requested for the period the calendar shows, and again when it moves outside of the loaded period, see [lazyFetching](#lazyfetching).
 
-This option is used instead of the `events` option.
+```js
+let options = {
+    eventSources: [
+        // The calendar requests /events?start=...&end=...
+        {url: '/events'},
+        // Or loads them with your function
+        {events: async ({startStr, endStr}) => (await fetch(`/api/events?from=${startStr}&to=${endStr}`)).json()}
+    ]
+};
+```
+If this option is given, the [events](#events) option is not used. The start and the end of the loading are reported to the [loading](#loading) callback.
 
-`EventSource` should be an object with one of the following sets of properties:
+A source is an object with one of the following sets of properties:
 
 #### 1. Fetch events from a URL
 <table>
@@ -1866,21 +2281,31 @@ Instead of calling `successCallback` and `failureCallback`, you may return the r
 - Default `true`
 - Requires `Interaction` plugin
 
-Determines whether the events on the calendar can be dragged.
+Lets the user drag the events. Set it to `false` to forbid dragging:
+
+```js
+let options = {
+    eventStartEditable: false
+};
+```
+An event can override it with its own `startEditable` property. With `null`, the [editable](#editable) option decides.
 
 ### eventTimeFormat
 - Type `object` or `function`
 - Default `{hour: 'numeric', minute: '2-digit'}`
 
-Defines the time-text that is displayed on each event.
+The format of the time shown on an event.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (start, end) {
-    // return Content with the formatted time string
-}
+let options = {
+    eventTimeFormat: {hour: '2-digit', minute: '2-digit', hour12: false}
+    // or as a function
+    // eventTimeFormat: (start, end) => start.toLocaleTimeString()
+};
 ```
+The function receives the following arguments:
 <table>
 <tr>
 <td>
@@ -1902,37 +2327,72 @@ function (start, end) {
 - Type `string`
 - Default `undefined`
 
-Sets the default text color for calendar events (except for `list` view).
+The default text color of the events. It is not used in the `list` views.
 
-You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+The value is any CSS color, such as `'#f00'`, `'rgb(255,0,0)'` or `'red'`:
+
+```js
+let options = {
+    eventTextColor: '#fff'
+};
+```
+The color of a [resource](#resource-object) and the color of the [event](#event-object) itself take precedence over this option.
 
 ### filterEventsWithResources
 - Type `boolean`
 - Default `false`
 
-Determines whether events that do not belong to the current array of [resources](#resources) should be hidden in `dayGrid`/`timeGrid`/`list` views.
+Hides the events that do not belong to any of the [resources](#resources) in the `dayGrid`, `timeGrid` and `list` views. These views do not show the resources themselves, so by default they show all the events.
+
+```js
+let options = {
+    view: 'timeGridWeek',
+    resources: [{id: 1, title: 'Room A'}],
+    // Only the events of Room A are shown
+    filterEventsWithResources: true
+};
+```
 
 ### filterResourcesWithEvents
 - Type `boolean`
 - Default `false`
 
-Determines whether resources with no events for the current range should be hidden in the resource view. Background events are not taken into account.
+Hides the resources that have no events in the period the resource view shows. Background events do not count.
+
+```js
+let options = {
+    filterResourcesWithEvents: true
+};
+```
 
 ### firstDay
 - Type `integer`
 - Default `0`
 
-The day that each week begins at, where Sunday is `0`, Monday is `1`, etc. Saturday is `6`.
+The day the week starts on: `0` is Sunday, `1` is Monday, and so on up to `6`, Saturday.
+
+```js
+let options = {
+    // The week starts on Monday
+    firstDay: 1
+};
+```
 
 ### flexibleSlotTimeLimits
 - Type `boolean` or `object`
 - Default `false`
 
-Determines whether [slotMinTime](#slotmintime) and [slotMaxTime](#slotmaxtime) should automatically expand when an event goes out of bounds.
+Extends [slotMinTime](#slotmintime) and [slotMaxTime](#slotmaxtime) automatically when an event of the shown period is outside of them, so that no event is cut off or hidden.
 
-If set to `true`, then the decision on whether to expand the limits will be made based on the analysis of currently displayed events, but excluding background events.
-
-If you want background events not to be ignored, then instead of `true` you can pass an object with the following properties:
+```js
+let options = {
+    slotMinTime: '09:00',
+    slotMaxTime: '18:00',
+    // An event at 7:30 makes the day start at 7:30
+    flexibleSlotTimeLimits: true
+};
+```
+With `true`, all the shown events are taken into account except the background ones. To decide it yourself, pass an object with the following properties instead:
 
 <table>
 <tr>
@@ -1968,13 +2428,31 @@ The function must return `true` to have this event counted, or `false` to ignore
 </tr>
 </table>
 
+```js
+let options = {
+    // Background events count as well
+    flexibleSlotTimeLimits: {eventFilter: event => true}
+};
+```
+
 ### headerToolbar
 - Type `object`
 - Default `{start: 'title', center: '', end: 'today prev,next'}`
 
-Defines the buttons and title at the top of the calendar.
+What the toolbar at the top of the calendar contains: the title and the buttons.
 
-An object can be supplied with properties `start`,`center`,`end`. These properties contain strings with comma/space separated values. Values separated by a comma will be displayed adjacently. Values separated by a space will be displayed with a small gap in between. Strings can contain any of the following values:
+The value is an object with the `start`, `center` and `end` properties for the three parts of the toolbar. Each one is a string with the names of the items. The items separated by a comma are joined into a group, and the items separated by a space have a gap between them.
+
+```js
+let options = {
+    headerToolbar: {
+        start: 'prev,next today',
+        center: 'title',
+        end: 'dayGridMonth,timeGridWeek,timeGridDay'
+    }
+};
+```
+The following items are available, as well as the ones defined in [customButtons](#custombuttons):
 <table>
 <tr>
 <td>
@@ -2013,186 +2491,193 @@ _a view name like_ `dayGridMonth`
 </tr>
 </table>
 
+The texts of the buttons are set with [buttonText](#buttontext).
+
 ### height
 - Type `string`
 - Default `undefined`
 
-Defines the height of the entire calendar.
+The height of the whole calendar. With a height the calendar scrolls inside itself, without one it is as tall as its content.
 
-This should be a valid CSS value like `'100%'` or `'600px'`.
+The value is any CSS height:
+
+```js
+let options = {
+    height: '600px'
+};
+```
+A percentage, like `'100%'`, works when the element that contains the calendar has a height itself.
 
 ### hiddenDays
 - Type `array`
 - Default `[]`
 
-Exclude certain days-of-the-week from being displayed, where Sunday is `0`, Monday is `1`, etc. Saturday is `6`.
+The days of the week that are not shown: `0` is Sunday, `1` is Monday, and so on up to `6`, Saturday.
+
+```js
+let options = {
+    // Without the weekend
+    hiddenDays: [0, 6]
+};
+```
 
 ### highlightedDates
 - Type `array`
 - Default `[]`
 
-Array of dates that need to be highlighted in the calendar.
+The dates that are highlighted in the calendar: holidays, for example.
 
-Each date can be either an ISO8601 date string like `'2026-12-31'`, or a JavaScript Date object.
+Each date is an ISO8601 date string or a JavaScript Date object:
+
+```js
+let options = {
+    highlightedDates: ['2026-12-25', '2026-12-26', new Date(2027, 0, 1)]
+};
+```
 
 ### icons
 - Type `object`
 - Default `{collapse: {html: '&minus;'}, expand: {html: '&plus;'}}`
 
-Defines icons used in some buttons, such as those for expanding nested resources in `resourceTimeline` views.
+The icons of the buttons that have no text: currently, the buttons that collapse and expand nested resources in the `resourceTimeline` views.
 
-Each icon is specified as a [Content](#content) value.
-
-This option can be either a plain object with all necessary properties, or a callback function that receives default icons object and should return a new one:
+The value is an object where each icon is a [Content](#content), or a function that receives the default icons and returns the new ones:
 
 ```js
-function (icons) {
-  // return new icons object
-}
+let options = {
+    icons: icons => ({...icons, collapse: {html: '▾'}, expand: {html: '▸'}})
+};
 ```
-<table>
-<tr>
-<td>
-
-`icons`
-</td>
-<td>An object with default icons</td>
-</tr>
-</table>
+An object replaces the default icons completely, so it has to contain all of them.
 
 ### lazyFetching
 - Type `boolean`
 - Default `true`
 
-Determines when event and resource fetching should occur.
+Makes the calendar skip loading when the period it moves to is inside the period it has loaded last, which keeps the number of requests low.
 
-When set to `true` (the default), the calendar will only fetch events when it absolutely needs to, minimizing HTTP requests. For example, say your calendar starts out in month view, in February. EventCalendar will fetch events for the entire month of February and store them in its internal storage. Then, say the user switches to week view and begins browsing the weeks in February. The calendar will avoid fetching events because it already has this information stored.
+For example, the calendar starts in the month view and loads the events of February. When the user switches to the week view and browses the weeks of February, nothing is loaded: the calendar already has these events.
 
-When set to `false`, the calendar will fetch events any time the current date changes (for example, as a result of the user clicking prev/next).
+```js
+let options = {
+    // Load the events again on every change of the period
+    lazyFetching: false
+};
+```
+With `false`, the events are loaded each time the shown period changes: on prev and next, for example.
 
-This also applies to resources if [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled.
+The same applies to the resources when [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled.
 
 ### listDayFormat
 - Type `object` or `function`
 - Default `{weekday: 'long'}`
 
-Defines the text on the left side of the day headings in list view.
+The format of the text on the left side of the day headings in the `list` views.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (date) {
-  // return Content with the formatted date string
-}
+let options = {
+    listDayFormat: {weekday: 'short'}
+    // or as a function
+    // listDayFormat: date => date.toDateString()
+};
 ```
-<table>
-<tr>
-<td>
-
-`date`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The function receives the JavaScript Date object to format.
 
 ### listDaySideFormat
 - Type `object` or `function`
 - Default `{year: 'numeric', month: 'long', day: 'numeric'}`
 
-Defines the text on the right side of the day headings in list view.
+The format of the text on the right side of the day headings in the `list` views.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (date) {
-  // return Content with the formatted date string
-}
+let options = {
+    listDaySideFormat: {month: 'short', day: 'numeric'}
+    // or as a function
+    // listDaySideFormat: date => date.toDateString()
+};
 ```
-<table>
-<tr>
-<td>
-
-`date`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The function receives the JavaScript Date object to format.
 
 ### loading
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when event or resource fetching starts/stops.
+Called when the calendar starts and when it finishes loading events or resources from their sources. It is the place to show and hide a spinner.
 
 ```js
-function (isLoading) { }
+let options = {
+    loading: isLoading => {
+        spinner.hidden = !isLoading;
+    }
+};
 ```
-<table>
-<tr>
-<td>
-
-`isLoading`
-</td>
-<td>
-
-`true` when the calendar begins fetching events or resources, `false` when it’s done.
-</td>
-</tr>
-</table>
+The function receives `true` when the loading starts, and `false` when it is done.
 
 ### locale
 - Type `string`
 - Default `undefined`
 
-Defines the `locales` parameter for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#locales) object that EventCalendar uses to format date and time strings in options such as [dayHeaderFormat](#dayheaderformat), [eventTimeFormat](#eventtimeformat), etc.
+The language and the regional format of the dates and times in the calendar: of the title, the headings, the time of the events and so on.
+
+The value is a locale for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#locales) object. Without a value the locale of the browser is used.
+
+```js
+let options = {
+    locale: 'de'
+};
+```
+Only the dates and times follow the locale. The texts of the buttons are set with [buttonText](#buttontext), the other texts, such as `all-day` and `No events`, with the content options, and the first day of the week with [firstDay](#firstday).
 
 ### longPressDelay
 - Type `integer`
 - Default `1000`
 
-For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the event becomes draggable/resizable or the date becomes selectable.
+On touch devices, how many milliseconds the user has to hold a finger before an event can be dragged or resized, or a date range can be selected. A shorter touch scrolls the calendar.
 
-For a more granular configuration, see [eventLongPressDelay](#eventlongpressdelay) and [selectLongPressDelay](#selectlongpressdelay).
+```js
+let options = {
+    longPressDelay: 500
+};
+```
+To set it separately for the events and for the selection, use [eventLongPressDelay](#eventlongpressdelay) and [selectLongPressDelay](#selectlongpressdelay).
 
 ### monthHeaderFormat
 - Type `object` or `function`
 - Default `{month: 'long'}`
 
-Defines the text that is displayed in month headings in `resourceTimelineMonth` and `resourceTimelineYear` views.
+The format of the month headings in the `resourceTimelineMonth` and `resourceTimelineYear` views.
 
-The month heading row is hidden when the view spans exactly one whole month, since the month is already shown in the calendar title.
-
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (date) {
-  // return Content with the formatted date string
-}
+let options = {
+    monthHeaderFormat: {month: 'short', year: 'numeric'}
+    // or as a function
+    // monthHeaderFormat: date => date.toDateString()
+};
 ```
-<table>
-<tr>
-<td>
+The function receives the JavaScript Date object to format.
 
-`date`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The row of the month headings is hidden when the view shows exactly one whole month, since the month is already in the title of the calendar.
 
 ### moreLinkContent
 - Type `Content` or `function`
 - Default `undefined`
 
-Defines the text that is displayed instead of the default `+2 more` created by the [dayMaxEvents](#daymaxevents) option.
+The content of the link that replaces the events that do not fit into a day, instead of the default `+2 more`. See [dayMaxEvents](#daymaxevents).
 
-This value can be either a [Content](#content) or a function that returns content:
+The value is a [Content](#content), or a function that returns it:
 
 ```js
-function (arg) {
-  // return Content
-}
+let options = {
+    moreLinkContent: ({num}) => `${num} hidden`
+};
 ```
-`arg` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2213,18 +2698,22 @@ The default text like `+2 more`
 </tr>
 </table>
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### noEventsClick
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when the user clicks _No events_ area in list view.
+Called when the user clicks the empty area of a `list` view that has no events to show.
 
 ```js
-function (info) { }
+let options = {
+    noEventsClick: ({view}) => {
+        console.log('Nothing in', view.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2249,59 +2738,87 @@ The current [View](#view-object) object
 - Type `Content` or `function`
 - Default `'No events'`
 
-Defines the text that is displayed in list view when there are no events to display.
+What a `list` view shows when it has no events.
 
-This value can be either a [Content](#content) or a function that returns content:
+The value is a [Content](#content), or a function that returns it:
 
 ```js
-function () {
-  // return Content
-}
+let options = {
+    noEventsContent: {html: '<i>Nothing is planned</i>'}
+};
 ```
-
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### nowIndicator
 - Type `boolean`
 - Default `false`
 
-Enables a marker indicating the current time in `timeGrid`/`resourceTimeGrid` views.
+Shows a line at the current time in the `timeGrid`, `resourceTimeGrid` and `resourceTimeline` views. The timeline views whose slots are days, such as `resourceTimelineMonth`, do not show it.
+
+```js
+let options = {
+    nowIndicator: true
+};
+```
 
 ### pointer
 - Type `boolean`
 - Default `false`
 - Requires `Interaction` plugin
 
-Enables mouse cursor pointer in `timeGrid`/`resourceTimeGrid` and other views.
+Highlights the time slot or the day under the mouse pointer, which shows where a click will land.
+
+```js
+let options = {
+    pointer: true
+};
+```
 
 ### refetchResourcesOnNavigate
 - Type `boolean`
 - Default `false`
 
-Determines whether to refetch [resources](#resources) when the user navigates to a different date.
+Loads the [resources](#resources) again when the calendar moves to another period, so that each period can have its own resources. By default the resources are loaded once.
+
+```js
+let options = {
+    resources: {url: '/resources'},
+    refetchResourcesOnNavigate: true
+};
+```
+The request then contains the period the resources are needed for. Whether a period that is already loaded is requested again depends on [lazyFetching](#lazyfetching).
 
 ### resizeConstraint
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that limits the date/time range within which the event is allowed to resize.
+Limits how an event can be resized.
 
-The function is triggered during resizing for each cursor movement and takes the same parameters as [eventResize](#eventresize). The function should return `true` if the new size is allowed, and `false` otherwise.
+The function is called on every move of the pointer while an event is resized. It receives the same argument as [eventResize](#eventresize), with the event as it would be with the new size, and returns `false` to forbid this size.
 
+```js
+let options = {
+    // Not longer than 3 hours
+    resizeConstraint: ({event}) => event.end - event.start <= 3 * 60 * 60 * 1000
+};
+```
 While the size is not allowed, the event keeps the last allowed size and the cursor changes to `not-allowed`. Releasing the pointer there cancels the resizing.
 
 ### resourceExpand
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered when a resource with nested children is expanded or collapsed in `resourceTimeline` views.
-
+Called when the user expands or collapses a resource with nested children in the `resourceTimeline` views.
 
 ```js
-function (info) { }
+let options = {
+    resourceExpand: ({resource}) => {
+        console.log(resource.title, resource.expanded);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2336,13 +2853,26 @@ The current [View](#view-object) object
 - Type `array`, `object` or `function`
 - Default `[]`
 
-Defines the source of resource data displayed in resource views. It can be provided in one of three ways:
+The resources of the resource views: rooms, people, machines, or anything else the events belong to. An event refers to its resources with the `resourceId` or `resourceIds` property.
+
+They can be given in one of three ways:
 
 #### 1. Array of plain objects
-If the resources are predefined and do not change, then pass them as an array of plain objects. The provided plain objects will be [parsed](#parsing-resource-from-a-plain-object) into [Resource](#resource-object) objects.
+If the resources are known in advance, pass them as an array of plain objects, which are [parsed](#parsing-resource-from-a-plain-object) into [Resource](#resource-object) objects:
+
+```js
+let options = {
+    resources: [
+        {id: 1, title: 'Room A'},
+        {id: 2, title: 'Room B', children: [
+            {id: 3, title: 'Room B1'}
+        ]}
+    ]
+};
+```
 
 #### 2. Fetch resources from a URL
-To make the calendar load resources from a URL, specify `resources` option as an object with the following properties:
+To load the resources from a server, pass an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2396,13 +2926,21 @@ Other GET/POST data you want to send to the server. Can be a plain object or a f
 </tr>
 </table>
 
-#### 3. Execute custom function
-You can also specify `resources` as a custom function that provides resource data.
 ```js
-function(fetchInfo, successCallback, failureCallback) { }
+let options = {
+    resources: {url: '/resources'}
+};
 ```
-If [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled, the function will be called every time the user navigates to a different date. In this case,
-`fetchInfo` will be an object with the following properties (it is an empty object otherwise):
+
+#### 3. Execute custom function
+The resources can also be provided by your own function:
+
+```js
+let options = {
+    resources: async fetchInfo => (await fetch('/api/resources')).json()
+};
+```
+The function receives `fetchInfo`, `successCallback` and `failureCallback`. If [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled, the function is called each time the calendar moves to another period, and `fetchInfo` is an object with the following properties. Otherwise it is an empty object.
 <table>
 <tr>
 <td>
@@ -2441,32 +2979,36 @@ If [refetchResourcesOnNavigate](#refetchresourcesonnavigate) is enabled, the fun
 </tr>
 </table>
 
-The `successCallback` function must be called by the custom function with an array of [parsable](#parsing-resource-from-a-plain-object) [Resource](#resource-object) objects.
-
-If there is any failure (e.g., if an AJAX request fails), then call the `failureCallback` instead. It accepts an argument with information about the failure.
-
-Instead of calling `successCallback` and `failureCallback`, you may return the resulting array of resources or return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) (or [thenable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)) object instead.
+The function passes an array of [parsable](#parsing-resource-from-a-plain-object) [Resource](#resource-object) objects to `successCallback`, or the information about a failure to `failureCallback`. Instead of calling them, it can return the array or a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) (or a [thenable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)) of it.
 
 ### resourcesInitiallyExpanded
 - Type `boolean`
 - Default `true`
 
-Determines whether resources with nested children are expanded or collapsed in `resourceTimeline` views. Applies to resources whose `expanded` property has not been specified and that have not yet been expanded or collapsed by the user.
-
-### resourceLabelContent
-- Type `string`, `object`or `function`
-- Default `undefined`
-
-Defines the content that is rendered inside an element with a resource title.
-
-This value can be either a [Content](#content) or a function that returns content:
+Whether the resources with nested children are expanded or collapsed at first in the `resourceTimeline` views.
 
 ```js
-function (info) {
-    // return Content
-}
+let options = {
+    // Start with all groups collapsed
+    resourcesInitiallyExpanded: false
+};
 ```
-`info` is an object with the following properties:
+It applies to the resources that have no `expanded` property of their own and that the user has not expanded or collapsed yet.
+
+### resourceLabelContent
+- Type `string`, `object` or `function`
+- Default `undefined`
+
+The content of a resource label, in place of the title of the resource.
+
+The value is a [Content](#content), or a function that returns it:
+
+```js
+let options = {
+    resourceLabelContent: ({resource}) => ({html: `<b>${resource.title}</b>`})
+};
+```
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2487,18 +3029,22 @@ The associated [Resource](#resource-object) object
 </tr>
 </table>
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### resourceLabelDidMount
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered right after the element has been added to the DOM. If the resource data changes, this is not called again.
+Called right after the element of a resource label is added to the page. This is the place to attach something to the element: a tooltip, for example.
 
 ```js
-function (info) { }
+let options = {
+    resourceLabelDidMount: ({resource, el}) => {
+        el.title = resource.title;
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2526,25 +3072,38 @@ The associated [Resource](#resource-object) object
 </tr>
 </table>
 
+It is called once for each element. The elements are created again, and the function is called again, when the resources are loaded again.
+
 ### scrollTime
 - Type `string`, `integer` or `object`
 - Default `'06:00:00'`
 
-Determines how far forward the scroll pane is initially scrolled.
+The time the calendar is scrolled to when it is shown and each time it moves to other dates, so that the working hours are visible without scrolling.
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
+
+```js
+let options = {
+    scrollTime: '08:00'
+};
+```
 
 ### select
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when a date/time selection is made.
+Called when the user has selected a range of dates or time. The selection is enabled with [selectable](#selectable).
 
 ```js
-function (info) { }
+let options = {
+    selectable: true,
+    select: ({start, end, allDay, resource}) => {
+        console.log(start, end, allDay, resource?.title);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2612,22 +3171,37 @@ If the current view is a resource view, the [Resource](#resource-object) object 
 </tr>
 </table>
 
+The selection stays highlighted until the user clicks anywhere on the page or [unselect()](#unselect-1) is called.
+
 ### selectable
 - Type `boolean`
 - Default `false`
 - Requires `Interaction` plugin
 
-Determines whether the user is allowed to highlight multiple days or time slots by clicking and moving the pointer.
+Lets the user select several days or time slots by pressing and moving the pointer. The result is reported to the [select](#select) callback.
+
+```js
+let options = {
+    selectable: true
+};
+```
 
 ### selectConstraint
 - Type `function`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that limits the date/time range that can be selected.
+Limits what can be selected.
 
-The function is triggered during selection for each cursor movement and takes the same parameters as [select](#select). The function should return `true` if the selected range is allowed, and `false` otherwise.
+The function is called on every move of the pointer during the selection. It receives the same argument as [select](#select), with the range as it would be selected, and returns `false` to forbid this range.
 
+```js
+let options = {
+    selectable: true,
+    // A selection cannot start on the weekend
+    selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+};
+```
 While the range is not allowed, the selection keeps the last allowed range and the cursor changes to `not-allowed`. Releasing the pointer there cancels the selection.
 
 ### selectBackgroundColor
@@ -2635,25 +3209,43 @@ While the range is not allowed, the selection keeps the last allowed range and t
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Sets the background color for the event indicating the current selection. See [selectable](#selectable).
+The background color of the selection, see [selectable](#selectable).
 
-You can use any of the CSS color formats such `'#f00'`, `'#ff0000'`, `'rgb(255,0,0)'`, or `'red'`.
+The value is any CSS color, such as `'#f00'`, `'rgb(255,0,0)'` or `'red'`:
+
+```js
+let options = {
+    selectable: true,
+    selectBackgroundColor: '#93c5fd'
+};
+```
 
 ### selectLongPressDelay
 - Type `integer`
 - Default `undefined`
 - Requires `Interaction` plugin
 
-For touch devices, the amount of time (in milliseconds) the user must hold down a tap before the date becomes selectable.
+On touch devices, how many milliseconds the user has to hold a finger before the selection starts. A shorter touch scrolls the calendar.
 
-If not specified, it falls back to [longPressDelay](#longpressdelay).
+```js
+let options = {
+    selectLongPressDelay: 500
+};
+```
+Without a value, [longPressDelay](#longpressdelay) is used.
 
 ### selectMinDistance
 - Type `integer`
 - Default `5`
 - Requires `Interaction` plugin
 
-Defines how many pixels the user’s mouse must move before the selection begins.
+How many pixels the pointer has to move before the selection starts. It keeps a click with a slightly moved mouse from being taken as a selection.
+
+```js
+let options = {
+    selectMinDistance: 10
+};
+```
 
 ### slotDuration
 - Type `string`, `integer` or `object`
@@ -2662,90 +3254,134 @@ Defines how many pixels the user’s mouse must move before the selection begins
 > - resourceTimelineMonth `{days: 1}`
 > - resourceTimelineYear `{days: 1}`
 
-Defines the frequency for displaying time slots.
+The length of one time slot, which is the step of the time grid.
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
+
+```js
+let options = {
+    // A slot of 15 minutes
+    slotDuration: '00:15'
+};
+```
+How often the slots are labeled is set with [slotLabelInterval](#slotlabelinterval), and the step of dragging, resizing and selecting with [snapDuration](#snapduration).
 
 ### slotEventOverlap
 - Type `boolean`
 - Default `true`
 
-Determines whether events in the `timeGrid`/`resourceTimeGrid` views should visually overlap when they intersect in time.
+Lets the events that happen at the same time overlap each other a little in the `timeGrid` and `resourceTimeGrid` views, which leaves more room for each of them.
 
-If set to `false`, then intersecting events will be placed next to each other.
+```js
+let options = {
+    slotEventOverlap: false
+};
+```
+With `false`, such events are placed side by side and share the width of the column.
 
 ### slotHeight
 - Type `integer`
 - Default `24`
 
-Defines the time slot height in pixels in the `timeGrid`/`resourceTimeGrid` views.
+The height of a time slot in pixels in the `timeGrid` and `resourceTimeGrid` views.
+
+```js
+let options = {
+    slotHeight: 36
+};
+```
 
 ### slotLabelFormat
 - Type `object` or `function`
 - Default `{hour: 'numeric', minute: '2-digit'}`
 
-Defines the text that will be displayed within a time slot.
+The format of the time labels of the slots.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (time) {
-  // return Content with the formatted time string
-}
+let options = {
+    slotLabelFormat: {hour: '2-digit', minute: '2-digit', hour12: false}
+    // or as a function
+    // slotLabelFormat: time => time.toLocaleTimeString()
+};
 ```
-<table>
-<tr>
-<td>
-
-`time`
-</td>
-<td>JavaScript Date object that needs to be formatted</td>
-</tr>
-</table>
+The function receives the JavaScript Date object to format.
 
 ### slotLabelInterval
 - Type `string`, `integer` or `object`
 - Default `undefined`
 
-The interval at which slot labels should be displayed in `timeGrid`/`resourceTimeline` views.
+How often the time slots are labeled in the `timeGrid`, `resourceTimeGrid` and `resourceTimeline` views.
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
 
-If not specified, then if [slotDuration](#slotduration) is less than 1 hour, the interval is considered to be twice as long, i.e. the labels are displayed every other time.
-
-If the interval is set to zero, then labels are displayed for all slots, including the very first one, which is not normally displayed in `timeGrid` views.
+```js
+let options = {
+    slotDuration: '00:15',
+    // A label for each hour
+    slotLabelInterval: '01:00'
+};
+```
+Without a value, every slot is labeled, or every other slot if [slotDuration](#slotduration) is less than an hour.
 
 ### slotMaxTime
 - Type `string`, `integer` or `object`
 - Default `'24:00:00'`
 
-Defines the last time slot that will be displayed for each day.
+The time of the day at which the time slots end. It can be later than midnight to show the night as a part of the previous day.
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
+
+```js
+let options = {
+    slotMinTime: '08:00',
+    slotMaxTime: '18:00'
+};
+```
 
 ### slotMinTime
 - Type `string`, `integer` or `object`
 - Default `'00:00:00'`
 
-Defines the first time slot that will be displayed for each day.
+The time of the day at which the time slots start.
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
+
+```js
+let options = {
+    slotMinTime: '08:00',
+    slotMaxTime: '18:00'
+};
+```
 
 ### slotWidth
 - Type `integer`
 - Default `32`
 
-Defines the time slot width in pixels in `resourceTimeline` views.
+The width of a time slot in pixels in the `resourceTimeline` views.
+
+```js
+let options = {
+    slotWidth: 48
+};
+```
 
 ### snapDuration
 - Type `string`, `integer` or `object`
 - Default `undefined`
 
-Defines the step for the time axis along which an event is [dragged](#editable), [resized](#editable) or [selection](#selectable) is made.
+The step of time by which an event is [dragged](#editable) and [resized](#editable), and a range is [selected](#selectable). By default it is equal to [slotDuration](#slotduration).
 
-This should be a value that can be parsed into a [Duration](#duration-object) object.
+The value is anything that can be [parsed into a Duration](#parsing-duration-from-input-values) object.
 
-If not specified, then equal to [slotDuration](#slotduration).
+```js
+let options = {
+    slotDuration: '00:30',
+    // The events are moved by 5 minutes
+    snapDuration: '00:05'
+};
+```
 
 ### theme
 - Type `object` or `function`
@@ -2775,24 +3411,16 @@ If not specified, then equal to [slotDuration](#slotduration).
 </li>
 </ul>
 
-Defines the CSS classes that EventCalendar uses to generate HTML markup.
+The CSS classes the calendar puts on its elements. Change them to style the calendar with the classes of your own or of a CSS framework.
 
-This value can be either a plain object with all necessary properties, or a callback function that receives default theme object and should return a new one:
+The value is an object with the classes, or a function that receives the default classes and returns the new ones. A function is the way to change some classes and keep the others:
 
 ```js
-function (theme) {
-  // return actual theme object
-}
+let options = {
+    theme: theme => ({...theme, button: 'btn btn-outline-primary', today: 'ec-today my-today'})
+};
 ```
-<table>
-<tr>
-<td>
-
-`theme`
-</td>
-<td>An object with default CSS classes</td>
-</tr>
-</table>
+An object replaces the default classes completely, so it has to contain all of them.
 
 ### timeZone
 - Type `string`
@@ -2817,7 +3445,7 @@ A day always has 24 hours in the views, also on a DST day, as with `'local'`. Th
 A format option with `timeZoneName` shows the browser's time zone, not the calendar's.
 
 ```js
-let ec = new EventCalendar(document.getElementById('ec'), {
+let options = {
     timeZone: '+02:00',
     events: [
         {
@@ -2831,7 +3459,7 @@ let ec = new EventCalendar(document.getElementById('ec'), {
             title: 'Call'
         }
     ]
-});
+};
 ```
 
 ### titleFormat
@@ -2842,17 +3470,23 @@ let ec = new EventCalendar(document.getElementById('ec'), {
 > - listDay `{year: 'numeric', month: 'long', day: 'numeric'}`
 > - listMonth `{year: 'numeric', month: 'long'}`
 > - listYear `{year: 'numeric'}`
+> - resourceTimelineDay `{year: 'numeric', month: 'long', day: 'numeric'}`
+> - resourceTimelineMonth `{year: 'numeric', month: 'long'}`
+> - resourceTimelineYear `{year: 'numeric'}`
 > - timeGridDay `{year: 'numeric', month: 'long', day: 'numeric'}`
 
-Defines the text that is displayed in the header toolbar’s title.
+The format of the title in the toolbar, which is the period the calendar shows.
 
-This value can be either an object with options for the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a callback function that returns a [Content](#content) with the formatted string:
+The value is an object with the options of the native JavaScript [Intl.DateTimeFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat) object, or a function that returns the formatted [Content](#content).
 
 ```js
-function (start, end) {
-  // return Content with the formatted date string
-}
+let options = {
+    titleFormat: {year: 'numeric', month: 'long'}
+    // or as a function
+    // titleFormat: (start, end) => start.toDateString() + ' – ' + end.toDateString()
+};
 ```
+The function receives the following arguments:
 <table>
 <tr>
 <td>
@@ -2875,19 +3509,22 @@ function (start, end) {
 - Default `undefined`
 - Requires `Interaction` plugin
 
-Callback function that is triggered when the current selection is cleared.
+Called when the current selection is cleared. It happens when:
 
-A selection can be cleared for a number of reasons:
-
-- The user clicks away from the current selection (this does not happen when [unselectAuto](#unselectauto) is `false`).
-- The user makes a new selection. The unselect callback will be fired before the new selection occurs.
-- The user navigates forward or backward in the current view, or switches to a new view.
-- The [unselect](#unselect-1) method is called via the API.
+- the user clicks anywhere on the page, unless [unselectAuto](#unselectauto) is `false`,
+- the user makes a new selection, in which case it is called before the new selection is made,
+- the calendar moves to another period or the view is switched,
+- the [unselect()](#unselect-1) method is called.
 
 ```js
-function (info) { }
+let options = {
+    selectable: true,
+    unselect: ({view}) => {
+        console.log('The selection is cleared in', view.type);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2917,24 +3554,37 @@ The current [View](#view-object) object
 - Default `true`
 - Requires `Interaction` plugin
 
-Determines whether clicking elsewhere on the page will clear the current selection. See [selectable](#selectable).
+Clears the current selection when the user clicks anywhere on the page. See [selectable](#selectable).
+
+```js
+let options = {
+    selectable: true,
+    // The selection stays until unselect() is called
+    unselectAuto: false
+};
+```
 
 ### unselectCancel
 - Type `string`
 - Default `''`
 - Requires `Interaction` plugin
 
-A CSS selector that specifies elements that will ignore the [unselectAuto](#unselectauto) option.
+A CSS selector for the elements that do not clear the selection when clicked, while [unselectAuto](#unselectauto) is on. For example, a form where the user enters the details of the selected time.
 
-Clicking on elements that match this CSS selector will prevent the current selection from being cleared (because of the [unselectAuto](#unselectauto) option).
+```js
+let options = {
+    selectable: true,
+    unselectCancel: '.event-form'
+};
+```
 
 ### validRange
 - Type `object`
 - Default `undefined`
 
-If set, the calendar will allow navigation only within the specified date range. Navigation buttons will be grayed out to prevent the user from navigating to an invalid range.
+The range of dates the user can navigate within. The prev, next and today buttons are disabled when the whole period they lead to is outside of the range, and the days outside of it are disabled.
 
-The range should be an object with the following properties:
+The value is an object with the following properties:
 <table>
 <tr>
 <td>
@@ -2958,15 +3608,27 @@ The range should be an object with the following properties:
 </tr>
 </table>
 
-It is not necessary to specify both properties. The range may have only `start` and no `end`, or vice versa.
+```js
+let options = {
+    validRange: {start: '2026-12-01', end: '2026-12-31'}
+};
+```
+Either of the properties can be omitted, which leaves the range open on that side. The `end` date itself is inside the range.
+
+The range limits the buttons only: methods like [gotoDate()](#gotodate-date-) and [next()](#next) can still move the calendar outside of it.
 
 ### view
 - Type `string`
 - Default `'timeGridWeek'`
 
-The view that is displayed in the calendar.
+The view the calendar shows.
 
-The following values are available:
+```js
+let options = {
+    view: 'dayGridMonth'
+};
+```
+The following views are available, each provided by the plugin of the same name:
 - `'dayGridDay'`
 - `'dayGridWeek'`
 - `'dayGridMonth'`
@@ -2983,16 +3645,22 @@ The following values are available:
 - `'timeGridDay'`
 - `'timeGridWeek'`
 
+As well as the views of your own that are defined in [views](#views).
+
 ### viewDidMount
 - Type `function`
 - Default `undefined`
 
-Callback function that is triggered right after the view has been added to the DOM.
+Called right after a view is added to the page: when the calendar is created and each time the view is switched.
 
 ```js
-function (info) { }
+let options = {
+    viewDidMount: ({view}) => {
+        console.log('Now showing', view.type);
+    }
+};
 ```
-`info` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -3010,36 +3678,42 @@ The mounted [View](#view-object) object
 - Type `object`
 - Default `{}`
 
-You can specify options that apply only to specific views. To do so provide separate options objects within the `views` option, keyed by the name of the view.
+The options that apply to one view only, and the views of your own.
 
-If you want to create a custom view, you can use the `type` property to inherit options from a standard view.
+The value is an object where each key is the name of a view and each value is an object with the options for it:
 
 ```js
-views: {
-    resourceTimelineThreeDays: {
-        type: 'resourceTimelineDay',
-        duration: {days: 3}
+let options = {
+    views: {
+        // Another format of the time in the month view
+        dayGridMonth: {eventTimeFormat: {hour: 'numeric'}},
+        // A new view: three days of the timeline
+        resourceTimelineThreeDays: {
+            type: 'resourceTimelineDay',
+            duration: {days: 3}
+        }
     }
-}
+};
 ```
+A name that is not a standard view defines a new view. Its `type` is the standard view it is based on and takes the options from. The new view is then used like any other: in the [view](#view) option and in the [headerToolbar](#headertoolbar). The text of its button is set in [buttonText](#buttontext) under the name of the view.
 
 This option is only read when the calendar is created. Changing it afterwards, either with [setOption](#setoption-name-value-) or reactively in Svelte, has no effect.
-
 
 ### weekNumberContent
 - Type `Content` or `function`
 - Default `undefined`
 
-Defines the text that is displayed in place of the default week number (such as `W01`).
+The content shown in place of the week number, which is `W01` by default. See [weekNumbers](#weeknumbers).
 
-This value can be either a [Content](#content) or a function that returns content:
+The value is a [Content](#content), or a function that returns it:
 
 ```js
-function (arg) {
-  // return Content
-}
+let options = {
+    weekNumbers: true,
+    weekNumberContent: ({week}) => `Week ${week}`
+};
 ```
-`arg` is an object with the following properties:
+The function receives an object with the following properties:
 <table>
 <tr>
 <td>
@@ -3057,15 +3731,20 @@ function (arg) {
 </tr>
 </table>
 
-In a Svelte component, this content can also be provided as a [snippet](#content-snippets).
+In Svelte, React, Vue and Angular this content can be rendered by the framework itself: with a [snippet](#content-snippets), [JSX](#rendering-content-with-react), a [slot](#rendering-content-with-slots) or a [template](#rendering-content-with-templates).
 
 ### weekNumbers
 - Type `boolean`
 - Default `false`
 
-Determines whether week numbers should be displayed in `dayGrid`/`resourceTimeline` views.
+Shows the numbers of the weeks in the `dayGrid` and `resourceTimeline` views. A timeline of exactly one week does not show it.
 
-The numbering of weeks depends on the value of [firstDay](#firstday). When `firstDay` is `0`, the [Western](https://en.wikipedia.org/wiki/Week#Other_week_numbering_systems) system is used. Any other value uses the [ISO](https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system) system.
+```js
+let options = {
+    weekNumbers: true
+};
+```
+The numbering depends on [firstDay](#firstday): with `0` the [Western](https://en.wikipedia.org/wiki/Week#Other_week_numbering_systems) system is used, and with any other value the [ISO](https://en.wikipedia.org/wiki/Week#The_ISO_week_date_system) one.
 
 ## Methods
 Methods allow you to manipulate EventCalendar after initialization. They are accessible from the calendar instance.
@@ -3111,11 +3790,25 @@ let date = ec.getOption('date');
   - `value` `mixed` The new option value
 - Return value `EventCalendar` The calendar instance for chaining
 
-This method allows you to set new value to any calendar option.
+This method allows you to set new value to any calendar option. If `value` is `undefined`, the option is reset to its default value.
 
 ```js
 // E.g. Change the current date
 ec.setOption('date', new Date());
+```
+
+### setOptions( options )
+- Parameters
+  - `options` `object` The option names and their new values
+- Return value `EventCalendar` The calendar instance for chaining
+
+This method allows you to set several calendar options at once. An option with the `undefined` value is reset to its default value.
+
+```js
+ec.setOptions({
+    view: 'timeGridDay',
+    slotDuration: '00:15'
+});
 ```
 
 ### addEvent( event )
@@ -3245,6 +3938,17 @@ The content value can be presented in the following forms:
 * a string containing text `'some text'`
 * an object containing the HTML string `{html: '<p>some HTML</p>'}`
 * an object containing an array of DOM nodes `{domNodes: [node1, node2, ...]}`
+
+A function that defines content can also return another function, which renders the content by itself. It receives the element and can return a function that is called when the content is no longer needed:
+```js
+function (info) {
+    return el => {
+        let chart = createChart(el, info.event.extendedProps.data);
+        return () => chart.destroy();
+    };
+}
+```
+The calendar takes the changes in the size of such content into account.
 
 ## Event object
 This is a JavaScript object that EventCalendar uses to store information about a calendar event.

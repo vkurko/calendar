@@ -63,7 +63,8 @@ export function activeRange(mainState) {
 export function filteredEvents(mainState) {
     return () => {
         // Dependencies
-        let {events, options: {eventFilter, eventOrder, filterEventsWithResources, resources, view}} = mainState;
+        // The loaded resources, not the option, which can be a source to load them from
+        let {events, resources, options: {eventFilter, eventOrder, filterEventsWithResources, view}} = mainState;
 
         let result = [...events];
 
@@ -111,7 +112,9 @@ export function offset(mainState) {
             // 'local' and IANA names are not fixed numbers, the offset of each date is used instead
             offset = timeZone === 'UTC'
                 ? 0
-                : (parseTimeZoneOffset(timeZone) ?? (isTimeZoneName(timeZone) ? timeZone : 'local'));
+                : timeZone === 'local'
+                    ? timeZone
+                    : (parseTimeZoneOffset(timeZone) ?? (isTimeZoneName(timeZone) ? timeZone : 'local'));
         });
 
         return offset;

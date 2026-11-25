@@ -1,0 +1,185 @@
+---
+title: "Timeline scale"
+description: "The duration and the width of a slot set the scale of the timeline."
+sidebar:
+  order: 32
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The duration and the width of a slot set the scale of the timeline.
+
+<Example client:only="svelte" slug="timeline-zoom" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, ResourceTimeline} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [ResourceTimeline], {
+    view: 'resourceTimelineDay',
+    slotDuration: '00:15',
+    slotLabelInterval: '01:00',
+    slotWidth: 28,
+    scrollTime: '08:00',
+    resources,
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, ResourceTimeline} from '@event-calendar/core';
+
+    let resources = [/* your resources */];
+    let events = [/* your events */];
+    let options = $state({
+        view: 'resourceTimelineDay',
+        slotDuration: '00:15',
+        slotLabelInterval: '01:00',
+        slotWidth: 28,
+        scrollTime: '08:00',
+        resources,
+        events
+    });
+</script>
+
+<Calendar plugins={[ResourceTimeline]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, ResourceTimeline} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [ResourceTimeline];
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'resourceTimelineDay',
+        slotDuration: '00:15',
+        slotLabelInterval: '01:00',
+        slotWidth: 28,
+        scrollTime: '08:00',
+        resources,
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, ResourceTimeline} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [ResourceTimeline];
+const resources = [/* your resources */];
+const events = [/* your events */];
+const options = {
+    view: 'resourceTimelineDay',
+    slotDuration: '00:15',
+    slotLabelInterval: '01:00',
+    slotWidth: 28,
+    scrollTime: '08:00',
+    resources,
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, ResourceTimeline, type Calendar} from '@event-calendar/angular';
+
+const resources: Calendar.ResourceInput[] = [/* your resources */];
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [ResourceTimeline];
+    options: Calendar.Options = {
+        view: 'resourceTimelineDay',
+        slotDuration: '00:15',
+        slotLabelInterval: '01:00',
+        slotWidth: 28,
+        scrollTime: '08:00',
+        resources,
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const resources = [/* your resources */];
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'resourceTimelineDay',
+        slotDuration: '00:15',
+        slotLabelInterval: '01:00',
+        slotWidth: 28,
+        scrollTime: '08:00',
+        resources,
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [resources](../../options/resources/)
+- [scrollTime](../../options/scrolltime/)
+- [slotDuration](../../options/slotduration/)
+- [slotLabelInterval](../../options/slotlabelinterval/)
+- [slotWidth](../../options/slotwidth/)
+- [view](../../options/view/)

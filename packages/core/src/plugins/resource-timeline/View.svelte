@@ -1,7 +1,7 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
     import {
-        max, resizeObserver, contentFrom, toSeconds, min, isRtl, empty, length, toISOString,
+        max, resizeObserver, contentFrom, contentResized, toSeconds, min, isRtl, empty, length, toISOString,
         createWeekNumberContent, toTime, uid, rect, createContent, datesEqual, toLocalDate
     } from '#lib';
     import {getSlotTimeLimits, layoutChunks} from './lib.js';
@@ -118,6 +118,7 @@
         style:--ec-header-height="{headerHeight}px"
         style:--ec-sidebar-width="{sidebarWidth}px"
         {@attach resizeObserver(reposition, true)}
+        {@attach contentResized(reposition)}
     >
         <header bind:offsetHeight={headerHeight} class="{theme.header}">
             <aside class="{theme.sidebar}" bind:offsetWidth={viewState.sidebarWidth}></aside>

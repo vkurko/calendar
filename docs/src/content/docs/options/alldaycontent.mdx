@@ -1,0 +1,85 @@
+---
+title: "allDayContent"
+description: "The title of the all-day row."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_alldaycontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="allDayContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    allDayContent: ({text}) => ({html: `<i>${text}</i> ☀`})
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet allDayContent({text})}
+        <i>{text}</i> ☀
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    allDayContent={({text}) => <><i>{text}</i> ☀</>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #allDayContent="{text}">
+        <i>{{ text }}</i> ☀
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="allDayContent" let-text="text">
+        <i>{{ text }}</i> ☀
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    allDayContent: ({text}) => ({html: `<i>${text}</i> ☀`})
+};
+```
+
+</TabItem>
+</Tabs>
+
+## Live examples
+
+- [Language and formats](../../examples/locale/)

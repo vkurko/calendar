@@ -2,7 +2,7 @@
     import './styles/index.css';
     import {setContext, untrack} from 'svelte';
     import {
-        assign, cloneDate, createDate, createEvents, getElementWithPayload, getPayload, isDate, nextDate,
+        assign, cloneDate, createDate, createEvents, getElementWithPayload, getPayload, isDate, keys, nextDate,
         prevDate, setMidnight, todayIn, toEventWithLocalDates, toLocalDate, toViewWithLocalDates
     } from '#lib';
     import MainState from './storage/state.svelte.js';
@@ -41,6 +41,13 @@
             mainState.setOption(name, todayIn(offset));
         } else {
             mainState.setOption(name, value, false);
+        }
+        return this;
+    }
+
+    export function setOptions(options) {
+        for (let name of keys(options)) {
+            setOption(name, options[name]);
         }
         return this;
     }

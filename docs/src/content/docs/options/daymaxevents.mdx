@@ -1,0 +1,19 @@
+---
+title: "dayMaxEvents"
+description: "Limits the events of a day in the dayGrid views to those that fit into the height of the day cell. The rest are collected under a link like +2 more, which…"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_daymaxevents.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="dayMaxEvents" height="440px" />
+
+## Live examples
+
+- [Month view](../../examples/month-view/)

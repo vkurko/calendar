@@ -1,0 +1,899 @@
+---
+title: "Changelog"
+description: "EventCalendar release history."
+---
+
+## 5.22.0
+November 25, 2026
+* Added React, Vue and Angular components
+* Added the ability to render content with a function that receives the element
+* Added `setOptions()` method to set several options at once
+* Changed `setOption()` to reset the option to its default value when `undefined` is passed
+* Improved performance of the initial rendering
+* Changed the highlight of today in the dark theme to a neutral color
+* Fixed `filterEventsWithResources` failing when resources are loaded from a URL or a function
+
+## 5.21.2
+November 23, 2026
+* Fixed calendar failing to mount with Svelte 5.59 ([698](https://github.com/vkurko/calendar/issues/698))
+
+## 5.21.1
+November 20, 2026
+* Fixed `dayCellContent` not receiving `resource` in `resourceTimeline` views
+* Fixed a Svelte warning in dev mode in `resourceTimeline` views ([697](https://github.com/vkurko/calendar/issues/697))
+
+## 5.21.0
+November 19, 2026
+* Changed `dayCellContent` to be rendered once per day in `resourceTimeline` views
+* :warning: `dayCellContent` no longer receives `resource` in `resourceTimeline` views
+* Improved rendering performance of `resourceTimeline` views with many resources ([691](https://github.com/vkurko/calendar/issues/691))
+* Fixed misaligned slot lines when zooming in Safari ([642](https://github.com/vkurko/calendar/issues/642))
+
+## 5.20.0
+November 18, 2026
+* Added IANA time zone names to `timeZone` option ([690](https://github.com/vkurko/calendar/issues/690))
+* Fixed events in the skipped DST hour being shifted an hour back when `timeZone` changes ([693](https://github.com/vkurko/calendar/pull/693))
+* Fixed times in the DST hour skipped by the browser being shown an hour later ([692](https://github.com/vkurko/calendar/pull/692))
+
+## 5.19.0
+November 13, 2026
+* Changed `Date` objects in events to be read as the wall-clock time of the calendar's time zone
+* :warning: Events with `Date` objects are no longer shifted to the calendar's time zone, use an ISO string with an offset to pass a moment in time
+* Changed events without `end` to end at their start
+* Changed events without `start` to be ignored
+* Changed `date` option to keep the same day when `timeZone` changes, unless it is today
+* Changed `gotoDate()` without a date to go to today
+* Fixed events set at runtime not being converted to `timeZone` ([694](https://github.com/vkurko/calendar/pull/694))
+* Fixed events dragged or resized across a DST change being shifted after changing `timeZone` ([695](https://github.com/vkurko/calendar/pull/695))
+* Fixed `date` option moving by several days when `timeZone` changes ([696](https://github.com/vkurko/calendar/pull/696))
+* Fixed TypeScript types for `updateEvent()` and `gotoDate()`
+
+## 5.18.1
+October 25, 2026
+* Fixed events getting stuck semi-transparent after a drag or resize is interrupted by the browser ([689](https://github.com/vkurko/calendar/issues/689))
+
+## 5.18.0
+October 21, 2026
+* Changed events of the same `layoutGroup` to keep other events out of their span ([688](https://github.com/vkurko/calendar/issues/688))
+* Changed `layoutGroup` to work without `eventOrderStrict`
+* Fixed overlapping events with a custom `eventOrder` in `resourceTimeline` views
+* Fixed events that don't overlap in time being stacked with `eventOrderStrict`
+
+## 5.17.3
+October 20, 2026
+* Fixed overlapping events not being stacked in `dayGrid` views after setting `resources` and `events` together ([687](https://github.com/vkurko/calendar/issues/687))
+
+## 5.17.2
+October 16, 2026
+* Fixed overlapping events not being stacked after setting `resources` and `events` together ([687](https://github.com/vkurko/calendar/issues/687))
+
+## 5.17.1
+October 9, 2026
+* Fixed events being shifted by an hour across a daylight saving time change ([686](https://github.com/vkurko/calendar/issues/686))
+
+## 5.17.0
+October 8, 2026
+* Added `resourcesInitiallyExpanded` option ([379](https://github.com/vkurko/calendar/issues/379))
+* Fixed a TypeError when the calendar is destroyed right after creation ([684](https://github.com/vkurko/calendar/issues/684))
+
+## 5.16.0
+October 5, 2026
+* Changed ISO date strings ending in `Z` to be treated as UTC, offsets without a colon like `+0200` are now recognized too ([677](https://github.com/vkurko/calendar/issues/677))
+* :warning: Events with dates ending in `Z` are now shifted to the calendar's time zone, remove the `Z` to keep displaying them as is
+* Improved rendering performance of `dayGrid` views with many events ([678](https://github.com/vkurko/calendar/issues/678))
+* Fixed a 1px gap above background events in `resourceTimeline` views ([683](https://github.com/vkurko/calendar/issues/683))
+
+## 5.15.0
+September 25, 2026
+* Changed `dragConstraint`, `resizeConstraint` and `selectConstraint` to stop the action at the last allowed position and cancel it when released at a refused one ([681](https://github.com/vkurko/calendar/issues/681))
+* Fixed `eventTimeFormat` given as a function receiving incorrect dates, `end` is now `null` when the end time is not displayed ([630](https://github.com/vkurko/calendar/issues/630))
+* Fixed `eventDrop` and `eventResize` being triggered when the new position is refused by the constraint
+* Fixed rows in `resourceTimeline` views being shorter than their resource labels ([682](https://github.com/vkurko/calendar/issues/682))
+
+## 5.14.1
+September 22, 2026
+* Fixed the scroll position being reset when the `date` or `duration` option is set without changing the view range ([670](https://github.com/vkurko/calendar/issues/670))
+* Improved rendering performance of `resourceTimeline` views with many events ([672](https://github.com/vkurko/calendar/issues/672))
+
+## 5.14.0
+September 21, 2026
+* Added the `layoutGroup` event property that keeps related events on the same line in `resourceTimeline` views ([674](https://github.com/vkurko/calendar/issues/674))
+* Fixed an event `id` given as `null` or `undefined` being turned into a string
+
+## 5.13.1
+September 15, 2026
+* Fixed a `TypeError` that prevented the calendar from being created when a section of the `headerToolbar` option is empty
+
+## 5.13.0
+September 15, 2026
+* Added support for arbitrary content in the elements of the `headerToolbar` via the new `content` property of `customButtons` ([668](https://github.com/vkurko/calendar/issues/668))
+* Fixed incorrect TypeScript types for the `views` option, which did not allow the `type` property
+
+## 5.12.3
+September 9, 2026
+* Fixed incorrect TypeScript types for the `resources` option ([664](https://github.com/vkurko/calendar/issues/664))
+* Fixed resources not being loaded when the `resources` option is given as an object without the `method` property
+* Fixed incorrect TypeScript types for the `method` property of `eventSources` and for the `timeZone` property of the `fetchInfo` argument
+* Fixed the `buttonText`, `customButtons`, `icons` and `theme` options not being applied to the calendar when set as a function after the calendar has been created ([667](https://github.com/vkurko/calendar/issues/667))
+
+## 5.12.2
+September 3, 2026
+* Fixed the month heading row disappearing in `resourceTimeline` views with a custom `duration` ([660](https://github.com/vkurko/calendar/issues/660))
+* Fixed incorrect slot width calculation in `resourceTimeline` views with a day-long `slotDuration` ([661](https://github.com/vkurko/calendar/issues/661))
+
+## 5.12.1
+September 1, 2026
+* Fixed `resourceLabelDidMount` not being called for a resource that replaces another one in the same position
+* Fixed a Svelte warning in the browser console when navigating in `dayGrid` views with `dayMaxEvents` enabled
+
+## 5.12.0
+August 1, 2026
+* Added support for Svelte snippets in the options that define content ([244](https://github.com/vkurko/calendar/issues/244), [571](https://github.com/vkurko/calendar/issues/571))
+* Fixed incorrect date calculation when resizing events that start or end outside the visible time range
+* Fixed incorrect TypeScript types for the `allDayContent` option and for the `date` property of the `resourceLabelContent` argument
+
+## 5.11.1
+July 29, 2026
+* Fixed a `TypeError` when resizing events in `dayGrid` views and in the all-day slot ([656](https://github.com/vkurko/calendar/issues/656))
+* Fixed incorrect date calculation when resizing events in `dayGrid` views, in the all-day slot and in the popup ([658](https://github.com/vkurko/calendar/issues/658))
+
+## 5.11.0
+July 24, 2026
+* Added `eventOrderStrict` option ([654](https://github.com/vkurko/calendar/issues/654))
+
+## 5.10.1
+July 21, 2026
+* Fixed a `TypeError` when removing a resource in `resourceTimeGrid` views ([653](https://github.com/vkurko/calendar/issues/653))
+* Fixed incorrect TypeScript type for the `eventOrder` callback ([655](https://github.com/vkurko/calendar/issues/655))
+
+## 5.10.0
+July 15, 2026
+* Added `eventGap` option
+* Added bundled TypeScript type definitions
+* Fixed `weekNumbers` option not working without the `DayGrid` plugin
+* Fixed timeline scales not rendering without the `ResourceTimeGrid` plugin
+
+## 5.9.0
+July 2, 2026
+* Added `gotoDate` method ([651](https://github.com/vkurko/calendar/issues/651))
+* Fixed rounded corners of clipped events in RTL mode
+
+## 5.8.0
+July 1, 2026
+* Added CSS classes `ec-start-clipped` and `ec-end-clipped` for events clipped by the current view ([650](https://github.com/vkurko/calendar/issues/650))
+
+## 5.7.1
+May 22, 2026
+* Fixed an issue with resizing events and `hiddenDays` ([646](https://github.com/vkurko/calendar/issues/646))
+
+## 5.7.0
+April 14, 2026
+* Added `timeZone` option ([367](https://github.com/vkurko/calendar/discussions/367), [502](https://github.com/vkurko/calendar/issues/502), [576](https://github.com/vkurko/calendar/issues/576), [588](https://github.com/vkurko/calendar/discussions/588))
+
+## 5.6.1
+April 9, 2026
+* Improved rendering performance in `resourceTimeGrid` views ([640](https://github.com/vkurko/calendar/issues/640))
+
+## 5.6.0
+March 25, 2026
+* Added `dayCellContent` option  ([381](https://github.com/vkurko/calendar/issues/381))
+* Added `dateIncrement` option
+
+## 5.5.1
+March 20, 2026
+* Fixed issue with `resources` as function ([636](https://github.com/vkurko/calendar/issues/636))
+
+## 5.5.0
+March 18, 2026
+* Added `resourceTimelineYear` view ([386](https://github.com/vkurko/calendar/issues/386), [597](https://github.com/vkurko/calendar/issues/597))
+* Added `monthHeaderFormat` option for the new `resourceTimelineYear` view
+* `weekNumbers` now work in `resourceTimeline` views ([596](https://github.com/vkurko/calendar/issues/596))
+
+## 5.4.2
+March 11, 2026
+* Fixed an issue with `weekNumbers` ([632](https://github.com/vkurko/calendar/issues/632))
+
+## 5.4.1
+February 23, 2026
+* Fixed compatibility with Svelte 5.51.1+ ([623](https://github.com/vkurko/calendar/issues/623))
+
+## 5.4.0
+February 12, 2026
+* Added ability to change resource expander icons via `icons` option ([616](https://github.com/vkurko/calendar/issues/616))
+* Added `resourceExpand` option ([404](https://github.com/vkurko/calendar/pull/404))
+
+## 5.3.3
+February 11, 2026
+* Another attempt to fix a bug related to event manipulation ([611](https://github.com/vkurko/calendar/issues/611))
+
+## 5.3.2
+February 3, 2026
+* Fixed regression bug related to event manipulation ([611](https://github.com/vkurko/calendar/issues/611))
+
+## 5.3.1
+January 29, 2026
+* Fixed an issue with `pointercancel` JS event in the mobile version of Firefox ([606](https://github.com/vkurko/calendar/issues/606))
+
+## 5.3.0
+January 23, 2026
+* Added ability to provide resources as a function ([565](https://github.com/vkurko/calendar/issues/565))
+* Added `refetchResources()` method ([376](https://github.com/vkurko/calendar/issues/376))
+* Added `refetchResourcesOnNavigate` option
+
+## 5.2.4
+January 20, 2026
+* `filterResourcesWithEvents` now, as in v4.x.x, does not take `background` events into account
+* `eventFilter` now is triggered when the view changes ([557](https://github.com/vkurko/calendar/discussions/557))
+
+## 5.2.3
+January 13, 2026
+* Fixed a bug with `hiddenDays` ([601](https://github.com/vkurko/calendar/issues/601))
+
+## 5.2.2
+January 12, 2026
+* Added `customScrollbars` option ([600](https://github.com/vkurko/calendar/issues/600))
+
+## 5.2.1
+January 8, 2026
+* Fixed a regression bug ([598](https://github.com/vkurko/calendar/issues/598))
+
+## 5.2.0
+January 7, 2026
+* Added `dayGridDay` and `dayGridWeek` views ([593](https://github.com/vkurko/calendar/issues/593))
+* Fixed a regression with `eventDidMount` ([594](https://github.com/vkurko/calendar/issues/594))
+
+## 5.1.4
+January 5, 2026
+* Added automatic scrolling to today's date in `resourceTimelineMonth` view
+* Fixed an issue with no effect when using a value obtained from `getOption` in `setOption`
+* Fixed minor regression bugs in `dayGrid` and `resourceTimelineMonth` views
+
+## 5.1.3
+January 2, 2026
+* Fixed an issue with loading data via the URL version of event sources
+
+## 5.1.2
+December 29, 2025
+* Added support for custom views ([504](https://github.com/vkurko/calendar/issues/504))
+
+## 5.1.1
+December 29, 2025
+* Fixed regression bug related to event manipulation ([589](https://github.com/vkurko/calendar/issues/589))
+
+## 5.1.0
+December 25, 2025
+* Added `snapDuration` option ([226](https://github.com/vkurko/calendar/issues/226))
+* Added automatic scrolling to today's date when `datesAboveResources` is set to `true`
+* :warning: The code has been rewritten to use Svelte 5 `runes` instead of Svelte 4 `stores`
+
+## 5.0.6
+December 23, 2025
+* Fixed incorrect display of `dayGrid` when switching from another view
+
+## 5.0.5
+December 19, 2025
+* Fixed some conflicts with Tailwind ([586](https://github.com/vkurko/calendar/issues/586))
+* Fixed display in timeline view when there is only one resource
+
+## 5.0.4
+December 15, 2025
+* Fixed pointer position when CSS scaling is applied ([421](https://github.com/vkurko/calendar/issues/421))
+* Better RTL support
+
+## 5.0.3
+December 14, 2025
+* Fixed an issue with `@tailwindcss/vite` ([584](https://github.com/vkurko/calendar/issues/584))
+
+## 5.0.2
+December 13, 2025
+* CSS Grid gaps didn't look good, so replaced them with borders
+* Better RTL support
+
+## 5.0.1
+December 12, 2025
+* Fixed some RTL issues ([552](https://github.com/vkurko/calendar/issues/552))
+* Fixed other minor issues
+
+## 5.0.0
+December 10, 2025
+* :warning: A new layout based on [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout) has been implemented
+* :warning: Please review the new layout **carefully** before using it in production
+* Added `columnWidth` option ([317](https://github.com/vkurko/calendar/issues/317), [574](https://github.com/vkurko/calendar/issues/574))
+* Added automatic scrolling to today's date in `resourceTimelineWeek` view ([319](https://github.com/vkurko/calendar/issues/319))
+
+## 4.7.1
+October 23, 2025
+* Fixed dragging events on mobile devices ([573](https://github.com/vkurko/calendar/issues/573))
+
+## 4.7.0
+October 10, 2025
+* Added ability to set `customButtons` as function ([499](https://github.com/vkurko/calendar/issues/499))
+
+## 4.6.0
+September 4, 2025
+* Added `eventOrder` option ([549](https://github.com/vkurko/calendar/issues/549))
+
+## 4.5.2
+August 21, 2025
+* Fixed row height issue in `resourceTimeline` views ([401](https://github.com/vkurko/calendar/issues/401))
+
+## 4.5.1
+August 11, 2025
+* Fixed `Svelte error: await_outside_boundary` ([530](https://github.com/vkurko/calendar/issues/530))
+
+## 4.5.0
+June 27, 2025
+* `viewDidMount` input parameter has been adjusted to match documentation ([522](https://github.com/vkurko/calendar/issues/522))
+* Fixed event styles not being applied ([520](https://github.com/vkurko/calendar/issues/520), [521](https://github.com/vkurko/calendar/pull/521))
+
+## 4.4.2
+June 26, 2025
+* Fixed an issue with `updateEvent()` producing an error ([516](https://github.com/vkurko/calendar/issues/516))
+
+## 4.4.1
+June 16, 2025
+* Fixed event positioning issue ([511](https://github.com/vkurko/calendar/issues/511))
+
+## 4.4.0
+June 5, 2025
+* Added `eventFilter` option ([500](https://github.com/vkurko/calendar/pull/500))
+
+## 4.3.1
+June 3, 2025
+* Fixed error with `svelte >= 5.33.0` ([505](https://github.com/vkurko/calendar/issues/505), [507](https://github.com/vkurko/calendar/issues/507))
+* Fixed infinite recursion when using calendar in Lit component ([142](https://github.com/vkurko/calendar/issues/142#issuecomment-2894606865))
+
+## 4.3.0
+May 16, 2025
+* Added `nowIndicator` in `resourceTimeline` views ([427](https://github.com/vkurko/calendar/issues/427))
+
+## 4.2.0
+May 15, 2025
+* Added CSS class `ec-today` to the current day header ([492](https://github.com/vkurko/calendar/issues/492))
+* Fixed an issue with `updateEvent()` not updating CSS classes ([496](https://github.com/vkurko/calendar/issues/496))
+* Reverted the previous behavior of `eventTextColor` option when it was not applied in `list` view ([497](https://github.com/vkurko/calendar/issues/497))
+
+## 4.1.0
+May 9, 2025
+* Added ability to use `slotLabelInterval` option in `resourceTimeline` views ([372](https://github.com/vkurko/calendar/issues/372))
+* Fixed an issue with `dateClick` triggered on `eventClick` ([490](https://github.com/vkurko/calendar/issues/490))
+* Fixed infinite recursion when using calendar in Lit component ([142](https://github.com/vkurko/calendar/issues/142#issuecomment-2847030101))
+
+## 4.0.3
+April 25, 2025
+* Fixed issues [474](https://github.com/vkurko/calendar/issues/474) and [475](https://github.com/vkurko/calendar/issues/475)
+
+## 4.0.2
+April 21, 2025
+* Fixed nested resource expander in `resourceTimeline` views
+* Added scrolling of resources when rotating the mouse wheel over resources in `resourceTimeline` views
+
+## 4.0.1
+April 16, 2025
+* Fixed row height sync issue in `resourceTimeline` views
+
+## 4.0.0
+April 16, 2025
+* Added support for Svelte 5 ([359](https://github.com/vkurko/calendar/issues/359))
+* :warning: Svelte 4 is not supported anymore
+* :warning: All plugins have been moved to the `@event-calendar/core` package
+* :warning: In ES modules, you now need to use `createCalendar(target, plugins, options)` to initialize the calendar
+* :warning: With standalone bundle, you now need to use `EventCalendar.create(target, options)` to initialize the calendar
+* The following options now have higher priority from left to right `event.startEditable` > `eventStartEditable` > `editable` and `event.durationEditable` > `eventDurationEditable` > `editable` ([440](https://github.com/vkurko/calendar/issues/440))
+
+## 3.12.0
+April 1, 2025
+
+* Added `dragConstraint`, `resizeConstraint` and `selectConstraint` options ([412](https://github.com/vkurko/calendar/issues/412))
+
+## 3.11.0
+March 29, 2025
+
+* Added `slotLabelInterval` option ([329](https://github.com/vkurko/calendar/issues/329))
+
+## 3.10.1
+March 25, 2025
+
+* Fixed an issue with displaying events shorter than the slot duration ([423](https://github.com/vkurko/calendar/issues/423))
+
+## 3.10.0
+February 4, 2025
+
+* Added `validRange` option ([141](https://github.com/vkurko/calendar/issues/141))
+
+## 3.9.0
+January 27, 2025
+
+* Added support for week numbers in `dayGrid` view ([389](https://github.com/vkurko/calendar/issues/389))
+* Fixed dates in the return value of the `addEvent()` method ([419](https://github.com/vkurko/calendar/issues/419))
+
+## 3.8.0
+January 6, 2025
+
+* Added the ability to resize the event from its starting edge ([343](https://github.com/vkurko/calendar/issues/343))
+
+## 3.7.2
+December 18, 2024
+
+* Fixed an issue with overlapping events with zero duration ([377](https://github.com/vkurko/calendar/issues/377))
+* Fixed an issue with displaying resources in `resourceTimeGrid` view after expanding/collapsing nested resources in `resourceTimeline` view ([393](https://github.com/vkurko/calendar/issues/393))
+
+## 3.7.1
+November 29, 2024
+
+* Now the minimum displayed event size is fixed at the `slotDuration` value ([377](https://github.com/vkurko/calendar/issues/377))
+
+## 3.7.0
+November 7, 2024
+
+* Added support for nested resources ([302](https://github.com/vkurko/calendar/issues/302))
+
+## 3.6.2
+October 17, 2024
+
+* Fixed an issue in `resourceTimeline` views with displaying events beyond midnight when `slotMaxTime` is greater than `24:00` ([333](https://github.com/vkurko/calendar/issues/333))
+
+## 3.6.1
+October 1, 2024
+
+* Fixed `destroy()` method in pure JS version of the library
+
+## 3.6.0
+October 1, 2024
+
+* Fixed some issues in Svelte 5 ([235](https://github.com/vkurko/calendar/issues/235))
+* :warning: `destroy()` is no longer available in Svelte version
+
+## 3.5.0
+September 20, 2024
+
+* Added `extendedProps` for resources ([310](https://github.com/vkurko/calendar/discussions/310))
+* Added `filterEventsWithResources` option
+
+## 3.4.0
+August 1, 2024
+
+* Added the ability to set additional styles for a specific event ([305](https://github.com/vkurko/calendar/issues/305))
+* Added the ability to set additional CSS classes for a specific event
+* Added the ability to apply default rendering in the `eventContent` callback by returning `undefined` ([306](https://github.com/vkurko/calendar/discussions/306))
+* Fixed return value of `addEvent` and `updateEvent` methods ([301](https://github.com/vkurko/calendar/issues/301))
+
+## 3.3.0
+July 26, 2024
+
+* Now all-day background events are rendered in `dayGridMonth`/`resourceTimelineMonth` views, as well as in the `all-day` slot of the `timeGrid` views ([300](https://github.com/vkurko/calendar/discussions/300))
+* Fixed `endDelta` in `eventResize` callback ([145](https://github.com/vkurko/calendar/issues/145#issuecomment-2244686814))
+* Fixed display of events in `resourceTimeline` views when the start of the event falls after `slotMaxTime`
+
+## 3.2.2
+July 22, 2024
+
+* Fixed an issue with `dateFromPoint` method ([145](https://github.com/vkurko/calendar/issues/145#issuecomment-2236673640))
+
+## 3.2.1
+July 15, 2024
+
+* Fixed an issue with the pointer not hiding when hovering over the `all-day` slot
+
+## 3.2.0
+July 14, 2024
+
+* Added the ability to pass `html` to custom buttons ([277](https://github.com/vkurko/calendar/issues/277))
+* Added `active` parameter for custom buttons
+* Fixed event background color defined from resource ([295](https://github.com/vkurko/calendar/issues/295))
+
+## 3.1.0
+June 21, 2024
+
+* Added `resourceTimelineMonth` view ([275](https://github.com/vkurko/calendar/issues/275))
+* Added `next()` and `prev()` methods ([279](https://github.com/vkurko/calendar/issues/279))
+* Added CSS classes for toolbar sections ([283](https://github.com/vkurko/calendar/issues/283))
+
+## 3.0.2
+June 3, 2024
+
+* Fixed so that `ResourceTimeline` plugin does not depend on `ResourceTimeGrid`
+* Fixed minor visual defects in `resourceTimeline` view
+
+## 3.0.1
+May 24, 2024
+
+* Fixed `scrollTime` in `resourceTimeline` view
+* Fixed an issue with erroneous vertical scrolling in `resourceTimeline` view
+
+## 3.0.0
+May 23, 2024
+
+* Added `resourcesTimeline` view ([30](https://github.com/vkurko/calendar/issues/30))
+
+## 2.7.2
+May 22, 2024
+
+* Fixed issue with `scrollTime` option reactivity  ([270](https://github.com/vkurko/calendar/issues/270))
+
+## 2.7.1
+May 15, 2024
+
+* Fixed an issue with event positioning when `dayMaxEvents` is triggered ([264](https://github.com/vkurko/calendar/issues/264))
+
+## 2.7.0
+May 8, 2024
+
+* Added `customButtons` option ([159](https://github.com/vkurko/calendar/issues/159))
+
+## 2.6.1
+January 29, 2024
+
+* Fixed calendar functionality in iOS 15 ([227](https://github.com/vkurko/calendar/issues/227))
+
+## 2.6.0
+January 8, 2024
+
+* Added experimental `eventAllUpdated` option ([96](https://github.com/vkurko/calendar/issues/96))
+
+## 2.5.1
+December 18, 2023
+
+* Fixed unwanted keyboard accessibility of events in `list` view when the `eventClick` is not set
+
+## 2.5.0
+December 9, 2023
+
+* A11y improvements: events are now accessible from the keyboard, added `dayHeaderAriaLabelFormat` option ([161](https://github.com/vkurko/calendar/issues/161))
+* All dates and times are now rendered using `<time>` tag ([161](https://github.com/vkurko/calendar/issues/161))
+* Events are now rendered using `<article>` and `<h4>` tags instead of `<div>` ([161](https://github.com/vkurko/calendar/issues/161))
+* `dateFromPoint` now works for events in `list` view
+
+## 2.4.1
+October 21, 2023
+
+* Changed the way the dark theme is automatically activated. Now this feature should be explicitly enabled using the `ec-auto-dark` CSS class
+* Fixed an issue with the positioning of the popup in month view
+
+## 2.4.0
+October 20, 2023
+
+* Added support for dark theme ([68](https://github.com/vkurko/calendar/issues/68))
+
+## 2.3.3
+September 11, 2023
+
+* Fixed an issue with automatically updating the current day ([181](https://github.com/vkurko/calendar/discussions/181))
+
+## 2.3.2
+August 30, 2023
+
+* Another attempt to fix the bug in SvelteKit when using a function for the `theme` option ([179](https://github.com/vkurko/calendar/issues/179))
+
+## 2.3.1
+August 29, 2023
+
+* Fixed a bug in SvelteKit when using a function for the `theme` option ([179](https://github.com/vkurko/calendar/issues/179))
+
+## 2.3.0
+August 25, 2023
+
+* Added CSS classes for days of the week ([156](https://github.com/vkurko/calendar/issues/156))
+* The initial value of the `height` option has changed to `undefined`
+
+## 2.2.0
+August 24, 2023
+
+* Added `dayCellFormat` option ([169](https://github.com/vkurko/calendar/pull/169))
+
+## 2.1.0
+August 22, 2023
+
+* Improved CSS class switching on view change ([155](https://github.com/vkurko/calendar/issues/155))
+
+## 2.0.0
+August 17, 2023
+
+* :warning: To pass an HTML version of the title for an event, you now need to use the appropriate [Content](https://github.com/vkurko/calendar#content) value in the `title` field
+* :warning: The [eventTimeFormat](https://github.com/vkurko/calendar#eventtimeformat) given as a function now takes 2 input parameters ([149](https://github.com/vkurko/calendar/issues/149))
+* :warning: Formatting time intervals is now done using [Intl.DateTimeFormat.formatRange()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/formatRange)
+* In all date and time formatting options that are set as a function, it is now allowed to return an HTML version of the content ([170](https://github.com/vkurko/calendar/pull/170))
+
+## 1.5.1
+July 26, 2023
+
+* Fixed A11y warnings after updating to Svelte 4.x ([160](https://github.com/vkurko/calendar/issues/160))
+
+## 1.5.0
+June 14, 2023
+
+* Added `eventClassNames` option ([106](https://github.com/vkurko/calendar/issues/106))
+
+## 1.4.1
+June 14, 2023
+
+* Fixed a bug with duplicate `eventSources.events` call ([146](https://github.com/vkurko/calendar/issues/146))
+
+## 1.4.0
+June 12, 2023
+
+* Now time is not rendered inside `allDay` events ([143](https://github.com/vkurko/calendar/issues/143))
+* Fixed interaction functions inside the shadow root ([142](https://github.com/vkurko/calendar/issues/142))
+
+## 1.3.1
+May 30, 2023
+
+* Fixed an issue with incorrect `dateClick` information when using specific `slotMinTime` settings ([135](https://github.com/vkurko/calendar/issues/135))
+
+## 1.3.0
+May 25, 2023
+
+* Added the ability to set an event filter for `flexibleSlotTimeLimits` ([133](https://github.com/vkurko/calendar/issues/133))
+
+## 1.2.0
+May 23, 2023
+
+* :warning: The `@event-calendar/common` package has been deprecated. Its content has been moved to the `@event-calendar/core` package ([132](https://github.com/vkurko/calendar/issues/132))
+* Now drag&drop doesn't start on right click ([#131](https://github.com/vkurko/calendar/issues/131))
+
+## 1.1.1
+May 15, 2023
+
+* Fixed a bug where `addEvent` did not immediately update the event store ([#124](https://github.com/vkurko/calendar/pull/124))
+
+## 1.1.0
+May 11, 2023
+
+* Added `eventTextColor` option ([#116](https://github.com/vkurko/calendar/pull/116))
+* Fixed various issues in the `Interaction` plugin
+
+## 1.0.0
+May 10, 2023
+
+* Reduced code size by 15% due to refactoring of the `Interaction` plugin
+* Fixed `dateClick` on background events ([#118](https://github.com/vkurko/calendar/pull/118))
+* :warning: `dateFromPoint` method changed return data type
+* :warning: `dateClick` now requires `Interaction` plugin
+
+## 0.19.0
+April 28, 2023
+
+* Added `slotEventOverlap` option ([#112](https://github.com/vkurko/calendar/pull/112))
+
+## 0.18.1
+April 20, 2023
+
+* Fixed JS error `t?.handleScroll is not a function`
+
+## 0.18.0
+April 20, 2023
+
+* Added `eventBackgroundColor` property to resource object ([#104](https://github.com/vkurko/calendar/issues/104))
+* Now events with dates specified without a time part are considered all-day events
+* Fixed `datesSet` callback to pass `view` object ([#102](https://github.com/vkurko/calendar/issues/102))
+* Fixed triggering of mouse events on background events ([#105](https://github.com/vkurko/calendar/issues/105))
+
+## 0.17.1
+April 12, 2023
+
+* Fixed a bug when `unselect` method didn't work inside `select` callback ([#100](https://github.com/vkurko/calendar/issues/100))
+
+## 0.17.0
+February 27, 2023
+
+* Added `destroy` method
+* Fixed minor issues in month view
+
+## 0.16.1
+February 22, 2023
+
+* Fixed positioning of events in month view ([#85](https://github.com/vkurko/calendar/issues/85#issuecomment-1438242063))
+* Improved positioning speed
+
+## 0.16.0
+February 17, 2023
+
+* Added `dateFromPoint` method ([#83](https://github.com/vkurko/calendar/issues/83))
+
+## 0.15.3
+January 30, 2023
+
+* Fixed a bug where `select` handler would provide an incorrect value for `resource` ([#81](https://github.com/vkurko/calendar/issues/81))
+
+## 0.15.2
+January 30, 2023
+
+* Fixed a bug with calling the `dateClick` handler when clicking on the all-day event ([#80](https://github.com/vkurko/calendar/issues/80))
+
+## 0.15.1
+January 12, 2023
+
+* Fixed regression bug in month view ([#74](https://github.com/vkurko/calendar/issues/74))
+
+## 0.15.0
+January 7, 2023
+
+* :warning: Dropped support for IE
+* :warning: The pre-built bundle no longer includes the `modern` version (use the main version instead)
+
+## 0.14.3
+January 5, 2023
+
+* Added scrolling in the popup in month view when there are too many events in it
+* Fixed other minor bugs in the popup when dragging events
+
+## 0.14.2
+January 2, 2023
+
+* Fixed library loading issue in SvelteKit v1.0.0 ([#72](https://github.com/vkurko/calendar/issues/72))
+* Removed dependency on `day-grid` in `time-grid` package ([#71](https://github.com/vkurko/calendar/issues/71))
+
+## 0.14.1
+December 13, 2022
+
+* Now you should expect new DOM elements to be created for new events when the display period is changed ([#17](https://github.com/vkurko/calendar/issues/17))
+* Fixed date value when using `getOption('date')`
+
+## 0.14.0
+November 21, 2022
+
+* Added `resourceLabelContent` and `resourceLabelDidMount` ([#62](https://github.com/vkurko/calendar/discussions/62))
+* Improved handling of mouse click events. Now [dateClick](https://github.com/vkurko/calendar#dateclick) will not be called on select, drag or click an event
+* :warning: The [Event](https://github.com/vkurko/calendar#event-object) object now has a separate `titleHTML` field to render the HTML version of the title, and the original `title` field will now be rendered as text
+* :warning: [eventContent](https://github.com/vkurko/calendar#eventcontent) and similar settings now render the string as plain text instead of HTML. To render HTML, you must pass it as `{html: '<p>...</p>'}`
+
+## 0.13.4
+November 7, 2022
+
+* Fixed an issue when `nowIndicator` is not updated when a new day arrives ([#64](https://github.com/vkurko/calendar/issues/64))
+
+## 0.13.3
+November 3, 2022
+
+* Fixed some minor issues in month and list views
+
+## 0.13.2
+November 2, 2022
+
+* Fixed an issue with month view when it is the first day of the month ([#63](https://github.com/vkurko/calendar/issues/63))
+
+## 0.13.1
+October 14, 2022
+
+* Fixed issues with previous version
+
+## 0.13.0
+October 14, 2022
+
+* Added `longPressDelay` and other options to improve touch support
+
+## 0.12.0
+October 11, 2022
+
+* Added the ability to `select` time intervals ([#8](https://github.com/vkurko/calendar/issues/8))
+
+## 0.11.2
+July 20, 2022
+
+* Fixed issue with displaying events without duration in month view ([#50](https://github.com/vkurko/calendar/issues/50))
+
+## 0.11.1
+June 3, 2022
+
+* Fixed regression bug with `eventDrop` ([#43](https://github.com/vkurko/calendar/issues/43))
+
+## 0.11.0
+May 27, 2022
+
+* Added `all-day` slot ([#41](https://github.com/vkurko/calendar/issues/41))
+
+## 0.10.2
+April 27, 2022
+
+* Fixed minor visual issues
+
+## 0.10.1
+April 26, 2022
+
+* Fixed regression bugs with calendar display ([#39](https://github.com/vkurko/calendar/issues/39))
+
+## 0.10.0
+April 25, 2022
+
+* Added the ability to `resize` events ([#15](https://github.com/vkurko/calendar/issues/15))
+
+## 0.9.0
+April 4, 2022
+
+* Added `getEvents` method ([#37](https://github.com/vkurko/calendar/issues/37))
+
+## 0.8.3
+February 22, 2022
+
+* Removed dependency on `sass` in Svelte/SvelteKit modules ([#26](https://github.com/vkurko/calendar/issues/26#issuecomment-1047812407))
+
+## 0.8.2
+February 21, 2022
+
+* Added support for SvelteKit ([#26](https://github.com/vkurko/calendar/issues/26))
+
+## 0.8.1
+February 4, 2022
+
+* Fixed an issue with the `nowIndicator` and `slotMaxTime` option ([#29](https://github.com/vkurko/calendar/issues/29))
+
+## 0.8.0
+January 28, 2022
+
+* Added `nowIndicator` option ([#29](https://github.com/vkurko/calendar/issues/29))
+
+## 0.7.1
+October 13, 2021
+
+* Added minimum width for the `dayMaxEvents` popover ([#24](https://github.com/vkurko/calendar/issues/24))
+* Fixed issues with `addEvent`, `updateEvent` and `removeEventById` methods
+
+## 0.7.0
+September 29, 2021
+
+* Added `dayMaxEvents` option with implemented value `true` ([#23](https://github.com/vkurko/calendar/issues/23))
+
+## 0.6.0
+September 28, 2021
+
+* Added mouse cursor `pointer` in `timeGrid`/`resourceTimeGrid` views
+
+## 0.5.0
+September 1, 2021
+
+* Added ability to disable `editable` on per event basis ([#22](https://github.com/vkurko/calendar/issues/22))
+
+## 0.4.0
+August 30, 2021
+
+* Added `datesSet` option ([#20](https://github.com/vkurko/calendar/issues/20))
+* Added `dateStr` and `dayEl` parameters for the `dateClick` callback
+* Added `startStr` and `endStr` parameters for the `events` callback of the `eventSources` option
+
+## 0.3.3
+August 26, 2021
+
+* Fixed another drag&drop regression bug
+
+## 0.3.2
+August 26, 2021
+
+* Fixed an issue in IE11
+
+## 0.3.1
+August 26, 2021
+
+* Drag&drop optimization (switched to [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events))
+
+## 0.3.0
+August 19, 2021
+
+* :warning: `hideResourcesWithNoEvents` was renamed to `filterResourcesWithEvents`
+* Added ability to specify slot height ([#16](https://github.com/vkurko/calendar/issues/16))
+* Added ability to render date headings above resource headings ([#19](https://github.com/vkurko/calendar/issues/19))
+
+## 0.2.0
+July 2, 2021
+
+* Added ability to specify event source as a function ([#5](https://github.com/vkurko/calendar/issues/5))
+
+## 0.1.2
+May 20, 2021
+
+* Fixed vulnerabilities in dependencies
+
+## 0.1.1
+April 12, 2021
+
+* Fixed an issue with incorrect JS event type recognition
+
+## 0.1.0
+April 12, 2021
+
+* Added drag&drop feature (`Interaction` plugin)
+* Added Sass + Autoprefixer
+
+## 0.0.1
+March 22, 2021
+
+* Initial release

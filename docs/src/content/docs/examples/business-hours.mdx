@@ -1,0 +1,172 @@
+---
+title: "Working week"
+description: "Only the working days and hours: the weekend is hidden and the day runs from 8 to 18."
+sidebar:
+  order: 29
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+Only the working days and hours: the weekend is hidden and the day runs from 8 to 18.
+
+<Example client:only="svelte" slug="business-hours" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid], {
+    view: 'timeGridWeek',
+    hiddenDays: [0, 6],
+    slotMinTime: '08:00',
+    slotMaxTime: '18:00',
+    slotHeight: 32,
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridWeek',
+        hiddenDays: [0, 6],
+        slotMinTime: '08:00',
+        slotMaxTime: '18:00',
+        slotHeight: 32,
+        events
+    });
+</script>
+
+<Calendar plugins={[TimeGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridWeek',
+        hiddenDays: [0, 6],
+        slotMinTime: '08:00',
+        slotMaxTime: '18:00',
+        slotHeight: 32,
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid];
+const events = [/* your events */];
+const options = {
+    view: 'timeGridWeek',
+    hiddenDays: [0, 6],
+    slotMinTime: '08:00',
+    slotMaxTime: '18:00',
+    slotHeight: 32,
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [TimeGrid];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        hiddenDays: [0, 6],
+        slotMinTime: '08:00',
+        slotMaxTime: '18:00',
+        slotHeight: 32,
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        hiddenDays: [0, 6],
+        slotMinTime: '08:00',
+        slotMaxTime: '18:00',
+        slotHeight: 32,
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [hiddenDays](../../options/hiddendays/)
+- [slotHeight](../../options/slotheight/)
+- [slotMaxTime](../../options/slotmaxtime/)
+- [slotMinTime](../../options/slotmintime/)
+- [view](../../options/view/)

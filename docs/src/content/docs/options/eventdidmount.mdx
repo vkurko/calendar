@@ -1,0 +1,15 @@
+---
+title: "eventDidMount"
+description: "Called right after the element of an event is added to the page. This is the place to attach something to the element: a tooltip, for example."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventdidmount.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventDidMount" height="440px" />

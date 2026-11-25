@@ -1,0 +1,19 @@
+---
+title: "validRange"
+description: "The range of dates the user can navigate within. The prev, next and today buttons are disabled when the whole period they lead to is outside of the range,…"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_validrange.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="validRange" height="440px" />
+
+## Live examples
+
+- [Limiting navigation](../../examples/valid-range/)

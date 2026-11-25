@@ -17,7 +17,8 @@ export default defineConfig({
         {name: 'chromium', use: {...devices['Desktop Chrome'], viewport: {width: 1200, height: 800}}}
     ],
     webServer: {
-        command: 'npx vite --port 5199 --strictPort',
+        // The Angular component is tested as it is published, compiled
+        command: 'npx ngc -p packages/angular && npx vite --port 5199 --strictPort',
         url: 'http://localhost:5199/tests/e2e/page.html',
         reuseExistingServer: !process.env.CI
     }

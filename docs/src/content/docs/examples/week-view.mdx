@@ -1,0 +1,158 @@
+---
+title: "Week view"
+description: "A week with a time axis, all-day row and the indicator of the current time."
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+A week with a time axis, all-day row and the indicator of the current time.
+
+<Example client:only="svelte" slug="week-view" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid], {
+    view: 'timeGridWeek',
+    nowIndicator: true,
+    scrollTime: '08:00',
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridWeek',
+        nowIndicator: true,
+        scrollTime: '08:00',
+        events
+    });
+</script>
+
+<Calendar plugins={[TimeGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridWeek',
+        nowIndicator: true,
+        scrollTime: '08:00',
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid];
+const events = [/* your events */];
+const options = {
+    view: 'timeGridWeek',
+    nowIndicator: true,
+    scrollTime: '08:00',
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [TimeGrid];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        nowIndicator: true,
+        scrollTime: '08:00',
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        nowIndicator: true,
+        scrollTime: '08:00',
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [nowIndicator](../../options/nowindicator/)
+- [scrollTime](../../options/scrolltime/)
+- [view](../../options/view/)

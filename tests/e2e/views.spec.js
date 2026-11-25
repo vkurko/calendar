@@ -182,3 +182,22 @@ test('resourceTimelineDay keeps events not overlapping in time on the same line 
     expect(await top('Night')).toBe(morning);
     expect(await top('Small hours')).toBe(await top('Overlap'));
 });
+
+test('filterEventsWithResources works with the resources loaded by a function', async ({page}) => {
+    await openPage(page);
+    await page.evaluate(() => {
+        let {createCalendar, TimeGrid} = EventCalendar;
+        createCalendar(document.getElementById('ec'), [TimeGrid], {
+            view: 'timeGridWeek',
+            filterEventsWithResources: true,
+            resources: () => [{id: 1, title: 'Resource A'}],
+            events: [
+                {start: '2026-10-08T10:00:00', end: '2026-10-08T12:00:00', title: 'Shown', resourceId: 1},
+                {start: '2026-10-08T13:00:00', end: '2026-10-08T14:00:00', title: 'Hidden', resourceId: 2}
+            ]
+        });
+    });
+
+    await expect(page.locator('.ec-event')).toHaveCount(1);
+    await expect(page.locator('.ec-event-title')).toHaveText('Shown');
+});

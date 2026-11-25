@@ -1,0 +1,22 @@
+{
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "node scripts/migrate-readme.mjs && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "generate": "node scripts/migrate-readme.mjs"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.41.3",
+    "@astrojs/svelte": "^9.0.1",
+    "@event-calendar/core": "file:../packages/core",
+    "astro": "^7.0.2",
+    "sharp": "^0.34.5",
+    "svelte": "^5.56.4",
+    "typescript": "^6.0.3"
+  }
+}

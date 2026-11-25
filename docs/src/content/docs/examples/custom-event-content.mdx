@@ -1,0 +1,454 @@
+---
+title: "Your own events and resources"
+description: "A day of a team where everything is rendered in its own way: the events are cards with a type, a room and the photos of the people who take part, and the columns are headed by the members of the team."
+sidebar:
+  order: 22
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+A day of a team where everything is rendered in its own way: the events are cards with a type, a room and the photos of the people who take part, and the columns are headed by the members of the team.
+
+<Example client:only="svelte" slug="custom-event-content" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, ResourceTimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const today = new Date();
+const people = [/* your resources */];
+const meetings = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [ResourceTimeGrid], {
+    view: 'resourceTimeGridDay',
+    height: 'auto',
+    slotMinTime: '08:00',
+    slotMaxTime: '16:00',
+    slotHeight: 40,
+    allDaySlot: false,
+    nowIndicator: true,
+    buttonText: text => ({...text, today: 'Today'}),
+    // The cards have their own colors
+    eventBackgroundColor: 'transparent',
+    // Each resource has a role and a photo in its extendedProps
+    resources: people,
+    // Each event has a type, a room and the attendees in its extendedProps
+    events: meetings,
+    eventContent: ({event, timeText}) => ({
+        html: `
+            <div class="card ${event.extendedProps.type}">
+                <div class="card-title">${event.title}</div>
+                <div class="card-meta">${timeText} · ${event.extendedProps.room}</div>
+                <div class="card-footer">
+                    ${event.extendedProps.attendees.map(person => `<img src="${person.photo}" alt="${person.name}" title="${person.name}">`).join('')}
+                    <span class="card-tag">${event.extendedProps.type}</span>
+                </div>
+            </div>
+        `
+    }),
+    resourceLabelContent: ({resource}) => ({
+        html: `
+            <div class="member">
+                <img src="${resource.extendedProps.photo}" alt="">
+                <b>${resource.title}</b>
+                <small>${resource.extendedProps.role}</small>
+            </div>
+        `
+    })
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, ResourceTimeGrid} from '@event-calendar/core';
+
+    let today = new Date();
+    let people = [/* your resources */];
+    let meetings = [/* your events */];
+    let options = $state({
+        view: 'resourceTimeGridDay',
+        height: 'auto',
+        slotMinTime: '08:00',
+        slotMaxTime: '16:00',
+        slotHeight: 40,
+        allDaySlot: false,
+        nowIndicator: true,
+        buttonText: text => ({...text, today: 'Today'}),
+        // The cards have their own colors
+        eventBackgroundColor: 'transparent',
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        // Each event has a type, a room and the attendees in its extendedProps
+        events: meetings
+    });
+</script>
+
+<Calendar plugins={[ResourceTimeGrid]} {options}>
+    {#snippet eventContent({event, timeText})}
+        <div class={['card', event.extendedProps.type]}>
+            <div class="card-title">{event.title}</div>
+            <div class="card-meta">{timeText} · {event.extendedProps.room}</div>
+            <div class="card-footer">
+                {#each event.extendedProps.attendees as person}
+                    <img src={person.photo} alt={person.name} title={person.name}>
+                {/each}
+                <span class="card-tag">{event.extendedProps.type}</span>
+            </div>
+        </div>
+    {/snippet}
+    {#snippet resourceLabelContent({resource})}
+        <div class="member">
+            <img src={resource.extendedProps.photo} alt="">
+            <b>{resource.title}</b>
+            <small>{resource.extendedProps.role}</small>
+        </div>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, ResourceTimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [ResourceTimeGrid];
+const today = new Date();
+const people = [/* your resources */];
+const meetings = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'resourceTimeGridDay',
+        height: 'auto',
+        slotMinTime: '08:00',
+        slotMaxTime: '16:00',
+        slotHeight: 40,
+        allDaySlot: false,
+        nowIndicator: true,
+        buttonText: text => ({...text, today: 'Today'}),
+        // The cards have their own colors
+        eventBackgroundColor: 'transparent',
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        // Each event has a type, a room and the attendees in its extendedProps
+        events: meetings
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+            eventContent={({event, timeText}) => (
+                <div className={'card ' + event.extendedProps.type}>
+                    <div className="card-title">{event.title}</div>
+                    <div className="card-meta">{timeText} · {event.extendedProps.room}</div>
+                    <div className="card-footer">
+                        {event.extendedProps.attendees.map(person => (
+                            <img key={person.name} src={person.photo} alt={person.name} title={person.name}/>
+                        ))}
+                        <span className="card-tag">{event.extendedProps.type}</span>
+                    </div>
+                </div>
+            )}
+            resourceLabelContent={({resource}) => (
+                <div className="member">
+                    <img src={resource.extendedProps.photo} alt=""/>
+                    <b>{resource.title}</b>
+                    <small>{resource.extendedProps.role}</small>
+                </div>
+            )}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, ResourceTimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [ResourceTimeGrid];
+const today = new Date();
+const people = [/* your resources */];
+const meetings = [/* your events */];
+const options = {
+    view: 'resourceTimeGridDay',
+    height: 'auto',
+    slotMinTime: '08:00',
+    slotMaxTime: '16:00',
+    slotHeight: 40,
+    allDaySlot: false,
+    nowIndicator: true,
+    buttonText: text => ({...text, today: 'Today'}),
+    // The cards have their own colors
+    eventBackgroundColor: 'transparent',
+    // Each resource has a role and a photo in its extendedProps
+    resources: people,
+    // Each event has a type, a room and the attendees in its extendedProps
+    events: meetings
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options">
+        <template #eventContent="{event, timeText}">
+            <div :class="['card', event.extendedProps.type]">
+                <div class="card-title">{{ event.title }}</div>
+                <div class="card-meta">{{ timeText }} · {{ event.extendedProps.room }}</div>
+                <div class="card-footer">
+                    <img
+                        v-for="person in event.extendedProps.attendees"
+                        :key="person.name" :src="person.photo" :alt="person.name" :title="person.name"
+                    >
+                    <span class="card-tag">{{ event.extendedProps.type }}</span>
+                </div>
+            </div>
+        </template>
+        <template #resourceLabelContent="{resource}">
+            <div class="member">
+                <img :src="resource.extendedProps.photo" alt="">
+                <b>{{ resource.title }}</b>
+                <small>{{ resource.extendedProps.role }}</small>
+            </div>
+        </template>
+    </EventCalendar>
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, ResourceTimeGrid, type Calendar} from '@event-calendar/angular';
+
+const today = new Date();
+const people: Calendar.ResourceInput[] = [/* your resources */];
+const meetings: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `
+        <event-calendar [plugins]="plugins" [options]="options">
+            <ng-template ecContent="eventContent" let-event="event" let-timeText="timeText">
+                <div class="card" [class]="event.extendedProps.type">
+                    <div class="card-title">{{ event.title }}</div>
+                    <div class="card-meta">{{ timeText }} · {{ event.extendedProps.room }}</div>
+                    <div class="card-footer">
+                        @for (person of event.extendedProps.attendees; track person.name) {
+                            <img [src]="person.photo" [alt]="person.name" [title]="person.name">
+                        }
+                        <span class="card-tag">{{ event.extendedProps.type }}</span>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template ecContent="resourceLabelContent" let-resource="resource">
+                <div class="member">
+                    <img [src]="resource.extendedProps.photo" alt="">
+                    <b>{{ resource.title }}</b>
+                    <small>{{ resource.extendedProps.role }}</small>
+                </div>
+            </ng-template>
+        </event-calendar>`
+})
+export class App {
+    plugins = [ResourceTimeGrid];
+    options: Calendar.Options = {
+        view: 'resourceTimeGridDay',
+        height: 'auto',
+        slotMinTime: '08:00',
+        slotMaxTime: '16:00',
+        slotHeight: 40,
+        allDaySlot: false,
+        nowIndicator: true,
+        buttonText: text => ({...text, today: 'Today'}),
+        // The cards have their own colors
+        eventBackgroundColor: 'transparent',
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        // Each event has a type, a room and the attendees in its extendedProps
+        events: meetings
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const today = new Date();
+    const people = [/* your resources */];
+    const meetings = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'resourceTimeGridDay',
+        height: 'auto',
+        slotMinTime: '08:00',
+        slotMaxTime: '16:00',
+        slotHeight: 40,
+        allDaySlot: false,
+        nowIndicator: true,
+        buttonText: text => ({...text, today: 'Today'}),
+        // The cards have their own colors
+        eventBackgroundColor: 'transparent',
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        // Each event has a type, a room and the attendees in its extendedProps
+        events: meetings,
+        eventContent: ({event, timeText}) => ({
+            html: `
+                <div class="card ${event.extendedProps.type}">
+                    <div class="card-title">${event.title}</div>
+                    <div class="card-meta">${timeText} · ${event.extendedProps.room}</div>
+                    <div class="card-footer">
+                        ${event.extendedProps.attendees.map(person => `<img src="${person.photo}" alt="${person.name}" title="${person.name}">`).join('')}
+                        <span class="card-tag">${event.extendedProps.type}</span>
+                    </div>
+                </div>
+            `
+        }),
+        resourceLabelContent: ({resource}) => ({
+            html: `
+                <div class="member">
+                    <img src="${resource.extendedProps.photo}" alt="">
+                    <b>${resource.title}</b>
+                    <small>${resource.extendedProps.role}</small>
+                </div>
+            `
+        })
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Styles
+
+```css
+/* The event is only a place for the card */
+.ec-event {
+    padding: 0 2px 2px 0;
+    box-shadow: none;
+}
+/* The whole view is today, so it is not highlighted */
+.ec-today {
+    background-color: transparent;
+}
+.card {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 10px;
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent) 14%, #fff);
+    color: #0f172a;
+}
+.card.meeting {
+    --accent: #6366f1;
+}
+.card.focus {
+    --accent: #10b981;
+}
+.card.review {
+    --accent: #f59e0b;
+}
+.card.personal {
+    --accent: #ec4899;
+}
+.card-title,
+.card-meta {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+}
+.card-meta {
+    color: #475569;
+    font-size: 12px;
+}
+.card-footer {
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+}
+.card-footer img {
+    width: 22px;
+    height: 22px;
+    margin-right: -6px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+.card-tag {
+    margin-left: auto;
+    padding: 1px 8px;
+    border-radius: 99px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    text-transform: capitalize;
+}
+.member {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 10px 0;
+    line-height: 1.3;
+}
+.member img {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 4px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #c7d2fe;
+}
+.member small {
+    color: #64748b;
+    font-weight: normal;
+}
+```
+
+## Options used
+
+- [allDaySlot](../../options/alldayslot/)
+- [buttonText](../../options/buttontext/)
+- [eventBackgroundColor](../../options/eventbackgroundcolor/)
+- [eventContent](../../options/eventcontent/)
+- [events](../../options/events/)
+- [height](../../options/height/)
+- [nowIndicator](../../options/nowindicator/)
+- [resourceLabelContent](../../options/resourcelabelcontent/)
+- [resources](../../options/resources/)
+- [slotHeight](../../options/slotheight/)
+- [slotMaxTime](../../options/slotmaxtime/)
+- [slotMinTime](../../options/slotmintime/)
+- [view](../../options/view/)

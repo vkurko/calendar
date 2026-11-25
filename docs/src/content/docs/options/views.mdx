@@ -1,0 +1,19 @@
+---
+title: "views"
+description: "The options that apply to one view only, and the views of your own."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_views.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="views" height="440px" />
+
+## Live examples
+
+- [Custom view](../../examples/custom-view/)

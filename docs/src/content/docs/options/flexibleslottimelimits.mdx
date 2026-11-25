@@ -1,0 +1,15 @@
+---
+title: "flexibleSlotTimeLimits"
+description: "Extends slotMinTime and slotMaxTime automatically when an event of the shown period is outside of them, so that no event is cut off or hidden."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_flexibleslottimelimits.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="flexibleSlotTimeLimits" height="440px" />

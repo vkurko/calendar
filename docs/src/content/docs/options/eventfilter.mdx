@@ -1,0 +1,19 @@
+---
+title: "eventFilter"
+description: "Decides which events are shown, without changing the events themselves. The function is called for each event and returns true to show it:"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventfilter.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventFilter" height="440px" />
+
+## Live examples
+
+- [Filtering events](../../examples/event-filter/)

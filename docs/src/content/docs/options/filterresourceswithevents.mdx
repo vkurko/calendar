@@ -1,0 +1,19 @@
+---
+title: "filterResourcesWithEvents"
+description: "Hides the resources that have no events in the period the resource view shows. Background events do not count."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_filterresourceswithevents.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="filterResourcesWithEvents" height="440px" />
+
+## Live examples
+
+- [Only busy resources](../../examples/filter-resources/)

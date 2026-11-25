@@ -1,0 +1,19 @@
+---
+title: "loading"
+description: "Called when the calendar starts and when it finishes loading events or resources from their sources. It is the place to show and hide a spinner."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_loading.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="loading" height="440px" />
+
+## Live examples
+
+- [Loading events](../../examples/event-sources/)

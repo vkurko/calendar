@@ -1,0 +1,194 @@
+---
+title: "Events side by side"
+description: "The events that happen at the same time placed side by side, with slotEventOverlap: false. By default they overlap a little to save space."
+sidebar:
+  order: 30
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The events that happen at the same time placed side by side, with `slotEventOverlap: false`. By default they overlap a little to save space.
+
+<Example client:only="svelte" slug="no-overlap" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const today = new Date();
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid], {
+    view: 'timeGridDay',
+    slotEventOverlap: false,
+    scrollTime: '08:00',
+    // All the events of the week on the same day
+    events: events.filter(event => !event.allDay).map(event => ({
+        ...event,
+        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.start.getHours(), event.start.getMinutes()),
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.end.getHours(), event.end.getMinutes())
+    }))
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let today = new Date();
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridDay',
+        slotEventOverlap: false,
+        scrollTime: '08:00',
+        // All the events of the week on the same day
+        events: events.filter(event => !event.allDay).map(event => ({
+            ...event,
+            start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.start.getHours(), event.start.getMinutes()),
+            end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.end.getHours(), event.end.getMinutes())
+        }))
+    });
+</script>
+
+<Calendar plugins={[TimeGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid];
+const today = new Date();
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridDay',
+        slotEventOverlap: false,
+        scrollTime: '08:00',
+        // All the events of the week on the same day
+        events: events.filter(event => !event.allDay).map(event => ({
+            ...event,
+            start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.start.getHours(), event.start.getMinutes()),
+            end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.end.getHours(), event.end.getMinutes())
+        }))
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid];
+const today = new Date();
+const events = [/* your events */];
+const options = {
+    view: 'timeGridDay',
+    slotEventOverlap: false,
+    scrollTime: '08:00',
+    // All the events of the week on the same day
+    events: events.filter(event => !event.allDay).map(event => ({
+        ...event,
+        start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.start.getHours(), event.start.getMinutes()),
+        end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.end.getHours(), event.end.getMinutes())
+    }))
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, type Calendar} from '@event-calendar/angular';
+
+const today = new Date();
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [TimeGrid];
+    options: Calendar.Options = {
+        view: 'timeGridDay',
+        slotEventOverlap: false,
+        scrollTime: '08:00',
+        // All the events of the week on the same day
+        events: events.filter(event => !event.allDay).map(event => ({
+            ...event,
+            start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.start.getHours(), event.start.getMinutes()),
+            end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.end.getHours(), event.end.getMinutes())
+        }))
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const today = new Date();
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridDay',
+        slotEventOverlap: false,
+        scrollTime: '08:00',
+        // All the events of the week on the same day
+        events: events.filter(event => !event.allDay).map(event => ({
+            ...event,
+            start: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.start.getHours(), event.start.getMinutes()),
+            end: new Date(today.getFullYear(), today.getMonth(), today.getDate(), event.end.getHours(), event.end.getMinutes())
+        }))
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [scrollTime](../../options/scrolltime/)
+- [slotEventOverlap](../../options/sloteventoverlap/)
+- [view](../../options/view/)

@@ -1,0 +1,46 @@
+{
+  "name": "@event-calendar/react",
+  "version": "5.22.0",
+  "title": "Event Calendar React component",
+  "description": "React component of the full-sized drag & drop event calendar with resource & timeline views",
+  "keywords": [
+    "calendar",
+    "event",
+    "resource",
+    "timeline",
+    "full-sized",
+    "react"
+  ],
+  "homepage": "https://vkurko.github.io/calendar/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vkurko/calendar.git",
+    "directory": "packages/react"
+  },
+  "license": "MIT",
+  "files": [
+    "src",
+    "types",
+    "index.css"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./index.css": "./index.css",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@event-calendar/core": "~5.22.0"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

@@ -1,0 +1,177 @@
+---
+title: "Drag & drop"
+description: "The events can be dragged to another time or day, and eventDrop tells where an event has landed."
+sidebar:
+  order: 13
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The events can be dragged to another time or day, and `eventDrop` tells where an event has landed.
+
+<Example client:only="svelte" slug="drag-and-drop" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid, Interaction} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid, Interaction], {
+    view: 'timeGridWeek',
+    editable: true,
+    scrollTime: '08:00',
+    events,
+    eventDrop: ({event, oldEvent}) => {
+        console.log('eventDrop', event.title, oldEvent.start, '→', event.start);
+    }
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid, Interaction} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridWeek',
+        editable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event, oldEvent}) => {
+            console.log('eventDrop', event.title, oldEvent.start, '→', event.start);
+        }
+    });
+</script>
+
+<Calendar plugins={[TimeGrid, Interaction]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, TimeGrid, Interaction} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid, Interaction];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridWeek',
+        editable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event, oldEvent}) => {
+            console.log('eventDrop', event.title, oldEvent.start, '→', event.start);
+        }
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, TimeGrid, Interaction} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid, Interaction];
+const events = [/* your events */];
+const options = {
+    view: 'timeGridWeek',
+    editable: true,
+    scrollTime: '08:00',
+    events,
+    eventDrop: ({event, oldEvent}) => {
+        console.log('eventDrop', event.title, oldEvent.start, '→', event.start);
+    }
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, Interaction, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [TimeGrid, Interaction];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        editable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event, oldEvent}) => {
+            console.log('eventDrop', event.title, oldEvent.start, '→', event.start);
+        }
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        editable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event, oldEvent}) => {
+            console.log('eventDrop', event.title, oldEvent.start, '→', event.start);
+        }
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [editable](../../options/editable/)
+- [eventDrop](../../options/eventdrop/)
+- [events](../../options/events/)
+- [scrollTime](../../options/scrolltime/)
+- [view](../../options/view/)

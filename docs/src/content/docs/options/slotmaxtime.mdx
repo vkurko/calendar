@@ -1,0 +1,24 @@
+---
+title: "slotMaxTime"
+description: "The time of the day at which the time slots end. It can be later than midnight to show the night as a part of the previous day."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_slotmaxtime.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="slotMaxTime" height="440px" />
+
+## Live examples
+
+- [Resource timeline](../../examples/timeline/)
+- [Nested resources](../../examples/nested-resources/)
+- [Drag between resources](../../examples/drag-between-resources/)
+- [Your own events and resources](../../examples/custom-event-content/)
+- [Your own resource labels](../../examples/resource-labels/)
+- [Working week](../../examples/business-hours/)

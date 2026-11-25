@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>EventCalendar Vue tests</title>
+    <style>
+        body {
+            margin: 0;
+            font: 14px sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+    import * as Vue from 'vue';
+    import * as Adapter from '/packages/vue/src/index.js';
+    import '/packages/core/src/styles/index.css';
+
+    // Tests render the components themselves
+    Object.assign(window, {Vue, Adapter, h: Vue.h});
+    window.ready = true;
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+---
+title: "weekNumbers"
+description: "Shows the numbers of the weeks in the dayGrid and resourceTimeline views. A timeline of exactly one week does not show it."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_weeknumbers.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="weekNumbers" height="440px" />
+
+## Live examples
+
+- [Week numbers](../../examples/week-numbers/)

@@ -46,7 +46,7 @@
         --ec-color-100: oklch(20.5% 0 0);
         --ec-color-50: oklch(14.5% 0 0);
         --ec-bg-color: var(--ec-color-100);
-        --ec-today-bg-color: oklch(28.6% 0.066 53.813);
+        --ec-today-bg-color: var(--ec-color-200);
         --ec-highlight-color: oklch(30.2% 0.056 229.695);
         --ec-bg-event-opacity: 0.5;
     }
@@ -60,7 +60,7 @@
             --ec-color-100: oklch(20.5% 0 0);
             --ec-color-50: oklch(14.5% 0 0);
             --ec-bg-color: var(--ec-color-100);
-            --ec-today-bg-color: oklch(28.6% 0.066 53.813);
+            --ec-today-bg-color: var(--ec-color-200);
             --ec-highlight-color: oklch(30.2% 0.056 229.695);
             --ec-bg-event-opacity: 0.5;
         }

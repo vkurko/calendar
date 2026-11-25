@@ -1,0 +1,171 @@
+---
+title: "Only busy resources"
+description: "With filterResourcesWithEvents the resources that have no events in the view are hidden."
+sidebar:
+  order: 37
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+With `filterResourcesWithEvents` the resources that have no events in the view are hidden.
+
+<Example client:only="svelte" slug="filter-resources" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, ResourceTimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [ResourceTimeGrid], {
+    view: 'resourceTimeGridDay',
+    filterResourcesWithEvents: true,
+    scrollTime: '08:00',
+    resources: [...resources, {id: 4, title: 'Room D (always free)'}],
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, ResourceTimeGrid} from '@event-calendar/core';
+
+    let resources = [/* your resources */];
+    let events = [/* your events */];
+    let options = $state({
+        view: 'resourceTimeGridDay',
+        filterResourcesWithEvents: true,
+        scrollTime: '08:00',
+        resources: [...resources, {id: 4, title: 'Room D (always free)'}],
+        events
+    });
+</script>
+
+<Calendar plugins={[ResourceTimeGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, ResourceTimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [ResourceTimeGrid];
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'resourceTimeGridDay',
+        filterResourcesWithEvents: true,
+        scrollTime: '08:00',
+        resources: [...resources, {id: 4, title: 'Room D (always free)'}],
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, ResourceTimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [ResourceTimeGrid];
+const resources = [/* your resources */];
+const events = [/* your events */];
+const options = {
+    view: 'resourceTimeGridDay',
+    filterResourcesWithEvents: true,
+    scrollTime: '08:00',
+    resources: [...resources, {id: 4, title: 'Room D (always free)'}],
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, ResourceTimeGrid, type Calendar} from '@event-calendar/angular';
+
+const resources: Calendar.ResourceInput[] = [/* your resources */];
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [ResourceTimeGrid];
+    options: Calendar.Options = {
+        view: 'resourceTimeGridDay',
+        filterResourcesWithEvents: true,
+        scrollTime: '08:00',
+        resources: [...resources, {id: 4, title: 'Room D (always free)'}],
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const resources = [/* your resources */];
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'resourceTimeGridDay',
+        filterResourcesWithEvents: true,
+        scrollTime: '08:00',
+        resources: [...resources, {id: 4, title: 'Room D (always free)'}],
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [filterResourcesWithEvents](../../options/filterresourceswithevents/)
+- [resources](../../options/resources/)
+- [scrollTime](../../options/scrolltime/)
+- [view](../../options/view/)

@@ -1,6 +1,6 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
-    import {contentFrom, empty, length, resizeObserver, runReposition} from '#lib';
+    import {contentFrom, contentResized, empty, length, resizeObserver, runReposition} from '#lib';
     import ViewState from './state.svelte.js';
     import Day from './Day.svelte';
     import Event from './Event.svelte';
@@ -20,9 +20,14 @@
         hiddenChunks.clear();
         tick().then(hide);
     }
+    // Whether the events could have been hidden: without dayMaxEvents there is nothing to hide or to show again
+    let hiding = false;
     function hide() {
         hiddenChunks.size;
-        refs.forEach(ref => ref?.hide());
+        if (dayMaxEvents === true || hiding) {
+            hiding = dayMaxEvents === true;
+            refs.forEach(ref => ref?.hide());
+        }
     }
     $effect(() => {
         eventGap;
@@ -40,6 +45,7 @@
         style:--ec-grid-cols="{length(grid[0])}"
         style:--ec-grid-rows="{length(grid)}"
         {@attach resizeObserver(reposition)}
+        {@attach contentResized(reposition)}
     >
         <header class="{theme.header}">
             <div class="{theme.grid}" role="row">

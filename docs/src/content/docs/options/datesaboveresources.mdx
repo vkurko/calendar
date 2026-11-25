@@ -1,0 +1,19 @@
+---
+title: "datesAboveResources"
+description: "Puts the days above the resources in the resourceTimeGrid views: the columns are grouped by day, and each day holds a column per resource."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_datesaboveresources.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="datesAboveResources" height="440px" />
+
+## Live examples
+
+- [Resources by day](../../examples/resource-week/)

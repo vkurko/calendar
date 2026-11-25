@@ -1,0 +1,478 @@
+/* Colors of the site */
+:root {
+    --sl-color-accent-low: #1e1b4b;
+    --sl-color-accent: #6366f1;
+    --sl-color-accent-high: #c7d2fe;
+    --site-gradient: linear-gradient(100deg, #6366f1, #06b6d4 55%, #10b981);
+    --site-border: color-mix(in srgb, var(--sl-color-gray-5) 60%, transparent);
+    --site-card: color-mix(in srgb, var(--sl-color-gray-6) 55%, transparent);
+}
+:root[data-theme='light'] {
+    --sl-color-accent-low: #e0e7ff;
+    --sl-color-accent: #4f46e5;
+    --sl-color-accent-high: #312e81;
+    --site-card: #fff;
+}
+
+/* --- Live examples --- */
+.example {
+    margin-block: 1.5rem;
+    border: 1px solid var(--site-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--sl-color-bg);
+    box-shadow: 0 12px 32px -18px rgb(0 0 0 / 0.35);
+}
+.example-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--site-border);
+    background: var(--site-card);
+    font-size: 0.85rem;
+}
+.example-controls code {
+    margin-inline-end: 0.3rem;
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+}
+.example-controls button {
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--site-border);
+    border-radius: 99px;
+    background: none;
+    color: var(--sl-color-gray-2);
+    font: 0.8rem var(--sl-font-mono, ui-monospace, monospace);
+    cursor: pointer;
+}
+.example-controls button.action {
+    border-radius: 0.4rem;
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-text-accent);
+}
+.example-controls button.action:active {
+    background: var(--sl-color-accent);
+    color: #fff;
+}
+.example-controls button:hover {
+    border-color: var(--sl-color-accent);
+}
+.example-controls button.active {
+    border-color: var(--sl-color-accent);
+    background: var(--sl-color-accent);
+    color: #fff;
+}
+.example-controls span {
+    margin-inline-start: auto;
+    padding: 0.15rem 0.6rem;
+    border-radius: 0.4rem;
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+}
+.example-controls span::before {
+    content: '☞ ';
+}
+.example-controls span.hinted {
+    animation: example-hint 1.4s ease-out;
+}
+@keyframes example-hint {
+    0%, 40% {
+        background: color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
+    }
+}
+/* The class set by the demo of eventClassNames */
+.demo-striped {
+    background-image: repeating-linear-gradient(45deg, rgb(255 255 255 / 0.25) 0 6px, transparent 6px 12px);
+}
+.example-calendar {
+    padding: 0.75rem;
+}
+.example-log {
+    border-top: 1px solid var(--site-border);
+    padding: 0.6rem 0.9rem;
+    min-height: 6.6em;
+    font: 0.8rem/1.5 var(--sl-font-mono, ui-monospace, monospace);
+    color: var(--sl-color-gray-2);
+    background: var(--site-card);
+}
+.example-log > div:first-child:not(.example-log-empty) {
+    color: var(--sl-color-text-accent);
+}
+.example-log-empty {
+    color: var(--sl-color-gray-3);
+}
+
+/* A preview: the same calendar with a small font. It is not scaled, because the calendar measures its elements */
+.example-mini {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 8px;
+    line-height: 1.3;
+    pointer-events: none;
+    --ec-slot-height: 14px;
+}
+.example-mini .example-calendar {
+    padding: 0.5rem;
+}
+.example-mini .ec-toolbar {
+    margin-bottom: 0.4rem;
+}
+.example-mini .ec-title {
+    font-size: 11px;
+    font-weight: 600;
+}
+.example-mini .ec-event-title {
+    font-size: inherit;
+    font-weight: 600;
+}
+.example-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 1.25rem;
+    margin-block: 1.25rem 2.5rem;
+}
+.example-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--site-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: var(--site-card);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.example-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--sl-color-accent);
+    box-shadow: 0 16px 36px -20px var(--sl-color-accent);
+}
+.example-card-preview {
+    height: 220px;
+    overflow: hidden;
+    background: var(--sl-color-bg);
+    border-bottom: 1px solid var(--site-border);
+}
+.example-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.8rem 1rem 1rem;
+}
+.example-card-text strong {
+    color: var(--sl-color-white);
+    font-size: 1rem;
+}
+.example-card-text span {
+    color: var(--sl-color-gray-2);
+    font-size: 0.85rem;
+    line-height: 1.45;
+}
+
+/* --- Landing page --- */
+/* The standard title of the page is replaced by the hero */
+main:has(.landing) h1#_top {
+    display: none;
+}
+main:has(.landing) .content-panel:first-of-type {
+    display: none;
+}
+.landing {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4rem, 9vw, 7rem);
+    padding-block: clamp(1.5rem, 5vw, 4rem) 3rem;
+}
+/* Not the titles of the calendars */
+.landing h1,
+.landing h2:not(.ec-title) {
+    color: var(--sl-color-white);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    margin: 0;
+}
+.landing h1 {
+    font-size: clamp(2.6rem, 7vw, 4.75rem);
+    font-weight: 800;
+}
+.landing h2:not(.ec-title) {
+    font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+    font-weight: 750;
+}
+.landing p {
+    margin: 0;
+    color: var(--sl-color-gray-2);
+    font-size: 1.1rem;
+    line-height: 1.65;
+}
+.landing-gradient {
+    background: var(--site-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.landing-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+.landing-hero::before {
+    content: '';
+    position: absolute;
+    /* As wide as the window, so that the glow fades out by itself and is not cut at the sides of the content */
+    inset: -8rem auto auto 50%;
+    width: 100vw;
+    height: 40rem;
+    transform: translateX(-50%);
+    z-index: -1;
+    background:
+        radial-gradient(46rem 24rem at 38% 35%, color-mix(in srgb, #6366f1 30%, transparent), transparent 72%),
+        radial-gradient(42rem 22rem at 66% 28%, color-mix(in srgb, #06b6d4 24%, transparent), transparent 72%);
+    pointer-events: none;
+}
+/* The glow is wider than the content: it is clipped by the page, so that the page is not scrolled horizontally */
+html:has(.landing) {
+    overflow-x: clip;
+}
+.landing-lead {
+    max-width: 44rem;
+    font-size: clamp(1.1rem, 2vw, 1.3rem) !important;
+}
+.landing-pill {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.35rem 0.9rem 0.35rem 0.4rem;
+    border: 1px solid var(--site-border);
+    border-radius: 99px;
+    background: var(--site-card);
+    color: var(--sl-color-gray-2);
+    font-size: 0.875rem;
+    text-decoration: none;
+}
+.landing-pill b {
+    padding: 0.1rem 0.6rem;
+    border-radius: 99px;
+    background: var(--site-gradient);
+    color: #fff;
+    font-weight: 600;
+}
+.landing-pill:hover {
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-white);
+}
+.landing-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.landing-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.7rem 1.4rem;
+    border: 1px solid var(--site-border);
+    border-radius: 0.6rem;
+    background: var(--site-card);
+    color: var(--sl-color-white);
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.15s, border-color 0.15s;
+}
+.landing-button:hover {
+    transform: translateY(-1px);
+    border-color: var(--sl-color-accent);
+}
+.landing-button.primary {
+    border-color: transparent;
+    background: var(--sl-color-accent);
+    color: #fff;
+    box-shadow: 0 10px 26px -10px var(--sl-color-accent);
+}
+.landing-button.ghost {
+    border-color: transparent;
+    background: none;
+}
+.landing-stack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+.landing-stack li {
+    padding: 0.2rem 0.75rem;
+    border: 1px solid var(--site-border);
+    border-radius: 0.4rem;
+    color: var(--sl-color-gray-2);
+    font-size: 0.85rem;
+}
+.landing-stage {
+    margin-top: calc(-1 * clamp(1.5rem, 4vw, 3rem));
+}
+.landing-window {
+    border: 1px solid var(--site-border);
+    border-radius: 0.9rem;
+    overflow: hidden;
+    background: var(--sl-color-bg);
+    box-shadow:
+        0 40px 80px -40px color-mix(in srgb, #6366f1 55%, transparent),
+        0 20px 40px -30px rgb(0 0 0 / 0.5);
+}
+.landing-window-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--site-border);
+    background: var(--site-card);
+}
+.landing-window-bar i {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--sl-color-gray-5);
+}
+.landing-window-bar span {
+    margin-inline-start: 0.6rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.8rem;
+}
+.landing-window-body {
+    padding: 1rem;
+    min-height: 640px;
+}
+.landing-window-body .hero-calendar {
+    margin: 0;
+}
+.landing-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+}
+.landing-stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.landing-stats b {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    background: var(--site-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.landing-stats span {
+    color: var(--sl-color-gray-3);
+    font-size: 0.9rem;
+}
+.landing-feature,
+.landing-code {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+}
+.landing-feature.reverse {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+}
+.landing-feature.reverse .landing-feature-text {
+    order: 2;
+}
+.landing-feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.landing-feature-text a,
+.landing-final p a {
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+.landing-feature-text a:hover,
+.landing-final p a:hover {
+    text-decoration: underline;
+}
+.landing-feature-demo .example {
+    margin: 0;
+}
+.landing-eyebrow {
+    color: var(--sl-color-text-accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.landing-code-tabs {
+    min-width: 0;
+}
+.landing-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+.landing-showcase p {
+    max-width: 42rem;
+}
+.landing-showcase-demo {
+    width: 100%;
+    max-width: 60rem;
+    margin-top: 1rem;
+    text-align: start;
+}
+.landing-showcase-demo .example {
+    margin: 0;
+    box-shadow: 0 40px 80px -45px color-mix(in srgb, #6366f1 55%, transparent);
+}
+.landing-showcase > a {
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+.landing-examples,
+.landing-final {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+.landing-examples .example-grid {
+    width: 100%;
+    margin-block: 1.25rem 0.5rem;
+    text-align: start;
+}
+.landing-final {
+    padding: clamp(2.5rem, 6vw, 4.5rem) 1.5rem;
+    border: 1px solid var(--site-border);
+    border-radius: 1.25rem;
+    background:
+        radial-gradient(30rem 14rem at 50% 0, color-mix(in srgb, #6366f1 22%, transparent), transparent 70%),
+        var(--site-card);
+}
+@media (max-width: 50rem) {
+    .landing-feature,
+    .landing-feature.reverse,
+    .landing-code {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .landing-feature.reverse .landing-feature-text {
+        order: 0;
+    }
+}

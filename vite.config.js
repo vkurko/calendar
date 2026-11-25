@@ -6,6 +6,10 @@ import pkg from './package.json' with {type: 'json'};
 // https://vite.dev/config/
 export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
     return {
+        // The adapters import the core by its package name, in development it is the source code
+        resolve: command === 'serve'
+            ? {alias: {'@event-calendar/core': import.meta.dirname + '/packages/core/src/index.es.js'}}
+            : undefined,
         plugins: [
             svelte(),
             banner('/*!\n * EventCalendar v' + pkg.version + '\n * https://github.com/vkurko/calendar\n */')

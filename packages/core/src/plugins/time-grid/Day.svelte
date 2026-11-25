@@ -10,7 +10,9 @@
 
     let {dayStart: date, start, resource, disabled, highlight} = $derived(day);
 
-    let el = $state();
+    // Not a state: the element is not used reactively, and a state written by each component slows down the rendering
+    // svelte-ignore non_reactive_update
+    let el;
 
     function dateFromPoint(x, y) {
         if (allDay) {

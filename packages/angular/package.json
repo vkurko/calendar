@@ -1,0 +1,44 @@
+{
+  "name": "@event-calendar/angular",
+  "version": "5.22.0",
+  "title": "Event Calendar Angular component",
+  "description": "Angular component of the full-sized drag & drop event calendar with resource & timeline views",
+  "keywords": [
+    "calendar",
+    "event",
+    "resource",
+    "timeline",
+    "full-sized",
+    "angular"
+  ],
+  "homepage": "https://vkurko.github.io/calendar/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vkurko/calendar.git",
+    "directory": "packages/angular"
+  },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "index.css"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./index.css": "./index.css",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@event-calendar/core": "~5.22.0"
+  },
+  "peerDependencies": {
+    "@angular/core": ">=20"
+  }
+}

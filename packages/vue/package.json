@@ -1,0 +1,45 @@
+{
+  "name": "@event-calendar/vue",
+  "version": "5.22.0",
+  "title": "Event Calendar Vue component",
+  "description": "Vue component of the full-sized drag & drop event calendar with resource & timeline views",
+  "keywords": [
+    "calendar",
+    "event",
+    "resource",
+    "timeline",
+    "full-sized",
+    "vue"
+  ],
+  "homepage": "https://vkurko.github.io/calendar/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vkurko/calendar.git",
+    "directory": "packages/vue"
+  },
+  "license": "MIT",
+  "files": [
+    "src",
+    "types",
+    "index.css"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./index.css": "./index.css",
+    "./package.json": "./package.json"
+  },
+  "dependencies": {
+    "@event-calendar/core": "~5.22.0"
+  },
+  "peerDependencies": {
+    "vue": ">=3.3"
+  }
+}

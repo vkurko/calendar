@@ -1,6 +1,6 @@
 <script>
     import {getContext, setContext, tick} from 'svelte';
-    import {contentFrom, empty, length, resizeObserver, runReposition, toSeconds} from '#lib';
+    import {contentFrom, contentResized, empty, length, resizeObserver, runReposition, toSeconds} from '#lib';
     import {createAllDayContent} from './lib.js';
     import ViewState from './state.svelte.js';
     import {ColHead, DayHeader} from '#components';
@@ -70,6 +70,7 @@
         style:--ec-header-height="{headerHeight}px"
         style:--ec-sidebar-width="{sidebarWidth}px"
         {@attach resizeObserver(reposition)}
+        {@attach contentResized(reposition)}
     >
         <header bind:offsetHeight={headerHeight} class="{theme.header}">
             <aside class="{theme.sidebar}" bind:offsetWidth={viewState.sidebarWidth}></aside>

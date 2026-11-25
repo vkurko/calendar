@@ -1,0 +1,201 @@
+---
+title: "Clicks"
+description: "Click a day to add an event, click an event to remove it."
+sidebar:
+  order: 16
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+Click a day to add an event, click an event to remove it.
+
+<Example client:only="svelte" slug="click-events" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, DayGrid, Interaction} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [DayGrid, Interaction], {
+    view: 'dayGridMonth',
+    events,
+    dateClick: ({date}) => {
+        console.log('dateClick', date);
+        ec.addEvent({start: date, end: date, allDay: true, title: 'Added by click', color: '#14b8a6'});
+    },
+    eventClick: ({event}) => {
+        console.log('eventClick', event.title);
+        ec.removeEventById(event.id);
+    }
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, DayGrid, Interaction} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let ec = $state();
+    let options = $state({
+        view: 'dayGridMonth',
+        events,
+        dateClick: ({date}) => {
+            console.log('dateClick', date);
+            ec.addEvent({start: date, end: date, allDay: true, title: 'Added by click', color: '#14b8a6'});
+        },
+        eventClick: ({event}) => {
+            console.log('eventClick', event.title);
+            ec.removeEventById(event.id);
+        }
+    });
+</script>
+
+<Calendar bind:this={ec} plugins={[DayGrid, Interaction]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {useRef} from 'react';
+import {EventCalendar, DayGrid, Interaction} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [DayGrid, Interaction];
+const events = [/* your events */];
+
+export default function App() {
+    const calendar = useRef(null);
+    const options = {
+        view: 'dayGridMonth',
+        events,
+        dateClick: ({date}) => {
+            console.log('dateClick', date);
+            calendar.current.addEvent({start: date, end: date, allDay: true, title: 'Added by click', color: '#14b8a6'});
+        },
+        eventClick: ({event}) => {
+            console.log('eventClick', event.title);
+            calendar.current.removeEventById(event.id);
+        }
+    };
+
+    return (
+        <EventCalendar
+            ref={calendar}
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {useTemplateRef} from 'vue';
+import {EventCalendar, DayGrid, Interaction} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [DayGrid, Interaction];
+const events = [/* your events */];
+const calendar = useTemplateRef('calendar');
+const options = {
+    view: 'dayGridMonth',
+    events,
+    dateClick: ({date}) => {
+        console.log('dateClick', date);
+        calendar.value.addEvent({start: date, end: date, allDay: true, title: 'Added by click', color: '#14b8a6'});
+    },
+    eventClick: ({event}) => {
+        console.log('eventClick', event.title);
+        calendar.value.removeEventById(event.id);
+    }
+};
+</script>
+
+<template>
+    <EventCalendar ref="calendar" :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component, viewChild} from '@angular/core';
+import {EventCalendar, EcContent, DayGrid, Interaction, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    calendar = viewChild.required(EventCalendar);
+    plugins = [DayGrid, Interaction];
+    options: Calendar.Options = {
+        view: 'dayGridMonth',
+        events,
+        dateClick: ({date}) => {
+            console.log('dateClick', date);
+            this.calendar().addEvent({start: date, end: date, allDay: true, title: 'Added by click', color: '#14b8a6'});
+        },
+        eventClick: ({event}) => {
+            console.log('eventClick', event.title);
+            this.calendar().removeEventById(event.id);
+        }
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'dayGridMonth',
+        events,
+        dateClick: ({date}) => {
+            console.log('dateClick', date);
+            ec.addEvent({start: date, end: date, allDay: true, title: 'Added by click', color: '#14b8a6'});
+        },
+        eventClick: ({event}) => {
+            console.log('eventClick', event.title);
+            ec.removeEventById(event.id);
+        }
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [dateClick](../../options/dateclick/)
+- [eventClick](../../options/eventclick/)
+- [events](../../options/events/)
+- [view](../../options/view/)

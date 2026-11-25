@@ -35,7 +35,10 @@ export const Calendar: Component<
 
 export interface Calendar {
     getOption<K extends keyof Calendar.Options>(name: K): Calendar.Options[K];
-    setOption<K extends keyof Calendar.Options>(name: K, value: Calendar.Options[K]): Calendar;
+    /** Sets the option, without a value the option is reset to its default */
+    setOption<K extends keyof Calendar.Options>(name: K, value?: Calendar.Options[K]): Calendar;
+    /** Sets several options at once, an option with the `undefined` value is reset to its default */
+    setOptions(options: Calendar.Options): Calendar;
     addEvent(event: Calendar.Event | Calendar.EventInput): Calendar.Event | null;
     getEventById(id: number | string): Calendar.Event | null;
     getEvents(): Calendar.Event[];
@@ -62,6 +65,13 @@ export namespace Calendar {
     }
 
     type Content = string | { html: string } | { domNodes: Node[] };
+
+    /**
+     * A function that renders the content into the given element by itself.
+     * It can be returned by the functions that define content, and it can return a function to clean up
+     * when the content is no longer needed.
+     */
+    type ContentFunction = (el: HTMLElement) => void | (() => void);
 
     /**
      * Svelte snippets that render the content of the corresponding options.
@@ -91,7 +101,7 @@ export namespace Calendar {
 
     /** An arbitrary widget placed in the toolbar instead of a button */
     interface CustomItem {
-        content: Content | (() => Content);
+        content: Content | (() => Content | ContentFunction);
     }
 
     interface CustomButtons {
@@ -390,7 +400,7 @@ export namespace Calendar {
     type isoDateTimeString = string;
 
     interface Options {
-        allDayContent?: Content | ((arg: AllDayContentArg) => Content);
+        allDayContent?: Content | ((arg: AllDayContentArg) => Content | ContentFunction);
         allDaySlot?: boolean;
         buttonText?: ButtonTextMapping | ((text: ButtonTextMapping) => ButtonTextMapping);
         columnWidth?: cssLength;
@@ -401,7 +411,7 @@ export namespace Calendar {
         dateIncrement?: DurationInput;
         datesAboveResources?: boolean;
         datesSet?: (info: DatesSetInfo) => void;
-        dayCellContent?: Content | ((arg: DayCellContentArg) => Content);
+        dayCellContent?: Content | ((arg: DayCellContentArg) => Content | ContentFunction);
         dayCellFormat?: Intl.DateTimeFormatOptions | ((d: Date) => Content);
         dayHeaderAriaLabelFormat?: Intl.DateTimeFormatOptions | ((d: Date) => Content);
         dayHeaderFormat?: Intl.DateTimeFormatOptions | ((d: Date) => Content);
@@ -418,7 +428,7 @@ export namespace Calendar {
         eventClassNames?: string | string[] | ((info: EventClassNamesInfo) => string | string[]);
         eventClick?: (info: EventClickInfo) => void;
         eventColor?: string;
-        eventContent?: Content | ((info: EventContentInfo) => Content | undefined);
+        eventContent?: Content | ((info: EventContentInfo) => Content | ContentFunction | undefined);
         eventDidMount?: (info: EventDidMountInfo) => void;
         eventDragMinDistance?: number;
         eventDragStart?: (info: EventDragInfo) => void;
@@ -460,9 +470,9 @@ export namespace Calendar {
         locale?: string;
         longPressDelay?: number;
         monthHeaderFormat?: Intl.DateTimeFormatOptions | ((date: Date) => Content);
-        moreLinkContent?: Content | ((info: MoreLinkInfo) => Content);
+        moreLinkContent?: Content | ((info: MoreLinkInfo) => Content | ContentFunction);
         noEventsClick?: (info: NoEventsClickInfo) => void;
-        noEventsContent?: Content | (() => Content);
+        noEventsContent?: Content | (() => Content | ContentFunction);
         nowIndicator?: boolean;
         pointer?: boolean;
         refetchResourcesOnNavigate?: boolean;
@@ -470,7 +480,7 @@ export namespace Calendar {
         resourceExpand?: (info: ResourceExpandInfo) => void;
         resources?: ResourceInput[] | ResourceSource | ResourceSourceFunc | ResourceSourceFuncPromise;
         resourcesInitiallyExpanded?: boolean;
-        resourceLabelContent?: Content | ((info: ResourceLabelInfo) => Content);
+        resourceLabelContent?: Content | ((info: ResourceLabelInfo) => Content | ContentFunction);
         resourceLabelDidMount?: (info: ResourceDidMountInfo) => void;
         select?: (info: SelectInfo) => void;
         selectable?: boolean;
@@ -498,7 +508,7 @@ export namespace Calendar {
         view?: string;
         viewDidMount?: (info: { view: View }) => void;
         views?: Record<string, ViewOptions>;
-        weekNumberContent?: Content | ((arg: WeekNumberContentArg) => Content);
+        weekNumberContent?: Content | ((arg: WeekNumberContentArg) => Content | ContentFunction);
         weekNumbers?: boolean;
     }
 }

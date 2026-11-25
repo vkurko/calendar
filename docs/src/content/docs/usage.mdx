@@ -1,0 +1,522 @@
+---
+title: "Usage"
+description: "How to install EventCalendar and create a calendar in plain JavaScript, Svelte, React, Vue, Angular or via the standalone CDN bundle."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Pick the flavor you are working with — the choice is remembered across all pages of this documentation.
+
+## Installation
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+Install the EventCalendar `core` package:
+
+```bash
+npm install --save-dev @event-calendar/core
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+Install the EventCalendar `core` package:
+
+```bash
+npm install --save-dev @event-calendar/core
+```
+
+</TabItem>
+<TabItem label="React">
+
+Install the EventCalendar `react` package:
+
+```bash
+npm install --save-dev @event-calendar/react
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+Install the EventCalendar `vue` package:
+
+```bash
+npm install --save-dev @event-calendar/vue
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+Install the EventCalendar `angular` package:
+
+```bash
+npm install --save-dev @event-calendar/angular
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+No installation required — the bundle is served from a CDN. Include the following lines in the `<head>` section of your page:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+```
+
+:::note
+The file paths contain an indication of a specific version of the library. You can remove this indication, then the latest version will be loaded:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/dist/event-calendar.min.js"></script>
+```
+
+But it is recommended to always specify the version and explicitly update it if necessary, in order to avoid unpredictable problems when a new version of the library is released.
+:::
+
+</TabItem>
+</Tabs>
+
+## Creating a calendar
+
+The package provides plugins for various views. You must use at least one plugin that provides a view. The following plugins are currently available:
+
+* `DayGrid`
+* `List`
+* `ResourceTimeline`
+* `ResourceTimeGrid`
+* `TimeGrid`
+* `Interaction` (doesn't provide a view)
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+Use the `createCalendar` and `destroyCalendar` functions:
+
+```js
+import {createCalendar, destroyCalendar, TimeGrid} from '@event-calendar/core';
+// Import CSS if your build tool supports it
+import '@event-calendar/core/index.css';
+
+let ec = createCalendar(
+    // HTML element the calendar will be mounted to
+    document.getElementById('ec'),
+    // Array of plugins
+    [TimeGrid],
+    // Options object
+    {
+        view: 'timeGridWeek',
+        events: [
+            // your list of events
+        ]
+    }
+);
+
+// If you later need to destroy the calendar then use
+destroyCalendar(ec);
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+Use the `Calendar` component in your Svelte 5 component:
+
+```svelte
+<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let options = $state({
+        view: 'timeGridWeek',
+        events: [
+            // your list of events
+        ]
+    });
+</script>
+
+<Calendar plugins={[TimeGrid]} {options} />
+```
+
+The calendar is destroyed gracefully when the component containing it is destroyed.
+
+</TabItem>
+<TabItem label="React">
+
+Use the `EventCalendar` component, all [options](../options/) are passed as props:
+
+```jsx
+import {useState} from 'react';
+import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid];
+
+export default function App() {
+    const [events, setEvents] = useState([
+        // your list of events
+    ]);
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            view="timeGridWeek"
+            events={events}
+            eventClick={({event}) => console.log(event.id)}
+        />
+    );
+}
+```
+
+The `className`, `style` and `id` props are set on the element that wraps the calendar. The calendar is destroyed gracefully when the component containing it is destroyed.
+
+</TabItem>
+<TabItem label="Vue">
+
+Use the `EventCalendar` component, all [options](../options/) are passed as props, and the callbacks can also be used as event listeners:
+
+```vue
+<script setup>
+import {ref} from 'vue';
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid];
+const events = ref([
+    // your list of events
+]);
+</script>
+
+<template>
+    <EventCalendar
+        :plugins="plugins"
+        view="timeGridWeek"
+        :events="events"
+        @event-click="({event}) => console.log(event.id)"
+    />
+</template>
+```
+
+The `class`, `style` and `id` attributes are set on the element that wraps the calendar. The calendar is destroyed gracefully when the component containing it is destroyed.
+
+</TabItem>
+<TabItem label="Angular">
+
+Use the `EventCalendar` component, all [options](../options/) are passed as one object:
+
+```ts
+import {Component, signal} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, type Calendar} from '@event-calendar/angular';
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options()"/>`
+})
+export class App {
+    plugins = [TimeGrid];
+    options = signal<Calendar.Options>({
+        view: 'timeGridWeek',
+        events: [
+            // your list of events
+        ]
+    });
+}
+```
+
+And import the styles in the global stylesheet of your application:
+
+```css
+@import '@event-calendar/angular/index.css';
+```
+
+The calendar is destroyed gracefully when the component containing it is destroyed.
+
+</TabItem>
+<TabItem label="CDN">
+
+The bundle contains a version of the calendar that includes all plugins and is prepared for use in the browser via the `<script>` tag. Initialize the calendar like this:
+
+```js
+let ec = EventCalendar.create(document.getElementById('ec'), {
+    view: 'timeGridWeek',
+    events: [
+        // your list of events
+    ]
+});
+
+// If you later need to destroy the calendar then use
+EventCalendar.destroy(ec);
+```
+
+</TabItem>
+</Tabs>
+
+## Modifying options after initialization
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+Use the [setOption](../methods/setoption/) method, or the [setOptions](../methods/setoptions/) method to set several options at once:
+
+```js
+ec.setOption('slotDuration', '01:00');
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+Simply update the original `options` object:
+
+```svelte
+<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let options = $state({
+        view: 'timeGridWeek'
+    });
+
+    function updateOptions() {
+        options.slotDuration = '01:00';
+    }
+</script>
+
+<button onclick={updateOptions}>Change slot duration</button>
+<Calendar plugins={[TimeGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+Simply change the props, the calendar is updated when they change:
+
+```jsx
+const [slotDuration, setSlotDuration] = useState('00:30');
+
+<button onClick={() => setSlotDuration('01:00')}>Change slot duration</button>
+<EventCalendar plugins={plugins} view="timeGridWeek" slotDuration={slotDuration} />
+```
+
+Objects, arrays and callbacks can be written right in JSX, there is no need for `useMemo` and `useCallback`.
+
+</TabItem>
+<TabItem label="Vue">
+
+Simply change the props, the calendar is updated when they change, including the changes inside reactive objects and arrays, such as `events.value.push(event)`:
+
+```vue
+<script setup>
+import {ref} from 'vue';
+
+const slotDuration = ref('00:30');
+</script>
+
+<template>
+    <button @click="slotDuration = '01:00'">Change slot duration</button>
+    <EventCalendar :plugins="plugins" view="timeGridWeek" :slot-duration="slotDuration" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+Pass a new object, the calendar is updated with the options that are different in it:
+
+```ts
+updateOptions() {
+    this.options.update(options => ({...options, slotDuration: '01:00'}));
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+Use the [setOption](../methods/setoption/) method, or the [setOptions](../methods/setoptions/) method to set several options at once:
+
+```js
+ec.setOption('slotDuration', '01:00');
+```
+
+</TabItem>
+</Tabs>
+
+## Rendering content
+
+The content of the events and of some other parts of the calendar can be replaced with your own. These are the options that define it:
+
+* [allDayContent](../options/alldaycontent/)
+* [dayCellContent](../options/daycellcontent/)
+* [eventContent](../options/eventcontent/)
+* [moreLinkContent](../options/morelinkcontent/)
+* [noEventsContent](../options/noeventscontent/)
+* [resourceLabelContent](../options/resourcelabelcontent/)
+* [weekNumberContent](../options/weeknumbercontent/)
+* the `content` property of [customButtons](../options/custombuttons/)
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+Return the content from a function. It can be text, HTML, DOM nodes, or a function that renders into the element by itself, see [Content](../content/):
+
+```js
+let options = {
+    eventContent: ({event, timeText}) => ({html: `<b>${timeText}</b> ${event.title}`})
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+Pass a snippet under the name of the option:
+
+```svelte
+<Calendar plugins={[DayGrid]} {options}>
+    {#snippet eventContent({event, timeText})}
+        <b>{timeText}</b> {event.title}
+    {/snippet}
+    {#snippet customButtonMyFilter()}
+        <input bind:value={query}>
+    {/snippet}
+</Calendar>
+```
+
+A toolbar item is rendered by the snippet named `customButton` followed by the name of the item with the first letter capitalized. If both a snippet and an option with the same name are given, the snippet takes precedence.
+
+</TabItem>
+<TabItem label="React">
+
+Pass JSX or a function that returns JSX:
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    eventContent={({event, timeText}) => <EventBody event={event} time={timeText}/>}
+    noEventsContent={<i>No events</i>}
+    headerToolbar={{start: 'title', center: '', end: 'myFilter today prev,next'}}
+    customButtons={{myFilter: {content: <input value={query} onChange={e => setQuery(e.target.value)}/>}}}
+/>
+```
+
+If the function returns `null` or `undefined`, the default content is shown.
+
+</TabItem>
+<TabItem label="Vue">
+
+Use a slot with the name of the option:
+
+```vue
+<EventCalendar :plugins="plugins" :header-toolbar="{start: 'title', center: '', end: 'myFilter today prev,next'}">
+    <template #eventContent="{event, timeText}">
+        <EventBody :event="event" :time="timeText"/>
+    </template>
+    <template #customButtonMyFilter>
+        <input v-model="query">
+    </template>
+</EventCalendar>
+```
+
+A toolbar item is rendered by the slot named `customButton` followed by the name of the item with the first letter capitalized.
+
+</TabItem>
+<TabItem label="Angular">
+
+Use a template with the `ecContent` directive and the name of the option:
+
+```html
+<event-calendar [plugins]="plugins" [options]="options()">
+    <ng-template ecContent="eventContent" let-event="event" let-timeText="timeText">
+        <app-event-body [event]="event" [time]="timeText"/>
+    </ng-template>
+    <ng-template ecContent="customButtonMyFilter">
+        <input [(ngModel)]="query">
+    </ng-template>
+</event-calendar>
+```
+
+A toolbar item is rendered by the template named `customButton` followed by the name of the item with the first letter capitalized.
+
+</TabItem>
+<TabItem label="CDN">
+
+Return the content from a function. It can be text, HTML, DOM nodes, or a function that renders into the element by itself, see [Content](../content/):
+
+```js
+let options = {
+    eventContent: ({event, timeText}) => ({html: `<b>${timeText}</b> ${event.title}`})
+};
+```
+
+</TabItem>
+</Tabs>
+
+What the content receives is described on the page of each option.
+
+## Calling methods
+
+The [methods](../methods/) are called on the calendar instance. This is how you get it:
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let ec = createCalendar(document.getElementById('ec'), [TimeGrid], options);
+
+ec.next();
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    let ec = $state();
+</script>
+
+<Calendar bind:this={ec} {plugins} {options} />
+<button onclick={() => ec.next()}>Next</button>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+const calendar = useRef(null);
+
+<EventCalendar ref={calendar} plugins={plugins} />
+<button onClick={() => calendar.current.next()}>Next</button>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {useTemplateRef} from 'vue';
+
+const calendar = useTemplateRef('calendar');
+</script>
+
+<template>
+    <EventCalendar ref="calendar" :plugins="plugins" />
+    <button @click="calendar.next()">Next</button>
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar #calendar [plugins]="plugins" [options]="options()" />
+<button (click)="calendar.next()">Next</button>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let ec = EventCalendar.create(document.getElementById('ec'), options);
+
+ec.next();
+```
+
+</TabItem>
+</Tabs>

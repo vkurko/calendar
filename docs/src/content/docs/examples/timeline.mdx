@@ -1,0 +1,185 @@
+---
+title: "Resource timeline"
+description: "Resources as rows and time running horizontally. Overlapping events are stacked and the rows grow to fit them."
+sidebar:
+  order: 7
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+Resources as rows and time running horizontally. Overlapping events are stacked and the rows grow to fit them.
+
+<Example client:only="svelte" slug="timeline" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, ResourceTimeline} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [ResourceTimeline], {
+    view: 'resourceTimelineWeek',
+    slotMinTime: '08:00',
+    slotMaxTime: '20:00',
+    slotDuration: '01:00',
+    slotWidth: 72,
+    resources,
+    events
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, ResourceTimeline} from '@event-calendar/core';
+
+    let resources = [/* your resources */];
+    let events = [/* your events */];
+    let options = $state({
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events
+    });
+</script>
+
+<Calendar plugins={[ResourceTimeline]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, ResourceTimeline} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [ResourceTimeline];
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, ResourceTimeline} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [ResourceTimeline];
+const resources = [/* your resources */];
+const events = [/* your events */];
+const options = {
+    view: 'resourceTimelineWeek',
+    slotMinTime: '08:00',
+    slotMaxTime: '20:00',
+    slotDuration: '01:00',
+    slotWidth: 72,
+    resources,
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, ResourceTimeline, type Calendar} from '@event-calendar/angular';
+
+const resources: Calendar.ResourceInput[] = [/* your resources */];
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [ResourceTimeline];
+    options: Calendar.Options = {
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const resources = [/* your resources */];
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [resources](../../options/resources/)
+- [slotDuration](../../options/slotduration/)
+- [slotMaxTime](../../options/slotmaxtime/)
+- [slotMinTime](../../options/slotmintime/)
+- [slotWidth](../../options/slotwidth/)
+- [view](../../options/view/)

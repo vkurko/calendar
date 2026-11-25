@@ -1,0 +1,211 @@
+---
+title: "Drag between resources"
+description: "On the timeline an event can be moved to another resource as well as to another time."
+sidebar:
+  order: 18
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+On the timeline an event can be moved to another resource as well as to another time.
+
+<Example client:only="svelte" slug="drag-between-resources" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, ResourceTimeline, Interaction} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [ResourceTimeline, Interaction], {
+    view: 'resourceTimelineWeek',
+    editable: true,
+    slotMinTime: '08:00',
+    slotMaxTime: '20:00',
+    slotDuration: '01:00',
+    slotWidth: 72,
+    resources,
+    events,
+    eventDrop: ({event, newResource}) => {
+        console.log('eventDrop', event.title, newResource ? '→ ' + newResource.title : '');
+    }
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, ResourceTimeline, Interaction} from '@event-calendar/core';
+
+    let resources = [/* your resources */];
+    let events = [/* your events */];
+    let options = $state({
+        view: 'resourceTimelineWeek',
+        editable: true,
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events,
+        eventDrop: ({event, newResource}) => {
+            console.log('eventDrop', event.title, newResource ? '→ ' + newResource.title : '');
+        }
+    });
+</script>
+
+<Calendar plugins={[ResourceTimeline, Interaction]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, ResourceTimeline, Interaction} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [ResourceTimeline, Interaction];
+const resources = [/* your resources */];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'resourceTimelineWeek',
+        editable: true,
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events,
+        eventDrop: ({event, newResource}) => {
+            console.log('eventDrop', event.title, newResource ? '→ ' + newResource.title : '');
+        }
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, ResourceTimeline, Interaction} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [ResourceTimeline, Interaction];
+const resources = [/* your resources */];
+const events = [/* your events */];
+const options = {
+    view: 'resourceTimelineWeek',
+    editable: true,
+    slotMinTime: '08:00',
+    slotMaxTime: '20:00',
+    slotDuration: '01:00',
+    slotWidth: 72,
+    resources,
+    events,
+    eventDrop: ({event, newResource}) => {
+        console.log('eventDrop', event.title, newResource ? '→ ' + newResource.title : '');
+    }
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, ResourceTimeline, Interaction, type Calendar} from '@event-calendar/angular';
+
+const resources: Calendar.ResourceInput[] = [/* your resources */];
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [ResourceTimeline, Interaction];
+    options: Calendar.Options = {
+        view: 'resourceTimelineWeek',
+        editable: true,
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events,
+        eventDrop: ({event, newResource}) => {
+            console.log('eventDrop', event.title, newResource ? '→ ' + newResource.title : '');
+        }
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const resources = [/* your resources */];
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'resourceTimelineWeek',
+        editable: true,
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        resources,
+        events,
+        eventDrop: ({event, newResource}) => {
+            console.log('eventDrop', event.title, newResource ? '→ ' + newResource.title : '');
+        }
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [editable](../../options/editable/)
+- [eventDrop](../../options/eventdrop/)
+- [events](../../options/events/)
+- [resources](../../options/resources/)
+- [slotDuration](../../options/slotduration/)
+- [slotMaxTime](../../options/slotmaxtime/)
+- [slotMinTime](../../options/slotmintime/)
+- [slotWidth](../../options/slotwidth/)
+- [view](../../options/view/)

@@ -184,8 +184,10 @@ export function optionsState(plugins, userOptions) {
                 setters[key] ??= [];
                 setters[key].push(
                     specialOptions.includes(key)
-                        ? value => opts[key] = isFunction(value) ? value(defOpts[key]) : value
-                        : value => opts[key] = value
+                        ? (value, reset) => opts[key] = reset
+                            ? copy(defOpts[key])
+                            : isFunction(value) ? value(defOpts[key]) : value
+                        : (value, reset) => opts[key] = reset ? copy(defOpts[key]) : value
                 );
             } else {
                 delete opts[key];
@@ -201,21 +203,21 @@ export function optionsState(plugins, userOptions) {
         options,
         function setOption(key, value, parsed = true) {
             if (hasOwn(options, key)) {
-                if (!parsed) {
-                    if (key in parsers) {
-                        value = parsers[key](value);
-                    } else if (isPlainObject(value)) {
-                        value = {...value};
-                    } else if (isArray(value)) {
-                        value = [...value];
-                    }
+                // Without a value the option is reset to its default, which can be different for each view
+                let reset = !parsed && value === undefined;
+                if (!parsed && !reset) {
+                    value = key in parsers ? parsers[key](value) : copy(value);
                 }
                 // Set value for all views
-                setters[key]?.forEach(set => set(value));
-                // Special options are stored expanded, as they are in the current view options
-                options[key] = specialOptions.includes(key) && isFunction(value)
-                    ? viewOptions[options.view][key]
-                    : value;
+                setters[key]?.forEach(set => set(value, reset));
+                if (reset) {
+                    options[key] = key === 'view' ? defOptions.view : viewOptions[options.view][key];
+                } else {
+                    // Special options are stored expanded, as they are in the current view options
+                    options[key] = specialOptions.includes(key) && isFunction(value)
+                        ? viewOptions[options.view][key]
+                        : value;
+                }
             }
         },
         function setViewOptions(view) {
@@ -223,6 +225,10 @@ export function optionsState(plugins, userOptions) {
             return viewComponents[view];
         }
     ];
+}
+
+function copy(value) {
+    return isPlainObject(value) ? {...value} : isArray(value) ? [...value] : value;
 }
 
 function parseOptions(opts, parsers) {

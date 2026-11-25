@@ -1,5 +1,15 @@
 # EventCalendar changelog
 
+## 5.22.0
+November 25, 2026
+* Added React, Vue and Angular components
+* Added the ability to render content with a function that receives the element
+* Added `setOptions()` method to set several options at once
+* Changed `setOption()` to reset the option to its default value when `undefined` is passed
+* Improved performance of the initial rendering
+* Changed the highlight of today in the dark theme to a neutral color
+* Fixed `filterEventsWithResources` failing when resources are loaded from a URL or a function
+
 ## 5.21.2
 November 23, 2026
 * Fixed calendar failing to mount with Svelte 5.59 ([698](https://github.com/vkurko/calendar/issues/698))

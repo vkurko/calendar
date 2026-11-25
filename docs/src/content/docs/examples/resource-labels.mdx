@@ -1,0 +1,279 @@
+---
+title: "Your own resource labels"
+description: "People as resources: a photo, a name and a role in the label. The data comes from the extendedProps of each resource."
+sidebar:
+  order: 24
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+People as resources: a photo, a name and a role in the label. The data comes from the extendedProps of each resource.
+
+<Example client:only="svelte" slug="resource-labels" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, ResourceTimeline} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const people = [/* your resources */];
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [ResourceTimeline], {
+    view: 'resourceTimelineWeek',
+    slotMinTime: '08:00',
+    slotMaxTime: '20:00',
+    slotDuration: '01:00',
+    slotWidth: 72,
+    // Each resource has a role and a photo in its extendedProps
+    resources: people,
+    events,
+    resourceLabelContent: ({resource}) => ({
+        html: `
+            <span class="person">
+                <img src="${resource.extendedProps.photo}" alt="">
+                <span>
+                    <b>${resource.title}</b>
+                    <small>${resource.extendedProps.role}</small>
+                </span>
+            </span>
+        `
+    })
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, ResourceTimeline} from '@event-calendar/core';
+
+    let people = [/* your resources */];
+    let events = [/* your events */];
+    let options = $state({
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        events
+    });
+</script>
+
+<Calendar plugins={[ResourceTimeline]} {options}>
+    {#snippet resourceLabelContent({resource})}
+        <span class="person">
+            <img src={resource.extendedProps.photo} alt="">
+            <span>
+                <b>{resource.title}</b>
+                <small>{resource.extendedProps.role}</small>
+            </span>
+        </span>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, ResourceTimeline} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [ResourceTimeline];
+const people = [/* your resources */];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        events
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+            resourceLabelContent={({resource}) => (
+                <span className="person">
+                    <img src={resource.extendedProps.photo} alt=""/>
+                    <span>
+                        <b>{resource.title}</b>
+                        <small>{resource.extendedProps.role}</small>
+                    </span>
+                </span>
+            )}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, ResourceTimeline} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [ResourceTimeline];
+const people = [/* your resources */];
+const events = [/* your events */];
+const options = {
+    view: 'resourceTimelineWeek',
+    slotMinTime: '08:00',
+    slotMaxTime: '20:00',
+    slotDuration: '01:00',
+    slotWidth: 72,
+    // Each resource has a role and a photo in its extendedProps
+    resources: people,
+    events
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options">
+        <template #resourceLabelContent="{resource}">
+            <span class="person">
+                <img :src="resource.extendedProps.photo" alt="">
+                <span>
+                    <b>{{ resource.title }}</b>
+                    <small>{{ resource.extendedProps.role }}</small>
+                </span>
+            </span>
+        </template>
+    </EventCalendar>
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, ResourceTimeline, type Calendar} from '@event-calendar/angular';
+
+const people: Calendar.ResourceInput[] = [/* your resources */];
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `
+        <event-calendar [plugins]="plugins" [options]="options">
+            <ng-template ecContent="resourceLabelContent" let-resource="resource">
+                <span class="person">
+                    <img [src]="resource.extendedProps.photo" alt="">
+                    <span>
+                        <b>{{ resource.title }}</b>
+                        <small>{{ resource.extendedProps.role }}</small>
+                    </span>
+                </span>
+            </ng-template>
+        </event-calendar>`
+})
+export class App {
+    plugins = [ResourceTimeline];
+    options: Calendar.Options = {
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        events
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const people = [/* your resources */];
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'resourceTimelineWeek',
+        slotMinTime: '08:00',
+        slotMaxTime: '20:00',
+        slotDuration: '01:00',
+        slotWidth: 72,
+        // Each resource has a role and a photo in its extendedProps
+        resources: people,
+        events,
+        resourceLabelContent: ({resource}) => ({
+            html: `
+                <span class="person">
+                    <img src="${resource.extendedProps.photo}" alt="">
+                    <span>
+                        <b>${resource.title}</b>
+                        <small>${resource.extendedProps.role}</small>
+                    </span>
+                </span>
+            `
+        })
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Styles
+
+```css
+.person {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    text-align: left;
+}
+.person img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+.person b,
+.person small {
+    display: block;
+    white-space: nowrap;
+}
+.person small {
+    color: #64748b;
+}
+```
+
+## Options used
+
+- [events](../../options/events/)
+- [resourceLabelContent](../../options/resourcelabelcontent/)
+- [resources](../../options/resources/)
+- [slotDuration](../../options/slotduration/)
+- [slotMaxTime](../../options/slotmaxtime/)
+- [slotMinTime](../../options/slotmintime/)
+- [slotWidth](../../options/slotwidth/)
+- [view](../../options/view/)

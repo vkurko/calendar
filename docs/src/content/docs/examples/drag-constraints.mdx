@@ -1,0 +1,186 @@
+---
+title: "Drag constraints"
+description: "The events cannot be dropped or resized into the weekend, and a selection cannot start there."
+sidebar:
+  order: 17
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+The events cannot be dropped or resized into the weekend, and a selection cannot start there.
+
+<Example client:only="svelte" slug="drag-constraints" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid, Interaction} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid, Interaction], {
+    view: 'timeGridWeek',
+    editable: true,
+    selectable: true,
+    scrollTime: '08:00',
+    events,
+    dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay()),
+    resizeConstraint: ({event}) => ![0, 6].includes(event.end.getDay()),
+    selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid, Interaction} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay()),
+        resizeConstraint: ({event}) => ![0, 6].includes(event.end.getDay()),
+        selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+    });
+</script>
+
+<Calendar plugins={[TimeGrid, Interaction]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, TimeGrid, Interaction} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid, Interaction];
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay()),
+        resizeConstraint: ({event}) => ![0, 6].includes(event.end.getDay()),
+        selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, TimeGrid, Interaction} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid, Interaction];
+const events = [/* your events */];
+const options = {
+    view: 'timeGridWeek',
+    editable: true,
+    selectable: true,
+    scrollTime: '08:00',
+    events,
+    dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay()),
+    resizeConstraint: ({event}) => ![0, 6].includes(event.end.getDay()),
+    selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, Interaction, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [TimeGrid, Interaction];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay()),
+        resizeConstraint: ({event}) => ![0, 6].includes(event.end.getDay()),
+        selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        dragConstraint: ({event}) => ![0, 6].includes(event.start.getDay()),
+        resizeConstraint: ({event}) => ![0, 6].includes(event.end.getDay()),
+        selectConstraint: ({start}) => ![0, 6].includes(start.getDay())
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [dragConstraint](../../options/dragconstraint/)
+- [editable](../../options/editable/)
+- [events](../../options/events/)
+- [resizeConstraint](../../options/resizeconstraint/)
+- [scrollTime](../../options/scrolltime/)
+- [selectConstraint](../../options/selectconstraint/)
+- [selectable](../../options/selectable/)
+- [view](../../options/view/)

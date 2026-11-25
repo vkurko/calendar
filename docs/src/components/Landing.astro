@@ -1,0 +1,189 @@
+---
+import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
+import HeroCalendar from './HeroCalendar.svelte';
+import Example from './Example.svelte';
+import { examples } from '../examples/index.mjs';
+
+// Links work wherever the site is deployed and whether or not the address ends with a slash
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const featured = ['month-view', 'timeline-month', 'resource-week', 'select-to-create', 'background-events', 'list-view']
+    .map(slug => examples.find(example => example.slug === slug));
+const short = text => text.replace(/`/g, '').split(/(?<=\.)\s/)[0];
+
+const usage = {
+    'Vanilla JS': ['js', `import {createCalendar, TimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+createCalendar(document.getElementById('ec'), [TimeGrid], {
+    view: 'timeGridWeek',
+    events
+});`],
+    'Svelte': ['svelte', `<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let options = $state({view: 'timeGridWeek', events});
+</script>
+
+<Calendar plugins={[TimeGrid]} {options}>
+    {#snippet eventContent({event, timeText})}
+        <Avatar user={event.extendedProps.user}/> {event.title}
+    {/snippet}
+</Calendar>`],
+    'React': ['jsx', `import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+<EventCalendar
+    plugins={[TimeGrid]}
+    view="timeGridWeek"
+    events={events}
+    eventClick={({event}) => open(event)}
+    eventContent={({event}) => <><Avatar user={event.extendedProps.user}/> {event.title}</>}
+/>`],
+    'Vue': ['vue', `<script setup>
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+</script>
+
+<template>
+    <EventCalendar :plugins="[TimeGrid]" view="timeGridWeek" :events="events" @event-click="open">
+        <template #eventContent="{event}">
+            <Avatar :user="event.extendedProps.user"/> {{ event.title }}
+        </template>
+    </EventCalendar>
+</template>`],
+    'Angular': ['html', `<event-calendar [plugins]="plugins" [options]="options()">
+    <ng-template ecContent="eventContent" let-event="event">
+        <app-avatar [user]="event.extendedProps.user"/> {{ event.title }}
+    </ng-template>
+</event-calendar>`],
+    'CDN': ['html', `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build/dist/event-calendar.min.js"></script>
+
+<script>
+    EventCalendar.create(document.getElementById('ec'), {view: 'timeGridWeek', events});
+</script>`],
+};
+---
+
+<div class="landing not-content">
+    <section class="landing-hero">
+        <a class="landing-pill" href={base + 'usage/'}>
+            <b>New in 5.22</b> Components for React, Vue and Angular <span aria-hidden="true">→</span>
+        </a>
+        <h1>The event calendar<br/>for <span class="landing-gradient">every stack</span></h1>
+        <p class="landing-lead">
+            A full-sized drag & drop calendar with resource and timeline views.
+            One small core, and native components for React, Vue, Angular and Svelte.
+        </p>
+        <div class="landing-actions">
+            <a class="landing-button primary" href={base + 'usage/'}>Get started</a>
+            <a class="landing-button" href={base + 'examples/'}>{examples.length} live examples</a>
+            <a class="landing-button ghost" href="https://github.com/vkurko/calendar">GitHub</a>
+        </div>
+        <ul class="landing-stack" aria-label="Works with">
+            <li>JavaScript</li><li>Svelte</li><li>React</li><li>Vue</li><li>Angular</li>
+        </ul>
+    </section>
+
+    <section class="landing-stage">
+        <div class="landing-window">
+            <div class="landing-window-bar"><i></i><i></i><i></i><span>Try it: drag, resize, select, switch views</span></div>
+            <div class="landing-window-body">
+                <HeroCalendar client:only="svelte" />
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-stats">
+        <div><b>39 kB</b><span>compressed, with all views</span></div>
+        <div><b>5</b><span>kinds of views</span></div>
+        <div><b>100+</b><span>options to tune it</span></div>
+        <div><b>0</b><span>dependencies in the bundle</span></div>
+        <div><b>MIT</b><span>free for any project</span></div>
+    </section>
+
+    <section class="landing-showcase">
+        <span class="landing-eyebrow">Your design</span>
+        <h2>Make it look like your product</h2>
+        <p>
+            The events and the resources are rendered by your own components. This team schedule is the same
+            calendar with cards for the events and people for the columns.
+        </p>
+        <div class="landing-showcase-demo">
+            <Example client:visible slug="custom-event-content" />
+        </div>
+        <a href={base + 'examples/custom-event-content/'}>See the code for your framework →</a>
+    </section>
+
+    <section class="landing-feature">
+        <div class="landing-feature-text">
+            <span class="landing-eyebrow">Interaction</span>
+            <h2>Drag, drop, resize and select</h2>
+            <p>
+                Move events to another time, stretch them, select a range to create a new one —
+                with the mouse or with a finger. Every action comes with a callback, and a drop or a resize
+                can be reverted.
+            </p>
+            <a href={base + 'examples/drag-resize-select/'}>See the code →</a>
+        </div>
+        <div class="landing-feature-demo">
+            <Example client:visible slug="drag-resize-select" height="420px" />
+        </div>
+    </section>
+
+    <section class="landing-feature reverse">
+        <div class="landing-feature-text">
+            <span class="landing-eyebrow">Resources</span>
+            <h2>Rooms, people, machines — on a timeline</h2>
+            <p>
+                Show resources as columns of a day or as rows of a timeline, nest them in groups,
+                and drag events from one resource to another. Hundreds of resources stay fast.
+            </p>
+            <a href={base + 'examples/drag-between-resources/'}>See the code →</a>
+        </div>
+        <div class="landing-feature-demo">
+            <Example client:visible slug="drag-between-resources" height="330px" />
+        </div>
+    </section>
+
+    <section class="landing-code">
+        <div class="landing-feature-text">
+            <span class="landing-eyebrow">Your framework</span>
+            <h2>Written the way you write everything else</h2>
+            <p>
+                Props and JSX in React, event listeners and slots in Vue, templates in Angular, snippets in
+                Svelte: the content of the calendar is rendered by your own components. Pick a flavor once —
+                the whole documentation follows.
+            </p>
+        </div>
+        <div class="landing-code-tabs sl-markdown-content">
+            <Tabs syncKey="framework">
+                {Object.entries(usage).map(([label, [lang, code]]) => (
+                    <TabItem label={label}><Code code={code} lang={lang} /></TabItem>
+                ))}
+            </Tabs>
+        </div>
+    </section>
+
+    <section class="landing-examples">
+        <span class="landing-eyebrow">Examples</span>
+        <h2>Start from something that already works</h2>
+        <div class="example-grid">
+            {featured.map(example => (
+                <a class="example-card" href={base + 'examples/' + example.slug + '/'}>
+                    <div class="example-card-preview"><Example client:visible slug={example.slug} mini height="204px" /></div>
+                    <div class="example-card-text"><strong>{example.title}</strong><span>{short(example.description)}</span></div>
+                </a>
+            ))}
+        </div>
+        <a class="landing-button" href={base + 'examples/'}>All {examples.length} examples</a>
+    </section>
+
+    <section class="landing-final">
+        <h2>Put a calendar on your page in five minutes</h2>
+        <div class="landing-actions">
+            <a class="landing-button primary" href={base + 'usage/'}>Get started</a>
+            <a class="landing-button" href={base + 'options/'}>Browse the options</a>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,86 @@
+---
+title: "resourceLabelContent"
+description: "The content of a resource label, in place of the title of the resource."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_resourcelabelcontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="resourceLabelContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    resourceLabelContent: ({resource}) => ({html: `<b>${resource.title}</b><br><small>id ${resource.id}</small>`})
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet resourceLabelContent({resource})}
+        <b>{resource.title}</b><br><small>id {resource.id}</small>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    resourceLabelContent={({resource}) => <><b>{resource.title}</b><br/><small>id {resource.id}</small></>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #resourceLabelContent="{resource}">
+        <b>{{ resource.title }}</b><br><small>id {{ resource.id }}</small>
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="resourceLabelContent" let-resource="resource">
+        <b>{{ resource.title }}</b><br><small>id {{ resource.id }}</small>
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    resourceLabelContent: ({resource}) => ({html: `<b>${resource.title}</b><br><small>id ${resource.id}</small>`})
+};
+```
+
+</TabItem>
+</Tabs>
+
+## Live examples
+
+- [Your own events and resources](../../examples/custom-event-content/)
+- [Your own resource labels](../../examples/resource-labels/)

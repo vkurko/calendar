@@ -1,0 +1,19 @@
+---
+title: "eventSources"
+description: "The sources the calendar loads its events from: URLs or functions. The events are requested for the period the calendar shows, and again when it moves…"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventsources.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventSources" height="440px" />
+
+## Live examples
+
+- [Loading events](../../examples/event-sources/)

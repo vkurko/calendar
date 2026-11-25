@@ -23,6 +23,9 @@ export function switchView(mainState) {
 export function loadEvents(mainState, loadingInvoker) {
     // handleTimeZoneChange() converts the events that the calendar is created with
     let convertedEvents = untrack(() => mainState.options.events);
+    // The events the calendar is created with are already set, setting them again would render each event twice
+    let applied = convertedEvents;
+    let appliedOffset = untrack(() => mainState.offset);
     return () => {
         // Dependencies
         let {activeRange, fetchedRange: {events: fetchedRange}, offset, viewDates,
@@ -39,7 +42,14 @@ export function loadEvents(mainState, loadingInvoker) {
                 sources,
                 events,
                 input => createEvents(input, offset),
-                result => mainState.events = arrayProxy(result),
+                result => {
+                    // The same events have to be set again only when they are converted to another time zone
+                    if (result !== applied || offset !== appliedOffset) {
+                        applied = result;
+                        appliedOffset = offset;
+                        mainState.events = arrayProxy(result);
+                    }
+                },
                 timeZone,
                 activeRange,
                 fetchedRange,
@@ -53,6 +63,8 @@ export function loadEvents(mainState, loadingInvoker) {
 }
 
 export function loadResources(mainState, loadingInvoker) {
+    // The resources the calendar is created with are already set
+    let applied = untrack(() => mainState.options.resources);
     return () => {
         // Dependencies
         let {activeRange, fetchedRange: {resources: fetchedRange}, viewDates,
@@ -63,7 +75,12 @@ export function loadResources(mainState, loadingInvoker) {
                 isArray(resources) ? [] : [resources],
                 resources,
                 createResources,
-                result => mainState.resources = arrayProxy(result),
+                result => {
+                    if (result !== applied) {
+                        applied = result;
+                        mainState.resources = arrayProxy(result);
+                    }
+                },
                 timeZone,
                 activeRange,
                 fetchedRange,

@@ -1,0 +1,89 @@
+---
+title: "dayCellContent"
+description: "The content of the day cells. In the dayGrid views it replaces the number of the day and in the list views the name of the day. In the other views the cells…"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_daycellcontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="dayCellContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    dayCellContent: ({date}) => ({
+        html: `<b>${date.getDate()}</b> <small>${date.toLocaleDateString('en', {weekday: 'short'})}</small>`
+    })
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet dayCellContent({date})}
+        <b>{date.getDate()}</b> <small>{date.toLocaleDateString('en', {weekday: 'short'})}</small>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    dayCellContent={({date}) => <><b>{date.getDate()}</b> <small>{date.toLocaleDateString('en', {weekday: 'short'})}</small></>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #dayCellContent="{date}">
+        <b>{{ date.getDate() }}</b> <small>{{ date.toLocaleDateString('en', {weekday: 'short'}) }}</small>
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="dayCellContent" let-date="date">
+        <b>{{ date.getDate() }}</b> <small>{{ date.toLocaleDateString('en', {weekday: 'short'}) }}</small>
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    dayCellContent: ({date}) => ({
+        html: `<b>${date.getDate()}</b> <small>${date.toLocaleDateString('en', {weekday: 'short'})}</small>`
+    })
+};
+```
+
+</TabItem>
+</Tabs>
+
+## Live examples
+
+- [Your own day cells](../../examples/day-cell-content/)

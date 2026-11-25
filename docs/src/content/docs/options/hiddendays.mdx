@@ -1,0 +1,19 @@
+---
+title: "hiddenDays"
+description: "The days of the week that are not shown: 0 is Sunday, 1 is Monday, and so on up to 6, Saturday."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_hiddendays.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="hiddenDays" height="440px" />
+
+## Live examples
+
+- [Working week](../../examples/business-hours/)

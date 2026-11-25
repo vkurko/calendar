@@ -1,0 +1,21 @@
+---
+title: "eventDrop"
+description: "Called when the user has dropped an event and the drop is accepted. The event is already changed at this moment. It is called even if the event is dropped…"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventdrop.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventDrop" height="440px" />
+
+## Live examples
+
+- [Drag, resize and select](../../examples/drag-resize-select/)
+- [Drag & drop](../../examples/drag-and-drop/)
+- [Drag between resources](../../examples/drag-between-resources/)

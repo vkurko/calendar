@@ -1,4 +1,7 @@
 [
+    "angular",
     "build",
-    "core"
+    "core",
+    "react",
+    "vue"
 ]

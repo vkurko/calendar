@@ -1,0 +1,23 @@
+---
+title: "editable"
+description: "Lets the user drag and resize the events, where the more specific options do not decide it."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_editable.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="editable" height="440px" />
+
+## Live examples
+
+- [Drag, resize and select](../../examples/drag-resize-select/)
+- [Drag & drop](../../examples/drag-and-drop/)
+- [Resizing](../../examples/resize/)
+- [Drag constraints](../../examples/drag-constraints/)
+- [Drag between resources](../../examples/drag-between-resources/)

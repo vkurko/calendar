@@ -1,0 +1,15 @@
+---
+title: "eventAllUpdated"
+description: "Called when the calendar has finished rendering the events after they change: when they are loaded, added, changed or removed, and when the view is switched."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventallupdated.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventAllUpdated" height="440px" />

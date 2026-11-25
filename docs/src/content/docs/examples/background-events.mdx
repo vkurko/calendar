@@ -1,0 +1,277 @@
+---
+title: "Background events"
+description: "Events with display: 'background' color the time itself: a lunch break, focus time, the hours that are taken. Regular events are shown over them."
+sidebar:
+  order: 26
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+Events with `display: 'background'` color the time itself: a lunch break, focus time, the hours that are taken. Regular events are shown over them.
+
+<Example client:only="svelte" slug="background-events" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+// The days of the current week, from Sunday
+const week = [0, 1, 2, 3, 4, 5, 6].map(weekday => addDays(today, weekday - today.getDay()));
+// The date at the given time of the day
+const time = (date, hhmm) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hhmm.split(':'));
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid], {
+    view: 'timeGridWeek',
+    scrollTime: '08:00',
+    events: [
+        // A lunch break on each working day
+        ...[1, 2, 3, 4, 5].map(weekday => ({
+            start: time(week[weekday], '12:00'), end: time(week[weekday], '13:00'),
+            display: 'background', backgroundColor: '#94a3b8'
+        })),
+        // Focus time, booked hours, maintenance and so on, each in its own color
+        {start: time(week[1], '08:00'), end: time(week[1], '11:00'), display: 'background', backgroundColor: '#22c55e'},
+        {start: time(week[2], '13:30'), end: time(week[2], '16:00'), display: 'background', backgroundColor: '#ef4444'},
+        {start: time(week[3], '08:00'), end: time(week[3], '10:30'), display: 'background', backgroundColor: '#eab308'},
+        {start: time(week[4], '13:30'), end: time(week[4], '17:00'), display: 'background', backgroundColor: '#8b5cf6'},
+        {start: time(week[5], '08:00'), end: time(week[5], '12:00'), display: 'background', backgroundColor: '#06b6d4'},
+        // A couple of regular events
+        {start: time(week[2], '09:00'), end: time(week[2], '10:30'), title: 'Sprint planning'},
+        {start: time(week[4], '09:30'), end: time(week[4], '11:00'), title: 'Code review'}
+    ]
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid} from '@event-calendar/core';
+
+    let today = new Date();
+    let addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+    // The days of the current week, from Sunday
+let week = [0, 1, 2, 3, 4, 5, 6].map(weekday => addDays(today, weekday - today.getDay()));
+    // The date at the given time of the day
+let time = (date, hhmm) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hhmm.split(':'));
+    let events = [/* your events */];
+    let options = $state({
+        view: 'timeGridWeek',
+        scrollTime: '08:00',
+        events: [
+            // A lunch break on each working day
+            ...[1, 2, 3, 4, 5].map(weekday => ({
+                start: time(week[weekday], '12:00'), end: time(week[weekday], '13:00'),
+                display: 'background', backgroundColor: '#94a3b8'
+            })),
+            // Focus time, booked hours, maintenance and so on, each in its own color
+            {start: time(week[1], '08:00'), end: time(week[1], '11:00'), display: 'background', backgroundColor: '#22c55e'},
+            {start: time(week[2], '13:30'), end: time(week[2], '16:00'), display: 'background', backgroundColor: '#ef4444'},
+            {start: time(week[3], '08:00'), end: time(week[3], '10:30'), display: 'background', backgroundColor: '#eab308'},
+            {start: time(week[4], '13:30'), end: time(week[4], '17:00'), display: 'background', backgroundColor: '#8b5cf6'},
+            {start: time(week[5], '08:00'), end: time(week[5], '12:00'), display: 'background', backgroundColor: '#06b6d4'},
+            // A couple of regular events
+            {start: time(week[2], '09:00'), end: time(week[2], '10:30'), title: 'Sprint planning'},
+            {start: time(week[4], '09:30'), end: time(week[4], '11:00'), title: 'Code review'}
+        ]
+    });
+</script>
+
+<Calendar plugins={[TimeGrid]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {EventCalendar, TimeGrid} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid];
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+// The days of the current week, from Sunday
+const week = [0, 1, 2, 3, 4, 5, 6].map(weekday => addDays(today, weekday - today.getDay()));
+// The date at the given time of the day
+const time = (date, hhmm) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hhmm.split(':'));
+const events = [/* your events */];
+
+export default function App() {
+    const options = {
+        view: 'timeGridWeek',
+        scrollTime: '08:00',
+        events: [
+            // A lunch break on each working day
+            ...[1, 2, 3, 4, 5].map(weekday => ({
+                start: time(week[weekday], '12:00'), end: time(week[weekday], '13:00'),
+                display: 'background', backgroundColor: '#94a3b8'
+            })),
+            // Focus time, booked hours, maintenance and so on, each in its own color
+            {start: time(week[1], '08:00'), end: time(week[1], '11:00'), display: 'background', backgroundColor: '#22c55e'},
+            {start: time(week[2], '13:30'), end: time(week[2], '16:00'), display: 'background', backgroundColor: '#ef4444'},
+            {start: time(week[3], '08:00'), end: time(week[3], '10:30'), display: 'background', backgroundColor: '#eab308'},
+            {start: time(week[4], '13:30'), end: time(week[4], '17:00'), display: 'background', backgroundColor: '#8b5cf6'},
+            {start: time(week[5], '08:00'), end: time(week[5], '12:00'), display: 'background', backgroundColor: '#06b6d4'},
+            // A couple of regular events
+            {start: time(week[2], '09:00'), end: time(week[2], '10:30'), title: 'Sprint planning'},
+            {start: time(week[4], '09:30'), end: time(week[4], '11:00'), title: 'Code review'}
+        ]
+    };
+
+    return (
+        <EventCalendar
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {EventCalendar, TimeGrid} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid];
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+// The days of the current week, from Sunday
+const week = [0, 1, 2, 3, 4, 5, 6].map(weekday => addDays(today, weekday - today.getDay()));
+// The date at the given time of the day
+const time = (date, hhmm) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hhmm.split(':'));
+const events = [/* your events */];
+const options = {
+    view: 'timeGridWeek',
+    scrollTime: '08:00',
+    events: [
+        // A lunch break on each working day
+        ...[1, 2, 3, 4, 5].map(weekday => ({
+            start: time(week[weekday], '12:00'), end: time(week[weekday], '13:00'),
+            display: 'background', backgroundColor: '#94a3b8'
+        })),
+        // Focus time, booked hours, maintenance and so on, each in its own color
+        {start: time(week[1], '08:00'), end: time(week[1], '11:00'), display: 'background', backgroundColor: '#22c55e'},
+        {start: time(week[2], '13:30'), end: time(week[2], '16:00'), display: 'background', backgroundColor: '#ef4444'},
+        {start: time(week[3], '08:00'), end: time(week[3], '10:30'), display: 'background', backgroundColor: '#eab308'},
+        {start: time(week[4], '13:30'), end: time(week[4], '17:00'), display: 'background', backgroundColor: '#8b5cf6'},
+        {start: time(week[5], '08:00'), end: time(week[5], '12:00'), display: 'background', backgroundColor: '#06b6d4'},
+        // A couple of regular events
+        {start: time(week[2], '09:00'), end: time(week[2], '10:30'), title: 'Sprint planning'},
+        {start: time(week[4], '09:30'), end: time(week[4], '11:00'), title: 'Code review'}
+    ]
+};
+</script>
+
+<template>
+    <EventCalendar :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, type Calendar} from '@event-calendar/angular';
+
+const today = new Date();
+const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+// The days of the current week, from Sunday
+const week = [0, 1, 2, 3, 4, 5, 6].map(weekday => addDays(today, weekday - today.getDay()));
+// The date at the given time of the day
+const time = (date, hhmm) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hhmm.split(':'));
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    plugins = [TimeGrid];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        scrollTime: '08:00',
+        events: [
+            // A lunch break on each working day
+            ...[1, 2, 3, 4, 5].map(weekday => ({
+                start: time(week[weekday], '12:00'), end: time(week[weekday], '13:00'),
+                display: 'background', backgroundColor: '#94a3b8'
+            })),
+            // Focus time, booked hours, maintenance and so on, each in its own color
+            {start: time(week[1], '08:00'), end: time(week[1], '11:00'), display: 'background', backgroundColor: '#22c55e'},
+            {start: time(week[2], '13:30'), end: time(week[2], '16:00'), display: 'background', backgroundColor: '#ef4444'},
+            {start: time(week[3], '08:00'), end: time(week[3], '10:30'), display: 'background', backgroundColor: '#eab308'},
+            {start: time(week[4], '13:30'), end: time(week[4], '17:00'), display: 'background', backgroundColor: '#8b5cf6'},
+            {start: time(week[5], '08:00'), end: time(week[5], '12:00'), display: 'background', backgroundColor: '#06b6d4'},
+            // A couple of regular events
+            {start: time(week[2], '09:00'), end: time(week[2], '10:30'), title: 'Sprint planning'},
+            {start: time(week[4], '09:30'), end: time(week[4], '11:00'), title: 'Code review'}
+        ]
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const today = new Date();
+    const addDays = (date, days) => new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+    // The days of the current week, from Sunday
+const week = [0, 1, 2, 3, 4, 5, 6].map(weekday => addDays(today, weekday - today.getDay()));
+    // The date at the given time of the day
+const time = (date, hhmm) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), ...hhmm.split(':'));
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        scrollTime: '08:00',
+        events: [
+            // A lunch break on each working day
+            ...[1, 2, 3, 4, 5].map(weekday => ({
+                start: time(week[weekday], '12:00'), end: time(week[weekday], '13:00'),
+                display: 'background', backgroundColor: '#94a3b8'
+            })),
+            // Focus time, booked hours, maintenance and so on, each in its own color
+            {start: time(week[1], '08:00'), end: time(week[1], '11:00'), display: 'background', backgroundColor: '#22c55e'},
+            {start: time(week[2], '13:30'), end: time(week[2], '16:00'), display: 'background', backgroundColor: '#ef4444'},
+            {start: time(week[3], '08:00'), end: time(week[3], '10:30'), display: 'background', backgroundColor: '#eab308'},
+            {start: time(week[4], '13:30'), end: time(week[4], '17:00'), display: 'background', backgroundColor: '#8b5cf6'},
+            {start: time(week[5], '08:00'), end: time(week[5], '12:00'), display: 'background', backgroundColor: '#06b6d4'},
+            // A couple of regular events
+            {start: time(week[2], '09:00'), end: time(week[2], '10:30'), title: 'Sprint planning'},
+            {start: time(week[4], '09:30'), end: time(week[4], '11:00'), title: 'Code review'}
+        ]
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [events](../../options/events/)
+- [scrollTime](../../options/scrolltime/)
+- [view](../../options/view/)

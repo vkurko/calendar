@@ -8,7 +8,9 @@
     let {options: {dayMaxEvents, eventGap}} = $derived(getContext('state'));
     let {colsCount, gridEl, hiddenChunks, popupDay} = $derived(getContext('view-state'));
 
-    let el = $state();
+    // Not a state: the element is not used reactively, and a state written by each component slows down the rendering
+    // svelte-ignore non_reactive_update
+    let el;
     let margin = $state(1);
     let hidden = $state(false);
 

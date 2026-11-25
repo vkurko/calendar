@@ -1,0 +1,81 @@
+---
+title: "noEventsContent"
+description: "What a list view shows when it has no events."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_noeventscontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="noEventsContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    noEventsContent: () => ({html: `<i>Nothing is planned</i>`})
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet noEventsContent()}
+        <i>Nothing is planned</i>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    noEventsContent={() => <><i>Nothing is planned</i></>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #noEventsContent>
+        <i>Nothing is planned</i>
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="noEventsContent">
+        <i>Nothing is planned</i>
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    noEventsContent: () => ({html: `<i>Nothing is planned</i>`})
+};
+```
+
+</TabItem>
+</Tabs>

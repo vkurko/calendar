@@ -1,0 +1,95 @@
+---
+title: "eventContent"
+description: "The content of an event, in place of the default time and title."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_eventcontent.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="eventContent" height="440px" />
+
+## Example
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+let options = {
+    eventContent: ({event, timeText}) => ({
+        html: `<div class="ec-event-time">${timeText}</div><div class="ec-event-title">★ ${event.title}</div>`
+    })
+};
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<Calendar {plugins} {options}>
+    {#snippet eventContent({event, timeText})}
+        <div class="ec-event-time">{timeText}</div>
+        <div class="ec-event-title">★ {event.title}</div>
+    {/snippet}
+</Calendar>
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+<EventCalendar
+    plugins={plugins}
+    eventContent={({event, timeText}) => <>
+        <div className="ec-event-time">{timeText}</div>
+        <div className="ec-event-title">★ {event.title}</div>
+    </>}
+/>
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<EventCalendar :plugins="plugins">
+    <template #eventContent="{event, timeText}">
+        <div class="ec-event-time">{{ timeText }}</div>
+        <div class="ec-event-title">★ {{ event.title }}</div>
+    </template>
+</EventCalendar>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```html
+<event-calendar [plugins]="plugins" [options]="options">
+    <ng-template ecContent="eventContent" let-event="event" let-timeText="timeText">
+        <div class="ec-event-time">{{ timeText }}</div>
+        <div class="ec-event-title">★ {{ event.title }}</div>
+    </ng-template>
+</event-calendar>
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```js
+let options = {
+    eventContent: ({event, timeText}) => ({
+        html: `<div class="ec-event-time">${timeText}</div><div class="ec-event-title">★ ${event.title}</div>`
+    })
+};
+```
+
+</TabItem>
+</Tabs>
+
+## Live examples
+
+- [Your own events and resources](../../examples/custom-event-content/)

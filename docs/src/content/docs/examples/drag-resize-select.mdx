@@ -1,0 +1,217 @@
+---
+title: "Drag, resize and select"
+description: "Everything at once: drag an event to another time, pull its edge to resize it, and drag over the empty slots to create a new one."
+sidebar:
+  order: 12
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+
+Everything at once: drag an event to another time, pull its edge to resize it, and drag over the empty slots to create a new one.
+
+<Example client:only="svelte" slug="drag-resize-select" />
+
+## Code
+
+<Tabs syncKey="framework">
+<TabItem label="Vanilla JS">
+
+```js
+import {createCalendar, TimeGrid, Interaction} from '@event-calendar/core';
+import '@event-calendar/core/index.css';
+
+const events = [/* your events */];
+
+const ec = createCalendar(document.getElementById('ec'), [TimeGrid, Interaction], {
+    view: 'timeGridWeek',
+    editable: true,
+    selectable: true,
+    scrollTime: '08:00',
+    events,
+    eventDrop: ({event}) => console.log('eventDrop', event.title, '→', event.start),
+    eventResize: ({event}) => console.log('eventResize', event.title, event.start, '–', event.end),
+    select: ({start, end, allDay}) => {
+        console.log('select', start, '–', end);
+        ec.addEvent({start, end, allDay, title: 'New event', color: '#14b8a6'});
+        ec.unselect();
+    }
+});
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+    import {Calendar, TimeGrid, Interaction} from '@event-calendar/core';
+
+    let events = [/* your events */];
+    let ec = $state();
+    let options = $state({
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event}) => console.log('eventDrop', event.title, '→', event.start),
+        eventResize: ({event}) => console.log('eventResize', event.title, event.start, '–', event.end),
+        select: ({start, end, allDay}) => {
+            console.log('select', start, '–', end);
+            ec.addEvent({start, end, allDay, title: 'New event', color: '#14b8a6'});
+            ec.unselect();
+        }
+    });
+</script>
+
+<Calendar bind:this={ec} plugins={[TimeGrid, Interaction]} {options} />
+```
+
+</TabItem>
+<TabItem label="React">
+
+```jsx
+import {useRef} from 'react';
+import {EventCalendar, TimeGrid, Interaction} from '@event-calendar/react';
+import '@event-calendar/react/index.css';
+
+const plugins = [TimeGrid, Interaction];
+const events = [/* your events */];
+
+export default function App() {
+    const calendar = useRef(null);
+    const options = {
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event}) => console.log('eventDrop', event.title, '→', event.start),
+        eventResize: ({event}) => console.log('eventResize', event.title, event.start, '–', event.end),
+        select: ({start, end, allDay}) => {
+            console.log('select', start, '–', end);
+            calendar.current.addEvent({start, end, allDay, title: 'New event', color: '#14b8a6'});
+            calendar.current.unselect();
+        }
+    };
+
+    return (
+        <EventCalendar
+            ref={calendar}
+            plugins={plugins}
+            {...options}
+        />
+    );
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import {useTemplateRef} from 'vue';
+import {EventCalendar, TimeGrid, Interaction} from '@event-calendar/vue';
+import '@event-calendar/vue/index.css';
+
+const plugins = [TimeGrid, Interaction];
+const events = [/* your events */];
+const calendar = useTemplateRef('calendar');
+const options = {
+    view: 'timeGridWeek',
+    editable: true,
+    selectable: true,
+    scrollTime: '08:00',
+    events,
+    eventDrop: ({event}) => console.log('eventDrop', event.title, '→', event.start),
+    eventResize: ({event}) => console.log('eventResize', event.title, event.start, '–', event.end),
+    select: ({start, end, allDay}) => {
+        console.log('select', start, '–', end);
+        calendar.value.addEvent({start, end, allDay, title: 'New event', color: '#14b8a6'});
+        calendar.value.unselect();
+    }
+};
+</script>
+
+<template>
+    <EventCalendar ref="calendar" :plugins="plugins" :options="options" />
+</template>
+```
+
+</TabItem>
+<TabItem label="Angular">
+
+```ts
+import {Component, viewChild} from '@angular/core';
+import {EventCalendar, EcContent, TimeGrid, Interaction, type Calendar} from '@event-calendar/angular';
+
+const events: Calendar.EventInput[] = [/* your events */];
+
+@Component({
+    selector: 'app-root',
+    imports: [EventCalendar, EcContent],
+    template: `<event-calendar [plugins]="plugins" [options]="options" />`
+})
+export class App {
+    calendar = viewChild.required(EventCalendar);
+    plugins = [TimeGrid, Interaction];
+    options: Calendar.Options = {
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event}) => console.log('eventDrop', event.title, '→', event.start),
+        eventResize: ({event}) => console.log('eventResize', event.title, event.start, '–', event.end),
+        select: ({start, end, allDay}) => {
+            console.log('select', start, '–', end);
+            this.calendar().addEvent({start, end, allDay, title: 'New event', color: '#14b8a6'});
+            this.calendar().unselect();
+        }
+    };
+}
+```
+
+</TabItem>
+<TabItem label="CDN">
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@5.22.0/dist/event-calendar.min.js"></script>
+
+<div id="ec"></div>
+
+<script>
+    const events = [/* your events */];
+
+    const ec = EventCalendar.create(document.getElementById('ec'), {
+        view: 'timeGridWeek',
+        editable: true,
+        selectable: true,
+        scrollTime: '08:00',
+        events,
+        eventDrop: ({event}) => console.log('eventDrop', event.title, '→', event.start),
+        eventResize: ({event}) => console.log('eventResize', event.title, event.start, '–', event.end),
+        select: ({start, end, allDay}) => {
+            console.log('select', start, '–', end);
+            ec.addEvent({start, end, allDay, title: 'New event', color: '#14b8a6'});
+            ec.unselect();
+        }
+    });
+</script>
+```
+
+</TabItem>
+</Tabs>
+
+## Options used
+
+- [editable](../../options/editable/)
+- [eventDrop](../../options/eventdrop/)
+- [eventResize](../../options/eventresize/)
+- [events](../../options/events/)
+- [scrollTime](../../options/scrolltime/)
+- [select](../../options/select/)
+- [selectable](../../options/selectable/)
+- [view](../../options/view/)

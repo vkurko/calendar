@@ -1,0 +1,20 @@
+---
+title: "select"
+description: "Called when the user has selected a range of dates or time. The selection is enabled with selectable."
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Example from '../../../components/Example.svelte';
+import {Content as Body} from './_select.md';
+
+<Body />
+
+## Demo
+
+<Example client:visible option="select" height="440px" />
+
+## Live examples
+
+- [Drag, resize and select](../../examples/drag-resize-select/)
+- [Select to create](../../examples/select-to-create/)
